@@ -1,0 +1,30 @@
+Package: FeatureExtraction
+Type: Package
+Title: Generating Features for a Cohort
+Version: 0.0.1
+Date: 2016-3-25
+Author: Martijn J. Schuemie [aut, cre],
+    Marc A. Suchard [aut],
+    Patrick B. Ryan [aut],
+    Jenna Reps [aut]
+Maintainer: Martijn J. Schuemie <schuemie@ohdsi.org>
+Description: An R package for generating features (covariates) for a cohort using data in the Common Data Model.
+License: Apache License 2.0
+Depends:
+    R (>= 3.2.2),
+    DatabaseConnector (>= 1.3.0),
+Imports:
+    bit,
+    ff,
+    ffbase (>= 0.12.1),
+    plyr,
+    Rcpp (>= 0.11.2),
+    RJDBC,
+    SqlRender (>= 1.1.3),
+Suggests:
+    testthat,
+    knitr,
+    rmarkdown
+LinkingTo: Rcpp
+NeedsCompilation: yes
+RoxygenNote: 5.0.1
