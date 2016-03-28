@@ -84,7 +84,7 @@ getDbHdpsCovariateData <- function(connection,
   }
   
   renderedSql <- SqlRender::loadRenderTranslateSql("GetHdpsCovariates.sql",
-                                                   packageName = "PatientLevelPrediction",
+                                                   packageName = "FeatureExtraction",
                                                    dbms = attr(connection, "dbms"),
                                                    oracleTempSchema = oracleTempSchema,
                                                    cdm_database = cdmDatabase,
@@ -154,7 +154,7 @@ getDbHdpsCovariateData <- function(connection,
   writeLines(paste("Loading took", signif(delta, 3), attr(delta, "units")))
   
   renderedSql <- SqlRender::loadRenderTranslateSql("RemoveCovariateTempTables.sql",
-                                                   packageName = "PatientLevelPrediction",
+                                                   packageName = "FeatureExtraction",
                                                    dbms = attr(connection, "dbms"),
                                                    oracleTempSchema = oracleTempSchema)
   DatabaseConnector::executeSql(connection,

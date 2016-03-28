@@ -20,23 +20,95 @@
 #'
 #' @description
 #' Uses one or several covariate builder functions to construct covariates.
+#' 
+#' @details
+#' This function uses the data in the CDM to construct a large set of covariates for the provided
+#' cohort. The cohort is assumed to be in an existing table with these fields: 'subject_id',
+#' 'cohort_definition_id', 'cohort_start_date'. Optionally, an extra field can be added containing the
+#' unique identifier that will be used as rowID in the output. 
 #'
+#' @param connectionDetails   An R object of type \code{connectionDetails} created using the
+#'                            function \code{createConnectionDetails} in the
+#'                            \code{DatabaseConnector} package. Either the
+#'                            \code{connection} or \code{connectionDetails} argument should be specified.   
+#' @param connection          A connection to the server containing the schema as created using the
+#'                            \code{connect} function in the \code{DatabaseConnector} package. Either the
+#'                            \code{connection} or \code{connectionDetails} argument should be specified.           
+#' @param oracleTempSchema    A schema where temp tables can be created in Oracle.
+#' @param cdmDatabaseSchema   The name of the database schema that contains the OMOP CDM instance.
+#'                            Requires read permissions to this database. On SQL Server, this should
+#'                            specifiy both the database and the schema, so for example
+#'                            'cdm_instance.dbo'.
+#' @param cdmVersion          Define the OMOP CDM version used: currently support "4" and "5".
+#' @param cohortTable         Name of the (temp) table holding the cohort for which we want to construct
+#'                            covariates
+#' @param cohortDatabaseSchema  If the cohort table is not a temp table, specify the database schema
+#'                               where the cohort table can be found. On SQL Server, this should
+#'                            specifiy both the database and the schema, so for example
+#'                            'cdm_instance.dbo'.
+#' @param cohortTableIsTemp   Is the cohort table a temp table?
+#' @param cohortIds           For which cohort IDs should covariates be constructed? If left empty, covariates
+#'                            will be constructed for all cohorts in the specified cohort table.
+#' @param rowIdField          The name of the field in the cohort table that is to be used as the
+#'                            row_id field in the output table. This can be especially usefull if there
+#'                            is more than one period per person.
 #' @param covariateSettings   Either an object of type \code{covariateSettings} as created using one of
 #'                            the createCovariate functions, or a list of such objects.
 #' @param normalize           Should covariate values be normalized? If true, values will be divided by
 #'                            the max value per covariate.
 #'
-#' @template GetCovarParams
+#' @return
+#' Returns an object of type \code{covariateData}, containing information on the baseline covariates.
+#' Information about multiple outcomes can be captured at once for efficiency reasons. This object is
+#' a list with the following components: \describe{ \item{covariates}{An ffdf object listing the
+#' baseline covariates per person in the cohorts. This is done using a sparse representation:
+#' covariates with a value of 0 are omitted to save space. The covariates object will have three
+#' columns: rowId, covariateId, and covariateValue. The rowId is usually equal to the person_id,
+#' unless specified otherwise in the rowIdField argument.} \item{covariateRef}{An ffdf object
+#' describing the covariates that have been extracted.} \item{metaData}{A list of objects with
+#' information on how the covariateData object was constructed.} }
 #'
 #' @export
-getDbCovariateData <- function(connection,
+getDbCovariateData <- function(connectionDetails = NULL,
+                               connection = NULL,
                                oracleTempSchema = NULL,
                                cdmDatabaseSchema,
                                cdmVersion = "4",
-                               cohortTempTable = "cohort_person",
+                               cohortTable = "cohort",
+                               cohortDatabaseSchema = cdmDatabaseSchema,
+                               cohortTableIsTemp = FALSE,
+                               cohortIds = c(),
                                rowIdField = "subject_id",
                                covariateSettings,
                                normalize = TRUE) {
+  if (is.null(connectionDetails) && is.null(connection)){
+    stop("Need to provide either connectionDetails or connection")
+  }
+  if (!is.null(connectionDetails) && !is.null(connection)){
+    stop("Need to provide either connectionDetails or connection, not both")
+  }
+  if (!is.null(connectionDetails)) {
+    connection <- DatabaseConnector::connect(connectionDetails) 
+  }
+  if (cohortTableIsTemp && length(cohortIds) == 0) {
+    cohortTempTable = cohortTable
+  } else {
+    cohortTempTable <- "#cohort_for_covar_temp"
+    if (cohortTableIsTemp) {
+      cohortDatabaseSchemaTable <- cohortTable
+    } else {
+      cohortDatabaseSchemaTable <- paste(cohortDatabaseSchema, cohortTable, sep = ".")
+    }
+    sql <- SqlRender::loadRenderTranslateSql("CreateTempCohortTable.sql", 
+                                             packageName = "FeatureExtraction",
+                                             dbms = attr(connection, "dbms"),
+                                             oracleTempSchema = oracleTempSchema,
+                                             cohort_database_schema_table = cohortDatabaseSchemaTable,
+                                             cohort_ids = cohortIds,
+                                             cdm_version = cdmVersion)
+    DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
+  }
+  
   if (class(covariateSettings) == "covariateSettings") {
     fun <- attr(covariateSettings, "fun")
     args <- list(connection = connection,
@@ -77,15 +149,15 @@ getDbCovariateData <- function(connection,
           tempCovariateIds <- ff::as.ram(tempCovariateData$covariateRef$covariateId)
           covariateIds <- ff::as.ram(covariateData$covariateRef$covariateId)
           overlapping <- tempCovariateIds[tempCovariateIds %in% covariateIds]
-          if (length(covariateIds) != 0) {
+          if (length(overlapping) != 0) {
             startId <- max(covariateIds)
             startId <- max(startId, tempCovariateIds)
             startId <- startId + 1
             newIds = startId:(startId+length(overlapping) - 1)
             for (i in bit::chunk(tempCovariateData$covariateRef$covariateId)) {
-               ids <- tempCovariateData$covariateRef$covariateId[i]
-               ids <- plyr::mapvalues(ids, overlapping, newIds, warn_missing = FALSE)
-               tempCovariateData$covariateRef$covariateId[i] <- ids
+              ids <- tempCovariateData$covariateRef$covariateId[i]
+              ids <- plyr::mapvalues(ids, overlapping, newIds, warn_missing = FALSE)
+              tempCovariateData$covariateRef$covariateId[i] <- ids
             }
             for (i in bit::chunk(tempCovariateData$covariates$covariateId)) {
               ids <- tempCovariateData$covariates$covariateId[i]
@@ -109,11 +181,21 @@ getDbCovariateData <- function(connection,
       }
     }
   }
-  
+  if (!cohortTableIsTemp || length(cohortIds) != 0) {
+    sql <- "TRUNCATE TABLE #cohort_for_covar_temp; DROP TABLE #cohort_for_covar_temp;"
+    sql <- SqlRender::translateSql(sql,
+                                   targetDialect = attr(connection, "dbms"),
+                                   oracleTempSchema = oracleTempSchema)$sql
+    DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
+  }
+  if (!is.null(connectionDetails)) {
+    RJDBC::dbDisconnect(connection) 
+  }
   if (normalize) {
     writeLines("Normalizing covariates")
     covariateData$covariates <- normalizeCovariates(covariateData$covariates)
   }
+  covariateData$metaData$cohortIds <- cohortIds
   return(covariateData)
 }
 

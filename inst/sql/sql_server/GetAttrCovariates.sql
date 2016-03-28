@@ -3,7 +3,7 @@
 
 Copyright 2016 Observational Health Data Sciences and Informatics
 
-This file is part of CohortMethod
+This file is part of FeatureExtraction
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ limitations under the License.
 {DEFAULT @cohort_attribute_table = 'cohort_attribute'} 
 {DEFAULT @has_include_attr_ids = FALSE} 
 
-SELECT @row_id_field AS row_id,
+SELECT cohort.@row_id_field AS row_id,
   attribute_definition_id AS covariate_id,
   value_as_number AS covariate_value
 FROM @attr_database_schema.@cohort_attribute_table cohort_attribute

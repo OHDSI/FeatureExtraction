@@ -58,7 +58,7 @@ getDbCohortAttrCovariatesData <- function(connection,
   }
 
   renderedSql <- SqlRender::loadRenderTranslateSql("GetAttrCovariates.sql",
-                                                   packageName = "PatientLevelPrediction",
+                                                   packageName = "FeatureExtraction",
                                                    dbms = attr(connection, "dbms"),
                                                    oracleTempSchema = oracleTempSchema,
                                                    attr_database_schema = covariateSettings$attrDatabaseSchema,

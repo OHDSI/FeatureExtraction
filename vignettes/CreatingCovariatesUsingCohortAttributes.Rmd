@@ -9,11 +9,11 @@ output:
   html_document:
     number_sections: yes
     toc: yes
+vignette: >
+  %\VignetteIndexEntry{Creating covariates using cohort attributes}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
-<!--
-%\VignetteEngine{knitr}
-%\VignetteIndexEntry{Creating covariates using cohort attributes}
--->
 
 ```{r echo=FALSE,message=FALSE,warning=FALSE,eval=TRUE}
 library(FeatureExtraction)
@@ -102,7 +102,7 @@ sql <- renderSql(sql,
                  cohort_database_schema = cohortDatabaseSchema,
                  cohort_table = "rehospitalization",
                  cohort_attribute_table = "loo_cohort_attr",
-                 attribute_definition_table = "loo_attr_definition",
+                 attribute_definition_table = "loo_attr_def",
                  cohort_definition_ids = c(1,2))$sql
 sql <- translateSql(sql, targetDialect = connectionDetails$dbms)$sql
 
@@ -116,27 +116,21 @@ To use the constructed attributes as covariates in a predictive model, we need t
 
 ```{r eval=FALSE}
 looCovSet <- createCohortAttrCovariateSettings(attrDatabaseSchema = cohortDatabaseSchema,
-                                                    cohortAttrTable = "loo_cohort_attr",
-                                                    attrDefinitionTable = "loo_attr_def",
-                                                    includeAttrIds = c())
+                                               cohortAttrTable = "loo_cohort_attr",
+                                               attrDefinitionTable = "loo_attr_def",
+                                               includeAttrIds = c())
 ```
 
-We can then use these settings to fetch the `plpData` object:
+We can then use these settings to fetch the `covariates` object:
 
 ```{r eval=FALSE}
-plpData <- getDbPlpData(connectionDetails = connectionDetails,
-                        cdmDatabaseSchema = cdmDatabaseSchema,
-                        cohortDatabaseSchema = resultsDatabaseSchema,
-                        cohortTable = "rehospitalization",
-                        cohortIds = 1,
-                        useCohortEndDate = TRUE,
-                        windowPersistence = 0,
-                        covariateSettings = looCovSet,
-                        outcomeDatabaseSchema = resultsDatabaseSchema,
-                        outcomeTable = "rehospitalization",
-                        outcomeIds = 2,
-                        firstOutcomeOnly = TRUE,
-                        cdmVersion = cdmVersion)
+covariates <- getDbCovariateData(connectionDetails = connectionDetails,
+                                 cdmDatabaseSchema = cdmDatabaseSchema,
+                                 cohortDatabaseSchema = resultsDatabaseSchema,
+                                 cohortTable = "rehospitalization",
+                                 cohortIds = 1,
+                                 covariateSettings = looCovSet,
+                                 cdmVersion = cdmVersion)
 ```
 
 In this case we will have only one covariate for our predictive model, the length of observation. In most cases, we will want our custom covariates in addition to the default covariates. We can do this by creating a list of covariate settings:
@@ -155,19 +149,13 @@ looCovSet <- createCohortAttrCovariateSettings(attrDatabaseSchema = cohortDataba
                                                includeAttrIds = c())
 covariateSettingsList <- list(covariateSettings, looCovSet)
 
-plpData <- getDbPlpData(connectionDetails = connectionDetails,
-                        cdmDatabaseSchema = cdmDatabaseSchema,
-                        cohortDatabaseSchema = resultsDatabaseSchema,
-                        cohortTable = "rehospitalization",
-                        cohortIds = 1,
-                        useCohortEndDate = TRUE,
-                        windowPersistence = 0,
-                        covariateSettings = covariateSettingsList,
-                        outcomeDatabaseSchema = resultsDatabaseSchema,
-                        outcomeTable = "rehospitalization",
-                        outcomeIds = 2,
-                        firstOutcomeOnly = TRUE,
-                        cdmVersion = cdmVersion)
+covariates <- getDbCovariateData(connectionDetails = connectionDetails,
+                                 cdmDatabaseSchema = cdmDatabaseSchema,
+                                 cohortDatabaseSchema = resultsDatabaseSchema,
+                                 cohortTable = "rehospitalization",
+                                 cohortIds = 1,
+                                 covariateSettings = covariateSettingsList,
+                                 cdmVersion = cdmVersion)
 ```
 
 In this example both demographic covariates and our length of observation covariate will be generated and can be used in our predictive model.

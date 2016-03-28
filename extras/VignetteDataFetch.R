@@ -124,84 +124,16 @@ covariateSettings <- createCovariateSettings(useCovariateDemographics = TRUE,
                                              includedCovariateConceptIds = c(),
                                              deleteCovariatesSmallCount = 100)
 
-connection <- DatabaseConnector::connect(connectionDetails)
-covariates <- getDbCovariateData(connection = connection,
+covariates <- getDbCovariateData(connectionDetails = connectionDetails,
                                  oracleTempSchema = oracleTempSchema,
                                  cdmDatabaseSchema = cdmDatabaseSchema,
                                  cdmVersion = cdmVersion,
-                                 cohortTempTable = "",
+                                 cohortTable = "rehospitalization",
+                                 cohortDatabaseSchema = resultsDatabaseSchema,
+                                 cohortTableIsTemp = FALSE,
+                                 cohortIds = 1,
                                  covariateSettings = covariateSettings)
                                  
-
-dbDisconnect(connection)                             
-                                   
-plpData <- getDbPlpData(connectionDetails = connectionDetails,
-                        cdmDatabaseSchema = cdmDatabaseSchema,
-                        oracleTempSchema = oracleTempSchema,
-                        cohortDatabaseSchema = resultsDatabaseSchema,
-                        cohortTable = "rehospitalization",
-                        cohortIds = 1,
-                        washoutWindow = 183,
-                        useCohortEndDate = TRUE,
-                        windowPersistence = 0,
-                        covariateSettings = covariateSettings,
-                        outcomeDatabaseSchema = resultsDatabaseSchema,
-                        outcomeTable = "rehospitalization",
-                        outcomeIds = 2,
-                        firstOutcomeOnly = FALSE,
-                        cdmVersion = cdmVersion)
-
-savePlpData(plpData, "s:/temp/PlpVignette/plpData")
-
-# plpData <- loadPlpData('s:/temp/PlpVignette/plpData')
-
-means <- computeCovariateMeans(plpData = plpData, outcomeId = 2)
-
-saveRDS(means, "s:/temp/PlpVignette/means.rds")
-
-# plotCovariateDifferenceOfTopVariables(means)
-
-parts <- splitData(plpData, c(0.75, 0.25))
-
-savePlpData(parts[[1]], "s:/temp/PlpVignette/plpData_train")
-
-savePlpData(parts[[2]], "s:/temp/PlpVignette/plpData_test")
-
-# parts <- list(); parts[[1]] <- loadPlpData('s:/temp/PlpVignette/plpData_train'); parts[[2]] <-
-# loadPlpData('s:/temp/PlpVignette/plpData_test')
-
-model <- fitPredictiveModel(parts[[1]],
-                            modelType = "logistic",
-                            prior = createPrior("laplace",
-                                                exclude = c(0),
-                                                useCrossValidation = TRUE),
-                            control = createControl(noiseLevel = "quiet",
-                                                    cvType = "auto",
-                                                    startingVariance = 0.001,
-                                                    tolerance = 1e-07,
-                                                    cvRepetitions = 10,
-                                                    seed = 123,
-                                                    threads = 30))
-
-saveRDS(model, file = "s:/temp/PlpVignette/model.rds")
-
-# model <- readRDS('s:/temp/PlpVignette/model.rds')
-
-
-
-prediction <- predictProbabilities(model, parts[[2]])
-
-saveRDS(prediction, file = "s:/temp/PlpVignette/prediction.rds")
-
-# prediction <- readRDS('s:/temp/PlpVignette/prediction.rds')
-
-computeAuc(prediction, parts[[2]])
-plotRoc(prediction, parts[[2]])
-plotCalibration(prediction, parts[[2]], numberOfStrata = 10)
-
-modelDetails <- getModelDetails(model, parts[[2]])
-head(modelDetails)
-
 
 
 #### Datafetch for custom covariate builders #####
@@ -341,7 +273,7 @@ covariateSettings <- createHdpsCovariateSettings(useCovariateCohortIdIs1 = FALSE
 
 library(SqlRender)
 library(DatabaseConnector)
-library(PatientLevelPrediction)
+library(FeatureExtraction)
 setwd("s:/temp")
 options(fftempdir = "s:/FFtemp")
 
@@ -403,26 +335,20 @@ DatabaseConnector::executeSql(connection, sql)
 
 querySql(connection, "SELECT TOP 100 * FROM scratch.dbo.loo_cohort_attribute")
 
-looCovariateSettings <- createCohortAttrCovariateSettings(attrDatabaseSchema = cohortDatabaseSchema,
+looCovSet <- createCohortAttrCovariateSettings(attrDatabaseSchema = cohortDatabaseSchema,
                                                           cohortAttrTable = "loo_cohort_attribute",
                                                           attrDefinitionTable = "loo_attribute_definition",
                                                           includeAttrIds = c())
 
-plpData <- getDbPlpData(connectionDetails = connectionDetails,
-                        cdmDatabaseSchema = cdmDatabaseSchema,
-                        cohortDatabaseSchema = cohortDatabaseSchema,
-                        cohortTable = "rehospitalization",
-                        cohortIds = 1,
-                        useCohortEndDate = TRUE,
-                        windowPersistence = 0,
-                        covariateSettings = looCovariateSettings,
-                        outcomeDatabaseSchema = cohortDatabaseSchema,
-                        outcomeTable = "rehospitalization",
-                        outcomeIds = 2,
-                        firstOutcomeOnly = TRUE,
-                        cdmVersion = cdmVersion)
-summary(plpData)
-plpData$covariates
+covariates <- getDbCovariateData(connectionDetails = connectionDetails,
+                                 cdmDatabaseSchema = cdmDatabaseSchema,
+                                 cohortDatabaseSchema = cohortDatabaseSchema,
+                                 cohortTable = "rehospitalization",
+                                 cohortIds = 1,
+                                 covariateSettings = looCovSet,
+                                 cdmVersion = cdmVersion)
+summary(covariates)
+
 
 
 sql <- "DROP TABLE @cohort_database_schema.rehospitalization"
@@ -435,22 +361,23 @@ sql <- SqlRender::translateSql(sql, targetDialect = attr(connection, "dbms"))$sq
 
 
 
-looCovariateSettings <- createCohortAttrCovariateSettings(attrDatabaseSchema = cohortDatabaseSchema,
-                                                          cohortAttrTable = "loo_cohort_attribute",
-                                                          attrDefinitionTable = "loo_attribute_definition",
-                                                          includeAttrIds = c())
-covariateSettingsList <- list(looCovariateSettings, looCovariateSettings)
+covariateSettings <- createCovariateSettings(useCovariateDemographics = TRUE,
+                                              useCovariateDemographicsGender = TRUE,
+                                              useCovariateDemographicsRace = TRUE,
+                                              useCovariateDemographicsEthnicity = TRUE,
+                                              useCovariateDemographicsAge = TRUE,
+                                              useCovariateDemographicsYear = TRUE,
+                                              useCovariateDemographicsMonth = TRUE)
+looCovSet <- createCohortAttrCovariateSettings(attrDatabaseSchema = cohortDatabaseSchema,
+                                               cohortAttrTable = "loo_cohort_attribute",
+                                               attrDefinitionTable = "loo_attribute_definition",
+                                               includeAttrIds = c())
+covariateSettingsList <- list(covariateSettings, looCovSet)
 
-plpData <- getDbPlpData(connectionDetails = connectionDetails,
-                        cdmDatabaseSchema = cdmDatabaseSchema,
-                        cohortDatabaseSchema = cohortDatabaseSchema,
-                        cohortTable = "rehospitalization",
-                        cohortIds = 1,
-                        useCohortEndDate = TRUE,
-                        windowPersistence = 0,
-                        covariateSettings = covariateSettingsList,
-                        outcomeDatabaseSchema = cohortDatabaseSchema,
-                        outcomeTable = "rehospitalization",
-                        outcomeIds = 2,
-                        firstOutcomeOnly = TRUE,
-                        cdmVersion = cdmVersion)
+covariates <- getDbCovariateData(connectionDetails = connectionDetails,
+                                 cdmDatabaseSchema = cdmDatabaseSchema,
+                                 cohortDatabaseSchema = cohortDatabaseSchema,
+                                 cohortTable = "rehospitalization",
+                                 cohortIds = 1,
+                                 covariateSettings = covariateSettingsList,
+                                 cdmVersion = cdmVersion)

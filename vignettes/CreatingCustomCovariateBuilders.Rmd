@@ -9,11 +9,11 @@ output:
   html_document:
     number_sections: yes
     toc: yes
+vignette: >
+  %\VignetteIndexEntry{Creating custom covariate builders}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
-<!--
-%\VignetteEngine{knitr}
-%\VignetteIndexEntry{Creating custom covariate builders}
--->
 
 ```{r echo=FALSE,message=FALSE,warning=FALSE,eval=TRUE}
 library(FeatureExtraction)
@@ -144,50 +144,39 @@ In this example function, we construct a single covariate called 'Length of obse
 We can use our custom covariate builder in the `PatientLevelPrediction` package, as well other packages that depend on the `FeatureExtraction` package, such as the `CohortMethod` package. If we want to use only our custom defined covariate builder, we can simply replace the existing `covariateSettings` with our own, for example:
 
 ```{r eval=FALSE}
-  looCovariateSettings <- createLooCovariateSettings(useLengthOfObs = TRUE)
+looCovSet <- createLooCovariateSettings(useLengthOfObs = TRUE)
 
-  plpData <- getDbPlpData(connectionDetails = connectionDetails,
-                          cdmDatabaseSchema = cdmDatabaseSchema,
-                          cohortDatabaseSchema = resultsDatabaseSchema,
-                          cohortTable = "rehospitalization",
-                          cohortIds = 1,
-                          useCohortEndDate = TRUE,
-                          windowPersistence = 0,
-                          covariateSettings = looCovariateSettings,
-                          outcomeDatabaseSchema = resultsDatabaseSchema,
-                          outcomeTable = "rehospitalization",
-                          outcomeIds = 2,
-                          firstOutcomeOnly = TRUE,
-                          cdmVersion = cdmVersion)
+covariates <- getDbCovariateData(connectionDetails = connectionDetails,
+                                 cdmDatabaseSchema = cdmDatabaseSchema,
+                                 cohortDatabaseSchema = resultsDatabaseSchema,
+                                 cohortTable = "rehospitalization",
+                                 cohortIds = 1,
+                                 covariateSettings = looCovSet,
+                                 cdmVersion = cdmVersion)
 ```
 
 
 In this case we will have only one covariate for our predictive model, the length of observation. In most cases, we will want our custom covariates in addition to the default covariates. We can do this by creating a list of covariate settings:
 
 ```{r eval=FALSE}
-  covariateSettings <- createCovariateSettings(useCovariateDemographics = TRUE,
-                                               useCovariateDemographicsGender = TRUE,
-                                               useCovariateDemographicsRace = TRUE,
-                                               useCovariateDemographicsEthnicity = TRUE,
-                                               useCovariateDemographicsAge = TRUE,
-                                               useCovariateDemographicsYear = TRUE,
-                                               useCovariateDemographicsMonth = TRUE)
-  looCovariateSettings <- createLooCovariateSettings(useLengthOfObs = TRUE)
-  covariateSettingsList <- list(covariateSettings, looCovariateSettings)
-  
-  plpData <- getDbPlpData(connectionDetails = connectionDetails,
-                          cdmDatabaseSchema = cdmDatabaseSchema,
-                          cohortDatabaseSchema = resultsDatabaseSchema,
-                          cohortTable = "rehospitalization",
-                          cohortIds = 1,
-                          useCohortEndDate = TRUE,
-                          windowPersistence = 0,
-                          covariateSettings = covariateSettingsList,
-                          outcomeDatabaseSchema = resultsDatabaseSchema,
-                          outcomeTable = "rehospitalization",
-                          outcomeIds = 2,
-                          firstOutcomeOnly = TRUE,
-                          cdmVersion = cdmVersion)
+covariateSettings <- createCovariateSettings(useCovariateDemographics = TRUE,
+                                             useCovariateDemographicsGender = TRUE,
+                                             useCovariateDemographicsRace = TRUE,
+                                             useCovariateDemographicsEthnicity = TRUE,
+                                             useCovariateDemographicsAge = TRUE,
+                                             useCovariateDemographicsYear = TRUE,
+                                             useCovariateDemographicsMonth = TRUE)
+looCovSet <- createLooCovariateSettings(useLengthOfObs = TRUE)
+
+covariateSettingsList <- list(covariateSettings, looCovSet)
+
+covariates <- getDbCovariateData(connectionDetails = connectionDetails,
+                                 cdmDatabaseSchema = cdmDatabaseSchema,
+                                 cohortDatabaseSchema = resultsDatabaseSchema,
+                                 cohortTable = "rehospitalization",
+                                 cohortIds = 1,
+                                 covariateSettings = covariateSettingsList,
+                                 cdmVersion = cdmVersion)
 ```
 
 In this example both demographic covariates and our length of observation covariate will be generated and can be used in our predictive model.
