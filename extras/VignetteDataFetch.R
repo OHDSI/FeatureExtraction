@@ -133,7 +133,7 @@ covariates <- getDbCovariateData(connectionDetails = connectionDetails,
                                  cohortTableIsTemp = FALSE,
                                  cohortIds = 1,
                                  covariateSettings = covariateSettings)
-                                 
+
 
 
 #### Datafetch for custom covariate builders #####
@@ -336,9 +336,9 @@ DatabaseConnector::executeSql(connection, sql)
 querySql(connection, "SELECT TOP 100 * FROM scratch.dbo.loo_cohort_attribute")
 
 looCovSet <- createCohortAttrCovariateSettings(attrDatabaseSchema = cohortDatabaseSchema,
-                                                          cohortAttrTable = "loo_cohort_attribute",
-                                                          attrDefinitionTable = "loo_attribute_definition",
-                                                          includeAttrIds = c())
+                                               cohortAttrTable = "loo_cohort_attribute",
+                                               attrDefinitionTable = "loo_attribute_definition",
+                                               includeAttrIds = c())
 
 covariates <- getDbCovariateData(connectionDetails = connectionDetails,
                                  cdmDatabaseSchema = cdmDatabaseSchema,
@@ -362,12 +362,12 @@ sql <- SqlRender::translateSql(sql, targetDialect = attr(connection, "dbms"))$sq
 
 
 covariateSettings <- createCovariateSettings(useCovariateDemographics = TRUE,
-                                              useCovariateDemographicsGender = TRUE,
-                                              useCovariateDemographicsRace = TRUE,
-                                              useCovariateDemographicsEthnicity = TRUE,
-                                              useCovariateDemographicsAge = TRUE,
-                                              useCovariateDemographicsYear = TRUE,
-                                              useCovariateDemographicsMonth = TRUE)
+                                             useCovariateDemographicsGender = TRUE,
+                                             useCovariateDemographicsRace = TRUE,
+                                             useCovariateDemographicsEthnicity = TRUE,
+                                             useCovariateDemographicsAge = TRUE,
+                                             useCovariateDemographicsYear = TRUE,
+                                             useCovariateDemographicsMonth = TRUE)
 looCovSet <- createCohortAttrCovariateSettings(attrDatabaseSchema = cohortDatabaseSchema,
                                                cohortAttrTable = "loo_cohort_attribute",
                                                attrDefinitionTable = "loo_attribute_definition",

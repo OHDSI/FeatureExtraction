@@ -44,7 +44,7 @@ getDbDefaultCovariateData <- function(connection,
   if (!covariateSettings$useCovariateConditionGroupMeddra & !covariateSettings$useCovariateConditionGroupSnomed) {
     covariateSettings$useCovariateConditionGroup <- FALSE
   }
-  
+
   if (cdmVersion == "4") {
     cohortDefinitionId <- "cohort_concept_id"
     conceptClassId <- "concept_class"
@@ -54,9 +54,9 @@ getDbDefaultCovariateData <- function(connection,
     conceptClassId <- "concept_class_id"
     measurement <- "measurement"
   }
-  
+
   if (is.null(covariateSettings$excludedCovariateConceptIds) || length(covariateSettings$excludedCovariateConceptIds) ==
-      0) {
+    0) {
     hasExcludedCovariateConceptIds <- FALSE
   } else {
     if (!is.numeric(covariateSettings$excludedCovariateConceptIds))
@@ -70,9 +70,9 @@ getDbDefaultCovariateData <- function(connection,
                                    tempTable = TRUE,
                                    oracleTempSchema = oracleTempSchema)
   }
-  
+
   if (is.null(covariateSettings$includedCovariateConceptIds) || length(covariateSettings$includedCovariateConceptIds) ==
-      0) {
+    0) {
     hasIncludedCovariateConceptIds <- FALSE
   } else {
     if (!is.numeric(covariateSettings$includedCovariateConceptIds))
@@ -86,7 +86,7 @@ getDbDefaultCovariateData <- function(connection,
                                    tempTable = TRUE,
                                    oracleTempSchema = oracleTempSchema)
   }
-  
+
   renderedSql <- SqlRender::loadRenderTranslateSql("GetCovariates.sql",
                                                    packageName = "FeatureExtraction",
                                                    dbms = attr(connection, "dbms"),
@@ -150,10 +150,10 @@ getDbDefaultCovariateData <- function(connection,
                                                    has_excluded_covariate_concept_ids = hasExcludedCovariateConceptIds,
                                                    has_included_covariate_concept_ids = hasIncludedCovariateConceptIds,
                                                    delete_covariates_small_count = covariateSettings$deleteCovariatesSmallCount)
-  
+
   DatabaseConnector::executeSql(connection, renderedSql)
   writeLines("Done")
-  
+
   writeLines("Fetching data from server")
   start <- Sys.time()
   covariateSql <- "SELECT row_id, covariate_id, covariate_value FROM #cov ORDER BY covariate_id, row_id"
@@ -169,17 +169,17 @@ getDbDefaultCovariateData <- function(connection,
                                              attr(connection, "dbms"),
                                              oracleTempSchema)$sql
   covariateRef <- DatabaseConnector::querySql.ffdf(connection, covariateRefSql)
-  
+
   sql <- "SELECT COUNT_BIG(*) FROM @cohort_temp_table"
   sql <- SqlRender::renderSql(sql, cohort_temp_table = cohortTempTable)$sql
   sql <- SqlRender::translateSql(sql,
                                  targetDialect = attr(connection, "dbms"),
                                  oracleTempSchema = oracleTempSchema)$sql
   populationSize <- DatabaseConnector::querySql(connection, sql)[1, 1]
-  
+
   delta <- Sys.time() - start
   writeLines(paste("Loading took", signif(delta, 3), attr(delta, "units")))
-  
+
   renderedSql <- SqlRender::loadRenderTranslateSql("RemoveCovariateTempTables.sql",
                                                    packageName = "FeatureExtraction",
                                                    dbms = attr(connection, "dbms"),
@@ -188,10 +188,10 @@ getDbDefaultCovariateData <- function(connection,
                                 renderedSql,
                                 progressBar = FALSE,
                                 reportOverallTime = FALSE)
-  
+
   colnames(covariates) <- SqlRender::snakeCaseToCamelCase(colnames(covariates))
   colnames(covariateRef) <- SqlRender::snakeCaseToCamelCase(colnames(covariateRef))
-  
+
   # Remove redundant covariates
   writeLines("Removing redundant covariates")
   start <- Sys.time()
@@ -231,7 +231,7 @@ getDbDefaultCovariateData <- function(connection,
   }
   delta <- Sys.time() - start
   writeLines(paste("Removing redundant covariates took", signif(delta, 3), attr(delta, "units")))
-  
+
   metaData <- list(sql = renderedSql,
                    call = match.call(),
                    deletedCovariateIds = deletedCovariateIds)
