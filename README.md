@@ -9,7 +9,7 @@ Features
 ========
 - Takes a cohort as input.
 - Generates baseline features for that cohort
-- Default ovariates include all drugs, diagnoses, procedures, as well as age, comorbidity indexes, etc.
+- Default covariates include all drugs, diagnoses, procedures, as well as age, comorbidity indexes, etc.
 - Support for creating custom covariates
 
 Screenshots
