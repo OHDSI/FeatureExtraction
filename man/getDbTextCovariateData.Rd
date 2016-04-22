@@ -49,7 +49,7 @@ Uses a bag-of-words approach to construct covariates based on free-text.
 This function uses the data in the CDM to construct a large set of covariates for the provided
 cohort. The cohort is assumed to be in an existing temp table with these fields: 'subject_id',
 'cohort_definition_id', 'cohort_start_date'. Optionally, an extra field can be added containing the
-unique identifier that will be used as rowID in the output. Typically, users don't call this function
-directly but rather use the \code{\link{getDbCovariateData}} function instead.
+unique identifier that will be used as rowID in the output. Typically, users don't call this
+function directly but rather use the \code{\link{getDbCovariateData}} function instead.
 }
 

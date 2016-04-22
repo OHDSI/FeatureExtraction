@@ -13,12 +13,13 @@ getDbCovariateData(connectionDetails = NULL, connection = NULL,
 \arguments{
 \item{connectionDetails}{An R object of type \code{connectionDetails} created using the
 function \code{createConnectionDetails} in the
-\code{DatabaseConnector} package. Either the
-\code{connection} or \code{connectionDetails} argument should be specified.}
+\code{DatabaseConnector} package. Either the \code{connection} or
+\code{connectionDetails} argument should be specified.}
 
 \item{connection}{A connection to the server containing the schema as created using the
-\code{connect} function in the \code{DatabaseConnector} package. Either the
-\code{connection} or \code{connectionDetails} argument should be specified.}
+\code{connect} function in the \code{DatabaseConnector} package.
+Either the \code{connection} or \code{connectionDetails} argument
+should be specified.}
 
 \item{oracleTempSchema}{A schema where temp tables can be created in Oracle.}
 
@@ -29,28 +30,29 @@ specifiy both the database and the schema, so for example
 
 \item{cdmVersion}{Define the OMOP CDM version used: currently support "4" and "5".}
 
-\item{cohortTable}{Name of the (temp) table holding the cohort for which we want to construct
-covariates}
+\item{cohortTable}{Name of the (temp) table holding the cohort for which we want to
+construct covariates}
 
 \item{cohortDatabaseSchema}{If the cohort table is not a temp table, specify the database schema
-   where the cohort table can be found. On SQL Server, this should
+where the cohort table can be found. On SQL Server, this should
 specifiy both the database and the schema, so for example
 'cdm_instance.dbo'.}
 
 \item{cohortTableIsTemp}{Is the cohort table a temp table?}
 
-\item{cohortIds}{For which cohort IDs should covariates be constructed? If left empty, covariates
-will be constructed for all cohorts in the specified cohort table.}
+\item{cohortIds}{For which cohort IDs should covariates be constructed? If left empty,
+covariates will be constructed for all cohorts in the specified cohort
+table.}
 
 \item{rowIdField}{The name of the field in the cohort table that is to be used as the
-row_id field in the output table. This can be especially usefull if there
-is more than one period per person.}
+row_id field in the output table. This can be especially usefull if
+there is more than one period per person.}
 
-\item{covariateSettings}{Either an object of type \code{covariateSettings} as created using one of
-the createCovariate functions, or a list of such objects.}
+\item{covariateSettings}{Either an object of type \code{covariateSettings} as created using one
+of the createCovariate functions, or a list of such objects.}
 
-\item{normalize}{Should covariate values be normalized? If true, values will be divided by
-the max value per covariate.}
+\item{normalize}{Should covariate values be normalized? If true, values will be divided
+by the max value per covariate.}
 }
 \value{
 Returns an object of type \code{covariateData}, containing information on the baseline covariates.

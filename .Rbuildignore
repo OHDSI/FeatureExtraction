@@ -5,3 +5,4 @@ man-roxygen
 .travis.yml
 ^\.travis\.yml$
 deploy.sh
+^\.git
