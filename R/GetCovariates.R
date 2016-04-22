@@ -169,6 +169,18 @@ getDbCovariateData <- function(connectionDetails = NULL,
           }
           covariateData$covariates <- ffbase::ffdfappend(covariateData$covariates,
                                                          tempCovariateData$covariates)
+          for (colName in (colnames(covariateData$covariateRef))) {
+            if (!(colName %in% colnames(tempCovariateData$covariateRef))) {
+              tempCovariateData$covariateRef$newCol <- ff::ff(NA, nrow(tempCovariateData$covariateRef))
+              colnames(tempCovariateData$covariateRef)[ncol(tempCovariateData$covariateRef)] <- colName
+            }
+          }
+          for (colName in (colnames(tempCovariateData$covariateRef))) {
+            if (!(colName %in% colnames(covariateData$covariateRef))) {
+              covariateData$covariateRef$newCol <- ff::ff(NA, nrow(covariateData$covariateRef))
+              colnames(covariateData$covariateRef)[ncol(covariateData$covariateRef)] <- colName
+            }
+          }
           covariateData$covariateRef <- ffbase::ffdfappend(covariateData$covariateRef,
                                                            tempCovariateData$covariateRef)
           for (name in names(tempCovariateData$metaData)) {
