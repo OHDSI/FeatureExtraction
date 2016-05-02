@@ -98,7 +98,6 @@ getDbDefaultCovariateData <- function(connection,
                                                    cohort_definition_id = cohortDefinitionId,
                                                    concept_class_id = conceptClassId,
                                                    measurement = measurement,
-                                                   use_covariate_cohort_id_is_1 = covariateSettings$useCovariateCohortIdIs1,
                                                    use_covariate_demographics = covariateSettings$useCovariateDemographics,
                                                    use_covariate_demographics_gender = covariateSettings$useCovariateDemographicsGender,
                                                    use_covariate_demographics_race = covariateSettings$useCovariateDemographicsRace,
@@ -250,10 +249,6 @@ getDbDefaultCovariateData <- function(connection,
 #'                                                  construct covariates.
 #' @param includedCovariateConceptIds               A list of concept IDs that should be used to
 #'                                                  construct covariates.
-#' @param useCovariateCohortIdIs1                   A boolean value (TRUE/FALSE) to determine if a
-#'                                                  covariate should be contructed for whether the
-#'                                                  cohort ID is 1 (currently primarily used in
-#'                                                  CohortMethod).
 #' @param useCovariateDemographics                  A boolean value (TRUE/FALSE) to determine if
 #'                                                  demographic covariates (age in 5-yr increments,
 #'                                                  gender, race, ethnicity, year of index date, month
@@ -461,8 +456,7 @@ getDbDefaultCovariateData <- function(connection,
 #' An object of type \code{defaultCovariateSettings}, to be used in other functions.
 #'
 #' @export
-createCovariateSettings <- function(useCovariateCohortIdIs1 = FALSE,
-                                    useCovariateDemographics = TRUE,
+createCovariateSettings <- function(useCovariateDemographics = TRUE,
                                     useCovariateDemographicsGender = TRUE,
                                     useCovariateDemographicsRace = TRUE,
                                     useCovariateDemographicsEthnicity = TRUE,

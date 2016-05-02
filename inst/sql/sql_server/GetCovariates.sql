@@ -25,7 +25,6 @@ limitations under the License.
 {DEFAULT @cohort_definition_id = 'cohort_concept_id'} 
 {DEFAULT @concept_class_id = 'concept_class'} 
 {DEFAULT @measurement = 'observation'} 
-{DEFAULT @use_covariate_cohort_id_is_1 = FALSE}
 {DEFAULT @use_covariate_demographics = TRUE} 
 {DEFAULT @use_covariate_demographics_age = TRUE} 
 {DEFAULT @use_covariate_demographics_gender = TRUE} 
@@ -102,31 +101,6 @@ CREATE TABLE #dummy (
 	covariate_value INT
 	);
 	
-{@use_covariate_cohort_id_is_1} ? {
---covariate for exposure status, determining which patients are in which treatment group (only those in cohort 1 will get recorded)
-INSERT INTO #cov_ref (
-	covariate_id,
-	covariate_name,
-	analysis_id,
-	concept_id
-	)
-VALUES (
-	1,
-	'Cohort definition ID',
-	1,
-	0
-	);
-
-
-SELECT 
-	@row_id_field AS row_id,
-	1 AS covariate_id,
-	@cohort_definition_id AS covariate_value
-INTO #cov_exposure
-FROM @cohort_temp_table
-WHERE @cohort_definition_id = 1;
-}
-
 /**************************
 ***************************
 DEMOGRAPHICS
@@ -3078,13 +3052,6 @@ FROM
 
 SELECT row_id, covariate_id, covariate_value FROM #dummy
 
-{@use_covariate_cohort_id_is_1} ? {
-UNION
-
-SELECT row_id, covariate_id, covariate_value
-FROM #cov_exposure
-}
-
 {@use_covariate_demographics} ? {
 
 {@use_covariate_demographics_gender} ? {
@@ -3635,8 +3602,6 @@ WHERE covariate_id IN (
 ) t1
 ;
 
-IF OBJECT_ID('tempdb..#cov_exposure', 'U') IS NOT NULL
-  DROP TABLE #cov_exposure;
 IF OBJECT_ID('tempdb..#cov_gender', 'U') IS NOT NULL
   DROP TABLE #cov_gender;
 IF OBJECT_ID('tempdb..#cov_race', 'U') IS NOT NULL
