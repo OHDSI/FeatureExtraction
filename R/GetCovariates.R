@@ -110,7 +110,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
                                              cdm_version = cdmVersion)
     DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
   }
-  
+
   if (class(covariateSettings) == "covariateSettings") {
     fun <- attr(covariateSettings, "fun")
     args <- list(connection = connection,
@@ -121,7 +121,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
                  rowIdField = rowIdField,
                  covariateSettings = covariateSettings)
     covariateData <- do.call(fun, args)
-    
+
     if (nrow(covariateData$covariates) == 0) {
       warning("No data found")
     } else {
@@ -140,7 +140,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
                    rowIdField = rowIdField,
                    covariateSettings = covariateSettings[[i]])
       tempCovariateData <- do.call(fun, args)
-      
+
       if (is.null(tempCovariateData) || nrow(tempCovariateData$covariates) == 0) {
         warning("No data found")
       } else {
@@ -182,13 +182,13 @@ getDbCovariateData <- function(connectionDetails = NULL,
             }
           }
           covariateData$covariateRef <- ffbase::ffdfappend(covariateData$covariateRef,
-                                                           tempCovariateData$covariateRef)
+                                                           ff::as.ram(tempCovariateData$covariateRef))
           for (name in names(tempCovariateData$metaData)) {
             if (is.null(covariateData$metaData[name])) {
-              covariateData$metaData[name] <- tempCovariateData$metaData[name]
+              covariateData$metaData[[name]] <- tempCovariateData$metaData[[name]]
             } else {
-              covariateData$metaData[name] <- list(covariateData$metaData[name],
-                                                   tempCovariateData$metaData[name])
+              covariateData$metaData[[name]] <- list(covariateData$metaData[[name]],
+                                                   tempCovariateData$metaData[[name]])
             }
           }
         }
@@ -238,7 +238,7 @@ saveCovariateData <- function(covariateData, file) {
     stop("Must specify file")
   if (class(covariateData) != "covariateData")
     stop("Data not of class covariateData")
-  
+
   covariates <- covariateData$covariates
   covariateRef <- covariateData$covariateRef
   ffbase::save.ffdf(covariates, covariateRef, dir = file)
@@ -271,10 +271,10 @@ loadCovariateData <- function(file, readOnly = FALSE) {
     stop(paste("Cannot find folder", file))
   if (!file.info(file)$isdir)
     stop(paste("Not a folder", file))
-  
+
   temp <- setwd(file)
   absolutePath <- setwd(temp)
-  
+
   e <- new.env()
   ffbase::load.ffdf(absolutePath, e)
   load(file.path(absolutePath, "metaData.Rdata"), e)
@@ -284,7 +284,7 @@ loadCovariateData <- function(file, readOnly = FALSE) {
   # Open all ffdfs to prevent annoying messages later:
   open(result$covariates, readonly = readOnly)
   open(result$covariateRef, readonly = readOnly)
-  
+
   class(result) <- "covariateData"
   rm(e)
   return(result)
