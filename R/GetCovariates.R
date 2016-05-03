@@ -349,7 +349,9 @@ normalizeCovariates <- function(covariates) {
     maxs <- byMaxFf(covariates$covariateValue, covariates$covariateId)
     names(maxs)[names(maxs) == "bins"] <- "covariateId"
     result <- ffbase::merge.ffdf(covariates, ff::as.ffdf(maxs))
-    result$covariateValue <- result$covariateValue/result$maxs
+    for (i in bit::chunk(result)) {
+      result$covariateValue[i] <- result$covariateValue[i]/result$maxs[i]
+    }
     result$maxs <- NULL
     attr(result, "normFactors") <- maxs
     return(result)
