@@ -177,7 +177,7 @@ getDbDefaultCovariateData <- function(connection,
   populationSize <- DatabaseConnector::querySql(connection, sql)[1, 1]
 
   delta <- Sys.time() - start
-  writeLines(paste("Loading took", signif(delta, 3), attr(delta, "units")))
+  writeLines(paste("Fetching data took", signif(delta, 3), attr(delta, "units")))
 
   renderedSql <- SqlRender::loadRenderTranslateSql("RemoveCovariateTempTables.sql",
                                                    packageName = "FeatureExtraction",
