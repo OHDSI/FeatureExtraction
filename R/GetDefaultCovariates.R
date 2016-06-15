@@ -40,6 +40,7 @@ getDbDefaultCovariateData <- function(connection,
   if (substr(cohortTempTable, 1, 1) != "#") {
     cohortTempTable <- paste("#", cohortTempTable, sep = "")
   }
+  cdmDatabase <- strsplit(cdmDatabaseSchema, "\\.")[[1]][1]
   if (!covariateSettings$useCovariateConditionGroupMeddra & !covariateSettings$useCovariateConditionGroupSnomed) {
     covariateSettings$useCovariateConditionGroup <- FALSE
   }
@@ -90,7 +91,8 @@ getDbDefaultCovariateData <- function(connection,
                                                    packageName = "FeatureExtraction",
                                                    dbms = attr(connection, "dbms"),
                                                    oracleTempSchema = oracleTempSchema,
-                                                   cdm_database = cdmDatabaseSchema,
+                                                   cdm_database = cdmDatabase,
+						   cdm_database_schema = cdmDatabaseSchema,
                                                    cdm_version = cdmVersion,
                                                    cohort_temp_table = cohortTempTable,
                                                    row_id_field = rowIdField,

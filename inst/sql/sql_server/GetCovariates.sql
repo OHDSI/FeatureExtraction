@@ -19,6 +19,7 @@ limitations under the License.
 ************************************************************************/
 
 {DEFAULT @cdm_database = 'CDM4_SIM' } 
+{DEFAULT @cdm_database_schema = 'CDM4_SIM.dbo' } 
 {DEFAULT @cdm_version == '4'}
 {DEFAULT @cohort_temp_table = '#cohort_person'}
 {DEFAULT @row_id_field = 'person_id'}
