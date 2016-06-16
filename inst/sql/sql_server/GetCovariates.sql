@@ -730,7 +730,7 @@ SELECT DISTINCT cp1.@row_id_field AS row_id,
 	1 AS covariate_value
 INTO #cov_de_365d
 FROM @cohort_temp_table cp1
-INNER JOIN @cdm_database_schema drug_exposure de1
+INNER JOIN @cdm_database_schema.drug_exposure de1
 	ON cp1.subject_id = de1.person_id
 WHERE de1.drug_concept_id != 0 
 {@has_excluded_covariate_concept_ids} ? {  AND de1.drug_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
@@ -769,7 +769,7 @@ SELECT DISTINCT cp1.@row_id_field AS row_id,
 	1 AS covariate_value
   INTO #cov_de_30d
 FROM @cohort_temp_table cp1
-INNER JOIN @cdm_database_schema drug_exposure de1
+INNER JOIN @cdm_database_schema.drug_exposure de1
 	ON cp1.subject_id = de1.person_id
 WHERE de1.drug_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND de1.drug_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
@@ -816,7 +816,7 @@ SELECT DISTINCT cp1.@row_id_field AS row_id,
 	1 AS covariate_value
 INTO #cov_dera_365d
 FROM @cohort_temp_table cp1
-INNER JOIN @cdm_database_schema drug_era de1
+INNER JOIN @cdm_database_schema.drug_era de1
 	ON cp1.subject_id = de1.person_id
 WHERE de1.drug_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND de1.drug_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
@@ -858,7 +858,7 @@ SELECT DISTINCT cp1.@row_id_field AS row_id,
 	1 AS covariate_value
 INTO #cov_dera_30d
 FROM @cohort_temp_table cp1
-INNER JOIN @cdm_database_schema drug_era de1
+INNER JOIN @cdm_database_schema.drug_era de1
 	ON cp1.subject_id = de1.person_id
 WHERE de1.drug_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND de1.drug_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
@@ -898,7 +898,7 @@ SELECT DISTINCT cp1.@row_id_field AS row_id,
 	1 AS covariate_value
   INTO #cov_dera_overlap
 FROM @cohort_temp_table cp1
-INNER JOIN @cdm_database_schema drug_era de1
+INNER JOIN @cdm_database_schema.drug_era de1
 	ON cp1.subject_id = de1.person_id
 WHERE de1.drug_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND de1.drug_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
@@ -938,7 +938,7 @@ SELECT DISTINCT cp1.@row_id_field AS row_id,
 	1 AS covariate_value
   INTO #cov_dera_ever
 FROM @cohort_temp_table cp1
-INNER JOIN @cdm_database_schema drug_era de1
+INNER JOIN @cdm_database_schema.drug_era de1
 	ON cp1.subject_id = de1.person_id
 WHERE de1.drug_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND de1.drug_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
@@ -1730,7 +1730,7 @@ SELECT cp1.@row_id_field AS row_id,
 	COUNT(DISTINCT de1.drug_concept_id) AS covariate_value
   INTO #cov_dd_drug
 FROM @cohort_temp_table cp1
-INNER JOIN @cdm_database_schema drug_era de1
+INNER JOIN @cdm_database_schema.drug_era de1
 	ON cp1.subject_id = de1.person_id
 WHERE de1.drug_era_start_date <= cp1.cohort_start_date
 	AND de1.drug_era_start_date >= dateadd(dd, - 365, cp1.cohort_start_date)
