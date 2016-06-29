@@ -4,14 +4,14 @@
 \alias{createCovariateSettings}
 \title{Create covariate settings}
 \usage{
-createCovariateSettings(useCovariateDemographics = TRUE,
-  useCovariateDemographicsGender = TRUE,
-  useCovariateDemographicsRace = TRUE,
-  useCovariateDemographicsEthnicity = TRUE,
-  useCovariateDemographicsAge = TRUE, useCovariateDemographicsYear = TRUE,
-  useCovariateDemographicsMonth = TRUE,
-  useCovariateConditionOccurrence = TRUE,
-  useCovariateConditionOccurrence365d = TRUE,
+createCovariateSettings(useCovariateDemographics = FALSE,
+  useCovariateDemographicsGender = FALSE,
+  useCovariateDemographicsRace = FALSE,
+  useCovariateDemographicsEthnicity = FALSE,
+  useCovariateDemographicsAge = FALSE, useCovariateDemographicsYear = FALSE,
+  useCovariateDemographicsMonth = FALSE,
+  useCovariateConditionOccurrence = FALSE,
+  useCovariateConditionOccurrence365d = FALSE,
   useCovariateConditionOccurrence30d = FALSE,
   useCovariateConditionOccurrenceInpt180d = FALSE,
   useCovariateConditionEra = FALSE, useCovariateConditionEraEver = FALSE,
