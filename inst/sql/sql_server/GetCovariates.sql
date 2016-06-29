@@ -19,6 +19,7 @@ limitations under the License.
 ************************************************************************/
 
 {DEFAULT @cdm_database = 'CDM4_SIM' } 
+{DEFAULT @cdm_database_schema = 'CDM4_SIM.dbo' } 
 {DEFAULT @cdm_version == '4'}
 {DEFAULT @cohort_temp_table = '#cohort_person'}
 {DEFAULT @row_id_field = 'person_id'}
@@ -117,11 +118,11 @@ SELECT cp1.@row_id_field AS row_id,
 	1 AS covariate_value
 INTO #cov_gender
 FROM @cohort_temp_table cp1
-INNER JOIN person p1
+INNER JOIN @cdm_database_schema.person p1
 	ON cp1.subject_id = p1.person_id
 WHERE p1.gender_concept_id IN (
 		SELECT concept_id
-		FROM concept
+		FROM @cdm_database_schema.concept
 		WHERE LOWER(@concept_class_id) = 'gender'
 		);
 
@@ -144,7 +145,7 @@ FROM (SELECT distinct covariate_id FROM #cov_gender) p1
 LEFT JOIN (
 	SELECT concept_id,
 		concept_name
-	FROM concept
+	FROM @cdm_database_schema.concept
 	WHERE LOWER(@concept_class_id) = 'gender'
 	) v1
 	ON p1.covariate_id = v1.concept_id;
@@ -159,11 +160,11 @@ SELECT cp1.@row_id_field AS row_id,
 	1 AS covariate_value
   INTO #cov_race
 FROM @cohort_temp_table cp1
-INNER JOIN person p1
+INNER JOIN @cdm_database_schema.person p1
 	ON cp1.subject_id = p1.person_id
 WHERE p1.race_concept_id IN (
 		SELECT concept_id
-		FROM concept
+		FROM @cdm_database_schema.concept
 		WHERE LOWER(@concept_class_id) = 'race'
 		);
 
@@ -185,7 +186,7 @@ FROM (SELECT distinct covariate_id FROM #cov_race) p1
 LEFT JOIN (
 	SELECT concept_id,
 		concept_name
-	FROM concept
+	FROM @cdm_database_schema.concept
 	WHERE LOWER(@concept_class_id) = 'race'
 	) v1
 	ON p1.covariate_id = v1.concept_id;
@@ -200,11 +201,11 @@ SELECT cp1.@row_id_field AS row_id,
 	1 AS covariate_value
   INTO #cov_ethnicity
 FROM @cohort_temp_table cp1
-INNER JOIN person p1
+INNER JOIN @cdm_database_schema.person p1
 	ON cp1.subject_id = p1.person_id
 WHERE p1.ethnicity_concept_id IN (
 		SELECT concept_id
-		FROM concept
+		FROM @cdm_database_schema.concept
 		WHERE LOWER(@concept_class_id) = 'ethnicity'
 		);
 
@@ -227,7 +228,7 @@ FROM (SELECT distinct covariate_id FROM #cov_ethnicity) p1
 LEFT JOIN (
 	SELECT concept_id,
 		concept_name
-	FROM concept
+	FROM @cdm_database_schema.concept
 	WHERE LOWER(@concept_class_id) = 'ethnicity'
 	) v1
 	ON p1.covariate_id = v1.concept_id;
@@ -243,7 +244,7 @@ SELECT cp1.@row_id_field AS row_id,
 	1 AS covariate_value
     INTO #cov_age
 FROM @cohort_temp_table cp1
-INNER JOIN person p1
+INNER JOIN @cdm_database_schema.person p1
 	ON cp1.subject_id = p1.person_id
 WHERE (YEAR(cp1.cohort_start_date) - p1.YEAR_OF_BIRTH) >= 0
 	AND (YEAR(cp1.cohort_start_date) - p1.YEAR_OF_BIRTH) < 100;
@@ -337,7 +338,7 @@ SELECT DISTINCT cp1.@row_id_field AS row_id,
 	1 AS covariate_value
   INTO #cov_co_365d
 FROM @cohort_temp_table cp1
-INNER JOIN condition_occurrence co1
+INNER JOIN @cdm_database_schema.condition_occurrence co1
 	ON cp1.subject_id = co1.person_id
 WHERE co1.condition_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND co1.condition_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
@@ -360,7 +361,7 @@ SELECT p1.covariate_id,
 	101 AS analysis_id,
 	(p1.covariate_id-101)/1000 AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_co_365d) p1
-LEFT JOIN concept c1
+LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-101)/1000 = c1.concept_id
 ;
 
@@ -373,7 +374,7 @@ SELECT DISTINCT cp1.@row_id_field AS row_id,
 	1 AS covariate_value
   INTO #cov_co_30d
 FROM @cohort_temp_table cp1
-INNER JOIN condition_occurrence co1
+INNER JOIN @cdm_database_schema.condition_occurrence co1
 	ON cp1.subject_id = co1.person_id
 WHERE co1.condition_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND co1.condition_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
@@ -396,7 +397,7 @@ SELECT p1.covariate_id,
 	102 AS analysis_id,
   (p1.covariate_id-102)/1000 AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_co_30d) p1
-LEFT JOIN concept c1
+LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-102)/1000 = c1.concept_id
 ;
 
@@ -411,7 +412,7 @@ SELECT DISTINCT cp1.@row_id_field AS row_id,
 	1 AS covariate_value
   INTO #cov_co_inpt180d
 FROM @cohort_temp_table cp1
-INNER JOIN condition_occurrence co1
+INNER JOIN @cdm_database_schema.condition_occurrence co1
 	ON cp1.subject_id = co1.person_id
 WHERE co1.condition_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND co1.condition_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
@@ -437,7 +438,7 @@ SELECT p1.covariate_id,
 	103 AS analysis_id,
 	(p1.covariate_id-103)/1000 AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_co_inpt180d) p1
-LEFT JOIN concept c1
+LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-103)/1000 = c1.concept_id
 ;
 
@@ -460,9 +461,9 @@ SELECT DISTINCT cp1.@row_id_field AS row_id,
 	1 AS covariate_value
   INTO #cov_ce_ever
 FROM @cohort_temp_table cp1
-INNER JOIN condition_era ce1
+INNER JOIN @cdm_database_schema.condition_era ce1
 	ON cp1.subject_id = ce1.person_id
-LEFT JOIN concept c1
+LEFT JOIN @cdm_database_schema.concept c1
 	ON ce1.condition_concept_id = c1.concept_id
 WHERE ce1.condition_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND ce1.condition_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
@@ -485,7 +486,7 @@ SELECT p1.covariate_id,
 	201 AS analysis_id,
 	(p1.covariate_id-201)/1000 AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_ce_ever) p1
-LEFT JOIN concept c1
+LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-201)/1000 = c1.concept_id
 ;
 
@@ -501,9 +502,9 @@ SELECT DISTINCT cp1.@row_id_field AS row_id,
 	1 AS covariate_value
   INTO #cov_ce_overlap
 FROM @cohort_temp_table cp1
-INNER JOIN condition_era ce1
+INNER JOIN @cdm_database_schema.condition_era ce1
 	ON cp1.subject_id = ce1.person_id
-LEFT JOIN concept c1
+LEFT JOIN @cdm_database_schema.concept c1
 	ON ce1.condition_concept_id = c1.concept_id
 WHERE ce1.condition_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND ce1.condition_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
@@ -528,7 +529,7 @@ SELECT p1.covariate_id,
 	202 AS analysis_id,
 	(p1.covariate_id-202)/1000 AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_ce_overlap) p1
-LEFT JOIN concept c1
+LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-202)/1000 = c1.concept_id
 ;
 
@@ -573,9 +574,9 @@ FROM (
 	WHERE analysis_id > 100
 		AND analysis_id < 300
 	) ccr1
-INNER JOIN concept_ancestor ca1
+INNER JOIN @cdm_database_schema.concept_ancestor ca1
 	ON ccr1.concept_id = ca1.descendant_concept_id
-INNER JOIN concept c1
+INNER JOIN @cdm_database_schema.concept c1
 	ON ca1.ancestor_concept_id = c1.concept_id
 {@cdm_version == '4'} ? {
 WHERE c1.vocabulary_id = 15
@@ -603,9 +604,9 @@ FROM (
 	WHERE analysis_id > 100
 		AND analysis_id < 300
 	) ccr1
-INNER JOIN concept_ancestor ca1
+INNER JOIN @cdm_database_schema.concept_ancestor ca1
 	ON ccr1.concept_id = ca1.descendant_concept_id
-INNER JOIN concept c1
+INNER JOIN @cdm_database_schema.concept c1
 	ON ca1.ancestor_concept_id = c1.concept_id
 {@cdm_version == '4'} ? {
 WHERE c1.vocabulary_id = 1
@@ -654,7 +655,7 @@ FROM (
 	) ccr1
 INNER JOIN #condition_group cg1
 	ON ccr1.concept_id = cg1.descendant_concept_id
-INNER JOIN concept c1
+INNER JOIN @cdm_database_schema.concept c1
 	ON cg1.ancestor_concept_id = c1.concept_id;
 
 
@@ -729,7 +730,7 @@ SELECT DISTINCT cp1.@row_id_field AS row_id,
 	1 AS covariate_value
 INTO #cov_de_365d
 FROM @cohort_temp_table cp1
-INNER JOIN drug_exposure de1
+INNER JOIN @cdm_database_schema.drug_exposure de1
 	ON cp1.subject_id = de1.person_id
 WHERE de1.drug_concept_id != 0 
 {@has_excluded_covariate_concept_ids} ? {  AND de1.drug_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
@@ -753,7 +754,7 @@ SELECT p1.covariate_id,
 	401 AS analysis_id,
 	(p1.covariate_id-401)/1000 AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_de_365d) p1
-LEFT JOIN concept c1
+LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-401)/1000 = c1.concept_id
 ;
 }
@@ -768,7 +769,7 @@ SELECT DISTINCT cp1.@row_id_field AS row_id,
 	1 AS covariate_value
   INTO #cov_de_30d
 FROM @cohort_temp_table cp1
-INNER JOIN drug_exposure de1
+INNER JOIN @cdm_database_schema.drug_exposure de1
 	ON cp1.subject_id = de1.person_id
 WHERE de1.drug_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND de1.drug_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
@@ -792,7 +793,7 @@ SELECT p1.covariate_id,
 	402 AS analysis_id,
 	(p1.covariate_id-402)/1000 AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_de_30d) p1
-LEFT JOIN concept c1
+LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-402)/1000 = c1.concept_id
 ;
 
@@ -815,7 +816,7 @@ SELECT DISTINCT cp1.@row_id_field AS row_id,
 	1 AS covariate_value
 INTO #cov_dera_365d
 FROM @cohort_temp_table cp1
-INNER JOIN drug_era de1
+INNER JOIN @cdm_database_schema.drug_era de1
 	ON cp1.subject_id = de1.person_id
 WHERE de1.drug_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND de1.drug_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
@@ -840,7 +841,7 @@ SELECT p1.covariate_id,
 	501 AS analysis_id,
 	(p1.covariate_id-501)/1000 AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_dera_365d) p1
-LEFT JOIN concept c1
+LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-501)/1000 = c1.concept_id
 ;
 
@@ -857,7 +858,7 @@ SELECT DISTINCT cp1.@row_id_field AS row_id,
 	1 AS covariate_value
 INTO #cov_dera_30d
 FROM @cohort_temp_table cp1
-INNER JOIN drug_era de1
+INNER JOIN @cdm_database_schema.drug_era de1
 	ON cp1.subject_id = de1.person_id
 WHERE de1.drug_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND de1.drug_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
@@ -881,7 +882,7 @@ SELECT p1.covariate_id,
 	502 AS analysis_id,
 	(p1.covariate_id-502)/1000 AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_dera_30d) p1
-LEFT JOIN concept c1
+LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-502)/1000 = c1.concept_id
 ;
 
@@ -897,7 +898,7 @@ SELECT DISTINCT cp1.@row_id_field AS row_id,
 	1 AS covariate_value
   INTO #cov_dera_overlap
 FROM @cohort_temp_table cp1
-INNER JOIN drug_era de1
+INNER JOIN @cdm_database_schema.drug_era de1
 	ON cp1.subject_id = de1.person_id
 WHERE de1.drug_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND de1.drug_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
@@ -921,7 +922,7 @@ SELECT p1.covariate_id,
 	503 AS analysis_id,
 	(p1.covariate_id-503)/1000 AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_dera_overlap) p1
-LEFT JOIN concept c1
+LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-503)/1000 = c1.concept_id
 ;
 
@@ -937,7 +938,7 @@ SELECT DISTINCT cp1.@row_id_field AS row_id,
 	1 AS covariate_value
   INTO #cov_dera_ever
 FROM @cohort_temp_table cp1
-INNER JOIN drug_era de1
+INNER JOIN @cdm_database_schema.drug_era de1
 	ON cp1.subject_id = de1.person_id
 WHERE de1.drug_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND de1.drug_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
@@ -961,7 +962,7 @@ SELECT p1.covariate_id,
 	504 AS analysis_id,
 	(p1.covariate_id-504)/1000 AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_dera_ever) p1
-LEFT JOIN concept c1
+LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-504)/1000 = c1.concept_id
 ;
 
@@ -993,9 +994,9 @@ FROM (
 	WHERE analysis_id > 400
 		AND analysis_id < 600
 	) ccr1
-INNER JOIN concept_ancestor ca1
+INNER JOIN @cdm_database_schema.concept_ancestor ca1
 	ON ccr1.concept_id = ca1.descendant_concept_id
-INNER JOIN concept c1
+INNER JOIN @cdm_database_schema.concept c1
 	ON ca1.ancestor_concept_id = c1.concept_id
 {@cdm_version == '4'} ? {
 WHERE c1.vocabulary_id = 21
@@ -1040,7 +1041,7 @@ FROM (
 	) ccr1
 INNER JOIN #drug_group cg1
 	ON ccr1.concept_id = cg1.descendant_concept_id
-INNER JOIN concept c1
+INNER JOIN @cdm_database_schema.concept c1
 	ON cg1.ancestor_concept_id = c1.concept_id;
 
 
@@ -1125,7 +1126,7 @@ FROM (
 	) ccr1
 INNER JOIN #drug_group cg1
 	ON ccr1.concept_id = cg1.descendant_concept_id
-INNER JOIN concept c1
+INNER JOIN @cdm_database_schema.concept c1
 	ON cg1.ancestor_concept_id = c1.concept_id
 WHERE len(c1.concept_code) = 3;
 
@@ -1146,7 +1147,7 @@ INNER JOIN (
 	ON cc1.covariate_id = ccr1.covariate_id
 INNER JOIN #drug_group cg1
 	ON ccr1.concept_id = cg1.descendant_concept_id
-INNER JOIN concept c1
+INNER JOIN @cdm_database_schema.concept c1
 	ON cg1.ancestor_concept_id = c1.concept_id
 WHERE len(c1.concept_code) = 3
 GROUP BY cc1.row_id,
@@ -1171,7 +1172,7 @@ SELECT DISTINCT cp1.@row_id_field AS row_id,
 	1 AS covariate_value
   INTO #cov_po_365d
 FROM @cohort_temp_table cp1
-INNER JOIN procedure_occurrence po1
+INNER JOIN @cdm_database_schema.procedure_occurrence po1
 	ON cp1.subject_id = po1.person_id
 WHERE po1.procedure_concept_id  != 0
 {@has_excluded_covariate_concept_ids} ? {	AND po1.procedure_concept_id  NOT IN (SELECT concept_id FROM #excluded_cov)}
@@ -1195,7 +1196,7 @@ SELECT p1.covariate_id,
 	701 AS analysis_id,
 	(p1.covariate_id-701)/1000 AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_po_365d) p1
-LEFT JOIN concept c1
+LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-701)/1000 = c1.concept_id
 ;
 }
@@ -1208,7 +1209,7 @@ SELECT DISTINCT cp1.@row_id_field AS row_id,
 	1 AS covariate_value
   INTO #cov_po_30d
 FROM @cohort_temp_table cp1
-INNER JOIN procedure_occurrence po1
+INNER JOIN @cdm_database_schema.procedure_occurrence po1
 	ON cp1.subject_id = po1.person_id
 WHERE po1.procedure_concept_id  != 0
 {@has_excluded_covariate_concept_ids} ? {	AND po1.procedure_concept_id  NOT IN (SELECT concept_id FROM #excluded_cov)}
@@ -1232,7 +1233,7 @@ SELECT p1.covariate_id,
 	702 AS analysis_id,
 	(p1.covariate_id-702)/1000 AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_po_30d) p1
-LEFT JOIN concept c1
+LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-702)/1000 = c1.concept_id
 ;
 }
@@ -1263,9 +1264,9 @@ FROM (
 	WHERE analysis_id > 700
 		AND analysis_id < 800
 	) ccr1
-INNER JOIN concept_ancestor ca1
+INNER JOIN @cdm_database_schema.concept_ancestor ca1
 	ON ccr1.concept_id = ca1.descendant_concept_id
-INNER JOIN concept c1
+INNER JOIN @cdm_database_schema.concept c1
 	ON ca1.ancestor_concept_id = c1.concept_id
 {@cdm_version == '4'} ? {
 WHERE c1.vocabulary_id = 1
@@ -1307,7 +1308,7 @@ FROM (
 	) ccr1
 INNER JOIN #procedure_group cg1
 	ON ccr1.concept_id = cg1.descendant_concept_id
-INNER JOIN concept c1
+INNER JOIN @cdm_database_schema.concept c1
 	ON cg1.ancestor_concept_id = c1.concept_id;
 
 
@@ -1365,7 +1366,7 @@ SELECT DISTINCT cp1.@row_id_field AS row_id,
 	1 AS covariate_value
   INTO #cov_o_365d
 FROM @cohort_temp_table cp1
-INNER JOIN observation o1
+INNER JOIN @cdm_database_schema.observation o1
 	ON cp1.subject_id = o1.person_id
 WHERE o1.observation_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND o1.observation_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
@@ -1388,7 +1389,7 @@ SELECT p1.covariate_id,
 	901 AS analysis_id,
 	(p1.covariate_id-901)/1000 AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_o_365d) p1
-LEFT JOIN concept c1
+LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-901)/1000 = c1.concept_id
 ;
 }
@@ -1401,7 +1402,7 @@ SELECT DISTINCT cp1.@row_id_field AS row_id,
 	1 AS covariate_value
   INTO #cov_o_30d
 FROM @cohort_temp_table cp1
-INNER JOIN observation o1
+INNER JOIN @cdm_database_schema.observation o1
 	ON cp1.subject_id = o1.person_id
 WHERE o1.observation_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND o1.observation_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
@@ -1424,7 +1425,7 @@ SELECT p1.covariate_id,
 	902 AS analysis_id,
 	(p1.covariate_id-902)/1000 AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_o_30d) p1
-LEFT JOIN concept c1
+LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-902)/1000 = c1.concept_id
 ;
 }
@@ -1437,7 +1438,7 @@ SELECT cp1.@row_id_field AS row_id,
 	COUNT(observation_id) AS covariate_value
     INTO #cov_o_count365d
 FROM @cohort_temp_table cp1
-INNER JOIN observation o1
+INNER JOIN @cdm_database_schema.observation o1
 	ON cp1.subject_id = o1.person_id
 WHERE o1.observation_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND o1.observation_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
@@ -1462,7 +1463,7 @@ SELECT p1.covariate_id,
 	905 AS analysis_id,
 	(p1.covariate_id-905)/1000 AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_o_count365d) p1
-LEFT JOIN concept c1
+LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-905)/1000 = c1.concept_id
 ;
 }
@@ -1518,7 +1519,7 @@ SELECT p1.covariate_id,
 	903 AS analysis_id,
 	(p1.covariate_id-903)/1000 AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_m_below) p1
-LEFT JOIN concept c1
+LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-903)/1000 = c1.concept_id
 ;
 }
@@ -1570,7 +1571,7 @@ SELECT p1.covariate_id,
 	903 AS analysis_id,
 	(p1.covariate_id-904)/1000 AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_m_above) p1
-LEFT JOIN concept c1
+LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-904)/1000 = c1.concept_id
 ;
 }
@@ -1585,7 +1586,7 @@ SELECT DISTINCT cp1.@row_id_field AS row_id,
 	1 AS covariate_value
   INTO #cov_m_365d
 FROM @cohort_temp_table cp1
-INNER JOIN measurement o1
+INNER JOIN @cdm_database_schema.measurement o1
 	ON cp1.subject_id = o1.person_id
 WHERE o1.measurement_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND o1.measurement_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
@@ -1608,7 +1609,7 @@ SELECT p1.covariate_id,
 	901 AS analysis_id,
 	(p1.covariate_id-901)/1000 AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_m_365d) p1
-LEFT JOIN concept c1
+LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-901)/1000 = c1.concept_id
 ;
 }
@@ -1621,7 +1622,7 @@ SELECT DISTINCT cp1.@row_id_field AS row_id,
 	1 AS covariate_value
   INTO #cov_m_30d
 FROM @cohort_temp_table cp1
-INNER JOIN measurement o1
+INNER JOIN @cdm_database_schema.measurement o1
 	ON cp1.subject_id = o1.person_id
 WHERE o1.measurement_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND o1.measurement_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
@@ -1644,7 +1645,7 @@ SELECT p1.covariate_id,
 	902 AS analysis_id,
 	(p1.covariate_id-902)/1000 AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_m_30d) p1
-LEFT JOIN concept c1
+LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-902)/1000 = c1.concept_id
 ;
 }
@@ -1657,7 +1658,7 @@ SELECT cp1.@row_id_field AS row_id,
 	COUNT(measurement_id) AS covariate_value
     INTO #cov_m_count365d
 FROM @cohort_temp_table cp1
-INNER JOIN measurement o1
+INNER JOIN @cdm_database_schema.measurement o1
 	ON cp1.subject_id = o1.person_id
 WHERE o1.measurement_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND o1.measurement_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
@@ -1682,7 +1683,7 @@ SELECT p1.covariate_id,
 	905 AS analysis_id,
 	(p1.covariate_id-905)/1000 AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_m_count365d) p1
-LEFT JOIN concept c1
+LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-905)/1000 = c1.concept_id
 ;
 }
@@ -1702,7 +1703,7 @@ SELECT cp1.@row_id_field AS row_id,
 	COUNT(DISTINCT ce1.condition_concept_id) AS covariate_value
     INTO #cov_dd_cond
 FROM @cohort_temp_table cp1
-INNER JOIN condition_era ce1
+INNER JOIN @cdm_database_schema.condition_era ce1
 	ON cp1.subject_id = ce1.person_id
 WHERE ce1.condition_era_start_date <= cp1.cohort_start_date
 	AND ce1.condition_era_end_date >= dateadd(dd, - 365, cp1.cohort_start_date)
@@ -1729,7 +1730,7 @@ SELECT cp1.@row_id_field AS row_id,
 	COUNT(DISTINCT de1.drug_concept_id) AS covariate_value
   INTO #cov_dd_drug
 FROM @cohort_temp_table cp1
-INNER JOIN drug_era de1
+INNER JOIN @cdm_database_schema.drug_era de1
 	ON cp1.subject_id = de1.person_id
 WHERE de1.drug_era_start_date <= cp1.cohort_start_date
 	AND de1.drug_era_start_date >= dateadd(dd, - 365, cp1.cohort_start_date)
@@ -1755,7 +1756,7 @@ SELECT cp1.@row_id_field AS row_id,
 	COUNT(DISTINCT po1.procedure_concept_id) AS covariate_value
   INTO #cov_dd_proc
 FROM @cohort_temp_table cp1
-INNER JOIN procedure_occurrence po1
+INNER JOIN @cdm_database_schema.procedure_occurrence po1
 	ON cp1.subject_id = po1.person_id
 WHERE po1.procedure_date <= cp1.cohort_start_date
 	AND po1.procedure_date >= dateadd(dd, - 365, cp1.cohort_start_date)
@@ -1781,7 +1782,7 @@ SELECT cp1.@row_id_field AS row_id,
 	COUNT(DISTINCT o1.observation_concept_id) AS covariate_value
   INTO #cov_dd_obs
 FROM @cohort_temp_table cp1
-INNER JOIN observation o1
+INNER JOIN @cdm_database_schema.observation o1
 	ON cp1.subject_id = o1.person_id
 WHERE o1.observation_date <= cp1.cohort_start_date
 	AND o1.observation_date >= dateadd(dd, - 365, cp1.cohort_start_date)
@@ -1806,7 +1807,7 @@ SELECT cp1.@row_id_field AS row_id,
 	COUNT(vo1.visit_occurrence_id) AS covariate_value
   INTO #cov_dd_visit_all
 FROM @cohort_temp_table cp1
-INNER JOIN visit_occurrence vo1
+INNER JOIN @cdm_database_schema.visit_occurrence vo1
 	ON cp1.subject_id = vo1.person_id
 WHERE vo1.visit_start_date <= cp1.cohort_start_date
 	AND vo1.visit_start_date >= dateadd(dd, - 365, cp1.cohort_start_date)
@@ -1832,7 +1833,7 @@ SELECT cp1.@row_id_field AS row_id,
 	COUNT(vo1.visit_occurrence_id) AS covariate_value
   INTO #cov_dd_visit_inpt
 FROM @cohort_temp_table cp1
-INNER JOIN visit_occurrence vo1
+INNER JOIN @cdm_database_schema.visit_occurrence vo1
 	ON cp1.subject_id = vo1.person_id
 WHERE vo1.visit_start_date <= cp1.cohort_start_date
 	AND vo1.visit_start_date >= dateadd(dd, - 365, cp1.cohort_start_date)
@@ -1863,7 +1864,7 @@ SELECT cp1.@row_id_field AS row_id,
 	COUNT(vo1.visit_occurrence_id) AS covariate_value
 INTO #cov_dd_visit_er
 FROM @cohort_temp_table cp1
-INNER JOIN visit_occurrence vo1
+INNER JOIN @cdm_database_schema.visit_occurrence vo1
 	ON cp1.subject_id = vo1.person_id
 WHERE vo1.visit_start_date <= cp1.cohort_start_date
 	AND vo1.visit_start_date >= dateadd(dd, - 365, cp1.cohort_start_date)
@@ -1895,7 +1896,7 @@ SELECT cp1.@row_id_field AS row_id,
 	COUNT(DISTINCT o1.measurement_concept_id) AS covariate_value
   INTO #cov_dd_meas
 FROM @cohort_temp_table cp1
-INNER JOIN measurement o1
+INNER JOIN @cdm_database_schema.measurement o1
 	ON cp1.subject_id = o1.person_id
 WHERE o1.measurement_date <= cp1.cohort_start_date
 	AND o1.measurement_date >= dateadd(dd, - 365, cp1.cohort_start_date)
@@ -1950,7 +1951,7 @@ VALUES (1,'Myocardial infarction',1);
 
 INSERT INTO #Charlson_concepts (diag_category_id,concept_id)
 SELECT 1, descendant_concept_id
-FROM concept_ancestor
+FROM @cdm_database_schema.concept_ancestor
 WHERE ancestor_concept_id IN (329847)
 ;
 
@@ -1960,7 +1961,7 @@ VALUES (2,'Congestive heart failure',1);
 
 INSERT INTO #Charlson_concepts (diag_category_id,concept_id)
 SELECT 2, descendant_concept_id
-FROM concept_ancestor
+FROM @cdm_database_schema.concept_ancestor
 WHERE ancestor_concept_id in (316139)
 ;
 
@@ -1971,7 +1972,7 @@ VALUES (3,'Peripheral vascular disease',1);
 
 INSERT INTO #Charlson_concepts (diag_category_id,concept_id)
 SELECT 3, descendant_concept_id
-FROM concept_ancestor
+FROM @cdm_database_schema.concept_ancestor
 WHERE ancestor_concept_id in (321052)
 ;
 
@@ -1981,7 +1982,7 @@ VALUES (4,'Cerebrovascular disease',1);
 
 INSERT INTO #Charlson_concepts (diag_category_id,concept_id)
 SELECT 4, descendant_concept_id
-FROM concept_ancestor
+FROM @cdm_database_schema.concept_ancestor
 WHERE ancestor_concept_id in (381591, 434056)
 ;
 
@@ -1991,7 +1992,7 @@ VALUES (5,'Dementia',1);
 
 INSERT INTO #Charlson_concepts (diag_category_id,concept_id)
 SELECT 5, descendant_concept_id
-FROM concept_ancestor
+FROM @cdm_database_schema.concept_ancestor
 WHERE ancestor_concept_id in (4182210)
 ;
 
@@ -2001,7 +2002,7 @@ VALUES (6,'Chronic pulmonary disease',1);
 
 INSERT INTO #Charlson_concepts (diag_category_id,concept_id)
 SELECT 6, descendant_concept_id
-FROM concept_ancestor
+FROM @cdm_database_schema.concept_ancestor
 WHERE ancestor_concept_id in (4063381)
 ;
 
@@ -2011,7 +2012,7 @@ VALUES (7,'Rheumatologic disease',1);
 
 INSERT INTO #Charlson_concepts (diag_category_id,concept_id)
 SELECT 7, descendant_concept_id
-FROM concept_ancestor
+FROM @cdm_database_schema.concept_ancestor
 WHERE ancestor_concept_id in (257628, 134442, 80800, 80809, 256197, 255348)
 ;
 
@@ -2021,7 +2022,7 @@ VALUES (8,'Peptic ulcer disease',1);
 
 INSERT INTO #Charlson_concepts (diag_category_id,concept_id)
 SELECT 8, descendant_concept_id
-FROM concept_ancestor
+FROM @cdm_database_schema.concept_ancestor
 WHERE ancestor_concept_id in (4247120)
 ;
 
@@ -2031,7 +2032,7 @@ VALUES (9,'Mild liver disease',1);
 
 INSERT INTO #Charlson_concepts (diag_category_id,concept_id)
 SELECT 9, descendant_concept_id
-FROM concept_ancestor
+FROM @cdm_database_schema.concept_ancestor
 WHERE ancestor_concept_id in (4064161, 4212540)
 ;
 
@@ -2041,7 +2042,7 @@ VALUES (10,'Diabetes (mild to moderate)',1);
 
 INSERT INTO #Charlson_concepts (diag_category_id,concept_id)
 SELECT 10, descendant_concept_id
-FROM concept_ancestor
+FROM @cdm_database_schema.concept_ancestor
 WHERE ancestor_concept_id in (201820)
 ;
 
@@ -2051,7 +2052,7 @@ VALUES (11,'Diabetes with chronic complications',2);
 
 INSERT INTO #Charlson_concepts (diag_category_id,concept_id)
 SELECT 11, descendant_concept_id
-FROM concept_ancestor
+FROM @cdm_database_schema.concept_ancestor
 WHERE ancestor_concept_id in (4192279, 443767, 442793)
 ;
 
@@ -2061,7 +2062,7 @@ VALUES (12,'Hemoplegia or paralegia',2);
 
 INSERT INTO #Charlson_concepts (diag_category_id,concept_id)
 SELECT 12, descendant_concept_id
-FROM concept_ancestor
+FROM @cdm_database_schema.concept_ancestor
 WHERE ancestor_concept_id in (192606, 374022)
 ;
 
@@ -2071,7 +2072,7 @@ VALUES (13,'Renal disease',2);
 
 INSERT INTO #Charlson_concepts (diag_category_id,concept_id)
 SELECT 13, descendant_concept_id
-FROM concept_ancestor
+FROM @cdm_database_schema.concept_ancestor
 WHERE ancestor_concept_id in (4030518)
 ;
 
@@ -2081,7 +2082,7 @@ VALUES (14,'Any malignancy',2);
 
 INSERT INTO #Charlson_concepts (diag_category_id,concept_id)
 SELECT 14, descendant_concept_id
-FROM concept_ancestor
+FROM @cdm_database_schema.concept_ancestor
 WHERE ancestor_concept_id in (443392)
 ;
 
@@ -2091,7 +2092,7 @@ VALUES (15,'Moderate to severe liver disease',3);
 
 INSERT INTO #Charlson_concepts (diag_category_id,concept_id)
 SELECT 15, descendant_concept_id
-FROM concept_ancestor
+FROM @cdm_database_schema.concept_ancestor
 WHERE ancestor_concept_id in (4245975, 4029488, 192680, 24966)
 ;
 
@@ -2101,7 +2102,7 @@ VALUES (16,'Metastatic solid tumor',6);
 
 INSERT INTO #Charlson_concepts (diag_category_id,concept_id)
 SELECT 16, descendant_concept_id
-FROM concept_ancestor
+FROM @cdm_database_schema.concept_ancestor
 WHERE ancestor_concept_id in (432851)
 ;
 
@@ -2111,7 +2112,7 @@ VALUES (17,'AIDS',6);
 
 INSERT INTO #Charlson_concepts (diag_category_id,concept_id)
 SELECT 17, descendant_concept_id
-FROM concept_ancestor
+FROM @cdm_database_schema.concept_ancestor
 WHERE ancestor_concept_id in (439727)
 ;
 
@@ -2138,7 +2139,7 @@ FROM (
 		cs1.diag_category_id,
 		cs1.weight
 	FROM @cohort_temp_table cp1
-	INNER JOIN condition_era ce1
+	INNER JOIN @cdm_database_schema.condition_era ce1
 		ON cp1.subject_id = ce1.person_id
 	INNER JOIN #Charlson_concepts c1
 		ON ce1.condition_concept_id = c1.concept_id
@@ -2184,17 +2185,17 @@ SELECT 'Retinopathy' AS DCSI_category,
 FROM (
 {@cdm_version == '4'} ? {
 	SELECT source_code, target_concept_id
-	FROM SOURCE_TO_CONCEPT_MAP
+	FROM @cdm_database_schema.SOURCE_TO_CONCEPT_MAP
 	WHERE source_vocabulary_id = 2
 	AND target_vocabulary_id = 1
 } : {
 	SELECT 
 	  source.concept_code AS source_code,
 	  target.concept_id AS target_concept_id
-	FROM concept_relationship
-	INNER JOIN concept source
+	FROM @cdm_database_schema.concept_relationship
+	INNER JOIN @cdm_database_schema.concept source
 	ON source.concept_id = concept_relationship.concept_id_1
-	INNER JOIN concept target
+	INNER JOIN @cdm_database_schema.concept target
 	ON target.concept_id = concept_relationship.concept_id_2
 	WHERE source.vocabulary_id = 'ICD9CM'
 	  AND target.vocabulary_id = 'SNOMED'
@@ -2218,17 +2219,17 @@ SELECT 'Retinopathy' AS DCSI_category,
 FROM (
 {@cdm_version == '4'} ? {
 	SELECT source_code, target_concept_id
-	FROM SOURCE_TO_CONCEPT_MAP
+	FROM @cdm_database_schema.SOURCE_TO_CONCEPT_MAP
 	WHERE source_vocabulary_id= 2
 	AND target_vocabulary_id = 1
 } : {
 	SELECT 
 	  source.concept_code AS source_code,
 	  target.concept_id AS target_concept_id
-	FROM concept_relationship
-	INNER JOIN concept source
+	FROM @cdm_database_schema.concept_relationship
+	INNER JOIN @cdm_database_schema.concept source
 	ON source.concept_id = concept_relationship.concept_id_1
-	INNER JOIN concept target
+	INNER JOIN @cdm_database_schema.concept target
 	ON target.concept_id = concept_relationship.concept_id_2
 	WHERE source.vocabulary_id = 'ICD9CM'
 	  AND target.vocabulary_id = 'SNOMED'
@@ -2254,17 +2255,17 @@ SELECT 'Nephropathy' AS DCSI_category,
 FROM (
 {@cdm_version == '4'} ? {
 	SELECT source_code, target_concept_id
-	FROM SOURCE_TO_CONCEPT_MAP
+	FROM @cdm_database_schema.SOURCE_TO_CONCEPT_MAP
 	WHERE source_vocabulary_id= 2
 	AND target_vocabulary_id = 1
 } : {
 	SELECT 
 	  source.concept_code AS source_code,
 	  target.concept_id AS target_concept_id
-	FROM concept_relationship
-	INNER JOIN concept source
+	FROM @cdm_database_schema.concept_relationship
+	INNER JOIN @cdm_database_schema.concept source
 	ON source.concept_id = concept_relationship.concept_id_1
-	INNER JOIN concept target
+	INNER JOIN @cdm_database_schema.concept target
 	ON target.concept_id = concept_relationship.concept_id_2
 	WHERE source.vocabulary_id = 'ICD9CM'
 	  AND target.vocabulary_id = 'SNOMED'
@@ -2292,17 +2293,17 @@ SELECT 'Nephropathy' AS DCSI_category,
 FROM (
 {@cdm_version == '4'} ? {
 	SELECT source_code, target_concept_id
-	FROM SOURCE_TO_CONCEPT_MAP
+	FROM @cdm_database_schema.SOURCE_TO_CONCEPT_MAP
 	WHERE source_vocabulary_id= 2
 	AND target_vocabulary_id = 1
 } : {
 	SELECT 
 	  source.concept_code AS source_code,
 	  target.concept_id AS target_concept_id
-	FROM concept_relationship
-	INNER JOIN concept source
+	FROM @cdm_database_schema.concept_relationship
+	INNER JOIN @cdm_database_schema.concept source
 	ON source.concept_id = concept_relationship.concept_id_1
-	INNER JOIN concept target
+	INNER JOIN @cdm_database_schema.concept target
 	ON target.concept_id = concept_relationship.concept_id_2
 	WHERE source.vocabulary_id = 'ICD9CM'
 	  AND target.vocabulary_id = 'SNOMED'
@@ -2329,17 +2330,17 @@ SELECT 'Neuropathy' AS DCSI_category,
 FROM (
 {@cdm_version == '4'} ? {
 	SELECT source_code, target_concept_id
-	FROM SOURCE_TO_CONCEPT_MAP
+	FROM @cdm_database_schema.SOURCE_TO_CONCEPT_MAP
 	WHERE source_vocabulary_id= 2
 	AND target_vocabulary_id = 1
 } : {
 	SELECT 
 	  source.concept_code AS source_code,
 	  target.concept_id AS target_concept_id
-	FROM concept_relationship
-	INNER JOIN concept source
+	FROM @cdm_database_schema.concept_relationship
+	INNER JOIN @cdm_database_schema.concept source
 	ON source.concept_id = concept_relationship.concept_id_1
-	INNER JOIN concept target
+	INNER JOIN @cdm_database_schema.concept target
 	ON target.concept_id = concept_relationship.concept_id_2
 	WHERE source.vocabulary_id = 'ICD9CM'
 	  AND target.vocabulary_id = 'SNOMED'
@@ -2380,17 +2381,17 @@ SELECT 'Cerebrovascular' AS DCSI_category,
 FROM (
 {@cdm_version == '4'} ? {
 	SELECT source_code, target_concept_id
-	FROM SOURCE_TO_CONCEPT_MAP
+	FROM @cdm_database_schema.SOURCE_TO_CONCEPT_MAP
 	WHERE source_vocabulary_id= 2
 	AND target_vocabulary_id = 1
 } : {
 	SELECT 
 	  source.concept_code AS source_code,
 	  target.concept_id AS target_concept_id
-	FROM concept_relationship
-	INNER JOIN concept source
+	FROM @cdm_database_schema.concept_relationship
+	INNER JOIN @cdm_database_schema.concept source
 	ON source.concept_id = concept_relationship.concept_id_1
-	INNER JOIN concept target
+	INNER JOIN @cdm_database_schema.concept target
 	ON target.concept_id = concept_relationship.concept_id_2
 	WHERE source.vocabulary_id = 'ICD9CM'
 	  AND target.vocabulary_id = 'SNOMED'
@@ -2413,17 +2414,17 @@ SELECT 'Cerebrovascular' AS DCSI_category,
 FROM (
 {@cdm_version == '4'} ? {
 	SELECT source_code, target_concept_id
-	FROM SOURCE_TO_CONCEPT_MAP
+	FROM @cdm_database_schema.SOURCE_TO_CONCEPT_MAP
 	WHERE source_vocabulary_id= 2
 	AND target_vocabulary_id = 1
 } : {
 	SELECT 
 	  source.concept_code AS source_code,
 	  target.concept_id AS target_concept_id
-	FROM concept_relationship
-	INNER JOIN concept source
+	FROM @cdm_database_schema.concept_relationship
+	INNER JOIN @cdm_database_schema.concept source
 	ON source.concept_id = concept_relationship.concept_id_1
-	INNER JOIN concept target
+	INNER JOIN @cdm_database_schema.concept target
 	ON target.concept_id = concept_relationship.concept_id_2
 	WHERE source.vocabulary_id = 'ICD9CM'
 	  AND target.vocabulary_id = 'SNOMED'
@@ -2450,17 +2451,17 @@ SELECT 'Cardiovascular' AS DCSI_category,
 FROM (
 {@cdm_version == '4'} ? {
 	SELECT source_code, target_concept_id
-	FROM SOURCE_TO_CONCEPT_MAP
+	FROM @cdm_database_schema.SOURCE_TO_CONCEPT_MAP
 	WHERE source_vocabulary_id= 2
 	AND target_vocabulary_id = 1
 } : {
 	SELECT 
 	  source.concept_code AS source_code,
 	  target.concept_id AS target_concept_id
-	FROM concept_relationship
-	INNER JOIN concept source
+	FROM @cdm_database_schema.concept_relationship
+	INNER JOIN @cdm_database_schema.concept source
 	ON source.concept_id = concept_relationship.concept_id_1
-	INNER JOIN concept target
+	INNER JOIN @cdm_database_schema.concept target
 	ON target.concept_id = concept_relationship.concept_id_2
 	WHERE source.vocabulary_id = 'ICD9CM'
 	  AND target.vocabulary_id = 'SNOMED'
@@ -2488,17 +2489,17 @@ SELECT 'Cardiovascular' AS DCSI_category,
 FROM (
 {@cdm_version == '4'} ? {
 	SELECT source_code, target_concept_id
-	FROM SOURCE_TO_CONCEPT_MAP
+	FROM @cdm_database_schema.SOURCE_TO_CONCEPT_MAP
 	WHERE source_vocabulary_id= 2
 	AND target_vocabulary_id = 1
 } : {
 	SELECT 
 	  source.concept_code AS source_code,
 	  target.concept_id AS target_concept_id
-	FROM concept_relationship
-	INNER JOIN concept source
+	FROM @cdm_database_schema.concept_relationship
+	INNER JOIN @cdm_database_schema.concept source
 	ON source.concept_id = concept_relationship.concept_id_1
-	INNER JOIN concept target
+	INNER JOIN @cdm_database_schema.concept target
 	ON target.concept_id = concept_relationship.concept_id_2
 	WHERE source.vocabulary_id = 'ICD9CM'
 	  AND target.vocabulary_id = 'SNOMED'
@@ -2529,17 +2530,17 @@ SELECT 'Peripheral vascular disease' AS DCSI_category,
 FROM (
 {@cdm_version == '4'} ? {
 	SELECT source_code, target_concept_id
-	FROM SOURCE_TO_CONCEPT_MAP
+	FROM @cdm_database_schema.SOURCE_TO_CONCEPT_MAP
 	WHERE source_vocabulary_id= 2
 	AND target_vocabulary_id = 1
 } : {
 	SELECT 
 	  source.concept_code AS source_code,
 	  target.concept_id AS target_concept_id
-	FROM concept_relationship
-	INNER JOIN concept source
+	FROM @cdm_database_schema.concept_relationship
+	INNER JOIN @cdm_database_schema.concept source
 	ON source.concept_id = concept_relationship.concept_id_1
-	INNER JOIN concept target
+	INNER JOIN @cdm_database_schema.concept target
 	ON target.concept_id = concept_relationship.concept_id_2
 	WHERE source.vocabulary_id = 'ICD9CM'
 	  AND target.vocabulary_id = 'SNOMED'
@@ -2567,17 +2568,17 @@ SELECT 'Peripheral vascular disease' AS DCSI_category,
 FROM (
 {@cdm_version == '4'} ? {
 	SELECT source_code, target_concept_id
-	FROM SOURCE_TO_CONCEPT_MAP
+	FROM @cdm_database_schema.SOURCE_TO_CONCEPT_MAP
 	WHERE source_vocabulary_id= 2
 	AND target_vocabulary_id = 1
 } : {
 	SELECT 
 	  source.concept_code AS source_code,
 	  target.concept_id AS target_concept_id
-	FROM concept_relationship
-	INNER JOIN concept source
+	FROM @cdm_database_schema.concept_relationship
+	INNER JOIN @cdm_database_schema.concept source
 	ON source.concept_id = concept_relationship.concept_id_1
-	INNER JOIN concept target
+	INNER JOIN @cdm_database_schema.concept target
 	ON target.concept_id = concept_relationship.concept_id_2
 	WHERE source.vocabulary_id = 'ICD9CM'
 	  AND target.vocabulary_id = 'SNOMED'
@@ -2603,17 +2604,17 @@ SELECT 'Metabolic' AS DCSI_category,
 FROM (
 {@cdm_version == '4'} ? {
 	SELECT source_code, target_concept_id
-	FROM SOURCE_TO_CONCEPT_MAP
+	FROM @cdm_database_schema.SOURCE_TO_CONCEPT_MAP
 	WHERE source_vocabulary_id= 2
 	AND target_vocabulary_id = 1
 } : {
 	SELECT 
 	  source.concept_code AS source_code,
 	  target.concept_id AS target_concept_id
-	FROM concept_relationship
-	INNER JOIN concept source
+	FROM @cdm_database_schema.concept_relationship
+	INNER JOIN @cdm_database_schema.concept source
 	ON source.concept_id = concept_relationship.concept_id_1
-	INNER JOIN concept target
+	INNER JOIN @cdm_database_schema.concept target
 	ON target.concept_id = concept_relationship.concept_id_2
 	WHERE source.vocabulary_id = 'ICD9CM'
 	  AND target.vocabulary_id = 'SNOMED'
@@ -2648,7 +2649,7 @@ FROM (
 		ds1.dcsi_category,
 		max(ds1.DCSI_score) AS max_score
 	FROM @cohort_temp_table cp1
-	INNER JOIN condition_era ce1
+	INNER JOIN @cdm_database_schema.condition_era ce1
 		ON cp1.subject_id = ce1.person_id
 	INNER JOIN #DCSI_scoring ds1
 		ON ce1.condition_concept_id = ds1.DCSI_concept_id
@@ -2688,7 +2689,7 @@ VALUES (1,'Congestive heart failure',1);
 
 INSERT INTO #CHADS2_concepts (diag_category_id,concept_id)
 SELECT 1, descendant_concept_id
-FROM concept_ancestor
+FROM @cdm_database_schema.concept_ancestor
 WHERE ancestor_concept_id in (316139)
 ;
 
@@ -2698,7 +2699,7 @@ VALUES (2,'Hypertension',1);
 
 INSERT INTO #CHADS2_concepts (diag_category_id,concept_id)
 SELECT 2, descendant_concept_id
-FROM concept_ancestor
+FROM @cdm_database_schema.concept_ancestor
 WHERE ancestor_concept_id in (316866)
 ;
 
@@ -2714,7 +2715,7 @@ VALUES (4,'Diabetes',1);
 
 INSERT INTO #CHADS2_concepts (diag_category_id,concept_id)
 SELECT 4, descendant_concept_id
-FROM concept_ancestor
+FROM @cdm_database_schema.concept_ancestor
 WHERE ancestor_concept_id in (201820)
 ;
 
@@ -2724,7 +2725,7 @@ VALUES (5,'Stroke',2);
 
 INSERT INTO #CHADS2_concepts (diag_category_id,concept_id)
 SELECT 5, descendant_concept_id
-FROM concept_ancestor
+FROM @cdm_database_schema.concept_ancestor
 WHERE ancestor_concept_id in (381591, 434056)
 ;
 
@@ -2751,7 +2752,7 @@ FROM (
 		cs1.diag_category_id,
 		cs1.weight
 	FROM @cohort_temp_table cp1
-	INNER JOIN condition_era ce1
+	INNER JOIN @cdm_database_schema.condition_era ce1
 		ON cp1.subject_id = ce1.person_id
 	INNER JOIN #CHADS2_concepts c1
 		ON ce1.condition_concept_id = c1.concept_id
@@ -2765,7 +2766,7 @@ FROM (
 		3 as diag_category_id,
 		1 as weight
 	FROM @cohort_temp_table cp1
-  INNER JOIN person p1
+  INNER JOIN @cdm_database_schema.person p1
   ON cp1.subject_id = p1.person_id
   WHERE year(cp1.cohort_start_date) - p1.year_of_birth >= 75
 
@@ -2978,7 +2979,7 @@ FROM (
 		cs1.diag_category_id,
 		cs1.weight
 	FROM @cohort_temp_table cp1
-	INNER JOIN condition_era ce1
+	INNER JOIN @cdm_database_schema.condition_era ce1
 		ON cp1.subject_id = ce1.person_id
 	INNER JOIN #CHADS2VASc_concepts c1
 		ON ce1.condition_concept_id = c1.concept_id
@@ -2992,7 +2993,7 @@ FROM (
 		3 as diag_category_id,
 		2 as weight
 	FROM @cohort_temp_table cp1
-  INNER JOIN person p1 
+  INNER JOIN @cdm_database_schema.person p1 
     ON cp1.subject_id = p1.person_id
   WHERE year(cp1.cohort_start_date) - p1.year_of_birth >= 75
 
@@ -3002,7 +3003,7 @@ FROM (
 		7 as diag_category_id,
 		1 as weight
 	FROM @cohort_temp_table cp1
-  INNER JOIN person p1 
+  INNER JOIN @cdm_database_schema.person p1 
     ON cp1.subject_id = p1.person_id
   WHERE year(cp1.cohort_start_date) - p1.year_of_birth between 65 and 74
 
@@ -3012,7 +3013,7 @@ FROM (
 		8 as diag_category_id,
 		1 as weight
   FROM @cohort_temp_table cp1
-  INNER JOIN person p1 
+  INNER JOIN @cdm_database_schema.person p1 
     ON cp1.subject_id = p1.person_id
   WHERE p1.gender_concept_id = 8532 
 ) t1
