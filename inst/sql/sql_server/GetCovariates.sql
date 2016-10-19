@@ -3312,7 +3312,7 @@ FROM #cov_o_count365d
 }
 
 {(@cdm_version == '4' & @use_covariate_observation) | @use_covariate_measurement} ? {
-{@use_covariate_observation_below} ? {
+{@use_covariate_measurement_below} ? {
 
 UNION
 
@@ -3322,7 +3322,7 @@ FROM #cov_m_below
 }
 
 
-{@use_covariate_observation_above} ? {
+{@use_covariate_measurement_above} ? {
 
 UNION
 
