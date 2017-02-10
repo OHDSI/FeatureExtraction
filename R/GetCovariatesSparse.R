@@ -111,7 +111,7 @@ getDbCovariateDataSparse <- function(connection,
 #'
 #' @export
 createCovariateSettingsSparse <- function(plpData, studyPop, dataSplit, numBasisVectors = -1, useUsualCovariatesAlso = TRUE, lambda1 = 0.2, numThreads = -1, batchsize = 400, iter = 1000, posAlpha=FALSE, posD=TRUE, eps=0.001) { 
-	covariateSettings <- list(plpData = plpData, studyPop = studyPop, dataSplit = dataSplit, numBasisVectors = numBasisVectors, useUsualCovariatesAlso = useUsualCovariatesAlso, 
+	covariateSettings <- list(plpData = plpData, studyPop = studyPop, dataSplit = dataSplit, numBasisVectors = numBasisVectors, useUsualCovariatesAlso = TRUE, 
 		lambda1 = lambda1, numThreads = numThreads, batchsize = batchsize, iter = iter, posAlpha=posAlpha, posD=posD, eps=eps)
 	attr(covariateSettings, "fun") <- "getDbCovariateDataSparse" 
 	class(covariateSettings) <- "covariateSettings" 
