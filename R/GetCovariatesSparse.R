@@ -28,7 +28,7 @@ getDbCovariateDataSparse <- function(connection,
 	library(ff)
 
 	myCov <- toSparseM(plpData,studyPop)
-	myCovData <- t(myCov$data)
+	myCovData <- Matrix::t(myCov$data)
 
 	# myCovTrain is obtained by dropping columns from myCov which correspond to patients in testing split of the data
 	myCovTrain <- myCovData[,-which(rev(dataSplit[,-1])==-1)]
