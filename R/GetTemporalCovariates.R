@@ -134,9 +134,7 @@ getDbTemporalCovariateData <- function(connection,
   colnames(covariates) <- SqlRender::snakeCaseToCamelCase(colnames(covariates))
   colnames(covariateRef) <- SqlRender::snakeCaseToCamelCase(colnames(covariateRef))
   
-  metaData <- list(sql = renderedSql,
-                   call = match.call(),
-                   deletedCovariateIds = deletedCovariateIds)
+  metaData <- list(call = match.call())
   result <- list(covariates = covariates, covariateRef = covariateRef, timePeriods = timePeriods, metaData = metaData)
   class(result) <- "temporalCovariateData"
   return(result)
