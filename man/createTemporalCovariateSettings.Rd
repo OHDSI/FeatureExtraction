@@ -6,8 +6,9 @@
 \usage{
 createTemporalCovariateSettings(useCovariateConditionEraStart = FALSE,
   useCovariateConditionEraPresent = FALSE,
-  excludedCovariateConceptIds = c(), includedCovariateConceptIds = c(),
-  startDays = -365:-1, endDays = -364:0)
+  useCovariateMeasurementValue = FALSE, excludedCovariateConceptIds = c(),
+  includedCovariateConceptIds = c(), startDays = -365:-1,
+  endDays = -364:0)
 }
 \arguments{
 \item{excludedCovariateConceptIds}{A list of concept IDs that should NOT be used to

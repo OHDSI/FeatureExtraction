@@ -145,6 +145,60 @@ LEFT JOIN @cdm_database_schema.concept c1
 }
 
 
+/**************************
+***************************
+MEASUREMENT
+***************************
+**************************/
+
+{@use_covariate_measurement_value} ? {
+
+--measurement value. Take last value if multiple values in period
+SELECT row_id,
+  covariate_id,
+  time_id,
+  covariate_value
+INTO #cov_meas_val
+FROM (
+SELECT cp1.@row_id_field AS row_id,
+	CAST(m1.measurement_concept_id AS BIGINT) * 1000 + 601 AS covariate_id,
+	tp1.time_id AS time_id,
+	value_as_number AS covariate_value,
+	ROW_NUMBER() OVER (PARTITION BY cp1.@row_id_field, measurement_concept_id, time_id ORDER BY measurement_date DESC) AS rn1
+FROM @cohort_temp_table cp1
+INNER JOIN @cdm_database_schema.measurement m1
+	ON cp1.subject_id = m1.person_id
+INNER JOIN #time_period tp1
+    ON DATEDIFF(DAY, m1.measurement_date, cp1.cohort_start_date) < tp1.end_day
+    AND DATEDIFF(DAY, m1.measurement_date, cp1.cohort_start_date) >= tp1.start_day
+WHERE m1.measurement_concept_id != 0 
+	AND value_as_number IS NOT NULL 
+{@has_excluded_covariate_concept_ids} ? {	AND m1.measurement_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
+{@has_included_covariate_concept_ids} ? {	AND m1.measurement_concept_id IN (SELECT concept_id FROM #included_cov)}
+) temp
+WHERE rn1 = 1;
+
+
+INSERT INTO #cov_ref (
+  covariate_id,
+	covariate_name,
+	analysis_id,
+	concept_id
+	)
+SELECT p1.covariate_id,
+	'Measurement value:  ' + CAST((p1.covariate_id-601)/1000 AS VARCHAR) + '-' + CASE
+		WHEN c1.concept_name IS NOT NULL
+			THEN c1.concept_name
+		ELSE 'Unknown invalid concept'
+		END AS covariate_name,
+	601 AS analysis_id,
+	(p1.covariate_id-601)/1000 AS concept_id
+FROM (SELECT DISTINCT covariate_id FROM #cov_meas_val) p1
+LEFT JOIN @cdm_database_schema.concept c1
+	ON (p1.covariate_id-601)/1000 = c1.concept_id
+;
+}
+
 /**********************************************
 ***********************************************
 put all temp tables together into one cov table
@@ -171,6 +225,13 @@ UNION
 SELECT row_id, covariate_id, time_id, covariate_value
 FROM #cov_co_pres
 }
+
+{@use_covariate_measurement_value} ? {
+UNION
+
+SELECT row_id, covariate_id, time_id, covariate_value
+FROM #cov_meas_val
+}
 ) all_covariates;
 
 /**********************************************
@@ -182,6 +243,8 @@ IF OBJECT_ID('tempdb..#cov_co_start', 'U') IS NOT NULL
   DROP TABLE #cov_co_start;
 IF OBJECT_ID('tempdb..#cov_co_pres', 'U') IS NOT NULL
   DROP TABLE #cov_co_pres;
+IF OBJECT_ID('tempdb..#cov_meas_val', 'U') IS NOT NULL
+  DROP TABLE #cov_meas_val;  
 TRUNCATE TABLE #dummy;
   DROP TABLE #dummy;
 

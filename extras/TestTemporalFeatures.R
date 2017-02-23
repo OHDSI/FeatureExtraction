@@ -8,7 +8,7 @@ dbms <- "pdw"
 user <- NULL
 pw <- NULL
 server <- "JRDUSAPSCTL01"
-cdmDatabaseSchema <- "CDM_Truven_mdcd_V521.dbo"
+cdmDatabaseSchema <- "CDM_Truven_mdcr_V520.dbo"
 resultsDatabaseSchema <- "scratch.dbo"
 port <- 17001
 cdmVersion <- "5"
@@ -35,8 +35,9 @@ sql <- SqlRender::translateSql(sql, targetDialect = connectionDetails$dbms)$sql
 DatabaseConnector::querySql(connection, sql)
 
 
-settings <- createTemporalCovariateSettings(useCovariateConditionEraStart = TRUE,
-                                            useCovariateConditionEraPresent = FALSE)
+settings <- createTemporalCovariateSettings(useCovariateConditionEraStart = FALSE,
+                                            useCovariateConditionEraPresent = FALSE,
+                                            useCovariateMeasurementValue = TRUE)
 
 covarData <- getDbCovariateData(connectionDetails = connectionDetails,
                                 cdmDatabaseSchema = cdmDatabaseSchema,
@@ -50,3 +51,6 @@ covarData <- getDbCovariateData(connectionDetails = connectionDetails,
                                 normalize = FALSE)
                                 
                                 
+covarData$covariates
+covarData$covariateRef
+covarData$timePeriods

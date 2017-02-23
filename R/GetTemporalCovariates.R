@@ -97,6 +97,7 @@ getDbTemporalCovariateData <- function(connection,
                                                    row_id_field = rowIdField,
                                                    use_covariate_condition_era_start = covariateSettings$useCovariateConditionEraStart,
                                                    use_covariate_condition_era_present = covariateSettings$useCovariateConditionEraPresent,
+                                                   use_covariate_measurement_value = covariateSettings$useCovariateMeasurementValue,
                                                    has_excluded_covariate_concept_ids = hasExcludedCovariateConceptIds,
                                                    has_included_covariate_concept_ids = hasIncludedCovariateConceptIds)
   
@@ -157,6 +158,7 @@ getDbTemporalCovariateData <- function(connection,
 #' @export
 createTemporalCovariateSettings <- function(useCovariateConditionEraStart = FALSE,
                                             useCovariateConditionEraPresent = FALSE,
+                                            useCovariateMeasurementValue = FALSE,
                                             excludedCovariateConceptIds = c(),
                                             includedCovariateConceptIds = c(),
                                             startDays = -365:-1,
