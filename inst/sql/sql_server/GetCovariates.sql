@@ -1952,7 +1952,7 @@ VALUES (1,'Myocardial infarction',1);
 INSERT INTO #Charlson_concepts (diag_category_id,concept_id)
 SELECT 1, descendant_concept_id
 FROM @cdm_database_schema.concept_ancestor
-WHERE ancestor_concept_id IN (329847)
+WHERE ancestor_concept_id IN (4329847)
 ;
 
 --Congestive heart failure
