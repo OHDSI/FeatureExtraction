@@ -615,7 +615,7 @@ WHERE c1.vocabulary_id = 'SNOMED'
 }
   AND c1.@concept_class_id = 'Clinical finding'
   AND ca1.min_levels_of_separation = 1
-  AND c1.concept_id NOT IN (select distinct descendant_concept_id from concept_ancestor where ancestor_concept_id = 441480 /*clinical finding*/ and max_levels_of_separation <= 2)
+  AND c1.concept_id NOT IN (select distinct descendant_concept_id from concept_ancestor where ancestor_concept_id = 441840 /*clinical finding*/ and max_levels_of_separation <= 2)
 {@has_excluded_covariate_concept_ids} ? {  AND c1.concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {  AND c1.concept_id IN (SELECT concept_id FROM #included_cov)}
 }
