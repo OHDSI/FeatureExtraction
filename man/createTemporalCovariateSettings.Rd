@@ -8,7 +8,7 @@ createTemporalCovariateSettings(useCovariateConditionEraStart = FALSE,
   useCovariateConditionEraPresent = FALSE,
   useCovariateMeasurementValue = FALSE, excludedCovariateConceptIds = c(),
   includedCovariateConceptIds = c(), startDays = -365:-1,
-  endDays = -364:0)
+  endDays = -365:-1)
 }
 \arguments{
 \item{excludedCovariateConceptIds}{A list of concept IDs that should NOT be used to
@@ -16,6 +16,16 @@ construct covariates.}
 
 \item{includedCovariateConceptIds}{A list of concept IDs that should be used to
 construct covariates.}
+
+\item{startDays}{A vector of integers representing the start of a time
+period, relative to the index date. 0 indicates the index
+date, -1 indicates the day before the index date, etc. The 
+start day is included in the time period.}
+
+\item{startDays}{A vector of integers representing the end of a time
+period, relative to the index date. 0 indicates the index
+date, -1 indicates the day before the index date, etc. The
+end day is included in the time period.}
 }
 \value{
 An object of type \code{defaultCovariateSettings}, to be used in other functions.

@@ -5,7 +5,7 @@
 \title{Get default covariate information from the database}
 \usage{
 getDbTemporalCovariateData(connection, oracleTempSchema = NULL,
-  cdmDatabaseSchema, cdmVersion = "4", cohortTempTable = "cohort_person",
+  cdmDatabaseSchema, cdmVersion = "5", cohortTempTable = "cohort_person",
   rowIdField = "subject_id", covariateSettings)
 }
 \arguments{

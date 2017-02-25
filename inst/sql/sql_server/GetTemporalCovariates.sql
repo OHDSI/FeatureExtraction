@@ -77,7 +77,7 @@ FROM @cohort_temp_table cp1
 INNER JOIN @cdm_database_schema.condition_era ce1
 	ON cp1.subject_id = ce1.person_id
 INNER JOIN #time_period tp1
-    ON DATEDIFF(DAY, ce1.condition_era_start_date, cp1.cohort_start_date) < tp1.end_day
+    ON DATEDIFF(DAY, ce1.condition_era_start_date, cp1.cohort_start_date) <= tp1.end_day
     AND DATEDIFF(DAY, ce1.condition_era_start_date, cp1.cohort_start_date) >= tp1.start_day
 WHERE ce1.condition_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND ce1.condition_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
@@ -117,7 +117,7 @@ FROM @cohort_temp_table cp1
 INNER JOIN @cdm_database_schema.condition_era ce1
 	ON cp1.subject_id = ce1.person_id
 INNER JOIN #time_period tp1
-    ON DATEDIFF(DAY, ce1.condition_era_start_date, cp1.cohort_start_date) < tp1.end_day
+    ON DATEDIFF(DAY, ce1.condition_era_start_date, cp1.cohort_start_date) <= tp1.end_day
     AND DATEDIFF(DAY, ce1.condition_era_end_date, cp1.cohort_start_date) >= tp1.start_day
 WHERE ce1.condition_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND ce1.condition_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
@@ -169,7 +169,7 @@ FROM @cohort_temp_table cp1
 INNER JOIN @cdm_database_schema.measurement m1
 	ON cp1.subject_id = m1.person_id
 INNER JOIN #time_period tp1
-    ON DATEDIFF(DAY, m1.measurement_date, cp1.cohort_start_date) < tp1.end_day
+    ON DATEDIFF(DAY, m1.measurement_date, cp1.cohort_start_date) <= tp1.end_day
     AND DATEDIFF(DAY, m1.measurement_date, cp1.cohort_start_date) >= tp1.start_day
 WHERE m1.measurement_concept_id != 0 
 	AND value_as_number IS NOT NULL 
