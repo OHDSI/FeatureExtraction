@@ -3657,6 +3657,8 @@ IF OBJECT_ID('tempdb..#cov_m_below', 'U') IS NOT NULL
   DROP TABLE #cov_m_below;
 IF OBJECT_ID('tempdb..#cov_m_above', 'U') IS NOT NULL
   DROP TABLE #cov_m_above;
+IF OBJECT_ID('tempdb..#cov_m_count365d', 'U') IS NOT NULL
+  DROP TABLE #cov_m_count365d;  
 IF OBJECT_ID('tempdb..#cov_o_count365d', 'U') IS NOT NULL
   DROP TABLE #cov_o_count365d;
 IF OBJECT_ID('tempdb..#cov_dd_cond', 'U') IS NOT NULL
