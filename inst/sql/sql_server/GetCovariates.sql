@@ -615,7 +615,7 @@ WHERE c1.vocabulary_id = 'SNOMED'
 }
   AND c1.@concept_class_id = 'Clinical finding'
   AND ca1.min_levels_of_separation = 1
-  AND c1.concept_id NOT IN (select distinct descendant_concept_id from concept_ancestor where ancestor_concept_id = 441480 /*clinical finding*/ and max_levels_of_separation <= 2)
+  AND c1.concept_id NOT IN (select distinct descendant_concept_id from concept_ancestor where ancestor_concept_id = 441840 /*clinical finding*/ and max_levels_of_separation <= 2)
 {@has_excluded_covariate_concept_ids} ? {  AND c1.concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {  AND c1.concept_id IN (SELECT concept_id FROM #included_cov)}
 }
@@ -1952,7 +1952,7 @@ VALUES (1,'Myocardial infarction',1);
 INSERT INTO #Charlson_concepts (diag_category_id,concept_id)
 SELECT 1, descendant_concept_id
 FROM @cdm_database_schema.concept_ancestor
-WHERE ancestor_concept_id IN (329847)
+WHERE ancestor_concept_id IN (4329847)
 ;
 
 --Congestive heart failure
@@ -3657,6 +3657,8 @@ IF OBJECT_ID('tempdb..#cov_m_below', 'U') IS NOT NULL
   DROP TABLE #cov_m_below;
 IF OBJECT_ID('tempdb..#cov_m_above', 'U') IS NOT NULL
   DROP TABLE #cov_m_above;
+IF OBJECT_ID('tempdb..#cov_m_count365d', 'U') IS NOT NULL
+  DROP TABLE #cov_m_count365d;  
 IF OBJECT_ID('tempdb..#cov_o_count365d', 'U') IS NOT NULL
   DROP TABLE #cov_o_count365d;
 IF OBJECT_ID('tempdb..#cov_dd_cond', 'U') IS NOT NULL
