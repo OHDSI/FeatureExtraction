@@ -144,6 +144,90 @@ LEFT JOIN @cdm_database_schema.concept c1
 ;
 }
 
+/**************************
+***************************
+DRUG ERA
+***************************
+**************************/
+
+{@use_covariate_drug_era_start} ? {
+
+--drug era starts in time period
+SELECT DISTINCT cp1.@row_id_field AS row_id,
+	CAST(ce1.drug_concept_id AS BIGINT) * 1000 + 201 AS covariate_id,
+	tp1.time_id AS time_id,
+	1 AS covariate_value
+INTO #cov_dr_start
+FROM @cohort_temp_table cp1
+INNER JOIN @cdm_database_schema.drug_era ce1
+	ON cp1.subject_id = ce1.person_id
+INNER JOIN #time_period tp1
+    ON DATEDIFF(DAY, ce1.drug_era_start_date, cp1.cohort_start_date) <= tp1.end_day
+    AND DATEDIFF(DAY, ce1.drug_era_start_date, cp1.cohort_start_date) >= tp1.start_day
+WHERE ce1.drug_concept_id != 0
+{@has_excluded_covariate_concept_ids} ? {	AND ce1.drug_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
+{@has_included_covariate_concept_ids} ? {	AND ce1.drug_concept_id IN (SELECT concept_id FROM #included_cov)}
+;
+
+INSERT INTO #cov_ref (
+  covariate_id,
+	covariate_name,
+	analysis_id,
+	concept_id
+	)
+SELECT p1.covariate_id,
+	'Drug era start observed:  ' + CAST((p1.covariate_id-201)/1000 AS VARCHAR) + '-' + CASE
+		WHEN c1.concept_name IS NOT NULL
+			THEN c1.concept_name
+		ELSE 'Unknown invalid concept'
+		END AS covariate_name,
+	201 AS analysis_id,
+	(p1.covariate_id-201)/1000 AS concept_id
+FROM (SELECT DISTINCT covariate_id FROM #cov_dr_start) p1
+LEFT JOIN @cdm_database_schema.concept c1
+	ON (p1.covariate_id-201)/1000 = c1.concept_id
+;
+}
+
+
+{@use_covariate_drug_era_present} ? {
+
+--drug era is present in time period
+SELECT DISTINCT cp1.@row_id_field AS row_id,
+	CAST(ce1.drug_concept_id AS BIGINT) * 1000 + 202 AS covariate_id,
+	tp1.time_id AS time_id,
+	1 AS covariate_value
+INTO #cov_dr_pres
+FROM @cohort_temp_table cp1
+INNER JOIN @cdm_database_schema.drug_era ce1
+	ON cp1.subject_id = ce1.person_id
+INNER JOIN #time_period tp1
+    ON DATEDIFF(DAY, ce1.drug_era_start_date, cp1.cohort_start_date) <= tp1.end_day
+    AND DATEDIFF(DAY, ce1.drug_era_end_date, cp1.cohort_start_date) >= tp1.start_day
+WHERE ce1.drug_concept_id != 0
+{@has_excluded_covariate_concept_ids} ? {	AND ce1.drug_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
+{@has_included_covariate_concept_ids} ? {	AND ce1.drug_concept_id IN (SELECT concept_id FROM #included_cov)}
+;
+
+INSERT INTO #cov_ref (
+  covariate_id,
+	covariate_name,
+	analysis_id,
+	concept_id
+	)
+SELECT p1.covariate_id,
+	'Drug era observed:  ' + CAST((p1.covariate_id-202)/1000 AS VARCHAR) + '-' + CASE
+		WHEN c1.concept_name IS NOT NULL
+			THEN c1.concept_name
+		ELSE 'Unknown invalid concept'
+		END AS covariate_name,
+	202 AS analysis_id,
+	(p1.covariate_id-202)/1000 AS concept_id
+FROM (SELECT DISTINCT covariate_id FROM #cov_dr_pres) p1
+LEFT JOIN @cdm_database_schema.concept c1
+	ON (p1.covariate_id-202)/1000 = c1.concept_id
+;
+}
 
 /**************************
 ***************************
@@ -199,6 +283,94 @@ LEFT JOIN @cdm_database_schema.concept c1
 ;
 }
 
+/**************************
+***************************
+PROCEDURE
+***************************
+**************************/
+{@use_covariate_procedure_occurrence} ? {
+
+--procedure is present in time period
+SELECT DISTINCT cp1.@row_id_field AS row_id,
+	CAST(ce1.procedure_concept_id AS BIGINT) * 1000 + 701 AS covariate_id,
+	tp1.time_id AS time_id,
+	1 AS covariate_value
+INTO #cov_pr_oc
+FROM @cohort_temp_table cp1
+INNER JOIN @cdm_database_schema.procedure_occurrence ce1
+	ON cp1.subject_id = ce1.person_id
+INNER JOIN #time_period tp1
+    ON DATEDIFF(DAY, ce1.procedure_date, cp1.cohort_start_date) <= tp1.end_day
+    AND DATEDIFF(DAY, ce1.procedure_date, cp1.cohort_start_date) >= tp1.start_day
+WHERE ce1.procedure_concept_id != 0
+{@has_excluded_covariate_concept_ids} ? {	AND ce1.procedure_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
+{@has_included_covariate_concept_ids} ? {	AND ce1.procedure_concept_id IN (SELECT concept_id FROM #included_cov)}
+;
+
+INSERT INTO #cov_ref (
+  covariate_id,
+	covariate_name,
+	analysis_id,
+	concept_id
+	)
+SELECT p1.covariate_id,
+	'Procedure observed:  ' + CAST((p1.covariate_id-701)/1000 AS VARCHAR) + '-' + CASE
+		WHEN c1.concept_name IS NOT NULL
+			THEN c1.concept_name
+		ELSE 'Unknown invalid concept'
+		END AS covariate_name,
+	102 AS analysis_id,
+	(p1.covariate_id-701)/1000 AS concept_id
+FROM (SELECT DISTINCT covariate_id FROM #cov_pr_oc) p1
+LEFT JOIN @cdm_database_schema.concept c1
+	ON (p1.covariate_id-701)/1000 = c1.concept_id
+;
+}
+
+/**************************
+***************************
+OBSERVATION
+***************************
+**************************/
+{@use_covariate_observation_occurrence} ? {
+
+--observation is present in time period
+SELECT DISTINCT cp1.@row_id_field AS row_id,
+	CAST(ce1.observation_concept_id AS BIGINT) * 1000 + 801 AS covariate_id,
+	tp1.time_id AS time_id,
+	1 AS covariate_value
+INTO #cov_ob_oc
+FROM @cohort_temp_table cp1
+INNER JOIN @cdm_database_schema.observation ce1
+	ON cp1.subject_id = ce1.person_id
+INNER JOIN #time_period tp1
+    ON DATEDIFF(DAY, ce1.observation_date, cp1.cohort_start_date) <= tp1.end_day
+    AND DATEDIFF(DAY, ce1.observation_date, cp1.cohort_start_date) >= tp1.start_day
+WHERE ce1.observation_concept_id != 0
+{@has_excluded_covariate_concept_ids} ? {	AND ce1.observation_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
+{@has_included_covariate_concept_ids} ? {	AND ce1.observation_concept_id IN (SELECT concept_id FROM #included_cov)}
+;
+
+INSERT INTO #cov_ref (
+  covariate_id,
+	covariate_name,
+	analysis_id,
+	concept_id
+	)
+SELECT p1.covariate_id,
+	'Observation observed:  ' + CAST((p1.covariate_id-801)/1000 AS VARCHAR) + '-' + CASE
+		WHEN c1.concept_name IS NOT NULL
+			THEN c1.concept_name
+		ELSE 'Unknown invalid concept'
+		END AS covariate_name,
+	102 AS analysis_id,
+	(p1.covariate_id-801)/1000 AS concept_id
+FROM (SELECT DISTINCT covariate_id FROM #cov_ob_oc) p1
+LEFT JOIN @cdm_database_schema.concept c1
+	ON (p1.covariate_id-801)/1000 = c1.concept_id
+;
+}
+
 /**********************************************
 ***********************************************
 put all temp tables together into one cov table
@@ -226,11 +398,39 @@ SELECT row_id, covariate_id, time_id, covariate_value
 FROM #cov_co_pres
 }
 
+{@use_covariate_drug_era_start} ? {
+UNION
+
+SELECT row_id, covariate_id, time_id, covariate_value
+FROM #cov_dr_start
+}
+
+{@use_covariate_drug_era_present} ? {
+UNION
+
+SELECT row_id, covariate_id, time_id, covariate_value
+FROM #cov_dr_pres
+}
+
 {@use_covariate_measurement_value} ? {
 UNION
 
 SELECT row_id, covariate_id, time_id, covariate_value
 FROM #cov_meas_val
+}
+
+{@use_covariate_procedure_occurrence} ? {
+UNION
+
+SELECT row_id, covariate_id, time_id, covariate_value
+FROM #cov_pr_oc
+}
+
+{@use_covariate_observation_occurrence} ? {
+UNION
+
+SELECT row_id, covariate_id, time_id, covariate_value
+FROM #cov_ob_oc
 }
 ) all_covariates;
 
@@ -245,6 +445,10 @@ IF OBJECT_ID('tempdb..#cov_co_pres', 'U') IS NOT NULL
   DROP TABLE #cov_co_pres;
 IF OBJECT_ID('tempdb..#cov_meas_val', 'U') IS NOT NULL
   DROP TABLE #cov_meas_val;  
+IF OBJECT_ID('tempdb..#cov_pr_oc', 'U') IS NOT NULL
+  DROP TABLE #cov_pr_oc; 
+IF OBJECT_ID('tempdb..#cov_ob_oc', 'U') IS NOT NULL
+  DROP TABLE #cov_ob_oc; 
 TRUNCATE TABLE #dummy;
   DROP TABLE #dummy;
 

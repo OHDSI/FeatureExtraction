@@ -20,7 +20,7 @@
 #'
 #' @description
 #' Constructs a large default set of covariates for one or more cohorts using data in the CDM schema.
-#' Includes covariates for all drugs, drug classes, condition, condition classes, procedures,
+#' Includes temporal covariates for all measurements, drugs, drug classes, condition, condition classes, procedures,
 #' observations, etc.
 #'
 #' @param covariateSettings   An object of type \code{temporalCovariateSettings} as created using the
@@ -99,7 +99,11 @@ getDbTemporalCovariateData <- function(connection,
                                                    row_id_field = rowIdField,
                                                    use_covariate_condition_era_start = covariateSettings$useCovariateConditionEraStart,
                                                    use_covariate_condition_era_present = covariateSettings$useCovariateConditionEraPresent,
+                                                   use_covariate_drug_era_start = covariateSettings$useCovariateDrugEraStart,
+                                                   use_covariate_drug_era_present = covariateSettings$useCovariateDrugEraPresent,
                                                    use_covariate_measurement_value = covariateSettings$useCovariateMeasurementValue,
+                                                   use_covariate_procedure_occurrence = covariateSettings$useCovariateProcedureOccurence,
+                                                   use_covariate_observation_occurrence = covariateSettings$useCovariateObservationOccurence,
                                                    has_excluded_covariate_concept_ids = hasExcludedCovariateConceptIds,
                                                    has_included_covariate_concept_ids = hasIncludedCovariateConceptIds)
   
@@ -150,6 +154,13 @@ getDbTemporalCovariateData <- function(connection,
 #' creates an object specifying how covariates should be contructed from data in the CDM model.
 #'
 #' 
+#' @param useCovariateConditionEraStart             Extract start of condition era?
+#' @param useCovariateConditionPresent              Extract active condition era?
+#' @param useCovariateDrugEraStart                  Extract start of drug era?
+#' @param useCovariateDrugPresent                   Extract active drug era?  
+#' @param useCovariateMeasurementValue              Include first measurement in time window?
+#' @param useCovariateProcedure                     Extract the procedures in time window?
+#' @param useCovariateObservation                   Extract the observations in time window?
 #' @param excludedCovariateConceptIds               A list of concept IDs that should NOT be used to
 #'                                                  construct covariates.
 #' @param includedCovariateConceptIds               A list of concept IDs that should be used to
@@ -158,7 +169,7 @@ getDbTemporalCovariateData <- function(connection,
 #'                                                  period, relative to the index date. 0 indicates the index
 #'                                                  date, -1 indicates the day before the index date, etc. The 
 #'                                                  start day is included in the time period.
-#' @param startDays                                 A vector of integers representing the end of a time
+#' @param endDays                                   A vector of integers representing the end of a time
 #'                                                  period, relative to the index date. 0 indicates the index
 #'                                                  date, -1 indicates the day before the index date, etc. The
 #'                                                  end day is included in the time period.
@@ -170,11 +181,15 @@ getDbTemporalCovariateData <- function(connection,
 #' @export
 createTemporalCovariateSettings <- function(useCovariateConditionEraStart = FALSE,
                                             useCovariateConditionEraPresent = FALSE,
+                                            useCovariateDrugEraStart = FALSE,
+                                            useCovariateDrugEraPresent = FALSE,
                                             useCovariateMeasurementValue = FALSE,
+                                            useCovariateProcedureOccurence = FALSE,
+                                            useCovariateObservationOccurence = FALSE,
                                             excludedCovariateConceptIds = c(),
                                             includedCovariateConceptIds = c(),
                                             startDays = -365:-1,
-                                            endDays = -365:-1) {
+                                            endDays = -364:0) {
   if (length(startDays) != length(endDays))
     stop("Length of startDays should be equal to length of endDays")
   if (any(startDays >= endDays))

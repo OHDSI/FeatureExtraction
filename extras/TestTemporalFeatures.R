@@ -37,7 +37,11 @@ DatabaseConnector::querySql(connection, sql)
 
 settings <- createTemporalCovariateSettings(useCovariateConditionEraStart = FALSE,
                                             useCovariateConditionEraPresent = FALSE,
-                                            useCovariateMeasurementValue = TRUE)
+                                            useCovariateDrugEraStart = FALSE,
+                                            useCovariateDrugEraPresent = TRUE,
+                                            useCovariateMeasurementValue = FALSE,
+                                            useCovariateProcedureOccurence = FALSE,
+                                            useCovariateObservationOccurence = FALSE)
 
 covarData <- getDbCovariateData(connectionDetails = connectionDetails,
                                 cdmDatabaseSchema = cdmDatabaseSchema,
