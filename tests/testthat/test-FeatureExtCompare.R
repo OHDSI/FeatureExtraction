@@ -38,8 +38,12 @@ test_that("access", {
                                                port = port)
   connection <- connect(connectionDetails)
   
-  sql <- translateSql("select * from cdm.person limit 100", targetDialect = connectionDetails$dbms)$sql
-  result <- querySql(connection, sql)
+  #querySql(connection = connection, sql = "select count(*) from scratch.person")
+  
+  #executeSql(connection = connection, sql = "create table scratch.temp_cohort as select * from scratch.cohort")
+  
+  #sql <- translateSql("select * from cdm.person limit 100", targetDialect = connectionDetails$dbms)$sql
+  #result <- querySql(connection, sql)
   
   # The cdm schema contains all the cdm tabels and vocabulary and is read only
   # There is "scratch" schema that is writable in which you can create your own tables.
@@ -51,9 +55,7 @@ test_that("access", {
   covariateSettings <- FeatureExtraction::createCovariateSettings(
     useCovariateDemographics = TRUE,
     useCovariateDemographicsGender = TRUE,
-    # useCovariateDemographicsGender = TRUE,
-    # useCovariateDemographicsGender = TRUE,
-    # useCovariateDemographicsRace = TRUE,
+    useCovariateDemographicsRace = TRUE,
     # useCovariateDemographicsEthnicity = TRUE,
     # useCovariateDemographicsAge = TRUE,
     # useCovariateDemographicsYear = TRUE,
@@ -68,8 +70,8 @@ test_that("access", {
     # useCovariateConditionGroup = TRUE,
     # useCovariateConditionGroupMeddra = TRUE,
     # useCovariateConditionGroupSnomed = TRUE,
-    # useCovariateDrugExposure = TRUE,
-    # useCovariateDrugExposure365d = TRUE,
+    useCovariateDrugExposure = TRUE,
+    useCovariateDrugExposure365d = TRUE,
     # useCovariateDrugExposure30d = TRUE,
     # useCovariateDrugEra = TRUE,
     # useCovariateDrugEra365d = TRUE,
@@ -101,17 +103,17 @@ test_that("access", {
     # useCovariateInteractionMonth = FALSE,
     # excludedCovariateConceptIds = celecoxibDrugs,
     # includedCovariateConceptIds = c(),
-    deleteCovariatesSmallCount = 100)
+    deleteCovariatesSmallCount = 2)
 
   baseStart<-Sys.time()
-   baseResult<- getDbDefaultCovariateData(connection,
-                                          oracleTempSchema = NULL,
-                                          schema,
-                                          cdmVersion = "4",
-                                          cohortTempTable = "cohort_person",
-                                          rowIdField = "subject_id",
-                                          covariateSettings,
-                                          sqlFile = "GetCovariates_old.sql")
+   # baseResult<- getDbDefaultCovariateData(connection,
+   #                                        oracleTempSchema = NULL,
+   #                                        schema,
+   #                                        cdmVersion = "4",
+   #                                        cohortTempTable = "temp_cohort",
+   #                                        rowIdField = "subject_id",
+   #                                        covariateSettings,
+   #                                        sqlFile = "GetCovariates_old.sql")
    
   basetime <-Sys.time()- baseStart
  
@@ -123,11 +125,13 @@ test_that("access", {
                                          oracleTempSchema = NULL,
                                          schema,
                                          cdmVersion = "5",
-                                         cohortTempTable = "cohort",
+                                         cohortTempTable = "scratch.ftf_cohort",
                                          rowIdField = "subject_id",
                                          covariateSettings,
                                          sqlFile = "GetCovariates.sql")
   
+  #testDF <-as.data.frame(testResult)
+  #print(testDF)
   cat("Diff Time : ",basetime - (Sys.time()- baseStart))
   #require(sqldf)
   
