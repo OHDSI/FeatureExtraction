@@ -35,7 +35,8 @@ getDbDefaultCovariateData <- function(connection,
                                       cdmVersion = "4",
                                       cohortTempTable = "cohort_person",
                                       rowIdField = "subject_id",
-                                      covariateSettings) {
+                                      covariateSettings,
+                                      sqlFile = "GetCovariates.sql") { #change made only for testing!
   writeLines("Constructing default covariates")
   if (substr(cohortTempTable, 1, 1) != "#") {
     cohortTempTable <- paste("#", cohortTempTable, sep = "")
@@ -87,7 +88,7 @@ getDbDefaultCovariateData <- function(connection,
                                    oracleTempSchema = oracleTempSchema)
   }
 
-  renderedSql <- SqlRender::loadRenderTranslateSql("GetCovariates.sql",
+  renderedSql <- SqlRender::loadRenderTranslateSql(sqlFile,
                                                    packageName = "FeatureExtraction",
                                                    dbms = attr(connection, "dbms"),
                                                    oracleTempSchema = oracleTempSchema,
