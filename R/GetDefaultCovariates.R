@@ -93,7 +93,7 @@ getDbDefaultCovariateData <- function(connection,
                                                    dbms = attr(connection, "dbms"),
                                                    oracleTempSchema = oracleTempSchema,
                                                    cdm_database = cdmDatabase,
-						   cdm_database_schema = cdmDatabaseSchema,
+                                                   cdm_database_schema = cdmDatabaseSchema,
                                                    cdm_version = cdmVersion,
                                                    cohort_temp_table = cohortTempTable,
                                                    row_id_field = rowIdField,
@@ -185,6 +185,8 @@ getDbDefaultCovariateData <- function(connection,
                                                    packageName = "FeatureExtraction",
                                                    dbms = attr(connection, "dbms"),
                                                    oracleTempSchema = oracleTempSchema)
+  cat("The Rendered SQL ",renderedSql)
+  
   DatabaseConnector::executeSql(connection,
                                 renderedSql,
                                 progressBar = FALSE,
