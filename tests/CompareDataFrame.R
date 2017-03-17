@@ -8,3 +8,4 @@ require(sqldf)
 
 a1NotIna2 <- sqldf("SELECT * FROM bassDF EXCEPT SELECT * FROM newDF")
 a1NotIna2
+
