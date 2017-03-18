@@ -6,7 +6,8 @@
 \usage{
 getDbDefaultCovariateData(connection, oracleTempSchema = NULL,
   cdmDatabaseSchema, cdmVersion = "4", cohortTempTable = "cohort_person",
-  rowIdField = "subject_id", covariateSettings)
+  rowIdField = "subject_id", covariateSettings,
+  sqlFile = "GetCovariates.sql")
 }
 \arguments{
 \item{connection}{A connection to the server containing the schema as created using the
