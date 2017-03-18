@@ -44,7 +44,10 @@ test_that("access", {
   # There is "scratch" schema that is writable in which you can create your own tables.
   # Please add your name in the table name to not clash with other participants, e.g rijnbeek-cohort
   
+  print(result)
   
   print("done with query")
+  
+  getDbDefaultCovariateData(connection = connection)
 }
 )

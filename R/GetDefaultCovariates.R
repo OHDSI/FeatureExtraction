@@ -35,7 +35,8 @@ getDbDefaultCovariateData <- function(connection,
                                       cdmVersion = "4",
                                       cohortTempTable = "cohort_person",
                                       rowIdField = "subject_id",
-                                      covariateSettings) {
+                                      covariateSettings,
+                                      sqlFile = "GetCovariates.sql") { #change made only for testing!
   writeLines("Constructing default covariates")
   if (substr(cohortTempTable, 1, 1) != "#") {
     cohortTempTable <- paste("#", cohortTempTable, sep = "")
@@ -87,12 +88,12 @@ getDbDefaultCovariateData <- function(connection,
                                    oracleTempSchema = oracleTempSchema)
   }
 
-  renderedSql <- SqlRender::loadRenderTranslateSql("GetCovariates.sql",
+  renderedSql <- SqlRender::loadRenderTranslateSql(sqlFile,
                                                    packageName = "FeatureExtraction",
                                                    dbms = attr(connection, "dbms"),
                                                    oracleTempSchema = oracleTempSchema,
                                                    cdm_database = cdmDatabase,
-						   cdm_database_schema = cdmDatabaseSchema,
+                                                   cdm_database_schema = cdmDatabaseSchema,
                                                    cdm_version = cdmVersion,
                                                    cohort_temp_table = cohortTempTable,
                                                    row_id_field = rowIdField,
@@ -184,6 +185,8 @@ getDbDefaultCovariateData <- function(connection,
                                                    packageName = "FeatureExtraction",
                                                    dbms = attr(connection, "dbms"),
                                                    oracleTempSchema = oracleTempSchema)
+  cat("The Rendered SQL ",renderedSql)
+  
   DatabaseConnector::executeSql(connection,
                                 renderedSql,
                                 progressBar = FALSE,
