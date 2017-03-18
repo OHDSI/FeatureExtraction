@@ -107,5 +107,7 @@ test_that("access", {
     #testDF <-as.data.frame(testResult)
     #print(testDF)
     cat("Diff Time : ",basetime - (Sys.time()- baseStart))
-  }
+  } else {
+    writeLines("Skipping synpuf database test")
+  }  
 })

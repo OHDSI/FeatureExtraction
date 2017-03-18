@@ -24,5 +24,7 @@ test_that("access", {
     connection <- connect(connectionDetails)
     
     getDbDefaultCovariateData(connection = connection)
-  }
+  } else {
+    writeLines("Skipping synpuf database test")
+  }  
 })
