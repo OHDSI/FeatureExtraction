@@ -307,4 +307,3 @@ Create covariate settings
 \details{
 creates an object specifying how covariates should be contructed from data in the CDM model.
 }
-

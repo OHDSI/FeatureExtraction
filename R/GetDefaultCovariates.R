@@ -157,7 +157,6 @@ getDbDefaultCovariateData <- function(connection,
   writeLines("Fetching data from server")
   start <- Sys.time()
   covariateSql <- "SELECT row_id, covariate_id, covariate_value FROM #cov ORDER BY covariate_id, row_id"
-  covariateSql <- SqlRender::renderSql(covariateSql, cohort_definition_id = cohortDefinitionId)$sql
   covariateSql <- SqlRender::translateSql(sql = covariateSql,
                                           targetDialect = attr(connection, "dbms"),
                                           oracleTempSchema = oracleTempSchema)$sql

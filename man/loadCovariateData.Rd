@@ -24,4 +24,3 @@ The data will be written to a set of files in the folder specified by the user.
 # todo
 
 }
-

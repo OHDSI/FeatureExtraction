@@ -37,4 +37,3 @@ cohort table.} \item{cohort_start_date}{A key to link to the cohort table.}
 \item{attribute_definition_id}{An foreign key linking to the attribute definition table.}
 \item{value_as_number}{A real number.} }
 }
-

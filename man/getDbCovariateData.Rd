@@ -74,4 +74,3 @@ cohort. The cohort is assumed to be in an existing table with these fields: 'sub
 'cohort_definition_id', 'cohort_start_date'. Optionally, an extra field can be added containing the
 unique identifier that will be used as rowID in the output.
 }
-

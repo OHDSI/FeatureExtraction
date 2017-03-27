@@ -75,7 +75,6 @@ getDbCohortAttrCovariatesData <- function(connection,
                                           attr_database_schema = covariateSettings$attrDatabaseSchema,
                                           attr_definition_table = covariateSettings$attrDefinitionTable)$sql
   covariateRefSql <- SqlRender::translateSql(sql = covariateRefSql,
-                                             sourceDialect = "sql server",
                                              targetDialect = attr(connection, "dbms"),
                                              oracleTempSchema = oracleTempSchema)$sql
   covariateRef <- DatabaseConnector::querySql.ffdf(connection, covariateRefSql)
@@ -85,7 +84,7 @@ getDbCohortAttrCovariatesData <- function(connection,
 
   sql <- "SELECT COUNT_BIG(*) FROM @cohort_temp_table"
   sql <- SqlRender::renderSql(sql, cohort_temp_table = cohortTempTable)$sql
-  sql <- SqlRender::translateSql(sql,
+  sql <- SqlRender::translateSql(sql = sql,
                                  targetDialect = attr(connection, "dbms"),
                                  oracleTempSchema = oracleTempSchema)$sql
   populationSize <- DatabaseConnector::querySql(connection, sql)[1, 1]

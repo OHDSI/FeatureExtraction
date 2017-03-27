@@ -197,7 +197,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
   }
   if (!cohortTableIsTemp || length(cohortIds) != 0) {
     sql <- "TRUNCATE TABLE #cohort_for_covar_temp; DROP TABLE #cohort_for_covar_temp;"
-    sql <- SqlRender::translateSql(sql,
+    sql <- SqlRender::translateSql(sql = sql,
                                    targetDialect = attr(connection, "dbms"),
                                    oracleTempSchema = oracleTempSchema)$sql
     DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
