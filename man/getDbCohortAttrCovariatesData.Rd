@@ -54,4 +54,3 @@ cohort. The cohort is assumed to be in an existing temp table with these fields:
 unique identifier that will be used as rowID in the output. Typically, users don't call this
 function directly but rather use the \code{\link{getDbCovariateData}} function instead.
 }
-

@@ -25,4 +25,3 @@ Create text covariate settings
 creates an object specifying how covariates should be constructed from text in notes table in the
 CDM model.
 }
-

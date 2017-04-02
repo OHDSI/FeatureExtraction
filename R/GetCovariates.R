@@ -1,6 +1,6 @@
 # @file GetCovariates.R
 #
-# Copyright 2016 Observational Health Data Sciences and Informatics
+# Copyright 2017 Observational Health Data Sciences and Informatics
 #
 # This file is part of FeatureExtraction
 #
@@ -197,7 +197,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
   }
   if (!cohortTableIsTemp || length(cohortIds) != 0) {
     sql <- "TRUNCATE TABLE #cohort_for_covar_temp; DROP TABLE #cohort_for_covar_temp;"
-    sql <- SqlRender::translateSql(sql,
+    sql <- SqlRender::translateSql(sql = sql,
                                    targetDialect = attr(connection, "dbms"),
                                    oracleTempSchema = oracleTempSchema)$sql
     DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)

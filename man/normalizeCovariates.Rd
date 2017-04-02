@@ -17,4 +17,3 @@ Normalize covariate values
 Normalize covariate values by dividing by the max. This is to avoid numeric problems when fitting
 models.
 }
-

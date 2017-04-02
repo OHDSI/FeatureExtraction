@@ -1,6 +1,6 @@
 # @file GetDefaultCovariates.R
 #
-# Copyright 2016 Observational Health Data Sciences and Informatics
+# Copyright 2017 Observational Health Data Sciences and Informatics
 #
 # This file is part of FeatureExtraction
 #
@@ -92,7 +92,7 @@ getDbDefaultCovariateData <- function(connection,
                                                    dbms = attr(connection, "dbms"),
                                                    oracleTempSchema = oracleTempSchema,
                                                    cdm_database = cdmDatabase,
-						   cdm_database_schema = cdmDatabaseSchema,
+                                                   cdm_database_schema = cdmDatabaseSchema,
                                                    cdm_version = cdmVersion,
                                                    cohort_temp_table = cohortTempTable,
                                                    row_id_field = rowIdField,
@@ -157,22 +157,19 @@ getDbDefaultCovariateData <- function(connection,
   writeLines("Fetching data from server")
   start <- Sys.time()
   covariateSql <- "SELECT row_id, covariate_id, covariate_value FROM #cov ORDER BY covariate_id, row_id"
-  covariateSql <- SqlRender::renderSql(covariateSql, cohort_definition_id = cohortDefinitionId)$sql
-  covariateSql <- SqlRender::translateSql(covariateSql,
-                                          "sql server",
-                                          attr(connection, "dbms"),
-                                          oracleTempSchema)$sql
+  covariateSql <- SqlRender::translateSql(sql = covariateSql,
+                                          targetDialect = attr(connection, "dbms"),
+                                          oracleTempSchema = oracleTempSchema)$sql
   covariates <- DatabaseConnector::querySql.ffdf(connection, covariateSql)
   covariateRefSql <- "SELECT covariate_id, covariate_name, analysis_id, concept_id  FROM #cov_ref ORDER BY covariate_id"
-  covariateRefSql <- SqlRender::translateSql(covariateRefSql,
-                                             "sql server",
-                                             attr(connection, "dbms"),
-                                             oracleTempSchema)$sql
+  covariateRefSql <- SqlRender::translateSql(sql = covariateRefSql,
+                                             targetDialect = attr(connection, "dbms"),
+                                             oracleTempSchema = oracleTempSchema)$sql
   covariateRef <- DatabaseConnector::querySql.ffdf(connection, covariateRefSql)
 
   sql <- "SELECT COUNT_BIG(*) FROM @cohort_temp_table"
   sql <- SqlRender::renderSql(sql, cohort_temp_table = cohortTempTable)$sql
-  sql <- SqlRender::translateSql(sql,
+  sql <- SqlRender::translateSql(sql = sql,
                                  targetDialect = attr(connection, "dbms"),
                                  oracleTempSchema = oracleTempSchema)$sql
   populationSize <- DatabaseConnector::querySql(connection, sql)[1, 1]
@@ -184,6 +181,7 @@ getDbDefaultCovariateData <- function(connection,
                                                    packageName = "FeatureExtraction",
                                                    dbms = attr(connection, "dbms"),
                                                    oracleTempSchema = oracleTempSchema)
+
   DatabaseConnector::executeSql(connection,
                                 renderedSql,
                                 progressBar = FALSE,
