@@ -18,64 +18,64 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ************************************************************************/
 
-{DEFAULT @cdm_database = 'CDM4_SIM' } 
-{DEFAULT @cdm_database_schema = 'CDM4_SIM.dbo' } 
+{DEFAULT @cdm_database = 'CDM4_SIM' }
+{DEFAULT @cdm_database_schema = 'CDM4_SIM.dbo' }
 {DEFAULT @cdm_version == '4'}
 {DEFAULT @cohort_temp_table = '#cohort_person'}
 {DEFAULT @row_id_field = 'person_id'}
-{DEFAULT @cohort_definition_id = 'cohort_concept_id'} 
-{DEFAULT @concept_class_id = 'concept_class'} 
-{DEFAULT @measurement = 'observation'} 
-{DEFAULT @use_covariate_demographics = TRUE} 
-{DEFAULT @use_covariate_demographics_age = TRUE} 
-{DEFAULT @use_covariate_demographics_gender = TRUE} 
-{DEFAULT @use_covariate_demographics_race = TRUE} 
-{DEFAULT @use_covariate_demographics_ethnicity = TRUE} 
-{DEFAULT @use_covariate_demographics_year = TRUE} 
-{DEFAULT @use_covariate_demographics_month = TRUE} 
-{DEFAULT @use_covariate_condition_occurrence = TRUE} 
-{DEFAULT @use_covariate_condition_occurrence_365d = TRUE} 
-{DEFAULT @use_covariate_condition_occurrence_30d = TRUE} 
-{DEFAULT @use_covariate_condition_occurrence_inpt180d = TRUE} 
-{DEFAULT @use_covariate_condition_era = FALSE} 
-{DEFAULT @use_covariate_condition_era_ever = TRUE} 
-{DEFAULT @use_covariate_condition_era_overlap = TRUE} 
-{DEFAULT @use_covariate_condition_group = FALSE} 
-{DEFAULT @use_covariate_condition_group_meddra = TRUE} 
-{DEFAULT @use_covariate_condition_group_snomed = TRUE} 
-{DEFAULT @use_covariate_drug_exposure = FALSE} 
-{DEFAULT @use_covariate_drug_exposure_365d = TRUE} 
-{DEFAULT @use_covariate_drug_exposure_30d = TRUE} 
-{DEFAULT @use_covariate_drug_era = FALSE} 
-{DEFAULT @use_covariate_drug_era_365d = TRUE} 
-{DEFAULT @use_covariate_drug_era_30d = TRUE} 
-{DEFAULT @use_covariate_drug_era_overlap = TRUE} 
-{DEFAULT @use_covariate_drug_era_ever = TRUE} 
-{DEFAULT @use_covariate_drug_group = FALSE} 
-{DEFAULT @use_covariate_procedure_occurrence = FALSE} 
-{DEFAULT @use_covariate_procedure_occurrence_365d = TRUE} 
-{DEFAULT @use_covariate_procedure_occurrence_30d = TRUE} 
-{DEFAULT @use_covariate_procedure_group = FALSE} 
-{DEFAULT @use_covariate_observation = FALSE} 
-{DEFAULT @use_covariate_observation_365d = TRUE} 
-{DEFAULT @use_covariate_observation_30d = TRUE} 
-{DEFAULT @use_covariate_observation_count365d = TRUE} 
-{DEFAULT @use_covariate_measurement = FALSE} 
-{DEFAULT @use_covariate_measurement_365d = TRUE} 
-{DEFAULT @use_covariate_measurement_30d = TRUE} 
-{DEFAULT @use_covariate_measurement_below = TRUE} 
-{DEFAULT @use_covariate_measurement_above = TRUE} 
-{DEFAULT @use_covariate_measurement_count365d = TRUE} 
-{DEFAULT @use_covariate_concept_counts = FALSE} 
-{DEFAULT @use_covariate_risk_scores = FALSE} 
-{DEFAULT @use_covariate_risk_scores_Charlson = TRUE} 
-{DEFAULT @use_covariate_risk_scores_DCSI = TRUE} 
-{DEFAULT @use_covariate_risk_scores_CHADS2 = TRUE} 
-{DEFAULT @use_covariate_risk_scores_CHADS2VASc = TRUE} 
-{DEFAULT @use_covariate_interaction_year = FALSE} 
-{DEFAULT @use_covariate_interaction_month = FALSE} 
-{DEFAULT @has_excluded_covariate_concept_ids} 
-{DEFAULT @has_included_covariate_concept_ids} 
+{DEFAULT @cohort_definition_id = 'cohort_concept_id'}
+{DEFAULT @concept_class_id = 'concept_class'}
+{DEFAULT @measurement = 'observation'}
+{DEFAULT @use_covariate_demographics = TRUE}
+{DEFAULT @use_covariate_demographics_age = TRUE}
+{DEFAULT @use_covariate_demographics_gender = TRUE}
+{DEFAULT @use_covariate_demographics_race = TRUE}
+{DEFAULT @use_covariate_demographics_ethnicity = TRUE}
+{DEFAULT @use_covariate_demographics_year = TRUE}
+{DEFAULT @use_covariate_demographics_month = TRUE}
+{DEFAULT @use_covariate_condition_occurrence = TRUE}
+{DEFAULT @use_covariate_condition_occurrence_365d = TRUE}
+{DEFAULT @use_covariate_condition_occurrence_30d = TRUE}
+{DEFAULT @use_covariate_condition_occurrence_inpt180d = TRUE}
+{DEFAULT @use_covariate_condition_era = FALSE}
+{DEFAULT @use_covariate_condition_era_ever = TRUE}
+{DEFAULT @use_covariate_condition_era_overlap = TRUE}
+{DEFAULT @use_covariate_condition_group = FALSE}
+{DEFAULT @use_covariate_condition_group_meddra = TRUE}
+{DEFAULT @use_covariate_condition_group_snomed = TRUE}
+{DEFAULT @use_covariate_drug_exposure = FALSE}
+{DEFAULT @use_covariate_drug_exposure_365d = TRUE}
+{DEFAULT @use_covariate_drug_exposure_30d = TRUE}
+{DEFAULT @use_covariate_drug_era = FALSE}
+{DEFAULT @use_covariate_drug_era_365d = TRUE}
+{DEFAULT @use_covariate_drug_era_30d = TRUE}
+{DEFAULT @use_covariate_drug_era_overlap = TRUE}
+{DEFAULT @use_covariate_drug_era_ever = TRUE}
+{DEFAULT @use_covariate_drug_group = FALSE}
+{DEFAULT @use_covariate_procedure_occurrence = FALSE}
+{DEFAULT @use_covariate_procedure_occurrence_365d = TRUE}
+{DEFAULT @use_covariate_procedure_occurrence_30d = TRUE}
+{DEFAULT @use_covariate_procedure_group = FALSE}
+{DEFAULT @use_covariate_observation = FALSE}
+{DEFAULT @use_covariate_observation_365d = TRUE}
+{DEFAULT @use_covariate_observation_30d = TRUE}
+{DEFAULT @use_covariate_observation_count365d = TRUE}
+{DEFAULT @use_covariate_measurement = FALSE}
+{DEFAULT @use_covariate_measurement_365d = TRUE}
+{DEFAULT @use_covariate_measurement_30d = TRUE}
+{DEFAULT @use_covariate_measurement_below = TRUE}
+{DEFAULT @use_covariate_measurement_above = TRUE}
+{DEFAULT @use_covariate_measurement_count365d = TRUE}
+{DEFAULT @use_covariate_concept_counts = FALSE}
+{DEFAULT @use_covariate_risk_scores = FALSE}
+{DEFAULT @use_covariate_risk_scores_Charlson = TRUE}
+{DEFAULT @use_covariate_risk_scores_DCSI = TRUE}
+{DEFAULT @use_covariate_risk_scores_CHADS2 = TRUE}
+{DEFAULT @use_covariate_risk_scores_CHADS2VASc = TRUE}
+{DEFAULT @use_covariate_interaction_year = FALSE}
+{DEFAULT @use_covariate_interaction_month = FALSE}
+{DEFAULT @has_excluded_covariate_concept_ids}
+{DEFAULT @has_included_covariate_concept_ids}
 {DEFAULT @delete_covariates_small_count = 100}
 
 USE @cdm_database;
@@ -92,7 +92,7 @@ CREATE TABLE #cov_ref (
 	analysis_id INT,
 	concept_id INT
 	);
-	
+
 IF OBJECT_ID('tempdb..#dummy', 'U') IS NOT NULL
 	DROP TABLE #dummy;
 
@@ -101,7 +101,7 @@ CREATE TABLE #dummy (
 	covariate_id BIGINT,
 	covariate_value INT
 	);
-	
+
 /**************************
 ***************************
 DEMOGRAPHICS
@@ -134,10 +134,9 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	'Gender = ' +
     CASE WHEN v1.concept_name IS NOT NULL
-			THEN v1.concept_name
-		ELSE 'Unknown invalid concept'
+			THEN CAST(CONCAT('Gender = ', v1.concept_name) AS VARCHAR(512))
+		ELSE CAST(CONCAT('Gender = ', 'Unknown invalid concept') AS VARCHAR(512))
 		END AS covariate_name,
 	2 AS analysis_id,
 	p1.covariate_id AS concept_id
@@ -176,9 +175,9 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	'Race = ' + CASE WHEN v1.concept_name IS NOT NULL
-  		THEN v1.concept_name
-		ELSE 'Unknown invalid concept'
+	CASE WHEN v1.concept_name IS NOT NULL
+  		THEN CAST(CONCAT('Race =', v1.concept_name) AS VARCHAR(512))
+		ELSE CAST(CONCAT('Race =', 'Unknown invalid concept') AS VARCHAR(512))
 		END  AS covariate_name,
 	3 AS analysis_id,
 	p1.covariate_id AS concept_id
@@ -218,10 +217,10 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	'Ethnicity = ' + CASE WHEN v1.concept_name IS NOT NULL
+	CAST(CONCAT('Ethnicity = ', CASE WHEN v1.concept_name IS NOT NULL
   		THEN v1.concept_name
 		ELSE 'Unknown invalid concept'
-		END  AS covariate_name,
+		END) AS VARCHAR(512))AS covariate_name,
 	4 AS analysis_id,
 	p1.covariate_id AS concept_id
 FROM (SELECT distinct covariate_id FROM #cov_ethnicity) p1
@@ -259,8 +258,8 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	'Age group: ' + CAST((covariate_id-10)*5 AS VARCHAR) + '-' + CAST((covariate_id-10+1)*5-1 AS VARCHAR)  AS covariate_name,
-	4 AS analysis_id,
+	CAST(CONCAT('Age group: ', CAST((covariate_id-10)*5 AS VARCHAR), '-', CAST((covariate_id-10+1)*5-1 AS VARCHAR)) AS VARCHAR(512)) AS covariate_name,
+	5 AS analysis_id,
 	0 AS concept_id
 FROM (select distinct covariate_id FROM #cov_age) p1
 ;
@@ -286,8 +285,8 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	'Index year: ' + CAST(covariate_id AS VARCHAR)  AS covariate_name,
-	5 AS analysis_id,
+	CAST(CONCAT('Index year: ', CAST(covariate_id AS VARCHAR)) AS VARCHAR(512)) AS covariate_name,
+	6 AS analysis_id,
 	0 AS concept_id
 FROM (select distinct covariate_id FROM #cov_year) p1
 ;
@@ -313,8 +312,8 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	'Index month: ' + CAST(covariate_id-40 AS VARCHAR)  AS covariate_name,
-	6 AS analysis_id,
+	CAST(CONCAT('Index month: ', CAST(covariate_id-40 AS VARCHAR)) AS VARCHAR(512))  AS covariate_name,
+	7 AS analysis_id,
 	0 AS concept_id
 FROM (select distinct covariate_id FROM #cov_month) p1
 ;
@@ -353,13 +352,13 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	'Condition occurrence record observed during 365d on or prior to cohort index:  ' + CAST((p1.covariate_id-101)/1000 AS VARCHAR) + '-' + CASE
+	CAST(CONCAT('Condition occurrence record observed during 365d on or prior to cohort index:  ', CAST((p1.covariate_id-101)/1000 AS VARCHAR), '-', CASE
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END AS covariate_name,
+		END) AS VARCHAR(512))AS covariate_name,
 	101 AS analysis_id,
-	(p1.covariate_id-101)/1000 AS concept_id
+	CAST((p1.covariate_id-101)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_co_365d) p1
 LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-101)/1000 = c1.concept_id
@@ -389,13 +388,13 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	'Condition occurrence record observed during 30d on or prior to cohort index:  ' + CAST((p1.covariate_id-102)/1000 AS VARCHAR) + '-' + CASE
+	CAST(CONCAT('Condition occurrence record observed during 30d on or prior to cohort index:  ', CAST((p1.covariate_id-102)/1000 AS VARCHAR), '-', CASE
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END AS covariate_name,
+		END) AS VARCHAR(512)) AS covariate_name,
 	102 AS analysis_id,
-  (p1.covariate_id-102)/1000 AS concept_id
+  CAST((p1.covariate_id-102)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_co_30d) p1
 LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-102)/1000 = c1.concept_id
@@ -430,13 +429,13 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	'Condition occurrence record of primary inpatient diagnosis observed during 180d on or prior to cohort index:  ' + CAST((p1.covariate_id-103)/1000 AS VARCHAR) + '-' + CASE
+	CAST(CONCAT('Condition occurrence record of primary inpatient diagnosis observed during 180d on or prior to cohort index:  ', CAST((p1.covariate_id-103)/1000 AS VARCHAR), '-', CASE
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END AS covariate_name,
+		END) AS VARCHAR(512)) AS covariate_name,
 	103 AS analysis_id,
-	(p1.covariate_id-103)/1000 AS concept_id
+	CAST((p1.covariate_id-103)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_co_inpt180d) p1
 LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-103)/1000 = c1.concept_id
@@ -478,13 +477,13 @@ INSERT INTO #cov_ref (
   concept_id
 	)
 SELECT p1.covariate_id,
-	'Condition era record observed during anytime on or prior to cohort index:    ' + CAST((p1.covariate_id-201)/1000 AS VARCHAR) + '-' + CASE
+	CAST(CONCAT('Condition era record observed during anytime on or prior to cohort index:    ', CAST((p1.covariate_id-201)/1000 AS VARCHAR), '-', CASE
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END AS covariate_name,
+		END) AS VARCHAR(512)) AS covariate_name,
 	201 AS analysis_id,
-	(p1.covariate_id-201)/1000 AS concept_id
+	CAST((p1.covariate_id-201)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_ce_ever) p1
 LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-201)/1000 = c1.concept_id
@@ -521,13 +520,13 @@ INSERT INTO #cov_ref (
   concept_id
   )
 SELECT p1.covariate_id,
-	'Condition era record observed concurrent (overlapping) with cohort index:    ' + CAST((p1.covariate_id-202)/1000 AS VARCHAR) + '-' + CASE
+	CAST(CONCAT('Condition era record observed concurrent (overlapping) with cohort index:    ', CAST((p1.covariate_id-202)/1000 AS VARCHAR), '-', CASE
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END AS covariate_name,
+		END) AS VARCHAR(512)) AS covariate_name,
 	202 AS analysis_id,
-	(p1.covariate_id-202)/1000 AS concept_id
+	CAST((p1.covariate_id-202)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_ce_overlap) p1
 LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-202)/1000 = c1.concept_id
@@ -580,7 +579,7 @@ INNER JOIN @cdm_database_schema.concept c1
 	ON ca1.ancestor_concept_id = c1.concept_id
 {@cdm_version == '4'} ? {
 WHERE c1.vocabulary_id = 15
-} : { 
+} : {
 WHERE c1.vocabulary_id = 'MedDRA'
 }
 	AND c1.@concept_class_id <> 'System Organ Class'
@@ -610,7 +609,7 @@ INNER JOIN @cdm_database_schema.concept c1
 	ON ca1.ancestor_concept_id = c1.concept_id
 {@cdm_version == '4'} ? {
 WHERE c1.vocabulary_id = 1
-} : { 
+} : {
 WHERE c1.vocabulary_id = 'SNOMED'
 }
   AND c1.@concept_class_id = 'Clinical finding'
@@ -629,7 +628,7 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT DISTINCT CAST(cg1.ancestor_concept_id AS BIGINT) * 1000 + 50 + ccr1.analysis_id AS covariate_id,
-	CASE
+	CAST(CONCAT(CASE
 		WHEN analysis_id = 101
 			THEN 'Condition occurrence record observed during 365d on or prior to cohort index within condition group:  '
 		WHEN analysis_id = 102
@@ -641,7 +640,7 @@ SELECT DISTINCT CAST(cg1.ancestor_concept_id AS BIGINT) * 1000 + 50 + ccr1.analy
 		WHEN analysis_id = 202
 			THEN 'Condition era record observed concurrent (overlapping) with cohort index within condition group:  '
 		ELSE 'Other condition group analysis'
-		END + CAST(cg1.ancestor_concept_id AS VARCHAR) + '-' + c1.concept_name AS covariate_name,
+		END, CAST(cg1.ancestor_concept_id AS VARCHAR), '-', c1.concept_name) AS VARCHAR(512)) AS covariate_name,
 	ccr1.analysis_id,
 	cg1.ancestor_concept_id AS concept_id
 FROM (
@@ -732,7 +731,7 @@ INTO #cov_de_365d
 FROM @cohort_temp_table cp1
 INNER JOIN @cdm_database_schema.drug_exposure de1
 	ON cp1.subject_id = de1.person_id
-WHERE de1.drug_concept_id != 0 
+WHERE de1.drug_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {  AND de1.drug_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {  AND de1.drug_concept_id IN (SELECT concept_id FROM #included_cov)}
 	AND de1.drug_exposure_start_date <= cp1.cohort_start_date
@@ -746,13 +745,13 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	'Drug exposure record observed during 365d on or prior to cohort index:  ' + CAST((p1.covariate_id-401)/1000 AS VARCHAR) + '-' + CASE
+	CAST(CONCAT('Drug exposure record observed during 365d on or prior to cohort index:  ', CAST((p1.covariate_id-401)/1000 AS VARCHAR), '-', CASE
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END AS covariate_name,
+		END) AS VARCHAR(512)) AS covariate_name,
 	401 AS analysis_id,
-	(p1.covariate_id-401)/1000 AS concept_id
+	CAST((p1.covariate_id-401)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_de_365d) p1
 LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-401)/1000 = c1.concept_id
@@ -785,13 +784,13 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	'Drug exposure record observed during 30d on or prior to cohort index:  ' + CAST((p1.covariate_id-402)/1000 AS VARCHAR) + '-' + CASE
+	CAST(CONCAT('Drug exposure record observed during 30d on or prior to cohort index:  ', CAST((p1.covariate_id-402)/1000 AS VARCHAR), '-', CASE
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END AS covariate_name,
+		END) AS VARCHAR(512)) AS covariate_name,
 	402 AS analysis_id,
-	(p1.covariate_id-402)/1000 AS concept_id
+	CAST((p1.covariate_id-402)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_de_30d) p1
 LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-402)/1000 = c1.concept_id
@@ -833,13 +832,13 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	'Drug era record observed during 365d on or prior to cohort index:  ' + CAST((p1.covariate_id-501)/1000 AS VARCHAR) + '-' + CASE
+	CAST(CONCAT('Drug era record observed during 365d on or prior to cohort index:  ', CAST((p1.covariate_id-501)/1000 AS VARCHAR), '-', CASE
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END AS covariate_name,
+		END) AS VARCHAR(512)) AS covariate_name,
 	501 AS analysis_id,
-	(p1.covariate_id-501)/1000 AS concept_id
+	CAST((p1.covariate_id-501)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_dera_365d) p1
 LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-501)/1000 = c1.concept_id
@@ -874,13 +873,13 @@ INSERT INTO #cov_ref (
   concept_id
 	)
 SELECT p1.covariate_id,
-	'Drug era record observed during 30d on or prior to cohort index:  ' + CAST((p1.covariate_id-502)/1000 AS VARCHAR) + '-' + CASE
+	CAST(CONCAT('Drug era record observed during 30d on or prior to cohort index:  ', CAST((p1.covariate_id-502)/1000 AS VARCHAR), '-', CASE
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END AS covariate_name,
+		END) AS VARCHAR(512)) AS covariate_name,
 	502 AS analysis_id,
-	(p1.covariate_id-502)/1000 AS concept_id
+	CAST((p1.covariate_id-502)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_dera_30d) p1
 LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-502)/1000 = c1.concept_id
@@ -914,13 +913,13 @@ INSERT INTO #cov_ref (
   concept_id
   )
 SELECT p1.covariate_id,
-	'Drug era record observed concurrent (overlapping) with cohort index:  ' + CAST((p1.covariate_id-503)/1000 AS VARCHAR) + '-' + CASE
+	CAST(CONCAT('Drug era record observed concurrent (overlapping) with cohort index:  ', CAST((p1.covariate_id-503)/1000 AS VARCHAR), '-', CASE
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END AS covariate_name,
+		END) AS VARCHAR(512)) AS covariate_name,
 	503 AS analysis_id,
-	(p1.covariate_id-503)/1000 AS concept_id
+	CAST((p1.covariate_id-503)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_dera_overlap) p1
 LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-503)/1000 = c1.concept_id
@@ -954,13 +953,13 @@ INSERT INTO #cov_ref (
   concept_id
   )
 SELECT p1.covariate_id,
-  'Drug era record observed during anytime on or prior to cohort index:  ' + CAST((p1.covariate_id-504)/1000 AS VARCHAR) + '-' + CASE
+  CAST(CONCAT('Drug era record observed during anytime on or prior to cohort index:  ', CAST((p1.covariate_id-504)/1000 AS VARCHAR), '-', CASE
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END AS covariate_name,
+		END) AS VARCHAR(512)) AS covariate_name,
 	504 AS analysis_id,
-	(p1.covariate_id-504)/1000 AS concept_id
+	CAST((p1.covariate_id-504)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_dera_ever) p1
 LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-504)/1000 = c1.concept_id
@@ -1000,13 +999,13 @@ INNER JOIN @cdm_database_schema.concept c1
 	ON ca1.ancestor_concept_id = c1.concept_id
 {@cdm_version == '4'} ? {
 WHERE c1.vocabulary_id = 21
-} : { 
+} : {
 WHERE c1.vocabulary_id = 'ATC'
 }
 	AND len(c1.concept_code) IN (1, 3, 4, 5)
 	AND c1.concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND c1.concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
-{@has_included_covariate_concept_ids} ? {	AND c1.concept_id IN (SELECT concept_id FROM #included_cov)}	
+{@has_included_covariate_concept_ids} ? {	AND c1.concept_id IN (SELECT concept_id FROM #included_cov)}
 ;
 
 
@@ -1017,7 +1016,7 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT DISTINCT CAST(cg1.ancestor_concept_id AS BIGINT) * 1000 + 50 + ccr1.analysis_id AS covariate_id,
-	CASE
+	CAST(CONCAT(CASE
 		WHEN analysis_id = 501
 			THEN 'Drug era record observed during 365d on or prior to cohort index within drug group:  '
 		WHEN analysis_id = 502
@@ -1027,7 +1026,7 @@ SELECT DISTINCT CAST(cg1.ancestor_concept_id AS BIGINT) * 1000 + 50 + ccr1.analy
     WHEN analysis_id = 504
   		THEN 'Drug era record observed during anytime on or prior to cohort index within drug group:  '
   ELSE 'Other drug group analysis'
-		END + CAST(cg1.ancestor_concept_id AS VARCHAR) + '-' + c1.concept_name AS covariate_name,
+		END, CAST(cg1.ancestor_concept_id AS VARCHAR), '-', c1.concept_name) AS VARCHAR(512)) AS covariate_name,
 	ccr1.analysis_id,
 	cg1.ancestor_concept_id AS concept_id
 FROM (
@@ -1113,7 +1112,7 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT DISTINCT CAST(cg1.ancestor_concept_id AS BIGINT) * 1000 + 601 AS covariate_id,
-	'Number of ingredients within the drug group observed all time on or prior to cohort index: ' + CAST(cg1.ancestor_concept_id AS VARCHAR) + '-' + c1.concept_name AS covariate_name,
+	CAST(CONCAT('Number of ingredients within the drug group observed all time on or prior to cohort index: ', CAST(cg1.ancestor_concept_id AS VARCHAR), '-', c1.concept_name) AS VARCHAR(512)) AS covariate_name,
 	601 AS analysis_id,
 	cg1.ancestor_concept_id AS concept_id
 FROM (
@@ -1176,11 +1175,11 @@ INNER JOIN @cdm_database_schema.procedure_occurrence po1
 	ON cp1.subject_id = po1.person_id
 WHERE po1.procedure_concept_id  != 0
 {@has_excluded_covariate_concept_ids} ? {	AND po1.procedure_concept_id  NOT IN (SELECT concept_id FROM #excluded_cov)}
-{@has_included_covariate_concept_ids} ? {	AND po1.procedure_concept_id  IN (SELECT concept_id FROM #included_cov)}		
+{@has_included_covariate_concept_ids} ? {	AND po1.procedure_concept_id  IN (SELECT concept_id FROM #included_cov)}
 	AND po1.procedure_date <= cp1.cohort_start_date
 	AND po1.procedure_date >= dateadd(dd, - 365, cp1.cohort_start_date);
 
-	
+
 INSERT INTO #cov_ref (
   covariate_id,
   covariate_name,
@@ -1188,13 +1187,13 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	'Procedure occurrence record observed during 365d on or prior to cohort index:  ' + CAST((p1.covariate_id-701)/1000 AS VARCHAR) + '-' + CASE
+	CAST(CONCAT('Procedure occurrence record observed during 365d on or prior to cohort index:  ', CAST((p1.covariate_id-701)/1000 AS VARCHAR), '-', CASE
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END AS covariate_name,
+		END) AS VARCHAR(512)) AS covariate_name,
 	701 AS analysis_id,
-	(p1.covariate_id-701)/1000 AS concept_id
+	CAST((p1.covariate_id-701)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_po_365d) p1
 LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-701)/1000 = c1.concept_id
@@ -1213,7 +1212,7 @@ INNER JOIN @cdm_database_schema.procedure_occurrence po1
 	ON cp1.subject_id = po1.person_id
 WHERE po1.procedure_concept_id  != 0
 {@has_excluded_covariate_concept_ids} ? {	AND po1.procedure_concept_id  NOT IN (SELECT concept_id FROM #excluded_cov)}
-{@has_included_covariate_concept_ids} ? {	AND po1.procedure_concept_id  IN (SELECT concept_id FROM #included_cov)}	
+{@has_included_covariate_concept_ids} ? {	AND po1.procedure_concept_id  IN (SELECT concept_id FROM #included_cov)}
 	AND po1.procedure_date <= cp1.cohort_start_date
 	AND po1.procedure_date >= dateadd(dd, - 30, cp1.cohort_start_date);
 
@@ -1225,13 +1224,13 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	'Procedure occurrence record observed during 30d on or prior to cohort index:  ' + CAST((p1.covariate_id-702)/1000 AS VARCHAR) + '-' + CASE
+	CAST(CONCAT('Procedure occurrence record observed during 30d on or prior to cohort index:  ', CAST((p1.covariate_id-702)/1000 AS VARCHAR), '-', CASE
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END AS covariate_name,
+		END) AS VARCHAR(512)) AS covariate_name,
 	702 AS analysis_id,
-	(p1.covariate_id-702)/1000 AS concept_id
+	CAST((p1.covariate_id-702)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_po_30d) p1
 LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-702)/1000 = c1.concept_id
@@ -1270,14 +1269,14 @@ INNER JOIN @cdm_database_schema.concept c1
 	ON ca1.ancestor_concept_id = c1.concept_id
 {@cdm_version == '4'} ? {
 WHERE c1.vocabulary_id = 1
-} : { 
+} : {
 WHERE c1.vocabulary_id = 'SNOMED'
 }
 	AND ca1.min_levels_of_separation <= 2
 	AND c1.concept_id NOT IN (0,
 	76094,67368, 46042, 40949, 31332, 28263, 24955, 18791, 13449, 12571, 10678, 10592, 9878, 9727, 9652, 9451, 9192, 8975, 8930, 8786, 8370, 8161, 7763, 7059, 6923, 6752, 6690, 6611, 6336, 6264, 6204, 6003, 5783)
 {@has_excluded_covariate_concept_ids} ? {	AND c1.concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
-{@has_included_covariate_concept_ids} ? {	AND c1.concept_id IN (SELECT concept_id FROM #included_cov)}		
+{@has_included_covariate_concept_ids} ? {	AND c1.concept_id IN (SELECT concept_id FROM #included_cov)}
 ;
 
 
@@ -1288,13 +1287,13 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT DISTINCT CAST(cg1.ancestor_concept_id AS BIGINT) * 1000 + 50 + ccr1.analysis_id AS covariate_id,
-	CASE
+	CAST(CONCAT(CASE
 		WHEN analysis_id = 701
 			THEN 'Procedure occurrence record observed during 365d on or prior to cohort index within procedure group:  '
 		WHEN analysis_id = 702
 			THEN 'Procedure occurrence record observed during 30d on or prior to cohort index within procedure group:  '
   ELSE 'Other procedure group analysis'
-		END + CAST(cg1.ancestor_concept_id AS VARCHAR) + '-' + c1.concept_name AS covariate_name,
+		END, CAST(cg1.ancestor_concept_id AS VARCHAR), '-', c1.concept_name) AS VARCHAR(512)) AS covariate_name,
 	ccr1.analysis_id,
 	cg1.ancestor_concept_id AS concept_id
 FROM (
@@ -1370,7 +1369,7 @@ INNER JOIN @cdm_database_schema.observation o1
 	ON cp1.subject_id = o1.person_id
 WHERE o1.observation_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND o1.observation_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
-{@has_included_covariate_concept_ids} ? {	AND o1.observation_concept_id IN (SELECT concept_id FROM #included_cov)}		
+{@has_included_covariate_concept_ids} ? {	AND o1.observation_concept_id IN (SELECT concept_id FROM #included_cov)}
 	AND o1.observation_date <= cp1.cohort_start_date
 	AND o1.observation_date >= dateadd(dd, - 365, cp1.cohort_start_date);
 
@@ -1381,13 +1380,13 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	'Observation record observed during 365d on or prior to cohort index:  ' + CAST((p1.covariate_id-901)/1000 AS VARCHAR) + '-' + CASE
+	CAST(CONCAT('Observation record observed during 365d on or prior to cohort index:  ', CAST((p1.covariate_id-901)/1000 AS VARCHAR), '-', CASE
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END AS covariate_name,
+		END) AS VARCHAR(512)) AS covariate_name,
 	901 AS analysis_id,
-	(p1.covariate_id-901)/1000 AS concept_id
+	CAST((p1.covariate_id-901)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_o_365d) p1
 LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-901)/1000 = c1.concept_id
@@ -1406,7 +1405,7 @@ INNER JOIN @cdm_database_schema.observation o1
 	ON cp1.subject_id = o1.person_id
 WHERE o1.observation_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND o1.observation_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
-{@has_included_covariate_concept_ids} ? {	AND o1.observation_concept_id IN (SELECT concept_id FROM #included_cov)}	
+{@has_included_covariate_concept_ids} ? {	AND o1.observation_concept_id IN (SELECT concept_id FROM #included_cov)}
 	AND o1.observation_date <= cp1.cohort_start_date
 	AND o1.observation_date >= dateadd(dd, - 30, cp1.cohort_start_date);
 
@@ -1417,13 +1416,13 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	'Observation record observed during 30d on or prior to cohort index:  ' + CAST((p1.covariate_id-902)/1000 AS VARCHAR) + '-' + CASE
+	CAST(CONCAT('Observation record observed during 30d on or prior to cohort index:  ', CAST((p1.covariate_id-902)/1000 AS VARCHAR), '-', CASE
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END AS covariate_name,
+		END) AS VARCHAR(512)) AS covariate_name,
 	902 AS analysis_id,
-	(p1.covariate_id-902)/1000 AS concept_id
+	CAST((p1.covariate_id-902)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_o_30d) p1
 LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-902)/1000 = c1.concept_id
@@ -1455,13 +1454,13 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	'Number of observations during 365d on or prior to cohort index:  ' + CAST((p1.covariate_id-905)/1000 AS VARCHAR) + '-' + CASE
+	CAST(CONCAT('Number of observations during 365d on or prior to cohort index:  ', CAST((p1.covariate_id-905)/1000 AS VARCHAR), '-', CASE
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END AS covariate_name,
+		END) AS VARCHAR(512)) AS covariate_name,
 	905 AS analysis_id,
-	(p1.covariate_id-905)/1000 AS concept_id
+	CAST((p1.covariate_id-905)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_o_count365d) p1
 LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-905)/1000 = c1.concept_id
@@ -1494,7 +1493,7 @@ FROM (
 		ON cp1.subject_id = o1.person_id
 	WHERE o1.@measurement_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {		AND o1.@measurement_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
-{@has_included_covariate_concept_ids} ? {		AND o1.@measurement_concept_id IN (SELECT concept_id FROM #included_cov)}	
+{@has_included_covariate_concept_ids} ? {		AND o1.@measurement_concept_id IN (SELECT concept_id FROM #included_cov)}
 		AND o1.@measurement_date <= cp1.cohort_start_date
 		AND o1.@measurement_date >= dateadd(dd, - 180, cp1.cohort_start_date)
 		AND o1.value_as_number >= 0
@@ -1511,13 +1510,13 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	'Measurement numeric value below normal range for latest value within 180d of cohort index:  ' + CAST((p1.covariate_id-903)/1000 AS VARCHAR) + '-' + CASE
+	CAST(CONCAT('Measurement numeric value below normal range for latest value within 180d of cohort index:  ', CAST((p1.covariate_id-903)/1000 AS VARCHAR), '-', CASE
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END AS covariate_name,
+		END) AS VARCHAR(512)) AS covariate_name,
 	903 AS analysis_id,
-	(p1.covariate_id-903)/1000 AS concept_id
+	CAST((p1.covariate_id-903)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_m_below) p1
 LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-903)/1000 = c1.concept_id
@@ -1563,13 +1562,13 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	'Measurement numeric value above normal range for latest value within 180d of cohort index:  ' + CAST((p1.covariate_id-904)/1000 AS VARCHAR) + '-' + CASE
+	CAST(CONCAT('Measurement numeric value above normal range for latest value within 180d of cohort index:  ', CAST((p1.covariate_id-904)/1000 AS VARCHAR), '-', CASE
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END AS covariate_name,
+		END) AS VARCHAR(512)) AS covariate_name,
 	903 AS analysis_id,
-	(p1.covariate_id-904)/1000 AS concept_id
+	CAST((p1.covariate_id-904)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_m_above) p1
 LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-904)/1000 = c1.concept_id
@@ -1590,7 +1589,7 @@ INNER JOIN @cdm_database_schema.measurement o1
 	ON cp1.subject_id = o1.person_id
 WHERE o1.measurement_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND o1.measurement_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
-{@has_included_covariate_concept_ids} ? {	AND o1.measurement_concept_id IN (SELECT concept_id FROM #included_cov)}		
+{@has_included_covariate_concept_ids} ? {	AND o1.measurement_concept_id IN (SELECT concept_id FROM #included_cov)}
 	AND o1.measurement_date <= cp1.cohort_start_date
 	AND o1.measurement_date >= dateadd(dd, - 365, cp1.cohort_start_date);
 
@@ -1601,13 +1600,13 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	'Measurement record observed during 365d on or prior to cohort index:  ' + CAST((p1.covariate_id-901)/1000 AS VARCHAR) + '-' + CASE
+	CAST(CONCAT('Measurement record observed during 365d on or prior to cohort index:  ', CAST((p1.covariate_id-901)/1000 AS VARCHAR), '-', CASE
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END AS covariate_name,
+		END) AS VARCHAR(512)) AS covariate_name,
 	901 AS analysis_id,
-	(p1.covariate_id-901)/1000 AS concept_id
+	CAST((p1.covariate_id-901)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_m_365d) p1
 LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-901)/1000 = c1.concept_id
@@ -1626,7 +1625,7 @@ INNER JOIN @cdm_database_schema.measurement o1
 	ON cp1.subject_id = o1.person_id
 WHERE o1.measurement_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND o1.measurement_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
-{@has_included_covariate_concept_ids} ? {	AND o1.measurement_concept_id IN (SELECT concept_id FROM #included_cov)}	
+{@has_included_covariate_concept_ids} ? {	AND o1.measurement_concept_id IN (SELECT concept_id FROM #included_cov)}
 	AND o1.measurement_date <= cp1.cohort_start_date
 	AND o1.measurement_date >= dateadd(dd, - 30, cp1.cohort_start_date);
 
@@ -1637,13 +1636,13 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	'Measurement record observed during 30d on or prior to cohort index:  ' + CAST((p1.covariate_id-902)/1000 AS VARCHAR) + '-' + CASE
+	CAST(CONCAT('Measurement record observed during 30d on or prior to cohort index:  ', CAST((p1.covariate_id-902)/1000 AS VARCHAR), '-', CASE
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END AS covariate_name,
+		END) AS VARCHAR(512)) AS covariate_name,
 	902 AS analysis_id,
-	(p1.covariate_id-902)/1000 AS concept_id
+	CAST((p1.covariate_id-902)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_m_30d) p1
 LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-902)/1000 = c1.concept_id
@@ -1675,13 +1674,13 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	'Number of measurements during 365d on or prior to cohort index:  ' + CAST((p1.covariate_id-905)/1000 AS VARCHAR) + '-' + CASE
+	CAST(CONCAT('Number of measurements during 365d on or prior to cohort index:  ', CAST((p1.covariate_id-905)/1000 AS VARCHAR), '-', CASE
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END AS covariate_name,
+		END) AS VARCHAR(512)) AS covariate_name,
 	905 AS analysis_id,
-	(p1.covariate_id-905)/1000 AS concept_id
+	CAST((p1.covariate_id-905)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_m_count365d) p1
 LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-905)/1000 = c1.concept_id
@@ -1723,7 +1722,7 @@ VALUES (
 	0
 	);
 
-	
+
 --Number of distinct drug ingredients observed in 365d on or prior to cohort index
 SELECT cp1.@row_id_field AS row_id,
 	1001 AS covariate_id,
@@ -1748,7 +1747,7 @@ VALUES (
 	1001,
 	0
 	);
-	
+
 
 --Number of distinct procedures observed in 365d on or prior to cohort index
 SELECT cp1.@row_id_field AS row_id,
@@ -1888,7 +1887,7 @@ VALUES (
 	1006,
 	0
 	);
-	
+
 {@cdm_version != '4'} ? {
 --Number of distinct measurements observed in 365d on or prior to cohort index
 SELECT cp1.@row_id_field AS row_id,
@@ -2129,7 +2128,7 @@ VALUES (
 	0
 	);
 
-	
+
 SELECT row_id,
 	1100 AS covariate_id,
 	SUM(weight) AS covariate_value
@@ -2189,7 +2188,7 @@ FROM (
 	WHERE source_vocabulary_id = 2
 	AND target_vocabulary_id = 1
 } : {
-	SELECT 
+	SELECT
 	  source.concept_code AS source_code,
 	  target.concept_id AS target_concept_id
 	FROM @cdm_database_schema.concept_relationship
@@ -2223,7 +2222,7 @@ FROM (
 	WHERE source_vocabulary_id= 2
 	AND target_vocabulary_id = 1
 } : {
-	SELECT 
+	SELECT
 	  source.concept_code AS source_code,
 	  target.concept_id AS target_concept_id
 	FROM @cdm_database_schema.concept_relationship
@@ -2259,7 +2258,7 @@ FROM (
 	WHERE source_vocabulary_id= 2
 	AND target_vocabulary_id = 1
 } : {
-	SELECT 
+	SELECT
 	  source.concept_code AS source_code,
 	  target.concept_id AS target_concept_id
 	FROM @cdm_database_schema.concept_relationship
@@ -2297,7 +2296,7 @@ FROM (
 	WHERE source_vocabulary_id= 2
 	AND target_vocabulary_id = 1
 } : {
-	SELECT 
+	SELECT
 	  source.concept_code AS source_code,
 	  target.concept_id AS target_concept_id
 	FROM @cdm_database_schema.concept_relationship
@@ -2334,7 +2333,7 @@ FROM (
 	WHERE source_vocabulary_id= 2
 	AND target_vocabulary_id = 1
 } : {
-	SELECT 
+	SELECT
 	  source.concept_code AS source_code,
 	  target.concept_id AS target_concept_id
 	FROM @cdm_database_schema.concept_relationship
@@ -2385,7 +2384,7 @@ FROM (
 	WHERE source_vocabulary_id= 2
 	AND target_vocabulary_id = 1
 } : {
-	SELECT 
+	SELECT
 	  source.concept_code AS source_code,
 	  target.concept_id AS target_concept_id
 	FROM @cdm_database_schema.concept_relationship
@@ -2418,7 +2417,7 @@ FROM (
 	WHERE source_vocabulary_id= 2
 	AND target_vocabulary_id = 1
 } : {
-	SELECT 
+	SELECT
 	  source.concept_code AS source_code,
 	  target.concept_id AS target_concept_id
 	FROM @cdm_database_schema.concept_relationship
@@ -2455,7 +2454,7 @@ FROM (
 	WHERE source_vocabulary_id= 2
 	AND target_vocabulary_id = 1
 } : {
-	SELECT 
+	SELECT
 	  source.concept_code AS source_code,
 	  target.concept_id AS target_concept_id
 	FROM @cdm_database_schema.concept_relationship
@@ -2493,7 +2492,7 @@ FROM (
 	WHERE source_vocabulary_id= 2
 	AND target_vocabulary_id = 1
 } : {
-	SELECT 
+	SELECT
 	  source.concept_code AS source_code,
 	  target.concept_id AS target_concept_id
 	FROM @cdm_database_schema.concept_relationship
@@ -2534,7 +2533,7 @@ FROM (
 	WHERE source_vocabulary_id= 2
 	AND target_vocabulary_id = 1
 } : {
-	SELECT 
+	SELECT
 	  source.concept_code AS source_code,
 	  target.concept_id AS target_concept_id
 	FROM @cdm_database_schema.concept_relationship
@@ -2572,7 +2571,7 @@ FROM (
 	WHERE source_vocabulary_id= 2
 	AND target_vocabulary_id = 1
 } : {
-	SELECT 
+	SELECT
 	  source.concept_code AS source_code,
 	  target.concept_id AS target_concept_id
 	FROM @cdm_database_schema.concept_relationship
@@ -2608,7 +2607,7 @@ FROM (
 	WHERE source_vocabulary_id= 2
 	AND target_vocabulary_id = 1
 } : {
-	SELECT 
+	SELECT
 	  source.concept_code AS source_code,
 	  target.concept_id AS target_concept_id
 	FROM @cdm_database_schema.concept_relationship
@@ -2742,7 +2741,7 @@ VALUES (
 	0
 	);
 
-	
+
 SELECT row_id,
 	1102 AS covariate_id,
 	SUM(weight) AS covariate_value
@@ -2806,18 +2805,18 @@ INSERT INTO #CHADS2VASc_scoring (diag_category_id,diag_category_name,weight)
 VALUES (1,'Congestive heart failure',1);
 
 INSERT INTO #CHADS2VASc_concepts (diag_category_id,concept_id)
-SELECT 1, c.concept_id 
+SELECT 1, c.concept_id
 FROM (
   select distinct I.concept_id FROM
-  ( 
+  (
     select DISTINCT concept_id from CONCEPT where concept_id in (316139,314378,318773,321319) and invalid_reason is null
-    UNION 
+    UNION
     select c.concept_id
     from CONCEPT c
     join CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
     and ca.ancestor_concept_id in (316139,314378)
     and c.invalid_reason is null
-  
+
   ) I
 ) C
 ;
@@ -2827,32 +2826,32 @@ INSERT INTO #CHADS2VASc_scoring (diag_category_id,diag_category_name,weight)
 VALUES (2,'Hypertension',1);
 
 INSERT INTO #CHADS2VASc_concepts (diag_category_id,concept_id)
-SELECT 2, c.concept_id 
-FROM 
+SELECT 2, c.concept_id
+FROM
 (
   select distinct I.concept_id FROM
-  ( 
+  (
     select DISTINCT concept_id from CONCEPT where concept_id in (320128,442604,201313) and invalid_reason is null
-      UNION 
-  
+      UNION
+
     select c.concept_id
     from CONCEPT c
     join CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
     and ca.ancestor_concept_id in (320128,442604,201313)
     and c.invalid_reason is null
-  
+
   ) I
   LEFT JOIN
   (
     select concept_id from CONCEPT where concept_id in (197930)and invalid_reason is null
-      UNION 
-  
+      UNION
+
     select c.concept_id
     from CONCEPT c
     join CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
     and ca.ancestor_concept_id in (197930)
     and c.invalid_reason is null
-  
+
   ) E ON I.concept_id = E.concept_id
   WHERE E.concept_id is null
 ) C
@@ -2869,32 +2868,32 @@ INSERT INTO #CHADS2VASc_scoring (diag_category_id,diag_category_name,weight)
 VALUES (4,'Diabetes',1);
 
 INSERT INTO #CHADS2VASc_concepts (diag_category_id,concept_id)
-SELECT 4, c.concept_id 
-FROM 
+SELECT 4, c.concept_id
+FROM
 (
   select distinct I.concept_id FROM
-  ( 
+  (
     select DISTINCT concept_id from CONCEPT where concept_id in (201820,442793) and invalid_reason is null
-      UNION 
-  
+      UNION
+
     select c.concept_id
     from CONCEPT c
     join CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
     and ca.ancestor_concept_id in (201820,442793)
     and c.invalid_reason is null
-  
+
   ) I
   LEFT JOIN
   (
     select concept_id from CONCEPT where concept_id in (195771,376112,4174977,4058243,193323,376979)and invalid_reason is null
-    UNION 
-  
+    UNION
+
     select c.concept_id
     from CONCEPT c
     join CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
     and ca.ancestor_concept_id in (195771,376112,4174977,4058243,193323,376979)
     and c.invalid_reason is null
-  
+
   ) E ON I.concept_id = E.concept_id
   WHERE E.concept_id is null
 ) C
@@ -2905,20 +2904,20 @@ INSERT INTO #CHADS2VASc_scoring (diag_category_id,diag_category_name,weight)
 VALUES (5,'Stroke',2);
 
 INSERT INTO #CHADS2VASc_concepts (diag_category_id,concept_id)
-SELECT 5, c.concept_id 
-FROM 
+SELECT 5, c.concept_id
+FROM
 (
   select distinct I.concept_id FROM
-  ( 
+  (
     select DISTINCT concept_id from CONCEPT where concept_id in (4043731,4110192,375557,4108356,373503,434656,433505,376714,312337) and invalid_reason is null
-      UNION 
-  
+      UNION
+
     select c.concept_id
     from CONCEPT c
     join CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
     and ca.ancestor_concept_id in (4043731,4110192,375557,4108356,373503,434656,433505,376714,312337)
     and c.invalid_reason is null
-  
+
   ) I
 ) C
 ;
@@ -2928,21 +2927,21 @@ INSERT INTO #CHADS2VASc_scoring (diag_category_id,diag_category_name,weight)
 VALUES (6,'Vascular Disease', 1);
 
 INSERT INTO #CHADS2VASc_concepts (diag_category_id,concept_id)
-SELECT 6, c.concept_id FROM 
+SELECT 6, c.concept_id FROM
 (
-  select distinct I.concept_id 
+  select distinct I.concept_id
   FROM
-  ( 
+  (
     select DISTINCT concept_id from CONCEPT where concept_id in (312327,43020432,314962,312939,315288,317309,134380,196438,200138,194393,319047,40486130,317003,4313767,321596,317305,321886,314659,321887,437312,134057) and invalid_reason is null
-    
-    UNION 
+
+    UNION
 
     select c.concept_id
     from CONCEPT c
     join CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
     and ca.ancestor_concept_id in (312327,43020432,314962,312939,315288,317309,134380,196438,200138,194393,319047,40486130,317003,4313767,321596)
     and c.invalid_reason is null
-  
+
   ) I
 ) C
 ;
@@ -2993,7 +2992,7 @@ FROM (
 		3 as diag_category_id,
 		2 as weight
 	FROM @cohort_temp_table cp1
-  INNER JOIN @cdm_database_schema.person p1 
+  INNER JOIN @cdm_database_schema.person p1
     ON cp1.subject_id = p1.person_id
   WHERE year(cp1.cohort_start_date) - p1.year_of_birth >= 75
 
@@ -3003,19 +3002,19 @@ FROM (
 		7 as diag_category_id,
 		1 as weight
 	FROM @cohort_temp_table cp1
-  INNER JOIN @cdm_database_schema.person p1 
+  INNER JOIN @cdm_database_schema.person p1
     ON cp1.subject_id = p1.person_id
   WHERE year(cp1.cohort_start_date) - p1.year_of_birth between 65 and 74
 
-  UNION 
+  UNION
 
   SELECT DISTINCT cp1.@row_id_field AS row_id,
 		8 as diag_category_id,
 		1 as weight
   FROM @cohort_temp_table cp1
-  INNER JOIN @cdm_database_schema.person p1 
+  INNER JOIN @cdm_database_schema.person p1
     ON cp1.subject_id = p1.person_id
-  WHERE p1.gender_concept_id = 8532 
+  WHERE p1.gender_concept_id = 8532
 ) t1
 GROUP BY row_id;
 
@@ -3312,7 +3311,7 @@ FROM #cov_o_count365d
 }
 
 {(@cdm_version == '4' & @use_covariate_observation) | @use_covariate_measurement} ? {
-{@use_covariate_measurement_below} ? {
+{@use_covariate_observation_below} ? {
 
 UNION
 
@@ -3322,7 +3321,7 @@ FROM #cov_m_below
 }
 
 
-{@use_covariate_measurement_above} ? {
+{@use_covariate_observation_above} ? {
 
 UNION
 
@@ -3467,7 +3466,7 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT DISTINCT CAST(ccr1.covariate_id AS BIGINT) * 10000 + YEAR(cp1.cohort_start_date) AS covariate_id,
-	ccr1.covariate_name + ' * interaction term with index year: ' + CAST(YEAR(cp1.cohort_start_date) AS VARCHAR) AS covariate_name,
+	CAST(CONCAT(ccr1.covariate_name, ' * interaction term with index year: ', CAST(YEAR(cp1.cohort_start_date) AS VARCHAR)) AS VARCHAR(512)) AS covariate_name,
 	ccr1.analysis_id,
 	ccr1.concept_id
 FROM @cohort_temp_table cp1
@@ -3508,7 +3507,7 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT DISTINCT CAST(ccr1.covariate_id AS BIGINT) * 10000 + CAST(MONTH(cp1.cohort_start_date) AS BIGINT) AS covariate_id,
-	ccr1.covariate_name + ' * interaction term with index month: ' + CAST(MONTH(cp1.cohort_start_date) AS VARCHAR) AS covariate_name,
+	CONCAT(ccr1.covariate_name, ' * interaction term with index month: ', CAST(MONTH(cp1.cohort_start_date) AS VARCHAR)) AS covariate_name,
 	ccr1.analysis_id,
 	ccr1.concept_id
 FROM @cohort_temp_table cp1
@@ -3518,7 +3517,7 @@ INNER JOIN #cov_ref ccr1
 	ON cc1.covariate_id = ccr1.covariate_id
 WHERE ccr1.analysis_id NOT IN (6)
 	AND ccr1.covariate_id > 1;
-	
+
 SELECT DISTINCT cc1.row_id,
 	CAST(cc1.covariate_id AS BIGINT) * 10000 + CAST(MONTH(cp1.cohort_start_date) AS BIGINT) AS covariate_id,
 	cc1.covariate_value AS covariate_value
@@ -3602,6 +3601,7 @@ WHERE covariate_id IN (
 
 ) t1
 ;
+
 
 IF OBJECT_ID('tempdb..#cov_gender', 'U') IS NOT NULL
   DROP TABLE #cov_gender;
@@ -3690,6 +3690,7 @@ IF OBJECT_ID('tempdb..#cov_all', 'U') IS NOT NULL
   DROP TABLE #cov_all;
 TRUNCATE TABLE #dummy;
   DROP TABLE #dummy;
+
 
 {@has_excluded_covariate_concept_ids} ? {
 TRUNCATE TABLE #excluded_cov;
