@@ -88,7 +88,7 @@ IF OBJECT_ID('tempdb..#cov_ref', 'U') IS NOT NULL
 
 CREATE TABLE #cov_ref (
 	covariate_id BIGINT,
-	covariate_name VARCHAR(512),
+	covariate_name VARCHAR,
 	analysis_id INT,
 	concept_id INT
 	);
@@ -135,8 +135,8 @@ INSERT INTO #cov_ref (
 	)
 SELECT p1.covariate_id,
     CASE WHEN v1.concept_name IS NOT NULL
-			THEN CAST(CONCAT('Gender = ', v1.concept_name) AS VARCHAR(512))
-		ELSE CAST(CONCAT('Gender = ', 'Unknown invalid concept') AS VARCHAR(512))
+			THEN CAST(CONCAT('Gender = ', v1.concept_name) AS VARCHAR)
+		ELSE CAST(CONCAT('Gender = ', 'Unknown invalid concept') AS VARCHAR)
 		END AS covariate_name,
 	2 AS analysis_id,
 	p1.covariate_id AS concept_id
@@ -176,8 +176,8 @@ INSERT INTO #cov_ref (
 	)
 SELECT p1.covariate_id,
 	CASE WHEN v1.concept_name IS NOT NULL
-  		THEN CAST(CONCAT('Race =', v1.concept_name) AS VARCHAR(512))
-		ELSE CAST(CONCAT('Race =', 'Unknown invalid concept') AS VARCHAR(512))
+  		THEN CAST(CONCAT('Race =', v1.concept_name) AS VARCHAR)
+		ELSE CAST(CONCAT('Race =', 'Unknown invalid concept') AS VARCHAR)
 		END  AS covariate_name,
 	3 AS analysis_id,
 	p1.covariate_id AS concept_id
@@ -220,7 +220,7 @@ SELECT p1.covariate_id,
 	CAST(CONCAT('Ethnicity = ', CASE WHEN v1.concept_name IS NOT NULL
   		THEN v1.concept_name
 		ELSE 'Unknown invalid concept'
-		END) AS VARCHAR(512))AS covariate_name,
+		END) AS VARCHAR)AS covariate_name,
 	4 AS analysis_id,
 	p1.covariate_id AS concept_id
 FROM (SELECT distinct covariate_id FROM #cov_ethnicity) p1
@@ -258,7 +258,7 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	CAST(CONCAT('Age group: ', CAST((covariate_id-10)*5 AS VARCHAR), '-', CAST((covariate_id-10+1)*5-1 AS VARCHAR)) AS VARCHAR(512)) AS covariate_name,
+	CAST(CONCAT('Age group: ', CAST((covariate_id-10)*5 AS VARCHAR), '-', CAST((covariate_id-10+1)*5-1 AS VARCHAR)) AS VARCHAR) AS covariate_name,
 	5 AS analysis_id,
 	0 AS concept_id
 FROM (select distinct covariate_id FROM #cov_age) p1
@@ -285,7 +285,7 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	CAST(CONCAT('Index year: ', CAST(covariate_id AS VARCHAR)) AS VARCHAR(512)) AS covariate_name,
+	CAST(CONCAT('Index year: ', CAST(covariate_id AS VARCHAR)) AS VARCHAR) AS covariate_name,
 	6 AS analysis_id,
 	0 AS concept_id
 FROM (select distinct covariate_id FROM #cov_year) p1
@@ -312,7 +312,7 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	CAST(CONCAT('Index month: ', CAST(covariate_id-40 AS VARCHAR)) AS VARCHAR(512))  AS covariate_name,
+	CAST(CONCAT('Index month: ', CAST(covariate_id-40 AS VARCHAR)) AS VARCHAR)  AS covariate_name,
 	7 AS analysis_id,
 	0 AS concept_id
 FROM (select distinct covariate_id FROM #cov_month) p1
@@ -356,7 +356,7 @@ SELECT p1.covariate_id,
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END) AS VARCHAR(512))AS covariate_name,
+		END) AS VARCHAR)AS covariate_name,
 	101 AS analysis_id,
 	CAST((p1.covariate_id-101)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_co_365d) p1
@@ -392,7 +392,7 @@ SELECT p1.covariate_id,
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END) AS VARCHAR(512)) AS covariate_name,
+		END) AS VARCHAR) AS covariate_name,
 	102 AS analysis_id,
   CAST((p1.covariate_id-102)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_co_30d) p1
@@ -433,7 +433,7 @@ SELECT p1.covariate_id,
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END) AS VARCHAR(512)) AS covariate_name,
+		END) AS VARCHAR) AS covariate_name,
 	103 AS analysis_id,
 	CAST((p1.covariate_id-103)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_co_inpt180d) p1
@@ -481,7 +481,7 @@ SELECT p1.covariate_id,
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END) AS VARCHAR(512)) AS covariate_name,
+		END) AS VARCHAR) AS covariate_name,
 	201 AS analysis_id,
 	CAST((p1.covariate_id-201)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_ce_ever) p1
@@ -524,7 +524,7 @@ SELECT p1.covariate_id,
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END) AS VARCHAR(512)) AS covariate_name,
+		END) AS VARCHAR) AS covariate_name,
 	202 AS analysis_id,
 	CAST((p1.covariate_id-202)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_ce_overlap) p1
@@ -640,7 +640,7 @@ SELECT DISTINCT CAST(cg1.ancestor_concept_id AS BIGINT) * 1000 + 50 + ccr1.analy
 		WHEN analysis_id = 202
 			THEN 'Condition era record observed concurrent (overlapping) with cohort index within condition group:  '
 		ELSE 'Other condition group analysis'
-		END, CAST(cg1.ancestor_concept_id AS VARCHAR), '-', c1.concept_name) AS VARCHAR(512)) AS covariate_name,
+		END, CAST(cg1.ancestor_concept_id AS VARCHAR), '-', c1.concept_name) AS VARCHAR) AS covariate_name,
 	ccr1.analysis_id,
 	cg1.ancestor_concept_id AS concept_id
 FROM (
@@ -749,7 +749,7 @@ SELECT p1.covariate_id,
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END) AS VARCHAR(512)) AS covariate_name,
+		END) AS VARCHAR) AS covariate_name,
 	401 AS analysis_id,
 	CAST((p1.covariate_id-401)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_de_365d) p1
@@ -788,7 +788,7 @@ SELECT p1.covariate_id,
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END) AS VARCHAR(512)) AS covariate_name,
+		END) AS VARCHAR) AS covariate_name,
 	402 AS analysis_id,
 	CAST((p1.covariate_id-402)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_de_30d) p1
@@ -836,7 +836,7 @@ SELECT p1.covariate_id,
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END) AS VARCHAR(512)) AS covariate_name,
+		END) AS VARCHAR) AS covariate_name,
 	501 AS analysis_id,
 	CAST((p1.covariate_id-501)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_dera_365d) p1
@@ -877,7 +877,7 @@ SELECT p1.covariate_id,
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END) AS VARCHAR(512)) AS covariate_name,
+		END) AS VARCHAR) AS covariate_name,
 	502 AS analysis_id,
 	CAST((p1.covariate_id-502)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_dera_30d) p1
@@ -917,7 +917,7 @@ SELECT p1.covariate_id,
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END) AS VARCHAR(512)) AS covariate_name,
+		END) AS VARCHAR) AS covariate_name,
 	503 AS analysis_id,
 	CAST((p1.covariate_id-503)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_dera_overlap) p1
@@ -957,7 +957,7 @@ SELECT p1.covariate_id,
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END) AS VARCHAR(512)) AS covariate_name,
+		END) AS VARCHAR) AS covariate_name,
 	504 AS analysis_id,
 	CAST((p1.covariate_id-504)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_dera_ever) p1
@@ -1026,7 +1026,7 @@ SELECT DISTINCT CAST(cg1.ancestor_concept_id AS BIGINT) * 1000 + 50 + ccr1.analy
     WHEN analysis_id = 504
   		THEN 'Drug era record observed during anytime on or prior to cohort index within drug group:  '
   ELSE 'Other drug group analysis'
-		END, CAST(cg1.ancestor_concept_id AS VARCHAR), '-', c1.concept_name) AS VARCHAR(512)) AS covariate_name,
+		END, CAST(cg1.ancestor_concept_id AS VARCHAR), '-', c1.concept_name) AS VARCHAR) AS covariate_name,
 	ccr1.analysis_id,
 	cg1.ancestor_concept_id AS concept_id
 FROM (
@@ -1112,7 +1112,7 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT DISTINCT CAST(cg1.ancestor_concept_id AS BIGINT) * 1000 + 601 AS covariate_id,
-	CAST(CONCAT('Number of ingredients within the drug group observed all time on or prior to cohort index: ', CAST(cg1.ancestor_concept_id AS VARCHAR), '-', c1.concept_name) AS VARCHAR(512)) AS covariate_name,
+	CAST(CONCAT('Number of ingredients within the drug group observed all time on or prior to cohort index: ', CAST(cg1.ancestor_concept_id AS VARCHAR), '-', c1.concept_name) AS VARCHAR) AS covariate_name,
 	601 AS analysis_id,
 	cg1.ancestor_concept_id AS concept_id
 FROM (
@@ -1191,7 +1191,7 @@ SELECT p1.covariate_id,
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END) AS VARCHAR(512)) AS covariate_name,
+		END) AS VARCHAR) AS covariate_name,
 	701 AS analysis_id,
 	CAST((p1.covariate_id-701)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_po_365d) p1
@@ -1228,7 +1228,7 @@ SELECT p1.covariate_id,
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END) AS VARCHAR(512)) AS covariate_name,
+		END) AS VARCHAR) AS covariate_name,
 	702 AS analysis_id,
 	CAST((p1.covariate_id-702)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_po_30d) p1
@@ -1293,7 +1293,7 @@ SELECT DISTINCT CAST(cg1.ancestor_concept_id AS BIGINT) * 1000 + 50 + ccr1.analy
 		WHEN analysis_id = 702
 			THEN 'Procedure occurrence record observed during 30d on or prior to cohort index within procedure group:  '
   ELSE 'Other procedure group analysis'
-		END, CAST(cg1.ancestor_concept_id AS VARCHAR), '-', c1.concept_name) AS VARCHAR(512)) AS covariate_name,
+		END, CAST(cg1.ancestor_concept_id AS VARCHAR), '-', c1.concept_name) AS VARCHAR) AS covariate_name,
 	ccr1.analysis_id,
 	cg1.ancestor_concept_id AS concept_id
 FROM (
@@ -1384,7 +1384,7 @@ SELECT p1.covariate_id,
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END) AS VARCHAR(512)) AS covariate_name,
+		END) AS VARCHAR) AS covariate_name,
 	901 AS analysis_id,
 	CAST((p1.covariate_id-901)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_o_365d) p1
@@ -1420,7 +1420,7 @@ SELECT p1.covariate_id,
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END) AS VARCHAR(512)) AS covariate_name,
+		END) AS VARCHAR) AS covariate_name,
 	902 AS analysis_id,
 	CAST((p1.covariate_id-902)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_o_30d) p1
@@ -1458,7 +1458,7 @@ SELECT p1.covariate_id,
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END) AS VARCHAR(512)) AS covariate_name,
+		END) AS VARCHAR) AS covariate_name,
 	905 AS analysis_id,
 	CAST((p1.covariate_id-905)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_o_count365d) p1
@@ -1514,7 +1514,7 @@ SELECT p1.covariate_id,
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END) AS VARCHAR(512)) AS covariate_name,
+		END) AS VARCHAR) AS covariate_name,
 	903 AS analysis_id,
 	CAST((p1.covariate_id-903)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_m_below) p1
@@ -1566,7 +1566,7 @@ SELECT p1.covariate_id,
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END) AS VARCHAR(512)) AS covariate_name,
+		END) AS VARCHAR) AS covariate_name,
 	903 AS analysis_id,
 	CAST((p1.covariate_id-904)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_m_above) p1
@@ -1604,7 +1604,7 @@ SELECT p1.covariate_id,
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END) AS VARCHAR(512)) AS covariate_name,
+		END) AS VARCHAR) AS covariate_name,
 	901 AS analysis_id,
 	CAST((p1.covariate_id-901)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_m_365d) p1
@@ -1640,7 +1640,7 @@ SELECT p1.covariate_id,
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END) AS VARCHAR(512)) AS covariate_name,
+		END) AS VARCHAR) AS covariate_name,
 	902 AS analysis_id,
 	CAST((p1.covariate_id-902)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_m_30d) p1
@@ -1678,7 +1678,7 @@ SELECT p1.covariate_id,
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
-		END) AS VARCHAR(512)) AS covariate_name,
+		END) AS VARCHAR) AS covariate_name,
 	905 AS analysis_id,
 	CAST((p1.covariate_id-905)/1000 AS INT) AS concept_id
 FROM (SELECT DISTINCT covariate_id FROM #cov_m_count365d) p1
@@ -3466,7 +3466,7 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT DISTINCT CAST(ccr1.covariate_id AS BIGINT) * 10000 + YEAR(cp1.cohort_start_date) AS covariate_id,
-	CAST(CONCAT(ccr1.covariate_name, ' * interaction term with index year: ', CAST(YEAR(cp1.cohort_start_date) AS VARCHAR)) AS VARCHAR(512)) AS covariate_name,
+	CAST(CONCAT(ccr1.covariate_name, ' * interaction term with index year: ', CAST(YEAR(cp1.cohort_start_date) AS VARCHAR)) AS VARCHAR) AS covariate_name,
 	ccr1.analysis_id,
 	ccr1.concept_id
 FROM @cohort_temp_table cp1
