@@ -99,11 +99,19 @@ getDbTemporalCovariateData <- function(connection,
                                                    row_id_field = rowIdField,
                                                    use_covariate_condition_era_start = covariateSettings$useCovariateConditionEraStart,
                                                    use_covariate_condition_era_present = covariateSettings$useCovariateConditionEraPresent,
+                                                   use_covariate_condition_group = covariateSettings$useCovariateConditionGroup,
+                                                   use_covariate_condition_group_meddra = covariateSettings$useCovariateConditionGroupMeddra,
+                                                   use_covariate_condition_group_snomed = covariateSettings$useCovariateConditionGroupSnomed,
                                                    use_covariate_drug_era_start = covariateSettings$useCovariateDrugEraStart,
                                                    use_covariate_drug_era_present = covariateSettings$useCovariateDrugEraPresent,
                                                    use_covariate_measurement_value = covariateSettings$useCovariateMeasurementValue,
+                                                   use_covariate_measurement_below = covariateSettings$useCovariateMeasurementBelow,
+                                                   use_covariate_measurement_above = covariateSettings$useCovariateMeasurementAbove,
                                                    use_covariate_procedure_occurrence = covariateSettings$useCovariateProcedureOccurence,
+                                                   use_covariate_procedure_group = covariateSettings$useCovariateProcedureGroup,
                                                    use_covariate_observation_occurrence = covariateSettings$useCovariateObservationOccurence,
+                                                   use_covariate_visit_occurrence = covariateSettings$useCovariateVisitOccurence,
+                                                   use_covariate_concept_counts = covariateSettings$useCovariateConceptCounts,
                                                    has_excluded_covariate_concept_ids = hasExcludedCovariateConceptIds,
                                                    has_included_covariate_concept_ids = hasIncludedCovariateConceptIds)
   
@@ -156,11 +164,19 @@ getDbTemporalCovariateData <- function(connection,
 #' 
 #' @param useCovariateConditionEraStart             Extract start of condition era?
 #' @param useCovariateConditionPresent              Extract active condition era?
+#' @param useCovariateConditionGroup                Extract the condition group
+#' @param useCovariateConditionGroupMeddra          Group using Meddra
+#' @param useCovariateConditionGroupSnomed          Group using Snomed
 #' @param useCovariateDrugEraStart                  Extract start of drug era?
 #' @param useCovariateDrugPresent                   Extract active drug era?  
-#' @param useCovariateMeasurementValue              Include first measurement in time window?
-#' @param useCovariateProcedure                     Extract the procedures in time window?
-#' @param useCovariateObservation                   Extract the observations in time window?
+#' @param useCovariateMeasurementValue              Extract last measurement?
+#' @param useCovariateMeasurementBelow              Extract last measurement below normal range?
+#' @param useCovariateMeasurementAbove              Extract last measurement above normal range?
+#' @param useCovariateProcedure                     Extract the procedures?
+#' @param useCovariateProcedure                     Extract the procedures at group level?
+#' @param useCovariateObservation                   Extract the observations?
+#' @param useCovariateVisitOccurrence               Extract the visit occurrence?
+#' @param useCovariateConceptCounts                 Extract the concept counts?
 #' @param excludedCovariateConceptIds               A list of concept IDs that should NOT be used to
 #'                                                  construct covariates.
 #' @param includedCovariateConceptIds               A list of concept IDs that should be used to
@@ -181,11 +197,19 @@ getDbTemporalCovariateData <- function(connection,
 #' @export
 createTemporalCovariateSettings <- function(useCovariateConditionEraStart = FALSE,
                                             useCovariateConditionEraPresent = FALSE,
+                                            useCovariateConditionGroup = FALSE,
+                                            useCovariateConditionGroupMeddra = FALSE,
+                                            useCovariateConditionGroupSnomed = FALSE,
                                             useCovariateDrugEraStart = FALSE,
                                             useCovariateDrugEraPresent = FALSE,
                                             useCovariateMeasurementValue = FALSE,
+                                            useCovariateMeasurementAbove = FALSE,
+                                            useCovariateMeasurementBelow = FALSE,
                                             useCovariateProcedureOccurence = FALSE,
+                                            useCovariateProcedureGroup = FALSE,
                                             useCovariateObservationOccurence = FALSE,
+                                            useCovariateVisitOccurence = FALSE,
+                                            useCovariateConceptCounts = FALSE,
                                             excludedCovariateConceptIds = c(),
                                             includedCovariateConceptIds = c(),
                                             startDays = -365:-1,

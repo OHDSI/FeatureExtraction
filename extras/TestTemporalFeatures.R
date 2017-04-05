@@ -35,13 +35,16 @@ sql <- SqlRender::translateSql(sql, targetDialect = connectionDetails$dbms)$sql
 DatabaseConnector::querySql(connection, sql)
 
 
-settings <- createTemporalCovariateSettings(useCovariateConditionEraStart = FALSE,
-                                            useCovariateConditionEraPresent = FALSE,
-                                            useCovariateDrugEraStart = FALSE,
+settings <- createTemporalCovariateSettings(useCovariateConditionEraStart = TRUE,
+                                            useCovariateConditionEraPresent = TRUE,
+                                            useCovariateDrugEraStart = TRUE,
                                             useCovariateDrugEraPresent = TRUE,
-                                            useCovariateMeasurementValue = FALSE,
-                                            useCovariateProcedureOccurence = FALSE,
-                                            useCovariateObservationOccurence = FALSE)
+                                            useCovariateMeasurementValue = TRUE,
+                                            useCovariateMeasurementAbove = TRUE,
+                                            useCovariateMeasurementBelow = TRUE,
+                                            useCovariateProcedureOccurence = TRUE,
+                                            useCovariateObservationOccurence = TRUE,
+                                            useCovariateVisitOccurence = TRUE)
 
 covarData <- getDbCovariateData(connectionDetails = connectionDetails,
                                 cdmDatabaseSchema = cdmDatabaseSchema,
