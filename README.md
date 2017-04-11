@@ -60,7 +60,7 @@ Development
 ===========
 FeatureExtraction is being developed in R Studio.
 
-###Development status
+### Development status
 
 [![Build Status](https://travis-ci.org/OHDSI/FeatureExtraction.svg?branch=master)](https://travis-ci.org/OHDSI/FeatureExtraction)
 
