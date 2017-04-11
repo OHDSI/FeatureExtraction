@@ -95,7 +95,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
   if (cohortTableIsTemp && length(cohortIds) == 0) {
     cohortTempTable <- cohortTable
   } else {
-    cohortTempTable <- "#cohort_for_covar_temp"
+    cohortTempTable <- "#cohort_for_cov_temp"
     if (cohortTableIsTemp) {
       cohortDatabaseSchemaTable <- cohortTable
     } else {
@@ -196,7 +196,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
     }
   }
   if (!cohortTableIsTemp || length(cohortIds) != 0) {
-    sql <- "TRUNCATE TABLE #cohort_for_covar_temp; DROP TABLE #cohort_for_covar_temp;"
+    sql <- "TRUNCATE TABLE #cohort_for_cov_temp; DROP TABLE #cohort_for_cov_temp;"
     sql <- SqlRender::translateSql(sql = sql,
                                    targetDialect = attr(connection, "dbms"),
                                    oracleTempSchema = oracleTempSchema)$sql
