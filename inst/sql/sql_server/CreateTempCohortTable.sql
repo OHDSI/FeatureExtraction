@@ -3,7 +3,7 @@
 {DEFAULT @cohort_database_schema_table == '#cohort_temp'}
 
 SELECT * 
-INTO #cohort_for_covar_temp 
+INTO #cohort_for_cov_temp 
 FROM @cohort_database_schema_table 
 {cohort_ids != ''} ? {
 {@cdm_version == '4'} ? {
