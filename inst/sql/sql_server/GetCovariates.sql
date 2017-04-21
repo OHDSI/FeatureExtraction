@@ -580,7 +580,7 @@ INNER JOIN @cdm_database_schema.concept c1
 {@cdm_version == '4'} ? {
 WHERE c1.vocabulary_id = 15
 } : {
-WHERE c1.vocabulary_id = 'MedDRA'
+WHERE LOWER(c1.vocabulary_id) = 'meddra'
 }
 	AND c1.@concept_class_id <> 'System Organ Class'
 	AND c1.concept_id NOT IN (36302170, 36303153, 36313966)
@@ -610,11 +610,11 @@ INNER JOIN @cdm_database_schema.concept c1
 {@cdm_version == '4'} ? {
 WHERE c1.vocabulary_id = 1
 } : {
-WHERE c1.vocabulary_id = 'SNOMED'
+WHERE LOWER(c1.vocabulary_id) = 'snomed'
 }
-  AND c1.@concept_class_id = 'Clinical finding'
+  AND LOWER(c1.@concept_class_id) = 'clinical finding'
   AND ca1.min_levels_of_separation = 1
-  AND c1.concept_id NOT IN (select distinct descendant_concept_id from concept_ancestor where ancestor_concept_id = 441840 /*clinical finding*/ and max_levels_of_separation <= 2)
+  AND c1.concept_id NOT IN (select distinct descendant_concept_id from @cdm_database_schema.concept_ancestor where ancestor_concept_id = 441840 /*clinical finding*/ and max_levels_of_separation <= 2)
 {@has_excluded_covariate_concept_ids} ? {  AND c1.concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {  AND c1.concept_id IN (SELECT concept_id FROM #included_cov)}
 }
@@ -1000,7 +1000,7 @@ INNER JOIN @cdm_database_schema.concept c1
 {@cdm_version == '4'} ? {
 WHERE c1.vocabulary_id = 21
 } : {
-WHERE c1.vocabulary_id = 'ATC'
+WHERE LOWER(c1.vocabulary_id) = 'atc'
 }
 	AND len(c1.concept_code) IN (1, 3, 4, 5)
 	AND c1.concept_id != 0
@@ -1270,7 +1270,7 @@ INNER JOIN @cdm_database_schema.concept c1
 {@cdm_version == '4'} ? {
 WHERE c1.vocabulary_id = 1
 } : {
-WHERE c1.vocabulary_id = 'SNOMED'
+WHERE LOWER(c1.vocabulary_id) = 'snomed'
 }
 	AND ca1.min_levels_of_separation <= 2
 	AND c1.concept_id NOT IN (0,
@@ -2196,9 +2196,9 @@ FROM (
 	ON source.concept_id = concept_relationship.concept_id_1
 	INNER JOIN @cdm_database_schema.concept target
 	ON target.concept_id = concept_relationship.concept_id_2
-	WHERE source.vocabulary_id = 'ICD9CM'
-	  AND target.vocabulary_id = 'SNOMED'
-	  AND relationship_id = 'Maps to'
+	WHERE LOWER(source.vocabulary_id) = 'icd9cm'
+	  AND LOWER(target.vocabulary_id) = 'snomed'
+	  AND LOWER(relationship_id) = 'maps to'
 }
 ) source_to_concept_map
 WHERE source_code LIKE '250.5%'
@@ -2230,9 +2230,9 @@ FROM (
 	ON source.concept_id = concept_relationship.concept_id_1
 	INNER JOIN @cdm_database_schema.concept target
 	ON target.concept_id = concept_relationship.concept_id_2
-	WHERE source.vocabulary_id = 'ICD9CM'
-	  AND target.vocabulary_id = 'SNOMED'
-	  AND relationship_id = 'Maps to'
+	WHERE LOWER(source.vocabulary_id) = 'icd9cm'
+	  AND LOWER(target.vocabulary_id) = 'snomed'
+	  AND LOWER(relationship_id) = 'maps to'
 }
 ) source_to_concept_map
 WHERE
@@ -2266,9 +2266,9 @@ FROM (
 	ON source.concept_id = concept_relationship.concept_id_1
 	INNER JOIN @cdm_database_schema.concept target
 	ON target.concept_id = concept_relationship.concept_id_2
-	WHERE source.vocabulary_id = 'ICD9CM'
-	  AND target.vocabulary_id = 'SNOMED'
-	  AND relationship_id = 'Maps to'
+	WHERE LOWER(source.vocabulary_id) = 'icd9cm'
+	  AND LOWER(target.vocabulary_id) = 'snomed'
+	  AND LOWER(relationship_id) = 'maps to'
 }
 ) source_to_concept_map
 WHERE
@@ -2304,9 +2304,9 @@ FROM (
 	ON source.concept_id = concept_relationship.concept_id_1
 	INNER JOIN @cdm_database_schema.concept target
 	ON target.concept_id = concept_relationship.concept_id_2
-	WHERE source.vocabulary_id = 'ICD9CM'
-	  AND target.vocabulary_id = 'SNOMED'
-	  AND relationship_id = 'Maps to'
+	WHERE LOWER(source.vocabulary_id )= 'icd9cm'
+	  AND LOWER(target.vocabulary_id) = 'snomed'
+	  AND LOWER(relationship_id) = 'maps to'
 }
 ) source_to_concept_map
 WHERE
@@ -2341,9 +2341,9 @@ FROM (
 	ON source.concept_id = concept_relationship.concept_id_1
 	INNER JOIN @cdm_database_schema.concept target
 	ON target.concept_id = concept_relationship.concept_id_2
-	WHERE source.vocabulary_id = 'ICD9CM'
-	  AND target.vocabulary_id = 'SNOMED'
-	  AND relationship_id = 'Maps to'
+	WHERE LOWER(source.vocabulary_id )= 'icd9cm'
+	  AND LOWER(target.vocabulary_id) = 'snomed'
+	  AND LOWER(relationship_id) = 'maps to'
 }
 ) source_to_concept_map
 WHERE
@@ -2392,9 +2392,9 @@ FROM (
 	ON source.concept_id = concept_relationship.concept_id_1
 	INNER JOIN @cdm_database_schema.concept target
 	ON target.concept_id = concept_relationship.concept_id_2
-	WHERE source.vocabulary_id = 'ICD9CM'
-	  AND target.vocabulary_id = 'SNOMED'
-	  AND relationship_id = 'Maps to'
+	WHERE LOWER(source.vocabulary_id )= 'icd9cm'
+	  AND LOWER(target.vocabulary_id) = 'snomed'
+	  AND LOWER(relationship_id) = 'maps to'
 }
 ) source_to_concept_map
 WHERE source_code LIKE '435%'
@@ -2425,9 +2425,9 @@ FROM (
 	ON source.concept_id = concept_relationship.concept_id_1
 	INNER JOIN @cdm_database_schema.concept target
 	ON target.concept_id = concept_relationship.concept_id_2
-	WHERE source.vocabulary_id = 'ICD9CM'
-	  AND target.vocabulary_id = 'SNOMED'
-	  AND relationship_id = 'Maps to'
+	WHERE LOWER(source.vocabulary_id )= 'icd9cm'
+	  AND LOWER(target.vocabulary_id) = 'snomed'
+	  AND LOWER(relationship_id) = 'maps to'
 }
 ) source_to_concept_map
 WHERE   source_code IN ('431', '433', '434', '436')
@@ -2462,9 +2462,9 @@ FROM (
 	ON source.concept_id = concept_relationship.concept_id_1
 	INNER JOIN @cdm_database_schema.concept target
 	ON target.concept_id = concept_relationship.concept_id_2
-	WHERE source.vocabulary_id = 'ICD9CM'
-	  AND target.vocabulary_id = 'SNOMED'
-	  AND relationship_id = 'Maps to'
+	WHERE LOWER(source.vocabulary_id )= 'icd9cm'
+	  AND LOWER(target.vocabulary_id) = 'snomed'
+	  AND LOWER(relationship_id) = 'maps to'
 }
 ) source_to_concept_map
 WHERE
@@ -2500,9 +2500,9 @@ FROM (
 	ON source.concept_id = concept_relationship.concept_id_1
 	INNER JOIN @cdm_database_schema.concept target
 	ON target.concept_id = concept_relationship.concept_id_2
-	WHERE source.vocabulary_id = 'ICD9CM'
-	  AND target.vocabulary_id = 'SNOMED'
-	  AND relationship_id = 'Maps to'
+	WHERE LOWER(source.vocabulary_id )= 'icd9cm'
+	  AND LOWER(target.vocabulary_id) = 'snomed'
+	  AND LOWER(relationship_id) = 'maps to'
 }
 ) source_to_concept_map
 WHERE   source_code LIKE '410%'
@@ -2541,9 +2541,9 @@ FROM (
 	ON source.concept_id = concept_relationship.concept_id_1
 	INNER JOIN @cdm_database_schema.concept target
 	ON target.concept_id = concept_relationship.concept_id_2
-	WHERE source.vocabulary_id = 'ICD9CM'
-	  AND target.vocabulary_id = 'SNOMED'
-	  AND relationship_id = 'Maps to'
+	WHERE LOWER(source.vocabulary_id )= 'icd9cm'
+	  AND LOWER(target.vocabulary_id) = 'snomed'
+	  AND LOWER(relationship_id) = 'maps to'
 }
 ) source_to_concept_map
 WHERE
@@ -2579,9 +2579,9 @@ FROM (
 	ON source.concept_id = concept_relationship.concept_id_1
 	INNER JOIN @cdm_database_schema.concept target
 	ON target.concept_id = concept_relationship.concept_id_2
-	WHERE source.vocabulary_id = 'ICD9CM'
-	  AND target.vocabulary_id = 'SNOMED'
-	  AND relationship_id = 'Maps to'
+	WHERE LOWER(source.vocabulary_id )= 'icd9cm'
+	  AND LOWER(target.vocabulary_id) = 'snomed'
+	  AND LOWER(relationship_id) = 'maps to'
 }
 ) source_to_concept_map
 WHERE   source_code LIKE '785.4%'
@@ -2615,9 +2615,9 @@ FROM (
 	ON source.concept_id = concept_relationship.concept_id_1
 	INNER JOIN @cdm_database_schema.concept target
 	ON target.concept_id = concept_relationship.concept_id_2
-	WHERE source.vocabulary_id = 'ICD9CM'
-	  AND target.vocabulary_id = 'SNOMED'
-	  AND relationship_id = 'Maps to'
+	WHERE LOWER(source.vocabulary_id )= 'icd9cm'
+	  AND LOWER(target.vocabulary_id) = 'snomed'
+	  AND LOWER(relationship_id) = 'maps to'
 }
 ) source_to_concept_map
 WHERE   source_code LIKE '250.1%'
