@@ -36,10 +36,16 @@ DatabaseConnector::executeSql(conn, sql)
 ### Create covariateSettings ###
 
 sql <- "SELECT descendant_concept_id FROM @cdm_database_schema.concept_ancestor WHERE ancestor_concept_id = 1118084"
+
 sql <- SqlRender::renderSql(sql, cdm_database_schema = cdmDatabaseSchema)$sql
+
 sql <- SqlRender::translateSql(sql, targetDialect = connectionDetails$dbms)$sql
-celecoxibDrugs <- DatabaseConnector::querySql(conn, sql)
+
+cids <- DatabaseConnector::querySql(conn, sql)
+
 celecoxibDrugs <- celecoxibDrugs[, 1]
+
+celecoxibDrugs <- 1118084
 
 
 RJDBC::dbDisconnect(conn)
@@ -93,7 +99,9 @@ covariateSettings <- FeatureExtraction::createCovariateSettings(useCovariateDemo
                                                                 useCovariateInteractionYear = FALSE,
                                                                 useCovariateInteractionMonth = FALSE,
                                                                 excludedCovariateConceptIds = celecoxibDrugs,
+                                                                addDescendantsToExclude = TRUE,
                                                                 includedCovariateConceptIds = c(),
+                                                                addDescendantsToInclude = TRUE,
                                                                 deleteCovariatesSmallCount = 100)
 
 covs <- getDbCovariateData(connectionDetails = connectionDetails,
@@ -106,6 +114,6 @@ covs <- getDbCovariateData(connectionDetails = connectionDetails,
                            cohortTableIsTemp = FALSE,
                            covariateSettings = covariateSettings,
                            normalize = TRUE)
-
+any(covs$covariateRef$conceptId %in% cids)
 summary(covs)
 saveCovariateData(covs, "s:/temp/covsOld")

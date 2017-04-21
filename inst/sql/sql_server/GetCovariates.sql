@@ -18,7 +18,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ************************************************************************/
 
-{DEFAULT @cdm_database = 'CDM4_SIM' }
 {DEFAULT @cdm_database_schema = 'CDM4_SIM.dbo' }
 {DEFAULT @cdm_version == '4'}
 {DEFAULT @cohort_temp_table = '#cohort_person'}
@@ -77,8 +76,6 @@ limitations under the License.
 {DEFAULT @has_excluded_covariate_concept_ids}
 {DEFAULT @has_included_covariate_concept_ids}
 {DEFAULT @delete_covariates_small_count = 100}
-
-USE @cdm_database;
 
 IF OBJECT_ID('tempdb..#cov', 'U') IS NOT NULL
 	DROP TABLE #cov;
@@ -1489,7 +1486,7 @@ FROM (
 			o1.@measurement_concept_id ORDER BY o1.@measurement_date DESC
 			) AS rn1
 	FROM @cohort_temp_table cp1
-	INNER JOIN @measurement o1
+	INNER JOIN @cdm_database_schema.@measurement o1
 		ON cp1.subject_id = o1.person_id
 	WHERE o1.@measurement_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {		AND o1.@measurement_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
@@ -1541,7 +1538,7 @@ FROM (
 			o1.@measurement_concept_id ORDER BY o1.@measurement_date DESC
 			) AS rn1
 	FROM @cohort_temp_table cp1
-	INNER JOIN @measurement o1
+	INNER JOIN @cdm_database_schema.@measurement o1
 		ON cp1.subject_id = o1.person_id
 	WHERE o1.@measurement_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {		AND o1.@measurement_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
@@ -2809,11 +2806,11 @@ SELECT 1, c.concept_id
 FROM (
   select distinct I.concept_id FROM
   (
-    select DISTINCT concept_id from CONCEPT where concept_id in (316139,314378,318773,321319) and invalid_reason is null
+    select DISTINCT concept_id from @cdm_database_schema.CONCEPT where concept_id in (316139,314378,318773,321319) and invalid_reason is null
     UNION
     select c.concept_id
-    from CONCEPT c
-    join CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
+    from @cdm_database_schema.CONCEPT c
+    join @cdm_database_schema.CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
     and ca.ancestor_concept_id in (316139,314378)
     and c.invalid_reason is null
 
@@ -2831,24 +2828,24 @@ FROM
 (
   select distinct I.concept_id FROM
   (
-    select DISTINCT concept_id from CONCEPT where concept_id in (320128,442604,201313) and invalid_reason is null
+    select DISTINCT concept_id from @cdm_database_schema.CONCEPT where concept_id in (320128,442604,201313) and invalid_reason is null
       UNION
 
     select c.concept_id
-    from CONCEPT c
-    join CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
+    from @cdm_database_schema.CONCEPT c
+    join @cdm_database_schema.CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
     and ca.ancestor_concept_id in (320128,442604,201313)
     and c.invalid_reason is null
 
   ) I
   LEFT JOIN
   (
-    select concept_id from CONCEPT where concept_id in (197930)and invalid_reason is null
+    select concept_id from @cdm_database_schema.CONCEPT where concept_id in (197930)and invalid_reason is null
       UNION
 
     select c.concept_id
-    from CONCEPT c
-    join CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
+    from @cdm_database_schema.CONCEPT c
+    join @cdm_database_schema.CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
     and ca.ancestor_concept_id in (197930)
     and c.invalid_reason is null
 
@@ -2873,24 +2870,24 @@ FROM
 (
   select distinct I.concept_id FROM
   (
-    select DISTINCT concept_id from CONCEPT where concept_id in (201820,442793) and invalid_reason is null
+    select DISTINCT concept_id from @cdm_database_schema.CONCEPT where concept_id in (201820,442793) and invalid_reason is null
       UNION
 
     select c.concept_id
-    from CONCEPT c
-    join CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
+    from @cdm_database_schema.CONCEPT c
+    join @cdm_database_schema.CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
     and ca.ancestor_concept_id in (201820,442793)
     and c.invalid_reason is null
 
   ) I
   LEFT JOIN
   (
-    select concept_id from CONCEPT where concept_id in (195771,376112,4174977,4058243,193323,376979)and invalid_reason is null
+    select concept_id from @cdm_database_schema.CONCEPT where concept_id in (195771,376112,4174977,4058243,193323,376979)and invalid_reason is null
     UNION
 
     select c.concept_id
-    from CONCEPT c
-    join CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
+    from @cdm_database_schema.CONCEPT c
+    join @cdm_database_schema.CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
     and ca.ancestor_concept_id in (195771,376112,4174977,4058243,193323,376979)
     and c.invalid_reason is null
 
@@ -2909,12 +2906,12 @@ FROM
 (
   select distinct I.concept_id FROM
   (
-    select DISTINCT concept_id from CONCEPT where concept_id in (4043731,4110192,375557,4108356,373503,434656,433505,376714,312337) and invalid_reason is null
+    select DISTINCT concept_id from @cdm_database_schema.CONCEPT where concept_id in (4043731,4110192,375557,4108356,373503,434656,433505,376714,312337) and invalid_reason is null
       UNION
 
     select c.concept_id
-    from CONCEPT c
-    join CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
+    from @cdm_database_schema.CONCEPT c
+    join @cdm_database_schema.CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
     and ca.ancestor_concept_id in (4043731,4110192,375557,4108356,373503,434656,433505,376714,312337)
     and c.invalid_reason is null
 
@@ -2932,13 +2929,13 @@ SELECT 6, c.concept_id FROM
   select distinct I.concept_id
   FROM
   (
-    select DISTINCT concept_id from CONCEPT where concept_id in (312327,43020432,314962,312939,315288,317309,134380,196438,200138,194393,319047,40486130,317003,4313767,321596,317305,321886,314659,321887,437312,134057) and invalid_reason is null
+    select DISTINCT concept_id from @cdm_database_schema.CONCEPT where concept_id in (312327,43020432,314962,312939,315288,317309,134380,196438,200138,194393,319047,40486130,317003,4313767,321596,317305,321886,314659,321887,437312,134057) and invalid_reason is null
 
     UNION
 
     select c.concept_id
-    from CONCEPT c
-    join CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
+    from @cdm_database_schema.CONCEPT c
+    join @cdm_database_schema.CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
     and ca.ancestor_concept_id in (312327,43020432,314962,312939,315288,317309,134380,196438,200138,194393,319047,40486130,317003,4313767,321596)
     and c.invalid_reason is null
 

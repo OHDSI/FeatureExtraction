@@ -37,7 +37,8 @@ createCovariateSettings(useCovariateDemographics = FALSE,
   useCovariateRiskScoresDCSI = FALSE, useCovariateRiskScoresCHADS2 = FALSE,
   useCovariateRiskScoresCHADS2VASc = FALSE,
   useCovariateInteractionYear = FALSE, useCovariateInteractionMonth = FALSE,
-  excludedCovariateConceptIds = c(), includedCovariateConceptIds = c(),
+  excludedCovariateConceptIds = c(), addDescendantsToExclude = TRUE,
+  includedCovariateConceptIds = c(), addDescendantsToInclude = TRUE,
   deleteCovariatesSmallCount = 100)
 }
 \arguments{
@@ -291,8 +292,14 @@ covariates and the month of the cohort index date.}
 \item{excludedCovariateConceptIds}{A list of concept IDs that should NOT be used to
 construct covariates.}
 
+\item{addDescendantsToExclude}{Should descendant concept IDs be added to the list 
+of concepts to exclude?}
+
 \item{includedCovariateConceptIds}{A list of concept IDs that should be used to
 construct covariates.}
+
+\item{addDescendantsToInclude}{Should descendant concept IDs be added to the list 
+of concepts to include?}
 
 \item{deleteCovariatesSmallCount}{A numeric value used to remove covariates that
 occur in both cohorts fewer than

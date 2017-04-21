@@ -1,6 +1,4 @@
 /************************************************************************
-@file GetHdpsCovariates.sql
-
 Copyright 2017 Observational Health Data Sciences and Informatics
 
 This file is part of FeatureExtraction

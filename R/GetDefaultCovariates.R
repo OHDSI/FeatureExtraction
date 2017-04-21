@@ -36,15 +36,13 @@ getDbDefaultCovariateData <- function(connection,
                                       cohortTempTable = "cohort_person",
                                       rowIdField = "subject_id",
                                       covariateSettings) {
-  writeLines("Constructing default covariates")
   if (substr(cohortTempTable, 1, 1) != "#") {
     cohortTempTable <- paste("#", cohortTempTable, sep = "")
   }
-  cdmDatabase <- strsplit(cdmDatabaseSchema, "\\.")[[1]][1]
   if (!covariateSettings$useCovariateConditionGroupMeddra & !covariateSettings$useCovariateConditionGroupSnomed) {
     covariateSettings$useCovariateConditionGroup <- FALSE
   }
-
+  
   if (cdmVersion == "4") {
     cohortDefinitionId <- "cohort_concept_id"
     conceptClassId <- "concept_class"
@@ -54,9 +52,9 @@ getDbDefaultCovariateData <- function(connection,
     conceptClassId <- "concept_class_id"
     measurement <- "measurement"
   }
-
+  
   if (is.null(covariateSettings$excludedCovariateConceptIds) || length(covariateSettings$excludedCovariateConceptIds) ==
-    0) {
+      0) {
     hasExcludedCovariateConceptIds <- FALSE
   } else {
     if (!is.numeric(covariateSettings$excludedCovariateConceptIds))
@@ -69,10 +67,20 @@ getDbDefaultCovariateData <- function(connection,
                                    createTable = TRUE,
                                    tempTable = TRUE,
                                    oracleTempSchema = oracleTempSchema)
+    if (covariateSettings$addDescendantsToExclude) {
+      writeLines("Adding descendants to concepts to exclude")
+      sql <- SqlRender::loadRenderTranslateSql(sqlFilename = "IncludeDesdendants.sql",
+                                               packageName = "FeatureExtraction",
+                                               dbms = attr(connection, "dbms"),
+                                               oracleTempSchema = oracleTempSchema,
+                                               cdm_database_schema = cdmDatabaseSchema,
+                                               table_name = "#excluded_cov")
+      DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
+    }
   }
-
+  
   if (is.null(covariateSettings$includedCovariateConceptIds) || length(covariateSettings$includedCovariateConceptIds) ==
-    0) {
+      0) {
     hasIncludedCovariateConceptIds <- FALSE
   } else {
     if (!is.numeric(covariateSettings$includedCovariateConceptIds))
@@ -85,13 +93,22 @@ getDbDefaultCovariateData <- function(connection,
                                    createTable = TRUE,
                                    tempTable = TRUE,
                                    oracleTempSchema = oracleTempSchema)
+    if (covariateSettings$addDescendantsToInclude) {
+      writeLines("Adding descendants to concepts to include")
+      sql <- SqlRender::loadRenderTranslateSql(sqlFilename = "IncludeDesdendants.sql",
+                                               packageName = "FeatureExtraction",
+                                               dbms = attr(connection, "dbms"),
+                                               oracleTempSchema = oracleTempSchema,
+                                               cdm_database_schema = cdmDatabaseSchema,
+                                               table_name = "#included_cov")
+      DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
+    }
   }
-
+  writeLines("Constructing default covariates")
   renderedSql <- SqlRender::loadRenderTranslateSql("GetCovariates.sql",
                                                    packageName = "FeatureExtraction",
                                                    dbms = attr(connection, "dbms"),
                                                    oracleTempSchema = oracleTempSchema,
-                                                   cdm_database = cdmDatabase,
                                                    cdm_database_schema = cdmDatabaseSchema,
                                                    cdm_version = cdmVersion,
                                                    cohort_temp_table = cohortTempTable,
@@ -150,10 +167,10 @@ getDbDefaultCovariateData <- function(connection,
                                                    has_excluded_covariate_concept_ids = hasExcludedCovariateConceptIds,
                                                    has_included_covariate_concept_ids = hasIncludedCovariateConceptIds,
                                                    delete_covariates_small_count = covariateSettings$deleteCovariatesSmallCount)
-
+  
   DatabaseConnector::executeSql(connection, renderedSql)
   writeLines("Done")
-
+  
   writeLines("Fetching data from server")
   start <- Sys.time()
   covariateSql <- "SELECT row_id, covariate_id, covariate_value FROM #cov ORDER BY covariate_id, row_id"
@@ -166,30 +183,30 @@ getDbDefaultCovariateData <- function(connection,
                                              targetDialect = attr(connection, "dbms"),
                                              oracleTempSchema = oracleTempSchema)$sql
   covariateRef <- DatabaseConnector::querySql.ffdf(connection, covariateRefSql)
-
+  
   sql <- "SELECT COUNT_BIG(*) FROM @cohort_temp_table"
   sql <- SqlRender::renderSql(sql, cohort_temp_table = cohortTempTable)$sql
   sql <- SqlRender::translateSql(sql = sql,
                                  targetDialect = attr(connection, "dbms"),
                                  oracleTempSchema = oracleTempSchema)$sql
   populationSize <- DatabaseConnector::querySql(connection, sql)[1, 1]
-
+  
   delta <- Sys.time() - start
   writeLines(paste("Fetching data took", signif(delta, 3), attr(delta, "units")))
-
+  
   renderedSql <- SqlRender::loadRenderTranslateSql("RemoveCovariateTempTables.sql",
                                                    packageName = "FeatureExtraction",
                                                    dbms = attr(connection, "dbms"),
                                                    oracleTempSchema = oracleTempSchema)
-
+  
   DatabaseConnector::executeSql(connection,
                                 renderedSql,
                                 progressBar = FALSE,
                                 reportOverallTime = FALSE)
-
+  
   colnames(covariates) <- SqlRender::snakeCaseToCamelCase(colnames(covariates))
   colnames(covariateRef) <- SqlRender::snakeCaseToCamelCase(colnames(covariateRef))
-
+  
   # Remove redundant covariates
   writeLines("Removing redundant covariates")
   start <- Sys.time()
@@ -229,7 +246,7 @@ getDbDefaultCovariateData <- function(connection,
   }
   delta <- Sys.time() - start
   writeLines(paste("Removing redundant covariates took", signif(delta, 3), attr(delta, "units")))
-
+  
   metaData <- list(sql = renderedSql,
                    call = match.call(),
                    deletedCovariateIds = deletedCovariateIds)
@@ -244,10 +261,6 @@ getDbDefaultCovariateData <- function(connection,
 #' @details
 #' creates an object specifying how covariates should be contructed from data in the CDM model.
 #'
-#' @param excludedCovariateConceptIds               A list of concept IDs that should NOT be used to
-#'                                                  construct covariates.
-#' @param includedCovariateConceptIds               A list of concept IDs that should be used to
-#'                                                  construct covariates.
 #' @param useCovariateDemographics                  A boolean value (TRUE/FALSE) to determine if
 #'                                                  demographic covariates (age in 5-yr increments,
 #'                                                  gender, race, ethnicity, year of index date, month
@@ -450,6 +463,14 @@ getDbDefaultCovariateData <- function(connection,
 #' @param deleteCovariatesSmallCount                A numeric value used to remove covariates that
 #'                                                  occur in both cohorts fewer than
 #'                                                  deleteCovariateSmallCounts time.
+#' @param excludedCovariateConceptIds               A list of concept IDs that should NOT be used to
+#'                                                  construct covariates.
+#' @param addDescendantsToExclude                  Should descendant concept IDs be added to the list 
+#'                                                  of concepts to exclude?
+#' @param includedCovariateConceptIds               A list of concept IDs that should be used to
+#'                                                  construct covariates.
+#' @param addDescendantsToInclude                  Should descendant concept IDs be added to the list 
+#'                                                  of concepts to include?
 #'
 #' @return
 #' An object of type \code{defaultCovariateSettings}, to be used in other functions.
@@ -504,7 +525,9 @@ createCovariateSettings <- function(useCovariateDemographics = FALSE,
                                     useCovariateInteractionYear = FALSE,
                                     useCovariateInteractionMonth = FALSE,
                                     excludedCovariateConceptIds = c(),
+                                    addDescendantsToExclude = TRUE,
                                     includedCovariateConceptIds = c(),
+                                    addDescendantsToInclude = TRUE,
                                     deleteCovariatesSmallCount = 100) {
   # First: get the default values:
   covariateSettings <- list()
