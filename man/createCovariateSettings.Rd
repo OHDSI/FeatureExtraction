@@ -11,26 +11,29 @@ createCovariateSettings(useCovariateDemographics = FALSE,
   useCovariateDemographicsAge = FALSE, useCovariateDemographicsYear = FALSE,
   useCovariateDemographicsMonth = FALSE,
   useCovariateConditionOccurrence = FALSE,
-  useCovariateConditionOccurrence365d = FALSE,
-  useCovariateConditionOccurrence30d = FALSE,
-  useCovariateConditionOccurrenceInpt180d = FALSE,
+  useCovariateConditionOccurrenceLongTerm = FALSE,
+  useCovariateConditionOccurrenceShortTerm = FALSE,
+  useCovariateConditionOccurrenceInptMediumTerm = FALSE,
   useCovariateConditionEra = FALSE, useCovariateConditionEraEver = FALSE,
   useCovariateConditionEraOverlap = FALSE,
   useCovariateConditionGroup = FALSE,
   useCovariateConditionGroupMeddra = FALSE,
   useCovariateConditionGroupSnomed = FALSE,
-  useCovariateDrugExposure = FALSE, useCovariateDrugExposure365d = FALSE,
-  useCovariateDrugExposure30d = FALSE, useCovariateDrugEra = FALSE,
-  useCovariateDrugEra365d = FALSE, useCovariateDrugEra30d = FALSE,
+  useCovariateDrugExposure = FALSE,
+  useCovariateDrugExposureLongTerm = FALSE,
+  useCovariateDrugExposureShortTerm = FALSE, useCovariateDrugEra = FALSE,
+  useCovariateDrugEraLongTerm = FALSE, useCovariateDrugEraShortTerm = FALSE,
   useCovariateDrugEraOverlap = FALSE, useCovariateDrugEraEver = FALSE,
   useCovariateDrugGroup = FALSE, useCovariateProcedureOccurrence = FALSE,
-  useCovariateProcedureOccurrence365d = FALSE,
-  useCovariateProcedureOccurrence30d = FALSE,
+  useCovariateProcedureOccurrenceLongTerm = FALSE,
+  useCovariateProcedureOccurrenceShortTerm = FALSE,
   useCovariateProcedureGroup = FALSE, useCovariateObservation = FALSE,
-  useCovariateObservation365d = FALSE, useCovariateObservation30d = FALSE,
-  useCovariateObservationCount365d = FALSE, useCovariateMeasurement = FALSE,
-  useCovariateMeasurement365d = FALSE, useCovariateMeasurement30d = FALSE,
-  useCovariateMeasurementCount365d = FALSE,
+  useCovariateObservationLongTerm = FALSE,
+  useCovariateObservationShortTerm = FALSE,
+  useCovariateObservationCountLongTerm = FALSE,
+  useCovariateMeasurement = FALSE, useCovariateMeasurementLongTerm = FALSE,
+  useCovariateMeasurementShortTerm = FALSE,
+  useCovariateMeasurementCountLongTerm = FALSE,
   useCovariateMeasurementBelow = FALSE,
   useCovariateMeasurementAbove = FALSE, useCovariateConceptCounts = FALSE,
   useCovariateRiskScores = FALSE, useCovariateRiskScoresCharlson = FALSE,
@@ -39,7 +42,16 @@ createCovariateSettings(useCovariateDemographics = FALSE,
   useCovariateInteractionYear = FALSE, useCovariateInteractionMonth = FALSE,
   excludedCovariateConceptIds = c(), addDescendantsToExclude = TRUE,
   includedCovariateConceptIds = c(), addDescendantsToInclude = TRUE,
-  deleteCovariatesSmallCount = 100)
+  deleteCovariatesSmallCount = 100, longTermDays = 365,
+  mediumTermDays = 180, shortTermDays = 30,
+  useCovariateProcedureOccurrence365d, useCovariateConditionOccurrence365d,
+  useCovariateDrugExposure365d, useCovariateMeasurementCount365d,
+  useCovariateDrugEra365d, useCovariateObservation365d,
+  useCovariateObservationCount365d, useCovariateMeasurement365d,
+  useCovariateConditionOccurrenceInpt180d, useCovariateConditionOccurrence30d,
+  useCovariateDrugExposure30d, useCovariateDrugEra30d,
+  useCovariateMeasurement30d, useCovariateObservation30d,
+  useCovariateProcedureOccurrence30d)
 }
 \arguments{
 \item{useCovariateDemographics}{A boolean value (TRUE/FALSE) to determine if
@@ -71,24 +83,24 @@ calendar month should be included in the model.}
 covariates derived from CONDITION_OCCURRENCE table
 will be created and included in future models.}
 
-\item{useCovariateConditionOccurrence365d}{A boolean value (TRUE/FALSE) to determine if
+\item{useCovariateConditionOccurrenceLongTerm}{A boolean value (TRUE/FALSE) to determine if
 covariates will be created and used in models that
-look for presence/absence of condition in 365d
+look for presence/absence of condition in the long term
 window prior to or on cohort index date.  Only
 applicable if useCovariateConditionOccurrence =
 TRUE.}
 
-\item{useCovariateConditionOccurrence30d}{A boolean value (TRUE/FALSE) to determine if
+\item{useCovariateConditionOccurrenceShortTerm}{A boolean value (TRUE/FALSE) to determine if
 covariates will be created and used in models that
-look for presence/absence of condition in 30d
+look for presence/absence of condition in the short term
 window prior to or on cohort index date.  Only
 applicable if useCovariateConditionOccurrence =
 TRUE.}
 
-\item{useCovariateConditionOccurrenceInpt180d}{A boolean value (TRUE/FALSE) to determine if
+\item{useCovariateConditionOccurrenceInptMediumTerm}{A boolean value (TRUE/FALSE) to determine if
 covariates will be created and used in models that
 look for presence/absence of condition within
-inpatient type in 180d window prior to or on cohort
+inpatient type in medium term window prior to or on cohort
 index date.  Only applicable if
 useCovariateConditionOccurrence = TRUE.}
 
@@ -127,15 +139,15 @@ concepts based on the SNOMED classification.}
 covariates derived from DRUG_EXPOSURE table will be
 created and included in future models.}
 
-\item{useCovariateDrugExposure365d}{A boolean value (TRUE/FALSE) to determine if
+\item{useCovariateDrugExposureLongTerm}{A boolean value (TRUE/FALSE) to determine if
 covariates will be created and used in models that
-look for presence/absence of drug in 365d window
+look for presence/absence of drug in the long term window
 prior to or on cohort index date.  Only applicable
 if useCovariateDrugExposure = TRUE.}
 
-\item{useCovariateDrugExposure30d}{A boolean value (TRUE/FALSE) to determine if
+\item{useCovariateDrugExposureShortTerm}{A boolean value (TRUE/FALSE) to determine if
 covariates will be created and used in models that
-look for presence/absence of drug in 30d window
+look for presence/absence of drug in the short term window
 prior to or on cohort index date.  Only applicable
 if useCovariateDrugExposure = TRUE.}
 
@@ -143,15 +155,15 @@ if useCovariateDrugExposure = TRUE.}
 covariates derived from DRUG_ERA table will be
 created and included in future models.}
 
-\item{useCovariateDrugEra365d}{A boolean value (TRUE/FALSE) to determine if
+\item{useCovariateDrugEraLongTerm}{A boolean value (TRUE/FALSE) to determine if
 covariates will be created and used in models that
-look for presence/absence of drug era in 365d
+look for presence/absence of drug era in the long term
 window prior to or on cohort index date.  Only
 applicable if useCovariateDrugEra = TRUE.}
 
-\item{useCovariateDrugEra30d}{A boolean value (TRUE/FALSE) to determine if
+\item{useCovariateDrugEraShortTerm}{A boolean value (TRUE/FALSE) to determine if
 covariates will be created and used in models that
-look for presence/absence of drug era in 30d window
+look for presence/absence of drug era in the short term window
 prior to or on cohort index date.  Only applicable
 if useCovariateDrugEra = TRUE.}
 
@@ -176,16 +188,16 @@ drug classes based on vocabluary classification.}
 covariates derived from PROCEDURE_OCCURRENCE table
 will be created and included in future models.}
 
-\item{useCovariateProcedureOccurrence365d}{A boolean value (TRUE/FALSE) to determine if
+\item{useCovariateProcedureOccurrenceLongTerm}{A boolean value (TRUE/FALSE) to determine if
 covariates will be created and used in models that
-look for presence/absence of procedure in 365d
+look for presence/absence of procedure in the long term
 window prior to or on cohort index date.  Only
 applicable if useCovariateProcedureOccurrence =
 TRUE.}
 
-\item{useCovariateProcedureOccurrence30d}{A boolean value (TRUE/FALSE) to determine if
+\item{useCovariateProcedureOccurrenceShortTerm}{A boolean value (TRUE/FALSE) to determine if
 covariates will be created and used in models that
-look for presence/absence of procedure in 30d
+look for presence/absence of procedure in the short term
 window prior to or on cohort index date.  Only
 applicable if useCovariateProcedureOccurrence =
 TRUE.}
@@ -199,51 +211,51 @@ based on vocabluary classification.}
 covariates derived from OBSERVATION table will be
 created and included in future models.}
 
-\item{useCovariateObservation365d}{A boolean value (TRUE/FALSE) to determine if
+\item{useCovariateObservationLongTerm}{A boolean value (TRUE/FALSE) to determine if
 covariates will be created and used in models that
-look for presence/absence of observation in 365d
+look for presence/absence of observation in the long term
 window prior to or on cohort index date.  Only
 applicable if useCovariateObservation = TRUE.}
 
-\item{useCovariateObservation30d}{A boolean value (TRUE/FALSE) to determine if
+\item{useCovariateObservationShortTerm}{A boolean value (TRUE/FALSE) to determine if
 covariates will be created and used in models that
-look for presence/absence of observation in 30d
+look for presence/absence of observation in the short term
 window prior to or on cohort index date.  Only
 applicable if useCovariateObservation = TRUE.}
 
-\item{useCovariateObservationCount365d}{A boolean value (TRUE/FALSE) to determine if
+\item{useCovariateObservationCountLongTerm}{A boolean value (TRUE/FALSE) to determine if
 covariates will be created and used in models that
 look for the count of each observation concept in
-365d window prior to or on cohort index date.  Only
+LongTerm window prior to or on cohort index date.  Only
 applicable if useCovariateObservation = TRUE.}
 
 \item{useCovariateMeasurement}{A boolean value (TRUE/FALSE) to determine if
 covariates derived from OBSERVATION table will be
 created and included in future models.}
 
-\item{useCovariateMeasurement365d}{A boolean value (TRUE/FALSE) to determine if
+\item{useCovariateMeasurementLongTerm}{A boolean value (TRUE/FALSE) to determine if
 covariates will be created and used in models that
-look for presence/absence of measurement in 365d
+look for presence/absence of measurement in the long term
 window prior to or on cohort index date.  Only
 applicable if useCovariateMeasurement = TRUE.}
 
-\item{useCovariateMeasurement30d}{A boolean value (TRUE/FALSE) to determine if
+\item{useCovariateMeasurementShortTerm}{A boolean value (TRUE/FALSE) to determine if
 covariates will be created and used in models that
-look for presence/absence of measurement in 30d
+look for presence/absence of measurement in the short term
 window prior to or on cohort index date.  Only
 applicable if useCovariateMeasurement = TRUE.}
 
-\item{useCovariateMeasurementCount365d}{A boolean value (TRUE/FALSE) to determine if
+\item{useCovariateMeasurementCountLongTerm}{A boolean value (TRUE/FALSE) to determine if
 covariates will be created and used in models that
 look for the count of each measurement concept in
-365d window prior to or on cohort index date.  Only
+LongTerm window prior to or on cohort index date.  Only
 applicable if useCovariateMeasurement = TRUE.}
 
 \item{useCovariateMeasurementBelow}{A boolean value (TRUE/FALSE) to determine if
 covariates will be created and used in models that
 look for presence/absence of measurement with a
 numeric value below normal range for latest value
-within 180d of cohort index.  Only applicable if
+within medium term window of cohort index.  Only applicable if
 useCovariateMeasurement = TRUE (CDM v5+) or
 useCovariateObservation = TRUE (CDM v4).}
 
@@ -251,7 +263,7 @@ useCovariateObservation = TRUE (CDM v4).}
 covariates will be created and used in models that
 look for presence/absence of measurement with a
 numeric value above normal range for latest value
-within 180d of cohort index.  Only applicable if
+within medium term window of cohort index.  Only applicable if
 useCovariateMeasurement = TRUE (CDM v5+) or
 useCovariateObservation = TRUE (CDM v4).}
 
@@ -304,6 +316,42 @@ of concepts to include?}
 \item{deleteCovariatesSmallCount}{A numeric value used to remove covariates that
 occur in both cohorts fewer than
 deleteCovariateSmallCounts time.}
+
+\item{longTermDays}{What is the length (in days) of the long-term window?}
+
+\item{mediumTermDays}{What is the length (in days) of the medium-term window?}
+
+\item{shortTermDays}{What is the length (in days) of the short-term window?}
+
+\item{useCovariateProcedureOccurrence365d}{DEPRECATED. Use the LongTerm equivalent instead}
+
+\item{useCovariateConditionOccurrence365d}{DEPRECATED. Use the LongTerm equivalent instead}
+
+\item{useCovariateDrugExposure365d}{DEPRECATED. Use the LongTerm equivalent instead}
+
+\item{useCovariateMeasurementCount365d}{DEPRECATED. Use the LongTerm equivalent instead}
+
+\item{useCovariateDrugEra365d}{DEPRECATED. Use the LongTerm equivalent instead}
+
+\item{useCovariateObservation365d}{DEPRECATED. Use the LongTerm equivalent instead}
+
+\item{useCovariateObservationCount365d}{DEPRECATED. Use the LongTerm equivalent instead}
+
+\item{useCovariateMeasurement365d}{DEPRECATED. Use the LongTerm equivalent instead}
+
+\item{useCovariateConditionOccurrenceInpt180d}{DEPRECATED. Use the ShortTerm equivalent instead}
+
+\item{useCovariateConditionOccurrence30d}{DEPRECATED. Use the ShortTerm equivalent instead}
+
+\item{useCovariateDrugExposure30d}{DEPRECATED. Use the ShortTerm equivalent instead}
+
+\item{useCovariateDrugEra30d}{DEPRECATED. Use the ShortTerm equivalent instead}
+
+\item{useCovariateMeasurement30d}{DEPRECATED. Use the ShortTerm equivalent instead}
+
+\item{useCovariateObservation30d}{DEPRECATED. Use the ShortTerm equivalent instead}
+
+\item{useCovariateProcedureOccurrence30d}{DEPRECATED. Use the ShortTerm equivalent instead}
 }
 \value{
 An object of type \code{defaultCovariateSettings}, to be used in other functions.

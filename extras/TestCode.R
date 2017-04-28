@@ -1,6 +1,8 @@
 library(FeatureExtraction)
 options(fftempdir = "s:/FFtemp")
 
+
+# Pdw ---------------------------------------------------------------------
 dbms <- "pdw"
 user <- NULL
 pw <- NULL
@@ -19,6 +21,24 @@ cdmVersion <- "5"
 outputFolder <- "S:/temp/CelecoxibPredictiveModels"
 
 
+
+# PostgreSQL --------------------------------------------------------------
+dbms <- "postgresql"
+user <- "postgres"
+pw <- Sys.getenv("pwPostgres")
+server <- "localhost/ohdsi"
+connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = dbms,
+                                                                server = server,
+                                                                user = user,
+                                                                password = pw)
+cdmDatabaseSchema <- "cdm_synpuf"
+cohortDatabaseSchema <- "scratch"
+cohortTable <- "ohdsi_celecoxib_prediction"
+oracleTempSchema <- NULL
+cdmVersion <- "5"
+outputFolder <- "S:/temp/CelecoxibPredictiveModelsPg"
+
+
 conn <- DatabaseConnector::connect(connectionDetails)
 ### Populate cohort table ###
 sql <- "IF OBJECT_ID('@cohort_database_schema.@cohort_table', 'U') IS NOT NULL
@@ -33,22 +53,90 @@ sql <- SqlRender::renderSql(sql,
 sql <- SqlRender::translateSql(sql, targetDialect = connectionDetails$dbms)$sql
 DatabaseConnector::executeSql(conn, sql)
 
-### Create covariateSettings ###
-
-sql <- "SELECT descendant_concept_id FROM @cdm_database_schema.concept_ancestor WHERE ancestor_concept_id = 1118084"
-
-sql <- SqlRender::renderSql(sql, cdm_database_schema = cdmDatabaseSchema)$sql
-
+sql <- "SELECT COUNT(*) FROM @cohort_database_schema.@cohort_table WHERE cohort_definition_id = 1"
+sql <- SqlRender::renderSql(sql,
+                            cohort_database_schema = cohortDatabaseSchema,
+                            cohort_table = cohortTable)$sql
 sql <- SqlRender::translateSql(sql, targetDialect = connectionDetails$dbms)$sql
+DatabaseConnector::querySql(conn, sql)
+RJDBC::dbDisconnect(conn)
 
-cids <- DatabaseConnector::querySql(conn, sql)
-
-celecoxibDrugs <- celecoxibDrugs[, 1]
+### Create covariateSettings ###
 
 celecoxibDrugs <- 1118084
 
+covariateSettings <- FeatureExtraction::createCovariateSettings(useCovariateDemographics = TRUE,
+                                                                useCovariateDemographicsGender = TRUE,
+                                                                useCovariateDemographicsRace = TRUE,
+                                                                useCovariateDemographicsEthnicity = TRUE,
+                                                                useCovariateDemographicsAge = TRUE,
+                                                                useCovariateDemographicsYear = TRUE,
+                                                                useCovariateDemographicsMonth = TRUE,
+                                                                useCovariateConditionOccurrence = TRUE,
+                                                                useCovariateConditionOccurrenceLongTerm = TRUE,
+                                                                useCovariateConditionOccurrenceShortTerm = TRUE,
+                                                                useCovariateConditionOccurrenceInptMediumTerm = TRUE,
+                                                                useCovariateConditionEra = TRUE,
+                                                                useCovariateConditionEraEver = TRUE,
+                                                                useCovariateConditionEraOverlap = TRUE,
+                                                                useCovariateConditionGroup = TRUE,
+                                                                useCovariateConditionGroupMeddra = TRUE,
+                                                                useCovariateConditionGroupSnomed = TRUE,
+                                                                useCovariateDrugExposure = TRUE,
+                                                                useCovariateDrugExposureLongTerm = TRUE,
+                                                                useCovariateDrugExposureShortTerm = TRUE,
+                                                                useCovariateDrugEra = TRUE,
+                                                                useCovariateDrugEraLongTerm = TRUE,
+                                                                useCovariateDrugEraShortTerm = TRUE,
+                                                                useCovariateDrugEraOverlap = TRUE,
+                                                                useCovariateDrugEraEver = TRUE,
+                                                                useCovariateDrugGroup = TRUE,
+                                                                useCovariateProcedureOccurrence = TRUE,
+                                                                useCovariateProcedureOccurrenceLongTerm = TRUE,
+                                                                useCovariateProcedureOccurrenceShortTerm = TRUE,
+                                                                useCovariateProcedureGroup = TRUE,
+                                                                useCovariateObservation = TRUE,
+                                                                useCovariateObservationLongTerm = TRUE,
+                                                                useCovariateObservationShortTerm = TRUE,
+                                                                useCovariateObservationCountLongTerm = TRUE,
+                                                                useCovariateMeasurement = TRUE,
+                                                                useCovariateMeasurementLongTerm = TRUE,
+                                                                useCovariateMeasurementShortTerm = TRUE,
+                                                                useCovariateMeasurementCountLongTerm = TRUE,
+                                                                useCovariateMeasurementBelow = TRUE,
+                                                                useCovariateMeasurementAbove = TRUE,
+                                                                useCovariateConceptCounts = TRUE,
+                                                                useCovariateRiskScores = TRUE,
+                                                                useCovariateRiskScoresCharlson = TRUE,
+                                                                useCovariateRiskScoresDCSI = TRUE,
+                                                                useCovariateRiskScoresCHADS2 = TRUE,
+                                                                useCovariateRiskScoresCHADS2VASc = TRUE,
+                                                                useCovariateInteractionYear = FALSE,
+                                                                useCovariateInteractionMonth = FALSE,
+                                                                excludedCovariateConceptIds = celecoxibDrugs,
+                                                                addDescendantsToExclude = TRUE,
+                                                                includedCovariateConceptIds = c(),
+                                                                addDescendantsToInclude = TRUE,
+                                                                deleteCovariatesSmallCount = 100)
 
-RJDBC::dbDisconnect(conn)
+covs <- getDbCovariateData(connectionDetails = connectionDetails,
+                           oracleTempSchema = oracleTempSchema,
+                           cdmVersion = cdmVersion,
+                           cdmDatabaseSchema = cdmDatabaseSchema,
+                           cohortDatabaseSchema = cohortDatabaseSchema,
+                           cohortTable = cohortTable,
+                           cohortIds = 1,
+                           cohortTableIsTemp = FALSE,
+                           covariateSettings = covariateSettings,
+                           normalize = TRUE)
+any(covs$covariateRef$conceptId %in% cids)
+summary(covs)
+saveCovariateData(covs, "s:/temp/covsOld")
+
+
+
+
+# deprecated --------------------------------------------------------------
 
 covariateSettings <- FeatureExtraction::createCovariateSettings(useCovariateDemographics = TRUE,
                                                                 useCovariateDemographicsGender = TRUE,
@@ -98,22 +186,7 @@ covariateSettings <- FeatureExtraction::createCovariateSettings(useCovariateDemo
                                                                 useCovariateRiskScoresCHADS2VASc = TRUE,
                                                                 useCovariateInteractionYear = FALSE,
                                                                 useCovariateInteractionMonth = FALSE,
-                                                                excludedCovariateConceptIds = celecoxibDrugs,
-                                                                addDescendantsToExclude = TRUE,
+                                                                excludedCovariateConceptIds = 1234,
                                                                 includedCovariateConceptIds = c(),
-                                                                addDescendantsToInclude = TRUE,
                                                                 deleteCovariatesSmallCount = 100)
 
-covs <- getDbCovariateData(connectionDetails = connectionDetails,
-                           oracleTempSchema = oracleTempSchema,
-                           cdmVersion = cdmVersion,
-                           cdmDatabaseSchema = cdmDatabaseSchema,
-                           cohortDatabaseSchema = cohortDatabaseSchema,
-                           cohortTable = cohortTable,
-                           cohortIds = 1,
-                           cohortTableIsTemp = FALSE,
-                           covariateSettings = covariateSettings,
-                           normalize = TRUE)
-any(covs$covariateRef$conceptId %in% cids)
-summary(covs)
-saveCovariateData(covs, "s:/temp/covsOld")

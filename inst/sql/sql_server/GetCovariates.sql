@@ -33,9 +33,9 @@ limitations under the License.
 {DEFAULT @use_covariate_demographics_year = TRUE}
 {DEFAULT @use_covariate_demographics_month = TRUE}
 {DEFAULT @use_covariate_condition_occurrence = TRUE}
-{DEFAULT @use_covariate_condition_occurrence_365d = TRUE}
-{DEFAULT @use_covariate_condition_occurrence_30d = TRUE}
-{DEFAULT @use_covariate_condition_occurrence_inpt180d = TRUE}
+{DEFAULT @use_covariate_condition_occurrence_long_term = TRUE}
+{DEFAULT @use_covariate_condition_occurrence_short_term = TRUE}
+{DEFAULT @use_covariate_condition_occurrence_inpt_medium_term = TRUE}
 {DEFAULT @use_covariate_condition_era = FALSE}
 {DEFAULT @use_covariate_condition_era_ever = TRUE}
 {DEFAULT @use_covariate_condition_era_overlap = TRUE}
@@ -43,28 +43,28 @@ limitations under the License.
 {DEFAULT @use_covariate_condition_group_meddra = TRUE}
 {DEFAULT @use_covariate_condition_group_snomed = TRUE}
 {DEFAULT @use_covariate_drug_exposure = FALSE}
-{DEFAULT @use_covariate_drug_exposure_365d = TRUE}
-{DEFAULT @use_covariate_drug_exposure_30d = TRUE}
+{DEFAULT @use_covariate_drug_exposure_long_term = TRUE}
+{DEFAULT @use_covariate_drug_exposure_short_term = TRUE}
 {DEFAULT @use_covariate_drug_era = FALSE}
-{DEFAULT @use_covariate_drug_era_365d = TRUE}
-{DEFAULT @use_covariate_drug_era_30d = TRUE}
+{DEFAULT @use_covariate_drug_era_long_term = TRUE}
+{DEFAULT @use_covariate_drug_era_short_term = TRUE}
 {DEFAULT @use_covariate_drug_era_overlap = TRUE}
 {DEFAULT @use_covariate_drug_era_ever = TRUE}
 {DEFAULT @use_covariate_drug_group = FALSE}
 {DEFAULT @use_covariate_procedure_occurrence = FALSE}
-{DEFAULT @use_covariate_procedure_occurrence_365d = TRUE}
-{DEFAULT @use_covariate_procedure_occurrence_30d = TRUE}
+{DEFAULT @use_covariate_procedure_occurrence_long_term = TRUE}
+{DEFAULT @use_covariate_procedure_occurrence_short_term = TRUE}
 {DEFAULT @use_covariate_procedure_group = FALSE}
 {DEFAULT @use_covariate_observation = FALSE}
-{DEFAULT @use_covariate_observation_365d = TRUE}
-{DEFAULT @use_covariate_observation_30d = TRUE}
-{DEFAULT @use_covariate_observation_count365d = TRUE}
+{DEFAULT @use_covariate_observation_long_term = TRUE}
+{DEFAULT @use_covariate_observation_short_term = TRUE}
+{DEFAULT @use_covariate_observation_count_long_term = TRUE}
 {DEFAULT @use_covariate_measurement = FALSE}
-{DEFAULT @use_covariate_measurement_365d = TRUE}
-{DEFAULT @use_covariate_measurement_30d = TRUE}
+{DEFAULT @use_covariate_measurement_long_term = TRUE}
+{DEFAULT @use_covariate_measurement_short_term = TRUE}
 {DEFAULT @use_covariate_measurement_below = TRUE}
 {DEFAULT @use_covariate_measurement_above = TRUE}
-{DEFAULT @use_covariate_measurement_count365d = TRUE}
+{DEFAULT @use_covariate_measurement_count_long_term = TRUE}
 {DEFAULT @use_covariate_concept_counts = FALSE}
 {DEFAULT @use_covariate_risk_scores = FALSE}
 {DEFAULT @use_covariate_risk_scores_Charlson = TRUE}
@@ -76,6 +76,9 @@ limitations under the License.
 {DEFAULT @has_excluded_covariate_concept_ids}
 {DEFAULT @has_included_covariate_concept_ids}
 {DEFAULT @delete_covariates_small_count = 100}
+{DEFAULT @long_term_days = 365}
+{DEFAULT @medium_term_days = 180}
+{DEFAULT @short_term_days = 30}
 
 IF OBJECT_ID('tempdb..#cov', 'U') IS NOT NULL
 	DROP TABLE #cov;
@@ -326,13 +329,13 @@ FROM (select distinct covariate_id FROM #cov_month) p1
 CONDITION OCCURRENCE
 ***************************
 **************************/
-	{@use_covariate_condition_occurrence} ? { {@use_covariate_condition_occurrence_365d} ? {
+	{@use_covariate_condition_occurrence} ? { {@use_covariate_condition_occurrence_long_term} ? {
 
---conditions exist:  episode in last 365d prior
+--conditions exist:  episode in last long_term_days prior
 SELECT DISTINCT cp1.@row_id_field AS row_id,
 	CAST(co1.condition_concept_id AS BIGINT) * 1000 + 101 AS covariate_id,
 	1 AS covariate_value
-  INTO #cov_co_365d
+  INTO #cov_co_long_term
 FROM @cohort_temp_table cp1
 INNER JOIN @cdm_database_schema.condition_occurrence co1
 	ON cp1.subject_id = co1.person_id
@@ -340,7 +343,7 @@ WHERE co1.condition_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND co1.condition_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {	AND co1.condition_concept_id IN (SELECT concept_id FROM #included_cov)}
 	AND co1.condition_start_date <= cp1.cohort_start_date
-	AND co1.condition_start_date >= dateadd(dd, - 365, cp1.cohort_start_date);
+	AND co1.condition_start_date >= dateadd(dd, - @long_term_days, cp1.cohort_start_date);
 
 INSERT INTO #cov_ref (
   covariate_id,
@@ -349,26 +352,26 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	CONCAT('Condition occurrence record observed during 365d on or prior to cohort index:  ', CAST((p1.covariate_id-101)/1000 AS VARCHAR), '-', CASE
+	CONCAT('Condition occurrence record observed during long_term_days on or prior to cohort index:  ', CAST((p1.covariate_id-101)/1000 AS VARCHAR), '-', CASE
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
 		END) AS covariate_name,
 	101 AS analysis_id,
 	CAST((p1.covariate_id-101)/1000 AS INT) AS concept_id
-FROM (SELECT DISTINCT covariate_id FROM #cov_co_365d) p1
+FROM (SELECT DISTINCT covariate_id FROM #cov_co_long_term) p1
 LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-101)/1000 = c1.concept_id
 ;
 
 
-} {@use_covariate_condition_occurrence_30d} ? {
+} {@use_covariate_condition_occurrence_short_term} ? {
 
---conditions:  episode in last 30d prior
+--conditions:  episode in last short_term_days prior
 SELECT DISTINCT cp1.@row_id_field AS row_id,
 	CAST(co1.condition_concept_id AS BIGINT) * 1000 + 102 AS covariate_id,
 	1 AS covariate_value
-  INTO #cov_co_30d
+  INTO #cov_co_short_term
 FROM @cohort_temp_table cp1
 INNER JOIN @cdm_database_schema.condition_occurrence co1
 	ON cp1.subject_id = co1.person_id
@@ -376,7 +379,7 @@ WHERE co1.condition_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND co1.condition_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {	AND co1.condition_concept_id IN (SELECT concept_id FROM #included_cov)}
 	AND co1.condition_start_date <= cp1.cohort_start_date
-	AND co1.condition_start_date >= dateadd(dd, - 30, cp1.cohort_start_date);
+	AND co1.condition_start_date >= dateadd(dd, - @short_term_days, cp1.cohort_start_date);
 
 INSERT INTO #cov_ref (
   covariate_id,
@@ -385,28 +388,28 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	CONCAT('Condition occurrence record observed during 30d on or prior to cohort index:  ', CAST((p1.covariate_id-102)/1000 AS VARCHAR), '-', CASE
+	CONCAT('Condition occurrence record observed during short_term_days on or prior to cohort index:  ', CAST((p1.covariate_id-102)/1000 AS VARCHAR), '-', CASE
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
 		END) AS covariate_name,
 	102 AS analysis_id,
   CAST((p1.covariate_id-102)/1000 AS INT) AS concept_id
-FROM (SELECT DISTINCT covariate_id FROM #cov_co_30d) p1
+FROM (SELECT DISTINCT covariate_id FROM #cov_co_short_term) p1
 LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-102)/1000 = c1.concept_id
 ;
 
 
 
-} {@use_covariate_condition_occurrence_inpt180d} ? {
+} {@use_covariate_condition_occurrence_inpt_medium_term} ? {
 
 --conditions:  primary inpatient diagnosis in last 180d
 
 SELECT DISTINCT cp1.@row_id_field AS row_id,
 	CAST(co1.condition_concept_id AS BIGINT) * 1000 + 103 AS covariate_id,
 	1 AS covariate_value
-  INTO #cov_co_inpt180d
+  INTO #cov_co_inpt_med
 FROM @cohort_temp_table cp1
 INNER JOIN @cdm_database_schema.condition_occurrence co1
 	ON cp1.subject_id = co1.person_id
@@ -415,7 +418,7 @@ WHERE co1.condition_concept_id != 0
 {@has_included_covariate_concept_ids} ? {	AND co1.condition_concept_id IN (SELECT concept_id FROM #included_cov)}
 	AND co1.condition_type_concept_id IN (38000183, 38000184, 38000199, 38000200)
 	AND co1.condition_start_date <= cp1.cohort_start_date
-	AND co1.condition_start_date >= dateadd(dd, - 180, cp1.cohort_start_date);
+	AND co1.condition_start_date >= dateadd(dd, - @medium_term_days, cp1.cohort_start_date);
 
 
 
@@ -433,7 +436,7 @@ SELECT p1.covariate_id,
 		END) AS covariate_name,
 	103 AS analysis_id,
 	CAST((p1.covariate_id-103)/1000 AS INT) AS concept_id
-FROM (SELECT DISTINCT covariate_id FROM #cov_co_inpt180d) p1
+FROM (SELECT DISTINCT covariate_id FROM #cov_co_inpt_med) p1
 LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-103)/1000 = c1.concept_id
 ;
@@ -627,9 +630,9 @@ INSERT INTO #cov_ref (
 SELECT DISTINCT CAST(cg1.ancestor_concept_id AS BIGINT) * 1000 + 50 + ccr1.analysis_id AS covariate_id,
 	CONCAT(CASE
 		WHEN analysis_id = 101
-			THEN 'Condition occurrence record observed during 365d on or prior to cohort index within condition group:  '
+			THEN 'Condition occurrence record observed during long_term_days on or prior to cohort index within condition group:  '
 		WHEN analysis_id = 102
-			THEN 'Condition occurrence record observed during 30d on or prior to cohort index within condition group:  '
+			THEN 'Condition occurrence record observed during short_term_days on or prior to cohort index within condition group:  '
 		WHEN analysis_id = 103
 			THEN 'Condition occurrence record of primary inpatient diagnosis observed during 180d on or prior to cohort index within condition group:  '
 		WHEN analysis_id = 201
@@ -662,20 +665,20 @@ INTO #cov_cg
 FROM (
 SELECT row_id, covariate_id, covariate_value FROM #dummy
 {@use_covariate_condition_occurrence} ? {
-{@use_covariate_condition_occurrence_365d} ? {
+{@use_covariate_condition_occurrence_long_term} ? {
 UNION
 SELECT row_id, covariate_id, covariate_value
-FROM #cov_co_365d
+FROM #cov_co_long_term
 }
-{@use_covariate_condition_occurrence_30d} ? {
+{@use_covariate_condition_occurrence_short_term} ? {
 UNION
 SELECT row_id, covariate_id, covariate_value
-FROM #cov_co_30d
+FROM #cov_co_short_term
 }
-{@use_covariate_condition_occurrence_inpt180d} ? {
+{@use_covariate_condition_occurrence_inpt_medium_term} ? {
 UNION
 SELECT row_id, covariate_id, covariate_value
-FROM #cov_co_inpt180d
+FROM #cov_co_inpt_med
 }
 }
 
@@ -717,14 +720,14 @@ DROP TABLE #condition_group;
 DRUG EXPOSURE
 ***************************
 **************************/
-	{@use_covariate_drug_exposure} ? { {@use_covariate_drug_exposure_365d} ? {
+	{@use_covariate_drug_exposure} ? { {@use_covariate_drug_exposure_long_term} ? {
 
---drug exist:  episode in last 365d prior
+--drug exist:  episode in last long_term_days prior
 
 SELECT DISTINCT cp1.@row_id_field AS row_id,
 	CAST(de1.drug_concept_id AS BIGINT) * 1000 + 401 AS covariate_id,
 	1 AS covariate_value
-INTO #cov_de_365d
+INTO #cov_de_long_term
 FROM @cohort_temp_table cp1
 INNER JOIN @cdm_database_schema.drug_exposure de1
 	ON cp1.subject_id = de1.person_id
@@ -732,7 +735,7 @@ WHERE de1.drug_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {  AND de1.drug_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {  AND de1.drug_concept_id IN (SELECT concept_id FROM #included_cov)}
 	AND de1.drug_exposure_start_date <= cp1.cohort_start_date
-	AND de1.drug_exposure_start_date >= dateadd(dd, - 365, cp1.cohort_start_date);
+	AND de1.drug_exposure_start_date >= dateadd(dd, - @long_term_days, cp1.cohort_start_date);
 
 
 INSERT INTO #cov_ref (
@@ -742,28 +745,28 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	CONCAT('Drug exposure record observed during 365d on or prior to cohort index:  ', CAST((p1.covariate_id-401)/1000 AS VARCHAR), '-', CASE
+	CONCAT('Drug exposure record observed during long_term_days on or prior to cohort index:  ', CAST((p1.covariate_id-401)/1000 AS VARCHAR), '-', CASE
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
 		END) AS covariate_name,
 	401 AS analysis_id,
 	CAST((p1.covariate_id-401)/1000 AS INT) AS concept_id
-FROM (SELECT DISTINCT covariate_id FROM #cov_de_365d) p1
+FROM (SELECT DISTINCT covariate_id FROM #cov_de_long_term) p1
 LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-401)/1000 = c1.concept_id
 ;
 }
 
 
-{@use_covariate_drug_exposure_30d} ? {
+{@use_covariate_drug_exposure_short_term} ? {
 
---drug exist:  episode in last 30d prior
+--drug exist:  episode in last short_term_days prior
 
 SELECT DISTINCT cp1.@row_id_field AS row_id,
 	CAST(de1.drug_concept_id AS BIGINT) * 1000 + 402 AS covariate_id,
 	1 AS covariate_value
-  INTO #cov_de_30d
+  INTO #cov_de_short_term
 FROM @cohort_temp_table cp1
 INNER JOIN @cdm_database_schema.drug_exposure de1
 	ON cp1.subject_id = de1.person_id
@@ -771,7 +774,7 @@ WHERE de1.drug_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND de1.drug_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {	AND de1.drug_concept_id IN (SELECT concept_id FROM #included_cov)}
 	AND de1.drug_exposure_start_date <= cp1.cohort_start_date
-	AND de1.drug_exposure_start_date >= dateadd(dd, - 30, cp1.cohort_start_date);
+	AND de1.drug_exposure_start_date >= dateadd(dd, - @short_term_days, cp1.cohort_start_date);
 
 
 INSERT INTO #cov_ref (
@@ -781,14 +784,14 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	CONCAT('Drug exposure record observed during 30d on or prior to cohort index:  ', CAST((p1.covariate_id-402)/1000 AS VARCHAR), '-', CASE
+	CONCAT('Drug exposure record observed during short_term_days on or prior to cohort index:  ', CAST((p1.covariate_id-402)/1000 AS VARCHAR), '-', CASE
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
 		END) AS covariate_name,
 	402 AS analysis_id,
 	CAST((p1.covariate_id-402)/1000 AS INT) AS concept_id
-FROM (SELECT DISTINCT covariate_id FROM #cov_de_30d) p1
+FROM (SELECT DISTINCT covariate_id FROM #cov_de_short_term) p1
 LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-402)/1000 = c1.concept_id
 ;
@@ -803,14 +806,14 @@ LEFT JOIN @cdm_database_schema.concept c1
 DRUG ERA
 ***************************
 **************************/
-	{@use_covariate_drug_era} ? { {@use_covariate_drug_era_365d} ? {
+	{@use_covariate_drug_era} ? { {@use_covariate_drug_era_long_term} ? {
 
---drug exist:  episode in last 365d prior
+--drug exist:  episode in last long_term_days prior
 
 SELECT DISTINCT cp1.@row_id_field AS row_id,
 	CAST(de1.drug_concept_id AS BIGINT) * 1000 + 501 AS covariate_id,
 	1 AS covariate_value
-INTO #cov_dera_365d
+INTO #cov_dera_long_term
 FROM @cohort_temp_table cp1
 INNER JOIN @cdm_database_schema.drug_era de1
 	ON cp1.subject_id = de1.person_id
@@ -818,7 +821,7 @@ WHERE de1.drug_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND de1.drug_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {	AND de1.drug_concept_id IN (SELECT concept_id FROM #included_cov)}
  	AND de1.drug_era_start_date <= cp1.cohort_start_date
-	AND de1.drug_era_end_date >= dateadd(dd, - 365, cp1.cohort_start_date);
+	AND de1.drug_era_end_date >= dateadd(dd, - @long_term_days, cp1.cohort_start_date);
 
 
 
@@ -829,14 +832,14 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	CONCAT('Drug era record observed during 365d on or prior to cohort index:  ', CAST((p1.covariate_id-501)/1000 AS VARCHAR), '-', CASE
+	CONCAT('Drug era record observed during long_term_days on or prior to cohort index:  ', CAST((p1.covariate_id-501)/1000 AS VARCHAR), '-', CASE
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
 		END) AS covariate_name,
 	501 AS analysis_id,
 	CAST((p1.covariate_id-501)/1000 AS INT) AS concept_id
-FROM (SELECT DISTINCT covariate_id FROM #cov_dera_365d) p1
+FROM (SELECT DISTINCT covariate_id FROM #cov_dera_long_term) p1
 LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-501)/1000 = c1.concept_id
 ;
@@ -845,14 +848,14 @@ LEFT JOIN @cdm_database_schema.concept c1
 }
 
 
-{@use_covariate_drug_era_30d} ? {
+{@use_covariate_drug_era_short_term} ? {
 
---drug exist:  episode in last 30d prior
+--drug exist:  episode in last short_term_days prior
 
 SELECT DISTINCT cp1.@row_id_field AS row_id,
 	CAST(de1.drug_concept_id AS BIGINT) * 1000 + 502 AS covariate_id,
 	1 AS covariate_value
-INTO #cov_dera_30d
+INTO #cov_dera_short_term
 FROM @cohort_temp_table cp1
 INNER JOIN @cdm_database_schema.drug_era de1
 	ON cp1.subject_id = de1.person_id
@@ -860,7 +863,7 @@ WHERE de1.drug_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND de1.drug_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {	AND de1.drug_concept_id IN (SELECT concept_id FROM #included_cov)}
 	AND de1.drug_era_start_date <= cp1.cohort_start_date
-	AND de1.drug_era_end_date >= dateadd(dd, - 30, cp1.cohort_start_date);
+	AND de1.drug_era_end_date >= dateadd(dd, - @short_term_days, cp1.cohort_start_date);
 
 
 INSERT INTO #cov_ref (
@@ -870,14 +873,14 @@ INSERT INTO #cov_ref (
   concept_id
 	)
 SELECT p1.covariate_id,
-	CONCAT('Drug era record observed during 30d on or prior to cohort index:  ', CAST((p1.covariate_id-502)/1000 AS VARCHAR), '-', CASE
+	CONCAT('Drug era record observed during short_term_days on or prior to cohort index:  ', CAST((p1.covariate_id-502)/1000 AS VARCHAR), '-', CASE
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
 		END) AS covariate_name,
 	502 AS analysis_id,
 	CAST((p1.covariate_id-502)/1000 AS INT) AS concept_id
-FROM (SELECT DISTINCT covariate_id FROM #cov_dera_30d) p1
+FROM (SELECT DISTINCT covariate_id FROM #cov_dera_short_term) p1
 LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-502)/1000 = c1.concept_id
 ;
@@ -1015,9 +1018,9 @@ INSERT INTO #cov_ref (
 SELECT DISTINCT CAST(cg1.ancestor_concept_id AS BIGINT) * 1000 + 50 + ccr1.analysis_id AS covariate_id,
 	CONCAT(CASE
 		WHEN analysis_id = 501
-			THEN 'Drug era record observed during 365d on or prior to cohort index within drug group:  '
+			THEN 'Drug era record observed during long_term_days on or prior to cohort index within drug group:  '
 		WHEN analysis_id = 502
-			THEN 'Drug era record observed during 30d on or prior to cohort index within drug group:  '
+			THEN 'Drug era record observed during short_term_days on or prior to cohort index within drug group:  '
 		WHEN analysis_id = 503
 			THEN 'Drug era record observed concurrent (overlapping) with cohort index within drug group:  '
     WHEN analysis_id = 504
@@ -1049,28 +1052,28 @@ FROM (
 SELECT row_id, covariate_id, covariate_value FROM #dummy
 
 {@use_covariate_drug_exposure} ? {
-{@use_covariate_drug_exposure_365d} ? {
+{@use_covariate_drug_exposure_long_term} ? {
 UNION
 SELECT row_id, covariate_id, covariate_value
-FROM #cov_de_365d
+FROM #cov_de_long_term
 }
-{@use_covariate_drug_exposure_30d} ? {
+{@use_covariate_drug_exposure_short_term} ? {
 UNION
 SELECT row_id, covariate_id, covariate_value
-FROM #cov_de_30d
+FROM #cov_de_short_term
 }
 }
 
 {@use_covariate_drug_era} ? {
-{@use_covariate_drug_era_365d} ? {
+{@use_covariate_drug_era_long_term} ? {
 UNION
 SELECT row_id, covariate_id, covariate_value
-FROM #cov_dera_365d
+FROM #cov_dera_long_term
 }
-{@use_covariate_drug_era_30d} ? {
+{@use_covariate_drug_era_short_term} ? {
 UNION
 SELECT row_id, covariate_id, covariate_value
-FROM #cov_dera_30d
+FROM #cov_dera_short_term
 }
 {@use_covariate_drug_era_ever} ? {
 UNION
@@ -1160,13 +1163,13 @@ DROP TABLE #drug_group;
 PROCEDURE OCCURRENCE
 ***************************
 **************************/
-	{@use_covariate_procedure_occurrence} ? { {@use_covariate_procedure_occurrence_365d} ? {
+	{@use_covariate_procedure_occurrence} ? { {@use_covariate_procedure_occurrence_long_term} ? {
 
---procedures exist:  episode in last 365d prior
+--procedures exist:  episode in last long_term_days prior
 SELECT DISTINCT cp1.@row_id_field AS row_id,
 	CAST(po1.procedure_concept_id AS BIGINT) * 1000 + 701 AS covariate_id,
 	1 AS covariate_value
-  INTO #cov_po_365d
+  INTO #cov_po_long_term
 FROM @cohort_temp_table cp1
 INNER JOIN @cdm_database_schema.procedure_occurrence po1
 	ON cp1.subject_id = po1.person_id
@@ -1174,7 +1177,7 @@ WHERE po1.procedure_concept_id  != 0
 {@has_excluded_covariate_concept_ids} ? {	AND po1.procedure_concept_id  NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {	AND po1.procedure_concept_id  IN (SELECT concept_id FROM #included_cov)}
 	AND po1.procedure_date <= cp1.cohort_start_date
-	AND po1.procedure_date >= dateadd(dd, - 365, cp1.cohort_start_date);
+	AND po1.procedure_date >= dateadd(dd, - @long_term_days, cp1.cohort_start_date);
 
 
 INSERT INTO #cov_ref (
@@ -1184,26 +1187,26 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	CONCAT('Procedure occurrence record observed during 365d on or prior to cohort index:  ', CAST((p1.covariate_id-701)/1000 AS VARCHAR), '-', CASE
+	CONCAT('Procedure occurrence record observed during long_term_days on or prior to cohort index:  ', CAST((p1.covariate_id-701)/1000 AS VARCHAR), '-', CASE
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
 		END) AS covariate_name,
 	701 AS analysis_id,
 	CAST((p1.covariate_id-701)/1000 AS INT) AS concept_id
-FROM (SELECT DISTINCT covariate_id FROM #cov_po_365d) p1
+FROM (SELECT DISTINCT covariate_id FROM #cov_po_long_term) p1
 LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-701)/1000 = c1.concept_id
 ;
 }
 
-{@use_covariate_procedure_occurrence_30d} ? {
+{@use_covariate_procedure_occurrence_short_term} ? {
 
---procedures exist:  episode in last 30d prior
+--procedures exist:  episode in last short_term_days prior
 SELECT DISTINCT cp1.@row_id_field AS row_id,
 	CAST(po1.procedure_concept_id AS BIGINT) * 1000 + 702 AS covariate_id,
 	1 AS covariate_value
-  INTO #cov_po_30d
+  INTO #cov_po_short_term
 FROM @cohort_temp_table cp1
 INNER JOIN @cdm_database_schema.procedure_occurrence po1
 	ON cp1.subject_id = po1.person_id
@@ -1211,7 +1214,7 @@ WHERE po1.procedure_concept_id  != 0
 {@has_excluded_covariate_concept_ids} ? {	AND po1.procedure_concept_id  NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {	AND po1.procedure_concept_id  IN (SELECT concept_id FROM #included_cov)}
 	AND po1.procedure_date <= cp1.cohort_start_date
-	AND po1.procedure_date >= dateadd(dd, - 30, cp1.cohort_start_date);
+	AND po1.procedure_date >= dateadd(dd, - @short_term_days, cp1.cohort_start_date);
 
 
 INSERT INTO #cov_ref (
@@ -1221,14 +1224,14 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	CONCAT('Procedure occurrence record observed during 30d on or prior to cohort index:  ', CAST((p1.covariate_id-702)/1000 AS VARCHAR), '-', CASE
+	CONCAT('Procedure occurrence record observed during short_term_days on or prior to cohort index:  ', CAST((p1.covariate_id-702)/1000 AS VARCHAR), '-', CASE
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
 		END) AS covariate_name,
 	702 AS analysis_id,
 	CAST((p1.covariate_id-702)/1000 AS INT) AS concept_id
-FROM (SELECT DISTINCT covariate_id FROM #cov_po_30d) p1
+FROM (SELECT DISTINCT covariate_id FROM #cov_po_short_term) p1
 LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-702)/1000 = c1.concept_id
 ;
@@ -1286,9 +1289,9 @@ INSERT INTO #cov_ref (
 SELECT DISTINCT CAST(cg1.ancestor_concept_id AS BIGINT) * 1000 + 50 + ccr1.analysis_id AS covariate_id,
 	CONCAT(CASE
 		WHEN analysis_id = 701
-			THEN 'Procedure occurrence record observed during 365d on or prior to cohort index within procedure group:  '
+			THEN 'Procedure occurrence record observed during long_term_days on or prior to cohort index within procedure group:  '
 		WHEN analysis_id = 702
-			THEN 'Procedure occurrence record observed during 30d on or prior to cohort index within procedure group:  '
+			THEN 'Procedure occurrence record observed during short_term_days on or prior to cohort index within procedure group:  '
   ELSE 'Other procedure group analysis'
 		END, CAST(cg1.ancestor_concept_id AS VARCHAR), '-', c1.concept_name) AS covariate_name,
 	ccr1.analysis_id,
@@ -1317,13 +1320,13 @@ FROM (
 SELECT row_id, covariate_id, covariate_value FROM #dummy
 
 {@use_covariate_procedure_occurrence} ? {
-{@use_covariate_procedure_occurrence_365d} ? {
+{@use_covariate_procedure_occurrence_long_term} ? {
 UNION
-SELECT row_id, covariate_id, covariate_value FROM #cov_po_365d
+SELECT row_id, covariate_id, covariate_value FROM #cov_po_long_term
 }
-{@use_covariate_procedure_occurrence_30d} ? {
+{@use_covariate_procedure_occurrence_short_term} ? {
 UNION
-SELECT row_id, covariate_id, covariate_value FROM #cov_po_30d
+SELECT row_id, covariate_id, covariate_value FROM #cov_po_short_term
 }
 }
 
@@ -1354,13 +1357,13 @@ OBSERVATION
 **************************/
 {@use_covariate_observation} ? {
 
-{@use_covariate_observation_365d} ? {
+{@use_covariate_observation_long_term} ? {
 
---observations exist:  episode in last 365d prior
+--observations exist:  episode in last long_term_days prior
 SELECT DISTINCT cp1.@row_id_field AS row_id,
 	CAST(o1.observation_concept_id AS BIGINT) * 1000 + 901 AS covariate_id,
 	1 AS covariate_value
-  INTO #cov_o_365d
+  INTO #cov_o_long_term
 FROM @cohort_temp_table cp1
 INNER JOIN @cdm_database_schema.observation o1
 	ON cp1.subject_id = o1.person_id
@@ -1368,7 +1371,7 @@ WHERE o1.observation_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND o1.observation_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {	AND o1.observation_concept_id IN (SELECT concept_id FROM #included_cov)}
 	AND o1.observation_date <= cp1.cohort_start_date
-	AND o1.observation_date >= dateadd(dd, - 365, cp1.cohort_start_date);
+	AND o1.observation_date >= dateadd(dd, - @long_term_days, cp1.cohort_start_date);
 
 INSERT INTO #cov_ref (
   covariate_id,
@@ -1377,26 +1380,26 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	CONCAT('Observation record observed during 365d on or prior to cohort index:  ', CAST((p1.covariate_id-901)/1000 AS VARCHAR), '-', CASE
+	CONCAT('Observation record observed during long_term_days on or prior to cohort index:  ', CAST((p1.covariate_id-901)/1000 AS VARCHAR), '-', CASE
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
 		END) AS covariate_name,
 	901 AS analysis_id,
 	CAST((p1.covariate_id-901)/1000 AS INT) AS concept_id
-FROM (SELECT DISTINCT covariate_id FROM #cov_o_365d) p1
+FROM (SELECT DISTINCT covariate_id FROM #cov_o_long_term) p1
 LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-901)/1000 = c1.concept_id
 ;
 }
 
-{@use_covariate_observation_30d} ? {
+{@use_covariate_observation_short_term} ? {
 
---observation exist:  episode in last 30d prior
+--observation exist:  episode in last short_term_days prior
 SELECT DISTINCT cp1.@row_id_field AS row_id,
 	CAST(o1.observation_concept_id AS BIGINT) * 1000 + 902 AS covariate_id,
 	1 AS covariate_value
-  INTO #cov_o_30d
+  INTO #cov_o_short_term
 FROM @cohort_temp_table cp1
 INNER JOIN @cdm_database_schema.observation o1
 	ON cp1.subject_id = o1.person_id
@@ -1404,7 +1407,7 @@ WHERE o1.observation_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND o1.observation_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {	AND o1.observation_concept_id IN (SELECT concept_id FROM #included_cov)}
 	AND o1.observation_date <= cp1.cohort_start_date
-	AND o1.observation_date >= dateadd(dd, - 30, cp1.cohort_start_date);
+	AND o1.observation_date >= dateadd(dd, - @short_term_days, cp1.cohort_start_date);
 
 INSERT INTO #cov_ref (
   covariate_id,
@@ -1413,26 +1416,26 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	CONCAT('Observation record observed during 30d on or prior to cohort index:  ', CAST((p1.covariate_id-902)/1000 AS VARCHAR), '-', CASE
+	CONCAT('Observation record observed during short_term_days on or prior to cohort index:  ', CAST((p1.covariate_id-902)/1000 AS VARCHAR), '-', CASE
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
 		END) AS covariate_name,
 	902 AS analysis_id,
 	CAST((p1.covariate_id-902)/1000 AS INT) AS concept_id
-FROM (SELECT DISTINCT covariate_id FROM #cov_o_30d) p1
+FROM (SELECT DISTINCT covariate_id FROM #cov_o_short_term) p1
 LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-902)/1000 = c1.concept_id
 ;
 }
 
-{@use_covariate_observation_count365d} ? {
+{@use_covariate_observation_count_long_term} ? {
 
---number of observations:  episode in last 365d prior
+--number of observations:  episode in last long_term_days prior
 SELECT cp1.@row_id_field AS row_id,
 	CAST(o1.observation_concept_id AS BIGINT) * 1000 + 905 AS covariate_id,
 	COUNT(observation_id) AS covariate_value
-    INTO #cov_o_count365d
+    INTO #cov_o_cnt_long_term
 FROM @cohort_temp_table cp1
 INNER JOIN @cdm_database_schema.observation o1
 	ON cp1.subject_id = o1.person_id
@@ -1440,7 +1443,7 @@ WHERE o1.observation_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND o1.observation_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {	AND o1.observation_concept_id IN (SELECT concept_id FROM #included_cov)}
 	AND o1.observation_date <= cp1.cohort_start_date
-	AND o1.observation_date >= dateadd(dd, - 365, cp1.cohort_start_date)
+	AND o1.observation_date >= dateadd(dd, - @long_term_days, cp1.cohort_start_date)
 GROUP BY cp1.@row_id_field,
 	CAST(o1.observation_concept_id AS BIGINT) * 1000 + 905;
 
@@ -1451,14 +1454,14 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	CONCAT('Number of observations during 365d on or prior to cohort index:  ', CAST((p1.covariate_id-905)/1000 AS VARCHAR), '-', CASE
+	CONCAT('Number of observations during long_term_days on or prior to cohort index:  ', CAST((p1.covariate_id-905)/1000 AS VARCHAR), '-', CASE
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
 		END) AS covariate_name,
 	905 AS analysis_id,
 	CAST((p1.covariate_id-905)/1000 AS INT) AS concept_id
-FROM (SELECT DISTINCT covariate_id FROM #cov_o_count365d) p1
+FROM (SELECT DISTINCT covariate_id FROM #cov_o_cnt_long_term) p1
 LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-905)/1000 = c1.concept_id
 ;
@@ -1470,7 +1473,7 @@ LEFT JOIN @cdm_database_schema.concept c1
 
 {@use_covariate_measurement_below} ? {
 
---for numeric values with valid range, latest value within 180 below low
+--for numeric values with valid range, latest value within @medium_term_days below low
 SELECT DISTINCT row_id,
 	CAST(@measurement_concept_id AS BIGINT) * 1000 + 903 AS covariate_id,
 	1 AS covariate_value
@@ -1492,7 +1495,7 @@ FROM (
 {@has_excluded_covariate_concept_ids} ? {		AND o1.@measurement_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {		AND o1.@measurement_concept_id IN (SELECT concept_id FROM #included_cov)}
 		AND o1.@measurement_date <= cp1.cohort_start_date
-		AND o1.@measurement_date >= dateadd(dd, - 180, cp1.cohort_start_date)
+		AND o1.@measurement_date >= dateadd(dd, - @medium_term_days, cp1.cohort_start_date)
 		AND o1.value_as_number >= 0
 		AND o1.range_low >= 0
 		AND o1.range_high >= 0
@@ -1544,7 +1547,7 @@ FROM (
 {@has_excluded_covariate_concept_ids} ? {		AND o1.@measurement_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {		AND o1.@measurement_concept_id IN (SELECT concept_id FROM #included_cov)}
 		AND o1.@measurement_date <= cp1.cohort_start_date
-		AND o1.@measurement_date >= dateadd(dd, - 180, cp1.cohort_start_date)
+		AND o1.@measurement_date >= dateadd(dd, - @medium_term_days, cp1.cohort_start_date)
 		AND o1.value_as_number >= 0
 		AND o1.range_low >= 0
 		AND o1.range_high >= 0
@@ -1574,13 +1577,13 @@ LEFT JOIN @cdm_database_schema.concept c1
 }
 
 {@cdm_version != '4' & @use_covariate_measurement} ? {
-{@use_covariate_measurement_365d} ? {
+{@use_covariate_measurement_long_term} ? {
 
---measurements exist:  episode in last 365d prior
+--measurements exist:  episode in last long_term_days prior
 SELECT DISTINCT cp1.@row_id_field AS row_id,
 	CAST(o1.measurement_concept_id AS BIGINT) * 1000 + 901 AS covariate_id,
 	1 AS covariate_value
-  INTO #cov_m_365d
+  INTO #cov_m_long_term
 FROM @cohort_temp_table cp1
 INNER JOIN @cdm_database_schema.measurement o1
 	ON cp1.subject_id = o1.person_id
@@ -1588,7 +1591,7 @@ WHERE o1.measurement_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND o1.measurement_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {	AND o1.measurement_concept_id IN (SELECT concept_id FROM #included_cov)}
 	AND o1.measurement_date <= cp1.cohort_start_date
-	AND o1.measurement_date >= dateadd(dd, - 365, cp1.cohort_start_date);
+	AND o1.measurement_date >= dateadd(dd, - @long_term_days, cp1.cohort_start_date);
 
 INSERT INTO #cov_ref (
   covariate_id,
@@ -1597,26 +1600,26 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	CONCAT('Measurement record observed during 365d on or prior to cohort index:  ', CAST((p1.covariate_id-901)/1000 AS VARCHAR), '-', CASE
+	CONCAT('Measurement record observed during long_term_days on or prior to cohort index:  ', CAST((p1.covariate_id-901)/1000 AS VARCHAR), '-', CASE
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
 		END) AS covariate_name,
 	901 AS analysis_id,
 	CAST((p1.covariate_id-901)/1000 AS INT) AS concept_id
-FROM (SELECT DISTINCT covariate_id FROM #cov_m_365d) p1
+FROM (SELECT DISTINCT covariate_id FROM #cov_m_long_term) p1
 LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-901)/1000 = c1.concept_id
 ;
 }
 
-{@use_covariate_measurement_30d} ? {
+{@use_covariate_measurement_short_term} ? {
 
---measurement exist:  episode in last 30d prior
+--measurement exist:  episode in last short_term_days prior
 SELECT DISTINCT cp1.@row_id_field AS row_id,
 	CAST(o1.measurement_concept_id AS BIGINT) * 1000 + 902 AS covariate_id,
 	1 AS covariate_value
-  INTO #cov_m_30d
+  INTO #cov_m_short_term
 FROM @cohort_temp_table cp1
 INNER JOIN @cdm_database_schema.measurement o1
 	ON cp1.subject_id = o1.person_id
@@ -1624,7 +1627,7 @@ WHERE o1.measurement_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND o1.measurement_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {	AND o1.measurement_concept_id IN (SELECT concept_id FROM #included_cov)}
 	AND o1.measurement_date <= cp1.cohort_start_date
-	AND o1.measurement_date >= dateadd(dd, - 30, cp1.cohort_start_date);
+	AND o1.measurement_date >= dateadd(dd, - @short_term_days, cp1.cohort_start_date);
 
 INSERT INTO #cov_ref (
   covariate_id,
@@ -1633,26 +1636,26 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	CONCAT('Measurement record observed during 30d on or prior to cohort index:  ', CAST((p1.covariate_id-902)/1000 AS VARCHAR), '-', CASE
+	CONCAT('Measurement record observed during short_term_days on or prior to cohort index:  ', CAST((p1.covariate_id-902)/1000 AS VARCHAR), '-', CASE
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
 		END) AS covariate_name,
 	902 AS analysis_id,
 	CAST((p1.covariate_id-902)/1000 AS INT) AS concept_id
-FROM (SELECT DISTINCT covariate_id FROM #cov_m_30d) p1
+FROM (SELECT DISTINCT covariate_id FROM #cov_m_short_term) p1
 LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-902)/1000 = c1.concept_id
 ;
 }
 
-{@use_covariate_measurement_count365d} ? {
+{@use_covariate_measurement_count_long_term} ? {
 
---number of measurements:  episode in last 365d prior
+--number of measurements:  episode in last long_term_days prior
 SELECT cp1.@row_id_field AS row_id,
 	CAST(o1.measurement_concept_id AS BIGINT) * 1000 + 905 AS covariate_id,
 	COUNT(measurement_id) AS covariate_value
-    INTO #cov_m_count365d
+    INTO #cov_m_cnt_long_term
 FROM @cohort_temp_table cp1
 INNER JOIN @cdm_database_schema.measurement o1
 	ON cp1.subject_id = o1.person_id
@@ -1660,7 +1663,7 @@ WHERE o1.measurement_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND o1.measurement_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {	AND o1.measurement_concept_id IN (SELECT concept_id FROM #included_cov)}
 	AND o1.measurement_date <= cp1.cohort_start_date
-	AND o1.measurement_date >= dateadd(dd, - 365, cp1.cohort_start_date)
+	AND o1.measurement_date >= dateadd(dd, - @long_term_days, cp1.cohort_start_date)
 GROUP BY cp1.@row_id_field,
 	CAST(o1.measurement_concept_id AS BIGINT) * 1000 + 905;
 
@@ -1671,14 +1674,14 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT p1.covariate_id,
-	CONCAT('Number of measurements during 365d on or prior to cohort index:  ', CAST((p1.covariate_id-905)/1000 AS VARCHAR), '-', CASE
+	CONCAT('Number of measurements during long_term_days on or prior to cohort index:  ', CAST((p1.covariate_id-905)/1000 AS VARCHAR), '-', CASE
 		WHEN c1.concept_name IS NOT NULL
 			THEN c1.concept_name
 		ELSE 'Unknown invalid concept'
 		END) AS covariate_name,
 	905 AS analysis_id,
 	CAST((p1.covariate_id-905)/1000 AS INT) AS concept_id
-FROM (SELECT DISTINCT covariate_id FROM #cov_m_count365d) p1
+FROM (SELECT DISTINCT covariate_id FROM #cov_m_cnt_long_term) p1
 LEFT JOIN @cdm_database_schema.concept c1
 	ON (p1.covariate_id-905)/1000 = c1.concept_id
 ;
@@ -1693,7 +1696,7 @@ DATA DENSITY CONCEPT COUNTS
 **************************/
 {@use_covariate_concept_counts} ? {
 
---Number of distinct conditions observed in 365d on or prior to cohort index
+--Number of distinct conditions observed in long_term_days on or prior to cohort index
 SELECT cp1.@row_id_field AS row_id,
 	1000 AS covariate_id,
 	COUNT(DISTINCT ce1.condition_concept_id) AS covariate_value
@@ -1702,7 +1705,7 @@ FROM @cohort_temp_table cp1
 INNER JOIN @cdm_database_schema.condition_era ce1
 	ON cp1.subject_id = ce1.person_id
 WHERE ce1.condition_era_start_date <= cp1.cohort_start_date
-	AND ce1.condition_era_end_date >= dateadd(dd, - 365, cp1.cohort_start_date)
+	AND ce1.condition_era_end_date >= dateadd(dd, - @long_term_days, cp1.cohort_start_date)
 GROUP BY cp1.@row_id_field;
 
 
@@ -1714,13 +1717,13 @@ INSERT INTO #cov_ref (
 	)
 VALUES (
 	1000,
-	'Number of distinct conditions observed in 365d on or prior to cohort index',
+	'Number of distinct conditions observed in long_term_days on or prior to cohort index',
 	1000,
 	0
 	);
 
 
---Number of distinct drug ingredients observed in 365d on or prior to cohort index
+--Number of distinct drug ingredients observed in long_term_days on or prior to cohort index
 SELECT cp1.@row_id_field AS row_id,
 	1001 AS covariate_id,
 	COUNT(DISTINCT de1.drug_concept_id) AS covariate_value
@@ -1729,7 +1732,7 @@ FROM @cohort_temp_table cp1
 INNER JOIN @cdm_database_schema.drug_era de1
 	ON cp1.subject_id = de1.person_id
 WHERE de1.drug_era_start_date <= cp1.cohort_start_date
-	AND de1.drug_era_start_date >= dateadd(dd, - 365, cp1.cohort_start_date)
+	AND de1.drug_era_start_date >= dateadd(dd, - @long_term_days, cp1.cohort_start_date)
 GROUP BY cp1.@row_id_field;
 
 INSERT INTO #cov_ref (
@@ -1740,13 +1743,13 @@ INSERT INTO #cov_ref (
 	)
 VALUES (
 	1001,
-	'Number of distinct drug ingredients observed in 365d on or prior to cohort index',
+	'Number of distinct drug ingredients observed in long_term_days on or prior to cohort index',
 	1001,
 	0
 	);
 
 
---Number of distinct procedures observed in 365d on or prior to cohort index
+--Number of distinct procedures observed in long_term_days on or prior to cohort index
 SELECT cp1.@row_id_field AS row_id,
 	1002 AS covariate_id,
 	COUNT(DISTINCT po1.procedure_concept_id) AS covariate_value
@@ -1755,7 +1758,7 @@ FROM @cohort_temp_table cp1
 INNER JOIN @cdm_database_schema.procedure_occurrence po1
 	ON cp1.subject_id = po1.person_id
 WHERE po1.procedure_date <= cp1.cohort_start_date
-	AND po1.procedure_date >= dateadd(dd, - 365, cp1.cohort_start_date)
+	AND po1.procedure_date >= dateadd(dd, - @long_term_days, cp1.cohort_start_date)
 GROUP BY cp1.@row_id_field;
 
 INSERT INTO #cov_ref (
@@ -1766,13 +1769,13 @@ INSERT INTO #cov_ref (
 	)
 VALUES (
 	1002,
-	'Number of distinct procedures observed in 365d on or prior to cohort index',
+	'Number of distinct procedures observed in long_term_days on or prior to cohort index',
 	1002,
 	0
 	);
 
 
---Number of distinct observations observed in 365d on or prior to cohort index
+--Number of distinct observations observed in long_term_days on or prior to cohort index
 SELECT cp1.@row_id_field AS row_id,
 	1003 AS covariate_id,
 	COUNT(DISTINCT o1.observation_concept_id) AS covariate_value
@@ -1781,7 +1784,7 @@ FROM @cohort_temp_table cp1
 INNER JOIN @cdm_database_schema.observation o1
 	ON cp1.subject_id = o1.person_id
 WHERE o1.observation_date <= cp1.cohort_start_date
-	AND o1.observation_date >= dateadd(dd, - 365, cp1.cohort_start_date)
+	AND o1.observation_date >= dateadd(dd, - @long_term_days, cp1.cohort_start_date)
 GROUP BY cp1.@row_id_field;
 
 INSERT INTO #cov_ref (
@@ -1792,12 +1795,12 @@ INSERT INTO #cov_ref (
 	)
 VALUES (
 	1003,
-	'Number of distinct observations observed in 365d on or prior to cohort index',
+	'Number of distinct observations observed in long_term_days on or prior to cohort index',
 	1003,
 	0
 	);
 
---Number of visits observed in 365d on or prior to cohort index
+--Number of visits observed in long_term_days on or prior to cohort index
 SELECT cp1.@row_id_field AS row_id,
 	1004 AS covariate_id,
 	COUNT(vo1.visit_occurrence_id) AS covariate_value
@@ -1806,7 +1809,7 @@ FROM @cohort_temp_table cp1
 INNER JOIN @cdm_database_schema.visit_occurrence vo1
 	ON cp1.subject_id = vo1.person_id
 WHERE vo1.visit_start_date <= cp1.cohort_start_date
-	AND vo1.visit_start_date >= dateadd(dd, - 365, cp1.cohort_start_date)
+	AND vo1.visit_start_date >= dateadd(dd, - @long_term_days, cp1.cohort_start_date)
 GROUP BY cp1.@row_id_field;
 
 INSERT INTO #cov_ref (
@@ -1817,13 +1820,13 @@ INSERT INTO #cov_ref (
 	)
 VALUES (
 	1004,
-	'Number of visits observed in 365d on or prior to cohort index',
+	'Number of visits observed in long_term_days on or prior to cohort index',
 	1004,
 	0
 	);
 
 
---Number of inpatient visits observed in 365d on or prior to cohort index
+--Number of inpatient visits observed in long_term_days on or prior to cohort index
 SELECT cp1.@row_id_field AS row_id,
 	1005 AS covariate_id,
 	COUNT(vo1.visit_occurrence_id) AS covariate_value
@@ -1832,7 +1835,7 @@ FROM @cohort_temp_table cp1
 INNER JOIN @cdm_database_schema.visit_occurrence vo1
 	ON cp1.subject_id = vo1.person_id
 WHERE vo1.visit_start_date <= cp1.cohort_start_date
-	AND vo1.visit_start_date >= dateadd(dd, - 365, cp1.cohort_start_date)
+	AND vo1.visit_start_date >= dateadd(dd, - @long_term_days, cp1.cohort_start_date)
 {@cdm_version == '4'} ? {
 	AND vo1.place_of_service_concept_id = 9201
 } : {
@@ -1848,13 +1851,13 @@ INSERT INTO #cov_ref (
 	)
 VALUES (
 	1005,
-	'Number of inpatient visits observed in 365d on or prior to cohort index',
+	'Number of inpatient visits observed in long_term_days on or prior to cohort index',
 	1005,
 	0
 	);
 
 
---Number of ER visits observed in 365d on or prior to cohort index
+--Number of ER visits observed in long_term_days on or prior to cohort index
 SELECT cp1.@row_id_field AS row_id,
 	1006 AS covariate_id,
 	COUNT(vo1.visit_occurrence_id) AS covariate_value
@@ -1863,7 +1866,7 @@ FROM @cohort_temp_table cp1
 INNER JOIN @cdm_database_schema.visit_occurrence vo1
 	ON cp1.subject_id = vo1.person_id
 WHERE vo1.visit_start_date <= cp1.cohort_start_date
-	AND vo1.visit_start_date >= dateadd(dd, - 365, cp1.cohort_start_date)
+	AND vo1.visit_start_date >= dateadd(dd, - @long_term_days, cp1.cohort_start_date)
 {@cdm_version == '4'} ? {
 	AND vo1.place_of_service_concept_id = 9203
 } : {
@@ -1880,13 +1883,13 @@ INSERT INTO #cov_ref (
 	)
 VALUES (
 	1006,
-	'Number of ER visits observed in 365d on or prior to cohort index',
+	'Number of ER visits observed in long_term_days on or prior to cohort index',
 	1006,
 	0
 	);
 
 {@cdm_version != '4'} ? {
---Number of distinct measurements observed in 365d on or prior to cohort index
+--Number of distinct measurements observed in long_term_days on or prior to cohort index
 SELECT cp1.@row_id_field AS row_id,
 	1007 AS covariate_id,
 	COUNT(DISTINCT o1.measurement_concept_id) AS covariate_value
@@ -1895,7 +1898,7 @@ FROM @cohort_temp_table cp1
 INNER JOIN @cdm_database_schema.measurement o1
 	ON cp1.subject_id = o1.person_id
 WHERE o1.measurement_date <= cp1.cohort_start_date
-	AND o1.measurement_date >= dateadd(dd, - 365, cp1.cohort_start_date)
+	AND o1.measurement_date >= dateadd(dd, - @long_term_days, cp1.cohort_start_date)
 GROUP BY cp1.@row_id_field;
 
 INSERT INTO #cov_ref (
@@ -1906,7 +1909,7 @@ INSERT INTO #cov_ref (
 	)
 VALUES (
 	1007,
-	'Number of distinct measurements observed in 365d on or prior to cohort index',
+	'Number of distinct measurements observed in long_term_days on or prior to cohort index',
 	1007,
 	0
 	);
@@ -3102,30 +3105,30 @@ FROM #cov_month
 
 {@use_covariate_condition_occurrence} ? {
 
-{@use_covariate_condition_occurrence_365d} ? {
+{@use_covariate_condition_occurrence_long_term} ? {
 
 UNION
 
 SELECT row_id, covariate_id, covariate_value
-FROM #cov_co_365d
+FROM #cov_co_long_term
 
 }
 
-{@use_covariate_condition_occurrence_30d} ? {
+{@use_covariate_condition_occurrence_short_term} ? {
 
 UNION
 
 SELECT row_id, covariate_id, covariate_value
-FROM #cov_co_30d
+FROM #cov_co_short_term
 
 }
 
-{@use_covariate_condition_occurrence_inpt180d} ? {
+{@use_covariate_condition_occurrence_inpt_medium_term} ? {
 
 UNION
 
 SELECT row_id, covariate_id, covariate_value
-FROM #cov_co_inpt180d
+FROM #cov_co_inpt_med
 
 }
 
@@ -3166,21 +3169,21 @@ FROM #cov_cg
 
 {@use_covariate_drug_exposure} ? {
 
-{@use_covariate_drug_exposure_365d} ? {
+{@use_covariate_drug_exposure_long_term} ? {
 
 UNION
 
 SELECT row_id, covariate_id, covariate_value
-FROM #cov_de_365d
+FROM #cov_de_long_term
 
 }
 
-{@use_covariate_drug_exposure_30d} ? {
+{@use_covariate_drug_exposure_short_term} ? {
 
 UNION
 
 SELECT row_id, covariate_id, covariate_value
-FROM #cov_de_30d
+FROM #cov_de_short_term
 
 }
 
@@ -3189,21 +3192,21 @@ FROM #cov_de_30d
 
 {@use_covariate_drug_era} ? {
 
-{@use_covariate_drug_era_365d} ? {
+{@use_covariate_drug_era_long_term} ? {
 
 UNION
 
 SELECT row_id, covariate_id, covariate_value
-FROM #cov_dera_365d
+FROM #cov_dera_long_term
 
 }
 
-{@use_covariate_drug_era_30d} ? {
+{@use_covariate_drug_era_short_term} ? {
 
 UNION
 
 SELECT row_id, covariate_id, covariate_value
-FROM #cov_dera_30d
+FROM #cov_dera_short_term
 
 }
 
@@ -3247,21 +3250,21 @@ FROM #cov_dg_count
 
 {@use_covariate_procedure_occurrence} ? {
 
-{@use_covariate_procedure_occurrence_365d} ? {
+{@use_covariate_procedure_occurrence_long_term} ? {
 
 UNION
 
 SELECT row_id, covariate_id, covariate_value
-FROM #cov_po_365d
+FROM #cov_po_long_term
 
 }
 
-{@use_covariate_procedure_occurrence_30d} ? {
+{@use_covariate_procedure_occurrence_short_term} ? {
 
 UNION
 
 SELECT row_id, covariate_id, covariate_value
-FROM #cov_po_30d
+FROM #cov_po_short_term
 
 }
 
@@ -3278,30 +3281,30 @@ FROM #cov_pg
 
 {@use_covariate_observation} ? {
 
-{@use_covariate_observation_365d} ? {
+{@use_covariate_observation_long_term} ? {
 
 UNION
 
 SELECT row_id, covariate_id, covariate_value
-FROM #cov_o_365d
+FROM #cov_o_long_term
 
 }
 
-{@use_covariate_observation_30d} ? {
+{@use_covariate_observation_short_term} ? {
 
 UNION
 
 SELECT row_id, covariate_id, covariate_value
-FROM #cov_o_30d
+FROM #cov_o_short_term
 
 }
 
-{@use_covariate_observation_count365d} ? {
+{@use_covariate_observation_count_long_term} ? {
 
 UNION
 
 SELECT row_id, covariate_id, covariate_value
-FROM #cov_o_count365d
+FROM #cov_o_cnt_long_term
 
 }
 
@@ -3330,30 +3333,30 @@ FROM #cov_m_above
 
 {@cdm_version != '4' & @use_covariate_measurement} ? {
 
-{@use_covariate_measurement_365d} ? {
+{@use_covariate_measurement_long_term} ? {
 
 UNION
 
 SELECT row_id, covariate_id, covariate_value
-FROM #cov_m_365d
+FROM #cov_m_long_term
 
 }
 
-{@use_covariate_measurement_30d} ? {
+{@use_covariate_measurement_short_term} ? {
 
 UNION
 
 SELECT row_id, covariate_id, covariate_value
-FROM #cov_m_30d
+FROM #cov_m_short_term
 
 }
 
-{@use_covariate_measurement_count365d} ? {
+{@use_covariate_measurement_count_long_term} ? {
 
 UNION
 
 SELECT row_id, covariate_id, covariate_value
-FROM #cov_m_count365d
+FROM #cov_m_cnt_long_term
 
 }
 
@@ -3612,26 +3615,26 @@ IF OBJECT_ID('tempdb..#cov_year', 'U') IS NOT NULL
   DROP TABLE #cov_year;
 IF OBJECT_ID('tempdb..#cov_month', 'U') IS NOT NULL
   DROP TABLE #cov_month;
-IF OBJECT_ID('tempdb..#cov_co_365d', 'U') IS NOT NULL
-  DROP TABLE #cov_co_365d;
-IF OBJECT_ID('tempdb..#cov_co_30d', 'U') IS NOT NULL
-  DROP TABLE #cov_co_30d;
-IF OBJECT_ID('tempdb..#cov_co_inpt180d', 'U') IS NOT NULL
-  DROP TABLE #cov_co_inpt180d;
+IF OBJECT_ID('tempdb..#cov_co_long_term', 'U') IS NOT NULL
+  DROP TABLE #cov_co_long_term;
+IF OBJECT_ID('tempdb..#cov_co_short_term', 'U') IS NOT NULL
+  DROP TABLE #cov_co_short_term;
+IF OBJECT_ID('tempdb..#cov_co_inpt_med', 'U') IS NOT NULL
+  DROP TABLE #cov_co_inpt_med;
 IF OBJECT_ID('tempdb..#cov_ce_ever', 'U') IS NOT NULL
   DROP TABLE #cov_ce_ever;
 IF OBJECT_ID('tempdb..#cov_ce_overlap', 'U') IS NOT NULL
   DROP TABLE #cov_ce_overlap;
 IF OBJECT_ID('tempdb..#cov_cg', 'U') IS NOT NULL
   DROP TABLE #cov_cg;
-IF OBJECT_ID('tempdb..#cov_de_365d', 'U') IS NOT NULL
-  DROP TABLE #cov_de_365d;
-IF OBJECT_ID('tempdb..#cov_de_30d', 'U') IS NOT NULL
-  DROP TABLE #cov_de_30d;
-IF OBJECT_ID('tempdb..#cov_dera_365d', 'U') IS NOT NULL
-  DROP TABLE #cov_dera_365d;
-IF OBJECT_ID('tempdb..#cov_dera_30d', 'U') IS NOT NULL
-  DROP TABLE #cov_dera_30d;
+IF OBJECT_ID('tempdb..#cov_de_long_term', 'U') IS NOT NULL
+  DROP TABLE #cov_de_long_term;
+IF OBJECT_ID('tempdb..#cov_de_short_term', 'U') IS NOT NULL
+  DROP TABLE #cov_de_short_term;
+IF OBJECT_ID('tempdb..#cov_dera_long_term', 'U') IS NOT NULL
+  DROP TABLE #cov_dera_long_term;
+IF OBJECT_ID('tempdb..#cov_dera_short_term', 'U') IS NOT NULL
+  DROP TABLE #cov_dera_short_term;
 IF OBJECT_ID('tempdb..#cov_dera_ever', 'U') IS NOT NULL
   DROP TABLE #cov_dera_ever;
 IF OBJECT_ID('tempdb..#cov_dera_overlap', 'U') IS NOT NULL
@@ -3640,24 +3643,24 @@ IF OBJECT_ID('tempdb..#cov_dg', 'U') IS NOT NULL
   DROP TABLE #cov_dg;
 IF OBJECT_ID('tempdb..#cov_dg_count', 'U') IS NOT NULL
   DROP TABLE #cov_dg_count;
-IF OBJECT_ID('tempdb..#cov_po_365d', 'U') IS NOT NULL
-  DROP TABLE #cov_po_365d;
-IF OBJECT_ID('tempdb..#cov_po_30d', 'U') IS NOT NULL
-  DROP TABLE #cov_po_30d;
+IF OBJECT_ID('tempdb..#cov_po_long_term', 'U') IS NOT NULL
+  DROP TABLE #cov_po_long_term;
+IF OBJECT_ID('tempdb..#cov_po_short_term', 'U') IS NOT NULL
+  DROP TABLE #cov_po_short_term;
 IF OBJECT_ID('tempdb..#cov_pg', 'U') IS NOT NULL
   DROP TABLE #cov_pg;
-IF OBJECT_ID('tempdb..#cov_o_365d', 'U') IS NOT NULL
-  DROP TABLE #cov_o_365d;
-IF OBJECT_ID('tempdb..#cov_o_30d', 'U') IS NOT NULL
-  DROP TABLE #cov_o_30d;
+IF OBJECT_ID('tempdb..#cov_o_long_term', 'U') IS NOT NULL
+  DROP TABLE #cov_o_long_term;
+IF OBJECT_ID('tempdb..#cov_o_short_term', 'U') IS NOT NULL
+  DROP TABLE #cov_o_short_term;
 IF OBJECT_ID('tempdb..#cov_m_below', 'U') IS NOT NULL
   DROP TABLE #cov_m_below;
 IF OBJECT_ID('tempdb..#cov_m_above', 'U') IS NOT NULL
   DROP TABLE #cov_m_above;
-IF OBJECT_ID('tempdb..#cov_m_count365d', 'U') IS NOT NULL
-  DROP TABLE #cov_m_count365d;  
-IF OBJECT_ID('tempdb..#cov_o_count365d', 'U') IS NOT NULL
-  DROP TABLE #cov_o_count365d;
+IF OBJECT_ID('tempdb..#cov_m_cnt_long_term', 'U') IS NOT NULL
+  DROP TABLE #cov_m_cnt_long_term;  
+IF OBJECT_ID('tempdb..#cov_o_cnt_long_term', 'U') IS NOT NULL
+  DROP TABLE #cov_o_cnt_long_term;
 IF OBJECT_ID('tempdb..#cov_dd_cond', 'U') IS NOT NULL
   DROP TABLE #cov_dd_cond;
 IF OBJECT_ID('tempdb..#cov_dd_drug', 'U') IS NOT NULL
