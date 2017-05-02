@@ -169,7 +169,8 @@ getDbDefaultCovariateData <- function(connection,
                                                    delete_covariates_small_count = covariateSettings$deleteCovariatesSmallCount,
                                                    long_term_days = covariateSettings$longTermDays,
                                                    medium_term_days = covariateSettings$mediumTermDays,
-                                                   short_term_days = covariateSettings$shortTermDays)
+                                                   short_term_days = covariateSettings$shortTermDays,
+                                                   window_end_days = covariateSettings$windowEndDays)
   
   DatabaseConnector::executeSql(connection, renderedSql)
   writeLines("Done")
@@ -477,6 +478,9 @@ getDbDefaultCovariateData <- function(connection,
 #' @param longTermDays                             What is the length (in days) of the long-term window?
 #' @param mediumTermDays                            What is the length (in days) of the medium-term window?
 #' @param shortTermDays                             What is the length (in days) of the short-term window?
+#' @param windowEndDays                             What is the last day of the window? 0 means the cohort
+#'                                                  start date is the last date (included), 1 means the window
+#'                                                  stops the day before the cohort start date, etc.
 #' @param useCovariateProcedureOccurrence365d  DEPRECATED. Use the LongTerm equivalent instead
 #' @param useCovariateConditionOccurrence365d  DEPRECATED. Use the LongTerm equivalent instead
 #' @param useCovariateDrugExposure365d   DEPRECATED. Use the LongTerm equivalent instead
@@ -554,6 +558,7 @@ createCovariateSettings <- function(useCovariateDemographics = FALSE,
                                     longTermDays = 365,
                                     mediumTermDays = 180,
                                     shortTermDays = 30,
+                                    windowEndDays = 0,
                                     useCovariateProcedureOccurrence365d,
                                     useCovariateConditionOccurrence365d,
                                     useCovariateDrugExposure365d,

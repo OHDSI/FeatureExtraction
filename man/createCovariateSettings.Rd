@@ -43,7 +43,7 @@ createCovariateSettings(useCovariateDemographics = FALSE,
   excludedCovariateConceptIds = c(), addDescendantsToExclude = TRUE,
   includedCovariateConceptIds = c(), addDescendantsToInclude = TRUE,
   deleteCovariatesSmallCount = 100, longTermDays = 365,
-  mediumTermDays = 180, shortTermDays = 30,
+  mediumTermDays = 180, shortTermDays = 30, windowEndDays = 0,
   useCovariateProcedureOccurrence365d, useCovariateConditionOccurrence365d,
   useCovariateDrugExposure365d, useCovariateMeasurementCount365d,
   useCovariateDrugEra365d, useCovariateObservation365d,
@@ -322,6 +322,10 @@ deleteCovariateSmallCounts time.}
 \item{mediumTermDays}{What is the length (in days) of the medium-term window?}
 
 \item{shortTermDays}{What is the length (in days) of the short-term window?}
+
+\item{windowEndDays}{What is the last day of the window? 0 means the cohort
+start date is the last date (included), 1 means the window
+stops the day before the cohort start date, etc.}
 
 \item{useCovariateProcedureOccurrence365d}{DEPRECATED. Use the LongTerm equivalent instead}
 

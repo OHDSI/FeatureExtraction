@@ -79,6 +79,7 @@ limitations under the License.
 {DEFAULT @long_term_days = 365}
 {DEFAULT @medium_term_days = 180}
 {DEFAULT @short_term_days = 30}
+{DEFAULT @window_end_days = 0}
 
 IF OBJECT_ID('tempdb..#cov', 'U') IS NOT NULL
 	DROP TABLE #cov;
@@ -342,8 +343,8 @@ INNER JOIN @cdm_database_schema.condition_occurrence co1
 WHERE co1.condition_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND co1.condition_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {	AND co1.condition_concept_id IN (SELECT concept_id FROM #included_cov)}
-	AND co1.condition_start_date <= cp1.cohort_start_date
-	AND co1.condition_start_date >= dateadd(dd, - @long_term_days, cp1.cohort_start_date);
+	AND co1.condition_start_date <= DATEADD(DAY, - @window_end_days, cp1.cohort_start_date)
+	AND co1.condition_start_date >= DATEADD(DAY, - @long_term_days, cp1.cohort_start_date);
 
 INSERT INTO #cov_ref (
   covariate_id,
@@ -378,8 +379,8 @@ INNER JOIN @cdm_database_schema.condition_occurrence co1
 WHERE co1.condition_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND co1.condition_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {	AND co1.condition_concept_id IN (SELECT concept_id FROM #included_cov)}
-	AND co1.condition_start_date <= cp1.cohort_start_date
-	AND co1.condition_start_date >= dateadd(dd, - @short_term_days, cp1.cohort_start_date);
+	AND co1.condition_start_date <= DATEADD(DAY, - @window_end_days, cp1.cohort_start_date)
+	AND co1.condition_start_date >= DATEADD(DAY, - @short_term_days, cp1.cohort_start_date);
 
 INSERT INTO #cov_ref (
   covariate_id,
@@ -417,8 +418,8 @@ WHERE co1.condition_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND co1.condition_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {	AND co1.condition_concept_id IN (SELECT concept_id FROM #included_cov)}
 	AND co1.condition_type_concept_id IN (38000183, 38000184, 38000199, 38000200)
-	AND co1.condition_start_date <= cp1.cohort_start_date
-	AND co1.condition_start_date >= dateadd(dd, - @medium_term_days, cp1.cohort_start_date);
+	AND co1.condition_start_date <= DATEADD(DAY, - @window_end_days, cp1.cohort_start_date)
+	AND co1.condition_start_date >= DATEADD(DAY, - @medium_term_days, cp1.cohort_start_date);
 
 
 
@@ -467,7 +468,7 @@ LEFT JOIN @cdm_database_schema.concept c1
 WHERE ce1.condition_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND ce1.condition_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {	AND ce1.condition_concept_id IN (SELECT concept_id FROM #included_cov)}
-	AND ce1.condition_era_start_date <= cp1.cohort_start_date;
+	AND ce1.condition_era_start_date <= DATEADD(DAY, - @window_end_days, cp1.cohort_start_date);
 
 
 INSERT INTO #cov_ref (
@@ -508,7 +509,7 @@ LEFT JOIN @cdm_database_schema.concept c1
 WHERE ce1.condition_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND ce1.condition_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {	AND ce1.condition_concept_id IN (SELECT concept_id FROM #included_cov)}
-	AND ce1.condition_era_start_date <= cp1.cohort_start_date
+	AND ce1.condition_era_start_date <= DATEADD(DAY, - @window_end_days, cp1.cohort_start_date)
 	AND ce1.condition_era_end_date >= cp1.cohort_start_date;
 
 
@@ -734,8 +735,8 @@ INNER JOIN @cdm_database_schema.drug_exposure de1
 WHERE de1.drug_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {  AND de1.drug_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {  AND de1.drug_concept_id IN (SELECT concept_id FROM #included_cov)}
-	AND de1.drug_exposure_start_date <= cp1.cohort_start_date
-	AND de1.drug_exposure_start_date >= dateadd(dd, - @long_term_days, cp1.cohort_start_date);
+	AND de1.drug_exposure_start_date <= DATEADD(DAY, - @window_end_days, cp1.cohort_start_date)
+	AND de1.drug_exposure_start_date >= DATEADD(DAY, - @long_term_days, cp1.cohort_start_date);
 
 
 INSERT INTO #cov_ref (
@@ -773,8 +774,8 @@ INNER JOIN @cdm_database_schema.drug_exposure de1
 WHERE de1.drug_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND de1.drug_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {	AND de1.drug_concept_id IN (SELECT concept_id FROM #included_cov)}
-	AND de1.drug_exposure_start_date <= cp1.cohort_start_date
-	AND de1.drug_exposure_start_date >= dateadd(dd, - @short_term_days, cp1.cohort_start_date);
+	AND de1.drug_exposure_start_date <= DATEADD(DAY, - @window_end_days, cp1.cohort_start_date)
+	AND de1.drug_exposure_start_date >= DATEADD(DAY, - @short_term_days, cp1.cohort_start_date);
 
 
 INSERT INTO #cov_ref (
@@ -820,8 +821,8 @@ INNER JOIN @cdm_database_schema.drug_era de1
 WHERE de1.drug_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND de1.drug_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {	AND de1.drug_concept_id IN (SELECT concept_id FROM #included_cov)}
- 	AND de1.drug_era_start_date <= cp1.cohort_start_date
-	AND de1.drug_era_end_date >= dateadd(dd, - @long_term_days, cp1.cohort_start_date);
+ 	AND de1.drug_era_start_date <= DATEADD(DAY, - @window_end_days, cp1.cohort_start_date)
+	AND de1.drug_era_end_date >= DATEADD(DAY, - @long_term_days, cp1.cohort_start_date);
 
 
 
@@ -862,8 +863,8 @@ INNER JOIN @cdm_database_schema.drug_era de1
 WHERE de1.drug_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND de1.drug_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {	AND de1.drug_concept_id IN (SELECT concept_id FROM #included_cov)}
-	AND de1.drug_era_start_date <= cp1.cohort_start_date
-	AND de1.drug_era_end_date >= dateadd(dd, - @short_term_days, cp1.cohort_start_date);
+	AND de1.drug_era_start_date <= DATEADD(DAY, - @window_end_days, cp1.cohort_start_date)
+	AND de1.drug_era_end_date >= DATEADD(DAY, - @short_term_days, cp1.cohort_start_date);
 
 
 INSERT INTO #cov_ref (
@@ -902,7 +903,7 @@ INNER JOIN @cdm_database_schema.drug_era de1
 WHERE de1.drug_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND de1.drug_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {	AND de1.drug_concept_id IN (SELECT concept_id FROM #included_cov)}
-	AND de1.drug_era_start_date <= cp1.cohort_start_date
+	AND de1.drug_era_start_date <= DATEADD(DAY, - @window_end_days, cp1.cohort_start_date)
 	AND de1.drug_era_end_date >= cp1.cohort_start_date;
 
 
@@ -942,7 +943,7 @@ INNER JOIN @cdm_database_schema.drug_era de1
 WHERE de1.drug_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND de1.drug_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {	AND de1.drug_concept_id IN (SELECT concept_id FROM #included_cov)}
-	AND de1.drug_era_start_date <= cp1.cohort_start_date;
+	AND de1.drug_era_start_date <= DATEADD(DAY, - @window_end_days, cp1.cohort_start_date);
 
 
 
@@ -1176,8 +1177,8 @@ INNER JOIN @cdm_database_schema.procedure_occurrence po1
 WHERE po1.procedure_concept_id  != 0
 {@has_excluded_covariate_concept_ids} ? {	AND po1.procedure_concept_id  NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {	AND po1.procedure_concept_id  IN (SELECT concept_id FROM #included_cov)}
-	AND po1.procedure_date <= cp1.cohort_start_date
-	AND po1.procedure_date >= dateadd(dd, - @long_term_days, cp1.cohort_start_date);
+	AND po1.procedure_date <= DATEADD(DAY, - @window_end_days, cp1.cohort_start_date)
+	AND po1.procedure_date >= DATEADD(DAY, - @long_term_days, cp1.cohort_start_date);
 
 
 INSERT INTO #cov_ref (
@@ -1213,8 +1214,8 @@ INNER JOIN @cdm_database_schema.procedure_occurrence po1
 WHERE po1.procedure_concept_id  != 0
 {@has_excluded_covariate_concept_ids} ? {	AND po1.procedure_concept_id  NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {	AND po1.procedure_concept_id  IN (SELECT concept_id FROM #included_cov)}
-	AND po1.procedure_date <= cp1.cohort_start_date
-	AND po1.procedure_date >= dateadd(dd, - @short_term_days, cp1.cohort_start_date);
+	AND po1.procedure_date <= DATEADD(DAY, - @window_end_days, cp1.cohort_start_date)
+	AND po1.procedure_date >= DATEADD(DAY, - @short_term_days, cp1.cohort_start_date);
 
 
 INSERT INTO #cov_ref (
@@ -1370,8 +1371,8 @@ INNER JOIN @cdm_database_schema.observation o1
 WHERE o1.observation_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND o1.observation_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {	AND o1.observation_concept_id IN (SELECT concept_id FROM #included_cov)}
-	AND o1.observation_date <= cp1.cohort_start_date
-	AND o1.observation_date >= dateadd(dd, - @long_term_days, cp1.cohort_start_date);
+	AND o1.observation_date <= DATEADD(DAY, - @window_end_days, cp1.cohort_start_date)
+	AND o1.observation_date >= DATEADD(DAY, - @long_term_days, cp1.cohort_start_date);
 
 INSERT INTO #cov_ref (
   covariate_id,
@@ -1406,8 +1407,8 @@ INNER JOIN @cdm_database_schema.observation o1
 WHERE o1.observation_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND o1.observation_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {	AND o1.observation_concept_id IN (SELECT concept_id FROM #included_cov)}
-	AND o1.observation_date <= cp1.cohort_start_date
-	AND o1.observation_date >= dateadd(dd, - @short_term_days, cp1.cohort_start_date);
+	AND o1.observation_date <= DATEADD(DAY, - @window_end_days, cp1.cohort_start_date)
+	AND o1.observation_date >= DATEADD(DAY, - @short_term_days, cp1.cohort_start_date);
 
 INSERT INTO #cov_ref (
   covariate_id,
@@ -1442,8 +1443,8 @@ INNER JOIN @cdm_database_schema.observation o1
 WHERE o1.observation_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND o1.observation_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {	AND o1.observation_concept_id IN (SELECT concept_id FROM #included_cov)}
-	AND o1.observation_date <= cp1.cohort_start_date
-	AND o1.observation_date >= dateadd(dd, - @long_term_days, cp1.cohort_start_date)
+	AND o1.observation_date <= DATEADD(DAY, - @window_end_days, cp1.cohort_start_date)
+	AND o1.observation_date >= DATEADD(DAY, - @long_term_days, cp1.cohort_start_date)
 GROUP BY cp1.@row_id_field,
 	CAST(o1.observation_concept_id AS BIGINT) * 1000 + 905;
 
@@ -1494,8 +1495,8 @@ FROM (
 	WHERE o1.@measurement_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {		AND o1.@measurement_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {		AND o1.@measurement_concept_id IN (SELECT concept_id FROM #included_cov)}
-		AND o1.@measurement_date <= cp1.cohort_start_date
-		AND o1.@measurement_date >= dateadd(dd, - @medium_term_days, cp1.cohort_start_date)
+		AND o1.@measurement_date <= DATEADD(DAY, - @window_end_days, cp1.cohort_start_date)
+		AND o1.@measurement_date >= DATEADD(DAY, - @medium_term_days, cp1.cohort_start_date)
 		AND o1.value_as_number >= 0
 		AND o1.range_low >= 0
 		AND o1.range_high >= 0
@@ -1546,8 +1547,8 @@ FROM (
 	WHERE o1.@measurement_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {		AND o1.@measurement_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {		AND o1.@measurement_concept_id IN (SELECT concept_id FROM #included_cov)}
-		AND o1.@measurement_date <= cp1.cohort_start_date
-		AND o1.@measurement_date >= dateadd(dd, - @medium_term_days, cp1.cohort_start_date)
+		AND o1.@measurement_date <= DATEADD(DAY, - @window_end_days, cp1.cohort_start_date)
+		AND o1.@measurement_date >= DATEADD(DAY, - @medium_term_days, cp1.cohort_start_date)
 		AND o1.value_as_number >= 0
 		AND o1.range_low >= 0
 		AND o1.range_high >= 0
@@ -1590,8 +1591,8 @@ INNER JOIN @cdm_database_schema.measurement o1
 WHERE o1.measurement_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND o1.measurement_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {	AND o1.measurement_concept_id IN (SELECT concept_id FROM #included_cov)}
-	AND o1.measurement_date <= cp1.cohort_start_date
-	AND o1.measurement_date >= dateadd(dd, - @long_term_days, cp1.cohort_start_date);
+	AND o1.measurement_date <= DATEADD(DAY, - @window_end_days, cp1.cohort_start_date)
+	AND o1.measurement_date >= DATEADD(DAY, - @long_term_days, cp1.cohort_start_date);
 
 INSERT INTO #cov_ref (
   covariate_id,
@@ -1626,8 +1627,8 @@ INNER JOIN @cdm_database_schema.measurement o1
 WHERE o1.measurement_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND o1.measurement_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {	AND o1.measurement_concept_id IN (SELECT concept_id FROM #included_cov)}
-	AND o1.measurement_date <= cp1.cohort_start_date
-	AND o1.measurement_date >= dateadd(dd, - @short_term_days, cp1.cohort_start_date);
+	AND o1.measurement_date <= DATEADD(DAY, - @window_end_days, cp1.cohort_start_date)
+	AND o1.measurement_date >= DATEADD(DAY, - @short_term_days, cp1.cohort_start_date);
 
 INSERT INTO #cov_ref (
   covariate_id,
@@ -1662,8 +1663,8 @@ INNER JOIN @cdm_database_schema.measurement o1
 WHERE o1.measurement_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND o1.measurement_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {	AND o1.measurement_concept_id IN (SELECT concept_id FROM #included_cov)}
-	AND o1.measurement_date <= cp1.cohort_start_date
-	AND o1.measurement_date >= dateadd(dd, - @long_term_days, cp1.cohort_start_date)
+	AND o1.measurement_date <= DATEADD(DAY, - @window_end_days, cp1.cohort_start_date)
+	AND o1.measurement_date >= DATEADD(DAY, - @long_term_days, cp1.cohort_start_date)
 GROUP BY cp1.@row_id_field,
 	CAST(o1.measurement_concept_id AS BIGINT) * 1000 + 905;
 
@@ -1704,8 +1705,8 @@ SELECT cp1.@row_id_field AS row_id,
 FROM @cohort_temp_table cp1
 INNER JOIN @cdm_database_schema.condition_era ce1
 	ON cp1.subject_id = ce1.person_id
-WHERE ce1.condition_era_start_date <= cp1.cohort_start_date
-	AND ce1.condition_era_end_date >= dateadd(dd, - @long_term_days, cp1.cohort_start_date)
+WHERE ce1.condition_era_start_date <= DATEADD(DAY, - @window_end_days, cp1.cohort_start_date)
+	AND ce1.condition_era_end_date >= DATEADD(DAY, - @long_term_days, cp1.cohort_start_date)
 GROUP BY cp1.@row_id_field;
 
 
@@ -1731,8 +1732,8 @@ SELECT cp1.@row_id_field AS row_id,
 FROM @cohort_temp_table cp1
 INNER JOIN @cdm_database_schema.drug_era de1
 	ON cp1.subject_id = de1.person_id
-WHERE de1.drug_era_start_date <= cp1.cohort_start_date
-	AND de1.drug_era_start_date >= dateadd(dd, - @long_term_days, cp1.cohort_start_date)
+WHERE de1.drug_era_start_date <= DATEADD(DAY, - @window_end_days, cp1.cohort_start_date)
+	AND de1.drug_era_start_date >= DATEADD(DAY, - @long_term_days, cp1.cohort_start_date)
 GROUP BY cp1.@row_id_field;
 
 INSERT INTO #cov_ref (
@@ -1757,8 +1758,8 @@ SELECT cp1.@row_id_field AS row_id,
 FROM @cohort_temp_table cp1
 INNER JOIN @cdm_database_schema.procedure_occurrence po1
 	ON cp1.subject_id = po1.person_id
-WHERE po1.procedure_date <= cp1.cohort_start_date
-	AND po1.procedure_date >= dateadd(dd, - @long_term_days, cp1.cohort_start_date)
+WHERE po1.procedure_date <= DATEADD(DAY, - @window_end_days, cp1.cohort_start_date)
+	AND po1.procedure_date >= DATEADD(DAY, - @long_term_days, cp1.cohort_start_date)
 GROUP BY cp1.@row_id_field;
 
 INSERT INTO #cov_ref (
@@ -1783,8 +1784,8 @@ SELECT cp1.@row_id_field AS row_id,
 FROM @cohort_temp_table cp1
 INNER JOIN @cdm_database_schema.observation o1
 	ON cp1.subject_id = o1.person_id
-WHERE o1.observation_date <= cp1.cohort_start_date
-	AND o1.observation_date >= dateadd(dd, - @long_term_days, cp1.cohort_start_date)
+WHERE o1.observation_date <= DATEADD(DAY, - @window_end_days, cp1.cohort_start_date)
+	AND o1.observation_date >= DATEADD(DAY, - @long_term_days, cp1.cohort_start_date)
 GROUP BY cp1.@row_id_field;
 
 INSERT INTO #cov_ref (
@@ -1808,8 +1809,8 @@ SELECT cp1.@row_id_field AS row_id,
 FROM @cohort_temp_table cp1
 INNER JOIN @cdm_database_schema.visit_occurrence vo1
 	ON cp1.subject_id = vo1.person_id
-WHERE vo1.visit_start_date <= cp1.cohort_start_date
-	AND vo1.visit_start_date >= dateadd(dd, - @long_term_days, cp1.cohort_start_date)
+WHERE vo1.visit_start_date <= DATEADD(DAY, - @window_end_days, cp1.cohort_start_date)
+	AND vo1.visit_start_date >= DATEADD(DAY, - @long_term_days, cp1.cohort_start_date)
 GROUP BY cp1.@row_id_field;
 
 INSERT INTO #cov_ref (
@@ -1834,8 +1835,8 @@ SELECT cp1.@row_id_field AS row_id,
 FROM @cohort_temp_table cp1
 INNER JOIN @cdm_database_schema.visit_occurrence vo1
 	ON cp1.subject_id = vo1.person_id
-WHERE vo1.visit_start_date <= cp1.cohort_start_date
-	AND vo1.visit_start_date >= dateadd(dd, - @long_term_days, cp1.cohort_start_date)
+WHERE vo1.visit_start_date <= DATEADD(DAY, - @window_end_days, cp1.cohort_start_date)
+	AND vo1.visit_start_date >= DATEADD(DAY, - @long_term_days, cp1.cohort_start_date)
 {@cdm_version == '4'} ? {
 	AND vo1.place_of_service_concept_id = 9201
 } : {
@@ -1865,8 +1866,8 @@ INTO #cov_dd_visit_er
 FROM @cohort_temp_table cp1
 INNER JOIN @cdm_database_schema.visit_occurrence vo1
 	ON cp1.subject_id = vo1.person_id
-WHERE vo1.visit_start_date <= cp1.cohort_start_date
-	AND vo1.visit_start_date >= dateadd(dd, - @long_term_days, cp1.cohort_start_date)
+WHERE vo1.visit_start_date <= DATEADD(DAY, - @window_end_days, cp1.cohort_start_date)
+	AND vo1.visit_start_date >= DATEADD(DAY, - @long_term_days, cp1.cohort_start_date)
 {@cdm_version == '4'} ? {
 	AND vo1.place_of_service_concept_id = 9203
 } : {
@@ -1897,8 +1898,8 @@ SELECT cp1.@row_id_field AS row_id,
 FROM @cohort_temp_table cp1
 INNER JOIN @cdm_database_schema.measurement o1
 	ON cp1.subject_id = o1.person_id
-WHERE o1.measurement_date <= cp1.cohort_start_date
-	AND o1.measurement_date >= dateadd(dd, - @long_term_days, cp1.cohort_start_date)
+WHERE o1.measurement_date <= DATEADD(DAY, - @window_end_days, cp1.cohort_start_date)
+	AND o1.measurement_date >= DATEADD(DAY, - @long_term_days, cp1.cohort_start_date)
 GROUP BY cp1.@row_id_field;
 
 INSERT INTO #cov_ref (
@@ -2144,7 +2145,7 @@ FROM (
 		ON ce1.condition_concept_id = c1.concept_id
 	INNER JOIN #Charlson_scoring cs1
 		ON c1.diag_category_id = cs1.diag_category_id
-	WHERE ce1.condition_era_start_date <= cp1.cohort_start_date
+	WHERE ce1.condition_era_start_date <= DATEADD(DAY, - @window_end_days, cp1.cohort_start_date)
 	) t1
 GROUP BY row_id;
 
@@ -2652,7 +2653,7 @@ FROM (
 		ON cp1.subject_id = ce1.person_id
 	INNER JOIN #DCSI_scoring ds1
 		ON ce1.condition_concept_id = ds1.DCSI_concept_id
-	WHERE ce1.condition_era_start_date <= cp1.cohort_start_date
+	WHERE ce1.condition_era_start_date <= DATEADD(DAY, - @window_end_days, cp1.cohort_start_date)
 	GROUP BY cp1.@row_id_field,
 		ds1.dcsi_category
 	) t1
@@ -2757,7 +2758,7 @@ FROM (
 		ON ce1.condition_concept_id = c1.concept_id
 	INNER JOIN #CHADS2_scoring cs1
 		ON c1.diag_category_id = cs1.diag_category_id
-	WHERE ce1.condition_era_start_date <= cp1.cohort_start_date
+	WHERE ce1.condition_era_start_date <= DATEADD(DAY, - @window_end_days, cp1.cohort_start_date)
 
   UNION
 
@@ -2984,7 +2985,7 @@ FROM (
 		ON ce1.condition_concept_id = c1.concept_id
 	INNER JOIN #CHADS2VASc_scoring cs1
 		ON c1.diag_category_id = cs1.diag_category_id
-	WHERE ce1.condition_era_start_date <= cp1.cohort_start_date
+	WHERE ce1.condition_era_start_date <= DATEADD(DAY, - @window_end_days, cp1.cohort_start_date)
 
   UNION
 
