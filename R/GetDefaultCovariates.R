@@ -67,7 +67,7 @@ getDbDefaultCovariateData <- function(connection,
                                    createTable = TRUE,
                                    tempTable = TRUE,
                                    oracleTempSchema = oracleTempSchema)
-    if (covariateSettings$addDescendantsToExclude) {
+    if (!is.null(covariateSettings$addDescendantsToExclude) && covariateSettings$addDescendantsToExclude) {
       writeLines("Adding descendants to concepts to exclude")
       sql <- SqlRender::loadRenderTranslateSql(sqlFilename = "IncludeDescendants.sql",
                                                packageName = "FeatureExtraction",
