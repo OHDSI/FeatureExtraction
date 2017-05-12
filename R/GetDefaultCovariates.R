@@ -93,7 +93,7 @@ getDbDefaultCovariateData <- function(connection,
                                    createTable = TRUE,
                                    tempTable = TRUE,
                                    oracleTempSchema = oracleTempSchema)
-    if (covariateSettings$addDescendantsToInclude) {
+    if (!is.null(covariateSettings$addDescendantsToInclude) && covariateSettings$addDescendantsToInclude) {
       writeLines("Adding descendants to concepts to include")
       sql <- SqlRender::loadRenderTranslateSql(sqlFilename = "IncludeDescendants.sql",
                                                packageName = "FeatureExtraction",
