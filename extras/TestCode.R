@@ -133,8 +133,9 @@ any(covs$covariateRef$conceptId %in% cids)
 summary(covs)
 saveCovariateData(covs, "s:/temp/covsOld")
 
-
-
+covs <- loadCovariateData("s:/temp/covsOld")
+library(ffbase)
+covs$covariateRef[covs$covariateRef$analysisId == 4, ]
 
 # deprecated --------------------------------------------------------------
 

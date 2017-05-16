@@ -2203,8 +2203,7 @@ FROM (
 }
 ) source_to_concept_map
 WHERE source_code LIKE '250.5%'
-		OR source_code IN ('362.01', '362.1', '362.83', '362.53', '362.81', '362.82')
-ORDER BY source_code;
+		OR source_code IN ('362.01', '362.1', '362.83', '362.53', '362.81', '362.82');
 
 INSERT INTO #DCSI_scoring (
 	DCSI_category,
@@ -2239,8 +2238,7 @@ FROM (
 WHERE
 	source_code LIKE '361%'
 	OR source_code LIKE '369%'
-	OR source_code IN ('362.02', '379.23')
-ORDER BY source_code;
+	OR source_code IN ('362.02', '379.23');
 
 INSERT INTO #DCSI_scoring (
 	DCSI_category,
@@ -2277,8 +2275,7 @@ WHERE
 		OR source_code LIKE '580%'
 		OR source_code LIKE '581%'
 		OR source_code LIKE '582%'
-		OR source_code LIKE '583%'
-ORDER BY source_code;
+		OR source_code LIKE '583%';
 
 INSERT INTO #DCSI_scoring (
 	DCSI_category,
@@ -2314,8 +2311,7 @@ WHERE
 		source_code IN ('585', '586', '593.9')
 		OR source_code LIKE '585%'
 		OR source_code LIKE '586%'
-		OR source_code LIKE '593.9%'
-ORDER BY source_code;
+		OR source_code LIKE '593.9%';
 
 INSERT INTO #DCSI_scoring (
 	DCSI_category,
@@ -2365,8 +2361,7 @@ WHERE
 		OR source_code LIKE '337.1%'
 		OR source_code LIKE '564.5%'
 		OR source_code LIKE '536.3%'
-		OR source_code LIKE '458.0%'
-ORDER BY source_code;
+		OR source_code LIKE '458.0%';
 
 INSERT INTO #DCSI_scoring (
 	DCSI_category,
@@ -2398,8 +2393,7 @@ FROM (
 	  AND LOWER(relationship_id) = 'maps to'
 }
 ) source_to_concept_map
-WHERE source_code LIKE '435%'
-ORDER BY source_code;
+WHERE source_code LIKE '435%';
 
 INSERT INTO #DCSI_scoring (
 	DCSI_category,
@@ -2435,8 +2429,7 @@ WHERE   source_code IN ('431', '433', '434', '436')
 		OR source_code LIKE '431%'
 		OR source_code LIKE '433%'
 		OR source_code LIKE '434%'
-		OR source_code LIKE '436%'
-ORDER BY source_code;
+		OR source_code LIKE '436%';
 
 INSERT INTO #DCSI_scoring (
 	DCSI_category,
@@ -2473,8 +2466,7 @@ WHERE
 		OR source_code LIKE '411%'
 		OR source_code LIKE '413%'
 		OR source_code LIKE '414%'
-		OR source_code LIKE '429.2%'
-ORDER BY source_code;
+		OR source_code LIKE '429.2%';
 
 INSERT INTO #DCSI_scoring (
 	DCSI_category,
@@ -2514,8 +2506,7 @@ WHERE   source_code LIKE '410%'
 		OR source_code LIKE '412%'
 		OR source_code LIKE '428%'
 		OR source_code LIKE '441%'
-		OR source_code IN ('440.23', '440.24')
-ORDER BY source_code;
+		OR source_code IN ('440.23', '440.24');
 
 INSERT INTO #DCSI_scoring (
 	DCSI_category,
@@ -2552,8 +2543,7 @@ WHERE
 		OR source_code LIKE '442.3%'
 		OR source_code LIKE '892.1%'
 		OR source_code LIKE '443.9%'
-		OR source_code IN ('443.81')
-ORDER BY source_code;
+		OR source_code IN ('443.81');
 
 INSERT INTO #DCSI_scoring (
 	DCSI_category,
@@ -2588,8 +2578,7 @@ FROM (
 WHERE   source_code LIKE '785.4%'
 		OR source_code LIKE '707.1%'
 		OR source_code LIKE '040.0%'
-		OR source_code IN ('444.22')
-ORDER BY source_code;
+		OR source_code IN ('444.22');
 
 INSERT INTO #DCSI_scoring (
 	DCSI_category,
@@ -2623,8 +2612,7 @@ FROM (
 ) source_to_concept_map
 WHERE   source_code LIKE '250.1%'
 		OR source_code LIKE '250.2%'
-		OR source_code LIKE '250.3%'
-ORDER BY source_code;
+		OR source_code LIKE '250.3%';
 
 INSERT INTO #cov_ref (
 	covariate_id,
