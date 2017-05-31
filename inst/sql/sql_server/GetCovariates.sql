@@ -1018,6 +1018,10 @@ INSERT INTO #cov_ref (
 	)
 SELECT DISTINCT CAST(cg1.ancestor_concept_id AS BIGINT) * 1000 + 50 + ccr1.analysis_id AS covariate_id,
 	CONCAT(CASE
+		WHEN analysis_id = 401
+			THEN 'Drug exposure record observed during long_term_days on or prior to cohort index within drug group:  '
+		WHEN analysis_id = 202
+			THEN 'Drug exposure record observed during short_term_days on or prior to cohort index within drug group:  '
 		WHEN analysis_id = 501
 			THEN 'Drug era record observed during long_term_days on or prior to cohort index within drug group:  '
 		WHEN analysis_id = 502
@@ -1036,7 +1040,7 @@ FROM (
 		analysis_id,
 		concept_id
 	FROM #cov_ref
-	WHERE analysis_id > 500
+	WHERE analysis_id > 400
 		AND analysis_id < 600
 	) ccr1
 INNER JOIN #drug_group cg1
