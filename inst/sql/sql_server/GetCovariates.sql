@@ -616,17 +616,17 @@ AND c1.concept_id = ca1.descendant_concept_id
 WHERE (ca1.min_levels_of_separation > 2
 	or c1.concept_id in (433736, 433595, 441408, 72404, 192671, 137977, 434621, 437312, 439847, 4171917, 438555, 4299449, 375258, 76784, 40483532, 4145627, 434157, 433778, 258449, 313878)
 	) 
-AND c1.concept_name not like '%finding'
-AND c1.concept_name not like 'disorder of%'
-AND c1.concept_name not like 'finding of%'
-AND c1.concept_name not like 'disease of%'
-AND c1.concept_name not like 'injury of%'
-AND c1.concept_name not like '%by site'
-AND c1.concept_name not like '%by body site'
-AND c1.concept_name not like '%by mechanism'
-AND c1.concept_name not like '%of body region'
-AND c1.concept_name not like '%of anatomical site'
-AND c1.concept_name not like '%of specific body structure%'
+AND LOWER(c1.concept_name) not like '%finding'
+AND LOWER(c1.concept_name) not like 'disorder of%'
+AND LOWER(c1.concept_name) not like 'finding of%'
+AND LOWER(c1.concept_name) not like 'disease of%'
+AND LOWER(c1.concept_name) not like 'injury of%'
+AND LOWER(c1.concept_name) not like '%by site'
+AND LOWER(c1.concept_name) not like '%by body site'
+AND LOWER(c1.concept_name) not like '%by mechanism'
+AND LOWER(c1.concept_name) not like '%of body region'
+AND LOWER(c1.concept_name) not like '%of anatomical site'
+AND LOWER(c1.concept_name) not like '%of specific body structure%'
 {@cdm_version == '4'} ? {
 	AND LOWER(c1.@concept_class_id) = 'clinical finding'
 } : {
