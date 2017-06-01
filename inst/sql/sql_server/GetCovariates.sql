@@ -631,10 +631,12 @@ INNER JOIN (
 } : {
 		AND c1.domain_id = 'Condition'
 }
+{@has_excluded_covariate_concept_ids} ? {		AND c1.concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
+{@has_included_covariate_concept_ids} ? {		AND c1.concept_id IN (SELECT concept_id FROM #included_cov)}
+) c1
+	ON ca1.ancestor_concept_id = c1.concept_id
+}
 ) t1
-ON ca1.ancestor_concept_id = t1.concept_id	
-{@has_excluded_covariate_concept_ids} ? {  AND t1.concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
-{@has_included_covariate_concept_ids} ? {  AND t1.concept_id IN (SELECT concept_id FROM #included_cov)}
 ;
 
 INSERT INTO #cov_ref (
