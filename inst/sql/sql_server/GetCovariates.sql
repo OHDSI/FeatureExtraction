@@ -606,20 +606,36 @@ FROM (
 	) ccr1
 INNER JOIN @cdm_database_schema.concept_ancestor ca1
 	ON ccr1.concept_id = ca1.descendant_concept_id
-INNER JOIN @cdm_database_schema.concept c1
-	ON ca1.ancestor_concept_id = c1.concept_id
+INNER JOIN
+(
+SELECT c1.concept_id, c1.concept_name, c1.vocabulary_id, c1.domain_id
+FROM @cdm_database_schema.concept c1
+INNER JOIN @cdm_database_schema.concept_ancestor ca1
+ON ca1.ancestor_concept_id = 441840 /* SNOMED clinical finding */
+AND c1.concept_id = ca1.descendant_concept_id
+WHERE (ca1.min_levels_of_separation > 2
+	or c1.concept_id in (433736, 433595, 441408, 72404, 192671, 137977, 434621, 437312, 439847, 4171917, 438555, 4299449, 375258, 76784, 40483532, 4145627, 434157, 433778, 258449, 313878)
+	) 
+AND c1.concept_name not like '%finding'
+AND c1.concept_name not like 'disorder of%'
+AND c1.concept_name not like 'finding of%'
+AND c1.concept_name not like 'disease of%'
+AND c1.concept_name not like 'injury of%'
+AND c1.concept_name not like '%by site'
+AND c1.concept_name not like '%by body site'
+AND c1.concept_name not like '%by mechanism'
+AND c1.concept_name not like '%of body region'
+AND c1.concept_name not like '%of anatomical site'
+AND c1.concept_name not like '%of specific body structure%'
 {@cdm_version == '4'} ? {
-WHERE c1.vocabulary_id = 1
+	AND LOWER(c1.@concept_class_id) = 'clinical finding'
 } : {
-WHERE LOWER(c1.vocabulary_id) = 'snomed'
-}
-  AND LOWER(c1.@concept_class_id) = 'clinical finding'
-  AND ca1.min_levels_of_separation = 1
-  AND c1.concept_id NOT IN (select distinct descendant_concept_id from @cdm_database_schema.concept_ancestor where ancestor_concept_id = 441840 /*clinical finding*/ and max_levels_of_separation <= 2)
-{@has_excluded_covariate_concept_ids} ? {  AND c1.concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
-{@has_included_covariate_concept_ids} ? {  AND c1.concept_id IN (SELECT concept_id FROM #included_cov)}
+	AND c1.domain_id = 'Condition'
 }
 ) t1
+on ca1.ancestor_concept_id = t1.concept_id	
+{@has_excluded_covariate_concept_ids} ? {  AND t1.concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
+{@has_included_covariate_concept_ids} ? {  AND t1.concept_id IN (SELECT concept_id FROM #included_cov)}
 ;
 
 INSERT INTO #cov_ref (
@@ -1020,7 +1036,7 @@ SELECT DISTINCT CAST(cg1.ancestor_concept_id AS BIGINT) * 1000 + 50 + ccr1.analy
 	CONCAT(CASE
 		WHEN analysis_id = 401
 			THEN 'Drug exposure record observed during long_term_days on or prior to cohort index within drug group:  '
-		WHEN analysis_id = 202
+		WHEN analysis_id = 402
 			THEN 'Drug exposure record observed during short_term_days on or prior to cohort index within drug group:  '
 		WHEN analysis_id = 501
 			THEN 'Drug era record observed during long_term_days on or prior to cohort index within drug group:  '
@@ -1099,7 +1115,7 @@ INNER JOIN (
 		analysis_id,
 		concept_id
 	FROM #cov_ref
-	WHERE analysis_id > 500
+	WHERE analysis_id > 400
 		AND analysis_id < 600
 	) ccr1
 	ON cc1.covariate_id = ccr1.covariate_id
