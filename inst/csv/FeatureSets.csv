@@ -1,0 +1,5 @@
+analysisId,analysisName,sqlFileName,sqlPackage,startDay,endDay
+2,Demographics: Gender,DemographicsGender.sql,FeatureExtraction,,
+5,Demographics: Age,DemographicsAge.sql,FeatureExtraction,,
+101,Condition occurrence: Long term,ConditionOccurrence.sql,FeatureExtraction,longTermDays,windowEndDays
+102,Condition occurrence: Short term,ConditionOccurrence.sql,FeatureExtraction,shortTermDays,windowEndDays

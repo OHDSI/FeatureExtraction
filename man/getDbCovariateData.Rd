@@ -8,7 +8,10 @@ getDbCovariateData(connectionDetails = NULL, connection = NULL,
   oracleTempSchema = NULL, cdmDatabaseSchema, cdmVersion = "4",
   cohortTable = "cohort", cohortDatabaseSchema = cdmDatabaseSchema,
   cohortTableIsTemp = FALSE, cohortIds = c(), rowIdField = "subject_id",
-  covariateSettings, normalize = TRUE)
+  covariateSettings, excludedCovariateConceptIds = c(),
+  addDescendantsToExclude = TRUE, includedCovariateConceptIds = c(),
+  addDescendantsToInclude = TRUE, deleteCovariatesSmallCount = 100,
+  aggregated = FALSE, temporal = FALSE)
 }
 \arguments{
 \item{connectionDetails}{An R object of type \code{connectionDetails} created using the
@@ -50,9 +53,6 @@ there is more than one period per person.}
 
 \item{covariateSettings}{Either an object of type \code{covariateSettings} as created using one
 of the createCovariate functions, or a list of such objects.}
-
-\item{normalize}{Should covariate values be normalized? If true, values will be divided
-by the max value per covariate.}
 }
 \value{
 Returns an object of type \code{covariateData}, containing information on the baseline covariates.
