@@ -203,7 +203,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
     DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
   }
   if (!is.null(connectionDetails)) {
-    RJDBC::dbDisconnect(connection)
+    DatabaseConnector::disconnect(connection)
   }
   if (normalize) {
     writeLines("Normalizing covariates")

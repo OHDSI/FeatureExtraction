@@ -1,8 +1,8 @@
 Package: FeatureExtraction
 Type: Package
 Title: Generating Features for a Cohort
-Version: 1.2.2
-Date: 2017-06-01
+Version: 1.2.3
+Date: 2017-07-05
 Author: Martijn J. Schuemie [aut, cre],
     Marc A. Suchard [aut],
     Patrick B. Ryan [aut],
@@ -12,14 +12,13 @@ Description: An R package for generating features (covariates) for a cohort usin
 License: Apache License 2.0
 Depends:
     R (>= 3.2.2),
-    DatabaseConnector (>= 1.3.0),
+    DatabaseConnector (>= 1.11.4)
 Imports:
     bit,
     ff,
     ffbase (>= 0.12.1),
     plyr,
     Rcpp (>= 0.11.2),
-    RJDBC,
     SqlRender (>= 1.1.3),
 Suggests:
     testthat,
