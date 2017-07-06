@@ -1,0 +1,160 @@
+# Copyright 2017 Observational Health Data Sciences and Informatics
+#
+# This file is part of FeatureExtraction
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+#' Create covariate settings
+#'
+#' @details
+#' creates an object specifying how covariates should be contructed from data in the CDM model.
+#'
+#' @param useDemographicsGender             Gender of the subject.
+#' @param useDemographicsAge                Age of the subject on the index date (in 5 year
+#'                                          increments).
+#' @param useDemographicsIndexYear          Year of the index date.
+#' @param useDemographicsIndexMonth         Month of the index date.
+#' @param useConditionOccurrenceLongTerm    One covariate per condition in the condition_occurrence
+#'                                          table starting in the long term window.
+#' @param useConditionOccurrenceShortTerm   One covariate per condition in the condition_occurrence
+#'                                          table starting in the short term window.
+#' @param useConditionEraLongTerm           One covariate per condition in the condition_era table
+#'                                          overlapping with any part of the long term window.
+#' @param useConditionEraShortTerm          One covariate per condition in the condition_era table
+#'                                          overlapping with any part of the short term window.
+#' @param useConditionGroupEraShortTerm     One covariate per condition era rolled up to SNOMED groups
+#'                                          in the condition_era table overlapping with any part of the
+#'                                          long term window.
+#' @param useConditionGroupEraLongTerm      One covariate per condition era rolled up to SNOMED groups
+#'                                          in the condition_era table overlapping with any part of the
+#'                                          short term window.
+#' @param useDrugExposureLongTerm           One covariate per drug in the drug_exposure table starting
+#'                                          in the long term window.
+#' @param useDrugExposureShortTerm          One covariate per drug in the drug_exposure table starting
+#'                                          in the short term window.
+#' @param useDrugEraLongTerm                One covariate per drug in the drug_era table overlapping
+#'                                          with any part of the long term window.
+#' @param useDrugEraShortTerm               One covariate per drug in the drug_era table overlapping
+#'                                          with any part of the long short window.
+#' @param useDrugGroupEraLongTerm           One covariate per drug rolled up to ATC groups in the
+#'                                          drug_era table overlapping with any part of the long term
+#'                                          window.
+#' @param useDrugGroupEraShortTerm          One covariate per drug rolled up to ATC groups in the
+#'                                          drug_era table overlapping with any part of the short term
+#'                                          window.
+#' @param useProcedureOccurrenceLongTerm    One covariate per procedure in the procedure_occurrence
+#'                                          table in the long term window.
+#' @param useProcedureOccurrenceShortTerm   One covariate per procedure in the procedure_occurrence
+#'                                          table in the short term window.
+#' @param useDeviceExposureLongTerm         One covariate per device in the device exposure table
+#'                                          starting in the long term window.
+#' @param useDeviceExposureShortTerm        One covariate per device in the device exposure table
+#'                                          starting in the short term window.
+#' @param useMeasurementLongTerm            One covariate per measurement in the measurement table in
+#'                                          the long term window.
+#' @param useMeasurementShortTerm           One covariate per measurement in the measurement table in
+#'                                          the short term window.
+#' @param useObservationLongTerm            One covariate per observation in the observation table in
+#'                                          the long term window.
+#' @param useObservationShortTerm           One covariate per observation in the observation table in
+#'                                          the short term window.
+#' @param useCharlsonIndex                  The Charlson comorbidity index (Romano adaptation) using
+#'                                          all conditions prior to the window end.
+#' @param longTermDays                      What is the length (in days) of the long-term window?
+#' @param mediumTermDays                    What is the length (in days) of the medium-term window?
+#' @param shortTermDays                     What is the length (in days) of the short-term window?
+#' @param windowEndDays                     What is the last day of the window? 0 means the cohort
+#'                                          start date is the last date (included), 1 means the window
+#'                                          stops the day before the cohort start date, etc.
+#'
+#'
+#' @return
+#' An object of type \code{covariateSettings}, to be used in other functions.
+#'
+#' @examples
+#' \dontrun{
+#' # This will create the default set of covariates:
+#' settings <- createCovariateSettings(useDemographicsGender = TRUE,
+#'                                     useDemographicsAge = TRUE,
+#'                                     useDemographicsIndexYear = TRUE,
+#'                                     useDemographicsIndexMonth = TRUE,
+#'                                     useConditionOccurrenceLongTerm = TRUE,
+#'                                     useConditionOccurrenceShortTerm = TRUE,
+#'                                     useConditionEraLongTerm = TRUE,
+#'                                     useConditionEraShortTerm = TRUE,
+#'                                     useConditionGroupEraShortTerm = TRUE,
+#'                                     useConditionGroupEraLongTerm = TRUE,
+#'                                     useDrugExposureLongTerm = TRUE,
+#'                                     useDrugExposureShortTerm = TRUE,
+#'                                     useDrugEraLongTerm = TRUE,
+#'                                     useDrugEraShortTerm = TRUE,
+#'                                     useDrugGroupEraLongTerm = TRUE,
+#'                                     useDrugGroupEraShortTerm = TRUE,
+#'                                     useProcedureOccurrenceLongTerm = TRUE,
+#'                                     useProcedureOccurrenceShortTerm = TRUE,
+#'                                     useDeviceExposureLongTerm = TRUE,
+#'                                     useDeviceExposureShortTerm = TRUE,
+#'                                     useMeasurementLongTerm = TRUE,
+#'                                     useMeasurementShortTerm = TRUE,
+#'                                     useObservationLongTerm = TRUE,
+#'                                     useObservationShortTerm = TRUE,
+#'                                     useCharlsonIndex = TRUE)
+#'
+#' }
+#'
+#' @export
+createCovariateSettings <- function(useDemographicsGender = FALSE,
+                                    useDemographicsAge = FALSE,
+                                    useDemographicsIndexYear = FALSE,
+                                    useDemographicsIndexMonth = FALSE,
+                                    useConditionOccurrenceLongTerm = FALSE,
+                                    useConditionOccurrenceShortTerm = FALSE,
+                                    useConditionEraLongTerm = FALSE,
+                                    useConditionEraShortTerm = FALSE,
+                                    useConditionGroupEraShortTerm = FALSE,
+                                    useConditionGroupEraLongTerm = FALSE,
+                                    useDrugExposureLongTerm = FALSE,
+                                    useDrugExposureShortTerm = FALSE,
+                                    useDrugEraLongTerm = FALSE,
+                                    useDrugEraShortTerm = FALSE,
+                                    useDrugGroupEraLongTerm = FALSE,
+                                    useDrugGroupEraShortTerm = FALSE,
+                                    useProcedureOccurrenceLongTerm = FALSE,
+                                    useProcedureOccurrenceShortTerm = FALSE,
+                                    useDeviceExposureLongTerm = FALSE,
+                                    useDeviceExposureShortTerm = FALSE,
+                                    useMeasurementLongTerm = FALSE,
+                                    useMeasurementShortTerm = FALSE,
+                                    useObservationLongTerm = FALSE,
+                                    useObservationShortTerm = FALSE,
+                                    useCharlsonIndex = FALSE,
+                                    longTermDays = 365,
+                                    shortTermDays = 30,
+                                    windowEndDays = 0,
+                                    excludedCovariateConceptIds = c(),
+                                    addDescendantsToExclude = TRUE,
+                                    includedCovariateConceptIds = c(),
+                                    addDescendantsToInclude = TRUE,
+                                    includedCovariateIds = c(),
+                                    deleteCovariatesSmallCount = 100) {
+  covariateSettings <- list()
+  formalNames <- names(formals(createCovariateSettings))
+  for (name in formalNames) {
+    value <- get(name)
+    if (!grepl("use.*", name) || value)
+      covariateSettings[[name]] <- value
+  }
+  attr(covariateSettings, "fun") <- "getDbDefaultCovariateData"
+  class(covariateSettings) <- "covariateSettings"
+  return(covariateSettings)
+}

@@ -37,6 +37,21 @@ rmarkdown::render("vignettes/CreatingCovariatesUsingCohortAttributes.Rmd",
                                           toc = TRUE,
                                           number_sections = TRUE))
 
+# Generate covariate settings function from template ----------------------
+featureSets <- read.csv("inst/csv/FeatureSets.csv")
+camelCase <- function(x) {
+  return(SqlRender::snakeCaseToCamelCase(gsub("_+", "_", gsub("[^a-z]", "_", tolower(x)))))
+}
+argumentNames <- camelCase(paste("use", featureSets$analysisName))
+roxygen <- paste(paste("#' @param", argumentNames, featureSets$description), collapse = "\n")
+arguments <- paste(paste(argumentNames, "= FALSE,"), collapse = "\n")
+argumentsRoxygen <- paste(paste(argumentNames[featureSets$default == 1], "= TRUE"), collapse = ",\n#'             ")
+rCode <- readLines(file("extras/DefaultCovariateSettingsTemplate.R"))
+rCode <- gsub("%roxygen%", roxygen, rCode)
+rCode <- gsub("%arguments%", arguments, rCode)
+rCode <- gsub("%argumentsRoxygen%", argumentsRoxygen, rCode)
+writeLines(rCode, "R/DefaultCovariateSettings.R")
+OhdsiRTools::formatRFile("R/DefaultCovariateSettings.R")
 
 # Generate concept-domain SQL from template -------------------------------
 library(SqlRender)

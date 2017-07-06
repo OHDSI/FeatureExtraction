@@ -1,26 +1,26 @@
-analysisId,analysisName,sqlFileName,sqlPackage,startDay,endDay
-1,Demographics: Gender,DemographicsGender.sql,FeatureExtraction,,
-2,Demographics: Age,DemographicsAge.sql,FeatureExtraction,,
-3,Demographics: Index year,DemographicsYear.sql,FeatureExtraction,,
-4,Demographics: Index month,DemographicsMonth.sql,FeatureExtraction,,
-101,Condition occurrence: Long term,ConditionOccurrence.sql,FeatureExtraction,longTermDays,windowEndDays
-102,Condition occurrence: Short term,ConditionOccurrence.sql,FeatureExtraction,shortTermDays,windowEndDays
-201,Condition era: Long term,ConditionEra.sql,FeatureExtraction,longTermDays,windowEndDays
-202,Condition era: Short term,ConditionEra.sql,FeatureExtraction,shortTermDays,windowEndDays
-203,Condition group era: Short term,ConditionEraGroup.sql,FeatureExtraction,longTermDays,windowEndDays
-204,Condition group era: Long term,ConditionEraGroup.sql,FeatureExtraction,shortTermDays,windowEndDays
-301,Drug exposure: Long term,DrugExposure.sql,FeatureExtraction,longTermDays,windowEndDays
-302,Drug exposure: Short term,DrugExposure.sql,FeatureExtraction,shortTermDays,windowEndDays
-401,Drug era: Long term,DrugEra.sql,FeatureExtraction,longTermDays,windowEndDays
-402,Drug era: Short term,DrugEra.sql,FeatureExtraction,shortTermDays,windowEndDays
-403,Drug group era: Long term,DrugEraGroup.sql,FeatureExtraction,longTermDays,windowEndDays
-404,Drug group era: Short term,DrugEraGroup.sql,FeatureExtraction,shortTermDays,windowEndDays
-501,Procedure occurrence: Long term,ProcedureOccurrence.sql,FeatureExtraction,longTermDays,windowEndDays
-502,Procedure occurrence: Short term,ProcedureOccurrence.sql,FeatureExtraction,shortTermDays,windowEndDays
-601,Device exposure: Long term,DeviceExposure.sql,FeatureExtraction,longTermDays,windowEndDays
-602,Device exposure: Short term,DeviceExposure.sql,FeatureExtraction,shortTermDays,windowEndDays
-701,Measurement: Long term,Measurement.sql,FeatureExtraction,longTermDays,windowEndDays
-702,Measurement: Short term,Measurement.sql,FeatureExtraction,shortTermDays,windowEndDays
-801,Observation: Long term,Observation.sql,FeatureExtraction,longTermDays,windowEndDays
-802,Observation: Short term,Observation.sql,FeatureExtraction,shortTermDays,windowEndDays
-901,Charlson index,CharlsonIndex.sql,FeatureExtraction,,windowEndDays
+analysisId,analysisName,sqlFileName,sqlPackage,startDay,endDay,default,description
+1,Demographics: Gender,DemographicsGender.sql,FeatureExtraction,,,1,Gender of the subject.
+2,Demographics: Age,DemographicsAge.sql,FeatureExtraction,,,1,Age of the subject on the index date (in 5 year increments).
+3,Demographics: Index year,DemographicsYear.sql,FeatureExtraction,,,1,Year of the index date.
+4,Demographics: Index month,DemographicsMonth.sql,FeatureExtraction,,,1,Month of the index date.
+101,Condition occurrence: Long term,ConditionOccurrence.sql,FeatureExtraction,longTermDays,windowEndDays,1,One covariate per condition in the condition_occurrence table starting in the long term window.
+102,Condition occurrence: Short term,ConditionOccurrence.sql,FeatureExtraction,shortTermDays,windowEndDays,1,One covariate per condition in the condition_occurrence table starting in the short term window.
+201,Condition era: Long term,ConditionEra.sql,FeatureExtraction,longTermDays,windowEndDays,1,One covariate per condition in the condition_era table overlapping with any part of the long term window.
+202,Condition era: Short term,ConditionEra.sql,FeatureExtraction,shortTermDays,windowEndDays,1,One covariate per condition in the condition_era table overlapping with any part of the short term window.
+203,Condition group era: Short term,ConditionEraGroup.sql,FeatureExtraction,longTermDays,windowEndDays,1,One covariate per condition era rolled up to SNOMED groups in the condition_era table overlapping with any part of the long term window.
+204,Condition group era: Long term,ConditionEraGroup.sql,FeatureExtraction,shortTermDays,windowEndDays,1,One covariate per condition era rolled up to SNOMED groups in the condition_era table overlapping with any part of the short term window.
+301,Drug exposure: Long term,DrugExposure.sql,FeatureExtraction,longTermDays,windowEndDays,1,One covariate per drug in the drug_exposure table starting in the long term window.
+302,Drug exposure: Short term,DrugExposure.sql,FeatureExtraction,shortTermDays,windowEndDays,1,One covariate per drug in the drug_exposure table starting in the short term window.
+401,Drug era: Long term,DrugEra.sql,FeatureExtraction,longTermDays,windowEndDays,1,One covariate per drug in the drug_era table overlapping with any part of the long term window.
+402,Drug era: Short term,DrugEra.sql,FeatureExtraction,shortTermDays,windowEndDays,1,One covariate per drug in the drug_era table overlapping with any part of the long short window.
+403,Drug group era: Long term,DrugEraGroup.sql,FeatureExtraction,longTermDays,windowEndDays,1,One covariate per drug rolled up to ATC groups in the drug_era table overlapping with any part of the long term window.
+404,Drug group era: Short term,DrugEraGroup.sql,FeatureExtraction,shortTermDays,windowEndDays,1,One covariate per drug rolled up to ATC groups in the drug_era table overlapping with any part of the short term window.
+501,Procedure occurrence: Long term,ProcedureOccurrence.sql,FeatureExtraction,longTermDays,windowEndDays,1,One covariate per procedure in the procedure_occurrence table in the long term window.
+502,Procedure occurrence: Short term,ProcedureOccurrence.sql,FeatureExtraction,shortTermDays,windowEndDays,1,One covariate per procedure in the procedure_occurrence table in the short term window.
+601,Device exposure: Long term,DeviceExposure.sql,FeatureExtraction,longTermDays,windowEndDays,1,One covariate per device in the device exposure table starting in the long term window.
+602,Device exposure: Short term,DeviceExposure.sql,FeatureExtraction,shortTermDays,windowEndDays,1,One covariate per device in the device exposure table starting in the short term window.
+701,Measurement: Long term,Measurement.sql,FeatureExtraction,longTermDays,windowEndDays,1,One covariate per measurement in the measurement table in the long term window.
+702,Measurement: Short term,Measurement.sql,FeatureExtraction,shortTermDays,windowEndDays,1,One covariate per measurement in the measurement table in the short term window.
+801,Observation: Long term,Observation.sql,FeatureExtraction,longTermDays,windowEndDays,1,One covariate per observation in the observation table in the long term window.
+802,Observation: Short term,Observation.sql,FeatureExtraction,shortTermDays,windowEndDays,1,One covariate per observation in the observation table in the short term window.
+901,Charlson index,CharlsonIndex.sql,FeatureExtraction,,windowEndDays,1,The Charlson comorbidity index (Romano adaptation) using all conditions prior to the window end.

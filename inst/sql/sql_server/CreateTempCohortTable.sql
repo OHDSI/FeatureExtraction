@@ -15,7 +15,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ************************************************************************/
-{DEFAULT @cdm_version == '4'}
 {DEFAULT @cohort_ids == ''}
 {DEFAULT @cohort_database_schema_table == '#cohort_temp'}
 
@@ -23,10 +22,6 @@ SELECT *
 INTO #cohort_for_cov_temp 
 FROM @cohort_database_schema_table 
 {cohort_ids != ''} ? {
-{@cdm_version == '4'} ? {
-WHERE cohort_concept_id IN (@cohort_ids)
-} : {
 WHERE cohort_definition_id IN (@cohort_ids)
-}
 }
 ;
