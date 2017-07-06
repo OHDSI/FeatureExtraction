@@ -5,14 +5,26 @@
 \title{Create covariate settings}
 \usage{
 createCovariateSettings(useDemographicsGender = FALSE,
-  useDemographicsAge = FALSE, useConditionOccurrenceLongTerm = FALSE,
-  useConditionOccurrenceShortTerm = FALSE, longTermDays = 365,
-  mediumTermDays = 180, shortTermDays = 30, windowEndDays = 0)
+  useDemographicsAge = FALSE, useDemographicsIndexYear = FALSE,
+  useDemographicsIndexMonth = FALSE, useConditionOccurrenceLongTerm = FALSE,
+  useConditionOccurrenceShortTerm = FALSE, useConditionEraLongTerm = FALSE,
+  useConditionEraShortTerm = FALSE, useConditionGroupEraLongTerm = FALSE,
+  useConditionGroupEraShortTerm = FALSE, useDrugExposureLongTerm = FALSE,
+  useDrugExposureShortTerm = FALSE, useDrugEraLongTerm = FALSE,
+  useDrugEraShortTerm = FALSE, useDrugGroupEraLongTerm = FALSE,
+  useDrugGroupEraShortTerm = FALSE, useProcedureOccurrenceLongTerm = FALSE,
+  useProcedureOccurrenceShortTerm = FALSE,
+  useDeviceExposureLongTerm = FALSE, useDeviceExposureShortTerm = FALSE,
+  useMeasurementLongTerm = FALSE, useMeasurementShortTerm = FALSE,
+  useObservationLongTerm = FALSE, useObservationShortTerm = FALSE,
+  useCharlsonIndex = FALSE, longTermDays = 365, shortTermDays = 30,
+  windowEndDays = 0, excludedCovariateConceptIds = c(),
+  addDescendantsToExclude = TRUE, includedCovariateConceptIds = c(),
+  addDescendantsToInclude = TRUE, includedCovariateIds = c(),
+  deleteCovariatesSmallCount = 100)
 }
 \arguments{
 \item{longTermDays}{What is the length (in days) of the long-term window?}
-
-\item{mediumTermDays}{What is the length (in days) of the medium-term window?}
 
 \item{shortTermDays}{What is the length (in days) of the short-term window?}
 
@@ -40,6 +52,8 @@ look for presence/absence of condition in the short term
 window prior to or on cohort index date.  Only
 applicable if useCovariateConditionOccurrence =
 TRUE.}
+
+\item{mediumTermDays}{What is the length (in days) of the medium-term window?}
 }
 \value{
 An object of type \code{covariateSettings}, to be used in other functions.

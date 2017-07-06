@@ -1,6 +1,6 @@
 -- Feature construction
 {!@aggregated} ? {--HINT DISTRIBUTE_ON_KEY(row_id)}
-SELECT FLOOR((YEAR(cohort_start_date) - year_of_birth) / 5) * 1000 + @analysis_id AS covariate_id,
+SELECT YEAR(cohort_start_date) * 1000 + @analysis_id AS covariate_id,
 {@temporal} ? {
     NULL AS time_id,
 }	
@@ -16,9 +16,9 @@ INNER JOIN @cdm_database_schema.person
 	ON cohort.subject_id = person.person_id
 {@has_excluded_covariate_concept_ids} ? {}
 {@has_included_covariate_concept_ids} ? {}
-{@has_included_covariate_ids} ? {	AND FLOOR((YEAR(cohort_start_date) - year_of_birth) / 5) * 1000 + @analysis_id IN (SELECT concept_id FROM #included_cov_by_id)}
+{@has_included_covariate_ids} ? {WHERE MONTH(cohort_start_date) * 1000 + @analysis_id IN (SELECT concept_id FROM #included_cov_by_id)}	
 {@aggregated} ? {		
-GROUP BY FLOOR((YEAR(cohort_start_date) - year_of_birth) / 5)
+GROUP BY YEAR(cohort_start_date)
 {@temporal} ? {
     ,time_id
 }	
@@ -33,12 +33,7 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT covariate_id,
-	CONCAT (
-		'Age group: ',
-		CAST(5 * (covariate_id - @analysis_id) / 1000 AS VARCHAR),
-		'-',
-		CAST(1 + 5 * (covariate_id - @analysis_id) / 1000 AS VARCHAR)
-		) AS covariate_name,
+	CONCAT ('Index year: ', CAST((covariate_id - @analysis_id) / 1000 AS VARCHAR)) AS covariate_name,
 	@analysis_id AS analysis_id,
 	0 AS concept_id
 FROM (

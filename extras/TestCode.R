@@ -59,16 +59,46 @@ sql <- SqlRender::renderSql(sql,
                             cohort_table = cohortTable)$sql
 sql <- SqlRender::translateSql(sql, targetDialect = connectionDetails$dbms)$sql
 DatabaseConnector::querySql(conn, sql)
-RJDBC::dbDisconnect(conn)
+DatabaseConnector::disconnect(conn)
 
 ### Create covariateSettings ###
 
 celecoxibDrugs <- 1118084
 
 covariateSettings <- FeatureExtraction::createCovariateSettings(useDemographicsGender = TRUE,
-                                                                useDemographicsAge = FALSE,
+                                                                useDemographicsAge = TRUE,
+                                                                useDemographicsIndexYear = TRUE,
+                                                                useDemographicsIndexMonth = TRUE,
                                                                 useConditionOccurrenceLongTerm = TRUE,
-                                                                useConditionOccurrenceShortTerm = TRUE)
+                                                                useConditionOccurrenceShortTerm = TRUE,
+                                                                useConditionEraLongTerm = TRUE,
+                                                                useConditionEraShortTerm = TRUE,
+                                                                useConditionGroupEraLongTerm = TRUE,
+                                                                useConditionGroupEraShortTerm = TRUE,
+                                                                useDrugExposureLongTerm = TRUE,
+                                                                useDrugExposureShortTerm = TRUE,
+                                                                useDrugEraLongTerm = TRUE,
+                                                                useDrugEraShortTerm = TRUE,
+                                                                useDrugGroupEraLongTerm = TRUE,
+                                                                useDrugGroupEraShortTerm = TRUE,
+                                                                useProcedureOccurrenceLongTerm = TRUE,
+                                                                useProcedureOccurrenceShortTerm = TRUE,
+                                                                useDeviceExposureLongTerm = TRUE,
+                                                                useDeviceExposureShortTerm = TRUE,
+                                                                useMeasurementLongTerm = TRUE,
+                                                                useMeasurementShortTerm = TRUE,
+                                                                useObservationLongTerm = TRUE,
+                                                                useObservationShortTerm = TRUE,
+                                                                useCharlsonIndex = TRUE,
+                                                                longTermDays = 365,
+                                                                shortTermDays = 30,
+                                                                windowEndDays = 0,
+                                                                excludedCovariateConceptIds = c(),
+                                                                addDescendantsToExclude = FALSE,
+                                                                includedCovariateConceptIds = c(),
+                                                                addDescendantsToInclude = FALSE,
+                                                                includedCovariateIds = c(),
+                                                                deleteCovariatesSmallCount = 100)
 
 covs <- getDbCovariateData(connectionDetails = connectionDetails,
                            oracleTempSchema = oracleTempSchema,
@@ -79,14 +109,25 @@ covs <- getDbCovariateData(connectionDetails = connectionDetails,
                            cohortIds = 1,
                            cohortTableIsTemp = FALSE,
                            covariateSettings = covariateSettings,
-                           aggregated = TRUE)
-any(covs$covariateRef$conceptId %in% cids)
-summary(covs)
-saveCovariateData(covs, "s:/temp/covsOld")
+                           aggregated = FALSE)
 
+querySql(connection, "SELECT COUNT(*) FROM #cov_2 WHERE covariate_id IN (2, 1002, 2002, 3002, 4002, 5002, 6002, 7002, 8002, 9002, 10002, 11002, 12002, 13002, 14002, 15002, 16002, 17002, 18002)")
+querySql(connection, "SELECT COUNT(*) FROM #cov_all WHERE covariate_id IN (2, 1002, 2002, 3002, 4002, 5002, 6002, 7002, 8002, 9002, 10002, 11002, 12002, 13002, 14002, 15002, 16002, 17002, 18002)")
+summary(covs)
+saveCovariateData(covs, "s:/temp/covs")
+covariateData <- covs
+covs <- loadCovariateData("s:/temp/covs")
+covs2 <- tidyCovariateData(covs, normalize = TRUE, removeRedundancy = TRUE)
+
+x <- ff::as.ram(covs$covariateRef)
 covs <- loadCovariateData("s:/temp/covsOld")
 library(ffbase)
 covs$covariateRef[covs$covariateRef$analysisId == 4, ]
+
+
+conn <- connect(connectionDetails)
+
+
 
 # deprecated --------------------------------------------------------------
 

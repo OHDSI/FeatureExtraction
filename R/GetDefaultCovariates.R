@@ -50,12 +50,38 @@
 #' @export
 createCovariateSettings <- function(useDemographicsGender = FALSE,
                                     useDemographicsAge = FALSE,
+                                    useDemographicsIndexYear = FALSE,
+                                    useDemographicsIndexMonth = FALSE,
                                     useConditionOccurrenceLongTerm = FALSE,
                                     useConditionOccurrenceShortTerm = FALSE,
+                                    useConditionEraLongTerm = FALSE,
+                                    useConditionEraShortTerm = FALSE,
+                                    useConditionGroupEraLongTerm = FALSE,
+                                    useConditionGroupEraShortTerm = FALSE,
+                                    useDrugExposureLongTerm = FALSE,
+                                    useDrugExposureShortTerm = FALSE,
+                                    useDrugEraLongTerm = FALSE,
+                                    useDrugEraShortTerm = FALSE,
+                                    useDrugGroupEraLongTerm = FALSE,
+                                    useDrugGroupEraShortTerm = FALSE,
+                                    useProcedureOccurrenceLongTerm = FALSE,
+                                    useProcedureOccurrenceShortTerm = FALSE,
+                                    useDeviceExposureLongTerm = FALSE,
+                                    useDeviceExposureShortTerm = FALSE,
+                                    useMeasurementLongTerm = FALSE,
+                                    useMeasurementShortTerm = FALSE,
+                                    useObservationLongTerm = FALSE,
+                                    useObservationShortTerm = FALSE,
+                                    useCharlsonIndex = FALSE,
                                     longTermDays = 365,
-                                    mediumTermDays = 180,
                                     shortTermDays = 30,
-                                    windowEndDays = 0) {
+                                    windowEndDays = 0,
+                                    excludedCovariateConceptIds = c(),
+                                    addDescendantsToExclude = TRUE,
+                                    includedCovariateConceptIds = c(),
+                                    addDescendantsToInclude = TRUE,
+                                    includedCovariateIds = c(),
+                                    deleteCovariatesSmallCount = 100) {
   formalNames <- names(formals(createCovariateSettings))
   
   fileName <- system.file("csv","FeatureSets.csv", package = "FeatureExtraction")
@@ -69,9 +95,16 @@ createCovariateSettings <- function(useDemographicsGender = FALSE,
   days <- -as.integer(mget(daysNames))
   featureSet$startDay <- plyr::mapvalues(featureSet$startDay, daysNames, days, warn_missing = FALSE)
   featureSet$endDay <- plyr::mapvalues(featureSet$endDay, daysNames, days, warn_missing = FALSE)
-
-  class(featureSet) <- append(class(featureSet), "covariateSettings")
-  return(featureSet)
+  inclusionExclusion <- list(excludedCovariateConceptIds = excludedCovariateConceptIds,
+                             addDescendantsToExclude = addDescendantsToExclude,
+                             includedCovariateConceptIds = includedCovariateConceptIds,
+                             addDescendantsToInclude = addDescendantsToInclude,
+                             includedCovariateIds = includedCovariateIds,
+                             deleteCovariatesSmallCount = deleteCovariatesSmallCount)
+  covariateSettings <- list(featureSet = featureSet,
+                            inclusionExclusion = inclusionExclusion)
+  class(covariateSettings) <- append(class(covariateSettings), "covariateSettings")
+  return(covariateSettings)
 }
 
 normName <- function(x) {

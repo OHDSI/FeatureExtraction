@@ -14,16 +14,16 @@ SELECT
 }
 INTO @covariate_table
 FROM @cohort_table cohort
-INNER JOIN @cdm_database_schema.condition_occurrence
-	ON cohort.subject_id = condition_occurrence.person_id
+INNER JOIN @cdm_database_schema.condition_era
+	ON cohort.subject_id = condition_era.person_id
 {@temporal} ? {
 INNER JOIN #time_period
-	ON condition_start_date <= DATEADD(DAY, time_period.end_day, cohort.cohort_start_date)
-	AND condition_start_date >= DATEADD(DAY, time_period.start_day, cohort.cohort_start_date)
+	ON condition_era_start_date <= DATEADD(DAY, time_period.end_day, cohort.cohort_start_date)
+	AND condition_era_end_date >= DATEADD(DAY, time_period.start_day, cohort.cohort_start_date)
 WHERE condition_concept_id != 0
 } : {
-WHERE condition_start_date < DATEADD(DAY, @end_day, cohort.cohort_start_date)
-	AND condition_start_date >= DATEADD(DAY, @start_day, cohort.cohort_start_date)
+WHERE condition_era_start_date < DATEADD(DAY, @end_day, cohort.cohort_start_date)
+	AND condition_era_end_date >= DATEADD(DAY, @start_day, cohort.cohort_start_date)
 	AND condition_concept_id != 0
 }
 {@has_excluded_covariate_concept_ids} ? {	AND condition_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
@@ -46,9 +46,9 @@ INSERT INTO #cov_ref (
 	)
 SELECT covariate_id,
 {@temporal} ? {
-	CONCAT('Condition occurrence: ', concept_id, '-', concept_name) AS covariate_name,
+	CONCAT('Condition era: ', concept_id, '-', concept_name) AS covariate_name,
 } : {
-	CONCAT('Condition occurrence during day @start_day through @end_day days relative to index: ', concept_id, '-', concept_name) AS covariate_name,
+	CONCAT('Condition era during day @start_day through @end_day days relative to index: ', concept_id, '-', concept_name) AS covariate_name,
 }
 	@analysis_id AS analysis_id,
 	concept_id

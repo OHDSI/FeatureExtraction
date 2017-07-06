@@ -1,4 +1,5 @@
 -- Feature construction
+{!@aggregated} ? {--HINT DISTRIBUTE_ON_KEY(row_id)}
 SELECT 
 	CAST(gender_concept_id AS BIGINT) * 1000 + @analysis_id AS covariate_id,
 {@temporal} ? {
@@ -17,6 +18,7 @@ INNER JOIN @cdm_database_schema.person
 WHERE gender_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND gender_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {	AND gender_concept_id IN (SELECT concept_id FROM #included_cov)}	
+{@has_included_covariate_ids} ? {	AND CAST(gender_concept_id AS BIGINT) * 1000 + @analysis_id IN (SELECT concept_id FROM #included_cov_by_id)}	
 {@aggregated} ? {		
 GROUP BY gender_concept_id
 {@temporal} ? {

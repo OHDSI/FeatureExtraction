@@ -78,11 +78,6 @@ getDbCovariateData <- function(connectionDetails = NULL,
                                cohortIds = c(),
                                rowIdField = "subject_id",
                                covariateSettings,
-                               excludedCovariateConceptIds = c(),
-                               addDescendantsToExclude = TRUE,
-                               includedCovariateConceptIds = c(),
-                               addDescendantsToInclude = TRUE,
-                               deleteCovariatesSmallCount = 100,
                                aggregated = FALSE,
                                temporal = FALSE) {
   if (is.null(connectionDetails) && is.null(connection)) {
@@ -119,6 +114,8 @@ getDbCovariateData <- function(connectionDetails = NULL,
   }
   
   # Upload excluded concept IDs if needed -----------------------------------
+  excludedCovariateConceptIds <- covariateSettings$inclusionExclusion$excludedCovariateConceptIds
+  addDescendantsToExclude <- covariateSettings$inclusionExclusion$addDescendantsToExclude
   if (is.null(excludedCovariateConceptIds) || length(excludedCovariateConceptIds) ==
       0) {
     hasExcludedCovariateConceptIds <- FALSE
@@ -146,6 +143,8 @@ getDbCovariateData <- function(connectionDetails = NULL,
   }
   
   # Upload included concept IDs if needed -----------------------------------
+  includedCovariateConceptIds <- covariateSettings$inclusionExclusion$includedCovariateConceptIds
+  addDescendantsToInclude <- covariateSettings$inclusionExclusion$addDescendantsToInclude
   if (is.null(includedCovariateConceptIds) || length(includedCovariateConceptIds) ==
       0) {
     hasIncludedCovariateConceptIds <- FALSE
@@ -172,20 +171,41 @@ getDbCovariateData <- function(connectionDetails = NULL,
     }
   }
   
+  # Upload included covariate IDs if needed -----------------------------------
+  includedCovariateIds <- covariateSettings$inclusionExclusion$includedCovariatIds
+  if (is.null(includedCovariateIds) || length(includedCovariateIds) ==
+      0) {
+    hasIncludedCovariateIds <- FALSE
+  } else {
+    if (!is.numeric(includedCovariateIds))
+      stop("includedCovariateIds must be a (vector of) numeric")
+    hasIncludedCovariateIds <- TRUE
+    DatabaseConnector::insertTable(connection,
+                                   tableName = "#included_cov_by_id",
+                                   data = data.frame(concept_id = as.integer(includedCovariateIds)),
+                                   dropTableIfExists = TRUE,
+                                   createTable = TRUE,
+                                   tempTable = TRUE,
+                                   oracleTempSchema = oracleTempSchema)
+  }
+  
   ### TODO: create #time_period for temporal features
   
   # Generate covariates and refs  ----------------------------------
   writeLines("Generating features")
+  start <- Sys.time()
+  ### TODO: maybe possible to filter analysis IDs based on includedCovariateIds
   sql <- SqlRender::loadRenderTranslateSql(sqlFilename = "CreateCovRefTable.sql",
                                            packageName = "FeatureExtraction",
                                            dbms = attr(connection, "dbms"),
                                            oracleTempSchema = oracleTempSchema)
   DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
-  covTableNames <- paste0("#cov_", covariateSettings$analysisId)
-  for (i in 1:nrow(covariateSettings)) {
-    writeLines(paste("-", covariateSettings$analysisName[i]))
-    args <- list(sqlFilename = covariateSettings$sqlFileName[i],
-                 packageName = covariateSettings$sqlPackage[i],
+  featureSets <- covariateSettings$featureSet
+  covTableNames <- paste0("#cov_", featureSets$analysisId)
+  for (i in 1:nrow(featureSets)) {
+    writeLines(paste("-", featureSets$analysisName[i]))
+    args <- list(sqlFilename = featureSets$sqlFileName[i],
+                 packageName = featureSets$sqlPackage[i],
                  dbms = attr(connection, "dbms"),
                  oracleTempSchema = oracleTempSchema,
                  temporal = temporal,
@@ -193,19 +213,22 @@ getDbCovariateData <- function(connectionDetails = NULL,
                  covariate_table = covTableNames[i],
                  cohort_table = cohortTempTable,
                  row_id_field = rowIdField,
-                 analysis_id = covariateSettings$analysisId[i],
+                 analysis_id = featureSets$analysisId[i],
                  cdm_database_schema = cdmDatabaseSchema,
                  has_excluded_covariate_concept_ids = hasExcludedCovariateConceptIds,
-                 has_included_covariate_concept_ids = hasIncludedCovariateConceptIds)
-    if (covariateSettings$startDay[i] != "") {
-      args$start_day <- covariateSettings$startDay[i]
+                 has_included_covariate_concept_ids = hasIncludedCovariateConceptIds,
+                 has_included_covariate_ids = hasIncludedCovariateIds)
+    if (featureSets$startDay[i] != "") {
+      args$start_day <- featureSets$startDay[i]
     }
-    if (covariateSettings$endDay[i] != "") {
-      args$end_day <- covariateSettings$endDay[i]
+    if (featureSets$endDay[i] != "") {
+      args$end_day <- featureSets$endDay[i]
     }
     sql <- do.call(SqlRender::loadRenderTranslateSql, args)
     DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
   }
+  delta <- Sys.time() - start
+  writeLines(paste("Generating features took", signif(delta, 3), attr(delta, "units")))
   
   # Download covariates and ref  -----------------------------------
   writeLines("Downloading data")
@@ -220,15 +243,18 @@ getDbCovariateData <- function(connectionDetails = NULL,
   sql <- paste("SELECT", 
                fieldString, 
                "\nINTO #cov_all\nFROM (\n",
-               paste(paste("SELECT", fieldString, "FROM", covTableNames), collapse = "\nUNION\n"),
-               "\n) all_covariates")
+               paste(paste("SELECT", fieldString, "FROM", covTableNames), collapse = "\nUNION ALL\n"),
+               "\n) all_covariates;")
+  if (!aggregated) {
+    sql <- paste("--HINT DISTRIBUTE_ON_KEY(row_id)", sql, sep = "\n")
+  }
   sql <- SqlRender::translateSql(sql = sql, 
                                  targetDialect = attr(connection, "dbms"),
                                  oracleTempSchema = oracleTempSchema)$sql
   DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
   covariateSql <- paste("SELECT", fieldString, "FROM #cov_all ORDER BY covariate_id")
   if (!aggregated) {
-    covariateSql <- paste0(covariateSql, ", rowId")
+    covariateSql <- paste0(covariateSql, ", row_id")
   }
   covariateSql <- SqlRender::translateSql(sql = covariateSql,
                                           targetDialect = attr(connection, "dbms"),
@@ -239,7 +265,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
   covariateRefSql <- SqlRender::translateSql(sql = covariateRefSql,
                                              targetDialect = attr(connection, "dbms"),
                                              oracleTempSchema = oracleTempSchema)$sql
-  covariateRef <- DatabaseConnector::querySql(connection, covariateRefSql)
+  covariateRef <- DatabaseConnector::querySql.ffdf(connection, covariateRefSql)
   colnames(covariateRef) <- SqlRender::snakeCaseToCamelCase(colnames(covariateRef))
   covariateRef$analysisName <- covariateSettings$analysisName[match(covariateRef$analysisId, covariateSettings$analysisId)]
   sql <- "SELECT COUNT_BIG(*) FROM @cohort_temp_table"
@@ -268,11 +294,12 @@ getDbCovariateData <- function(connectionDetails = NULL,
   DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
   
   if (!is.null(connectionDetails)) {
-    RJDBC::dbDisconnect(connection)
+    DatabaseConnector::disconnect(connection)
   }
   
   metaData <- list(call = match.call(),
-                   cohortIds = cohortIds)
+                   cohortIds = cohortIds,
+                   populationSize = populationSize)
   covariateData <- list(covariates = covariates, covariateRef = covariateRef, metaData = metaData)
   if (nrow(covariateData$covariates) == 0) {
     warning("No data found")
@@ -385,44 +412,3 @@ print.summary.covariateData <- function(x, ...) {
   writeLines(paste("Number of non-zero covariate values:", x$covariateValueCount))
 }
 
-
-#' Compute max of values binned by a second variable
-#'
-#' @param values   An ff object containing the numeric values to take the max of.
-#' @param bins     An ff object containing the numeric values to bin by.
-#'
-#' @examples
-#' values <- ff::as.ff(c(1, 1, 2, 2, 1))
-#' bins <- ff::as.ff(c(1, 1, 1, 2, 2))
-#' byMaxFf(values, bins)
-#'
-#' @export
-byMaxFf <- function(values, bins) {
-  .byMax(values, bins)
-}
-
-#' Normalize covariate values
-#'
-#' @details
-#' Normalize covariate values by dividing by the max. This is to avoid numeric problems when fitting
-#' models.
-#'
-#' @param covariates   An ffdf object as generated using the \code{\link{getDbCovariateData}}
-#'                     function.#'
-#'
-#' @export
-normalizeCovariates <- function(covariates) {
-  if (nrow(covariates) == 0) {
-    return(covariates)
-  } else {
-    maxs <- byMaxFf(covariates$covariateValue, covariates$covariateId)
-    names(maxs)[names(maxs) == "bins"] <- "covariateId"
-    result <- ffbase::merge.ffdf(covariates, ff::as.ffdf(maxs))
-    for (i in bit::chunk(result)) {
-      result$covariateValue[i] <- result$covariateValue[i]/result$maxs[i]
-    }
-    result$maxs <- NULL
-    attr(result, "normFactors") <- maxs
-    return(result)
-  }
-}

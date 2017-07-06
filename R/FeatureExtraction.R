@@ -22,7 +22,6 @@
 #' @name FeatureExtraction
 #' @importFrom Rcpp evalCpp
 #' @importFrom SqlRender loadRenderTranslateSql translateSql
-#' @importFrom RJDBC dbDisconnect
 #' @importFrom plyr ddply
 #' @import bit
 #' @import DatabaseConnector
@@ -45,8 +44,4 @@ NULL
   # Workaround for problem with ff on machines with lots of memory (see
   # https://github.com/edwindj/ffbase/issues/37)
   options(ffmaxbytes = min(getOption("ffmaxbytes"), .Machine$integer.max * 12))
-}
-
-bySumFf <- function(values, bins) {
-  .bySum(values, bins)
 }
