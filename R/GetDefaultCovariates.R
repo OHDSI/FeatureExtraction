@@ -45,8 +45,8 @@ getDbDefaultCovariateData <- function(connection,
   useNames <- names(covariateSettings)[grepl("use.*", names(covariateSettings))]
   featureSets <- featureSets[normName(featureSets$analysisName) %in% normName(gsub("use", "", useNames)), ]
   days <- unlist(covariateSettings[grepl(".*Days$", names(covariateSettings))])
-  featureSets$startDay <- plyr::mapvalues(featureSets$startDay, names(days), days, warn_missing = FALSE)
-  featureSets$endDay <- plyr::mapvalues(featureSets$endDay, names(days), days, warn_missing = FALSE)
+  featureSets$startDay <- plyr::mapvalues(featureSets$startDay, names(days), -days, warn_missing = FALSE)
+  featureSets$endDay <- plyr::mapvalues(featureSets$endDay, names(days), -days, warn_missing = FALSE)
   
   # Upload excluded concept IDs if needed -----------------------------------
   excludedCovariateConceptIds <- covariateSettings$inclusionExclusion$excludedCovariateConceptIds
@@ -167,12 +167,14 @@ getDbDefaultCovariateData <- function(connection,
   # Download covariates and ref  -----------------------------------
   writeLines("Downloading data")
   start <- Sys.time()
-  fieldString <- "covariate_id, covariate_value"
+  
+  if (aggregated) {
+    fieldString <- "covariate_id, sum_value, min_value, max_value, average_value, standard_deviation"
+  } else {
+    fieldString <- "covariate_id, covariate_value, row_id"
+  }
   if (temporal) {
     fieldString <- paste0(fieldString, ", time_id")
-  }
-  if (!aggregated) {
-    fieldString <- paste0(fieldString, ", row_id")
   }
   sql <- paste("SELECT", 
                fieldString, 

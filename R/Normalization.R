@@ -70,7 +70,7 @@ tidyCovariateData <- function(covariateData,
       ffdfMaxs <- ff::as.ffdf(maxs)
       names(ffdfMaxs)[names(ffdfMaxs) == "bins"] <- "covariateId"
       covariates <- ffbase::merge.ffdf(covariates, ffdfMaxs)
-      for (i in bit::chunk(result)) {
+      for (i in bit::chunk(covariates)) {
         covariates$covariateValue[i] <- covariates$covariateValue[i]/covariates$maxs[i]
       }
       covariates$maxs <- NULL

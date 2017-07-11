@@ -7,34 +7,45 @@ SELECT
     time_id,
 }	
 {@aggregated} ? {
-	COUNT(*) AS covariate_value
+	COUNT(*) AS sum_value,
+	CASE WHEN COUNT(*) = (SELECT COUNT(*) FROM @cohort_table) THEN 1 ELSE 0 END AS min_value,
+	1 AS max_value,
+	COUNT(*) / (1.0 * (SELECT COUNT(*) FROM @cohort_table)) AS average_value,
+	SQRT((COUNT(*) / (1.0 * (SELECT COUNT(*) FROM @cohort_table)))*(1 - (COUNT(*) / (1.0 * (SELECT COUNT(*) FROM @cohort_table))))/(1.0 * (SELECT COUNT(*) FROM @cohort_table)))  AS standard_deviation
 } : {
-	cohort.@row_id_field AS row_id,
+	row_id,
 	1 AS covariate_value 
 }
 INTO @covariate_table
-FROM @cohort_table cohort
-INNER JOIN @cdm_database_schema.drug_era
-	ON cohort.subject_id = drug_era.person_id
+FROM (
+	SELECT DISTINCT cohort.@row_id_field AS row_id,
 {@temporal} ? {
-INNER JOIN #time_period
-	ON drug_era_start_date <= DATEADD(DAY, time_period.end_day, cohort.cohort_start_date)
-	AND drug_era_end_date >= DATEADD(DAY, time_period.start_day, cohort.cohort_start_date)
-WHERE drug_concept_id != 0
+		time_id,
+}	
+		drug_concept_id
+	FROM @cohort_table cohort
+	INNER JOIN @cdm_database_schema.drug_era
+		ON cohort.subject_id = drug_era.person_id
+{@temporal} ? {
+	INNER JOIN #time_period
+		ON drug_era_start_date <= DATEADD(DAY, time_period.end_day, cohort.cohort_start_date)
+		AND drug_era_end_date >= DATEADD(DAY, time_period.start_day, cohort.cohort_start_date)
+	WHERE drug_concept_id != 0
 } : {
-WHERE drug_era_start_date < DATEADD(DAY, @end_day, cohort.cohort_start_date)
-	AND drug_era_end_date >= DATEADD(DAY, @start_day, cohort.cohort_start_date)
-	AND drug_concept_id != 0
+	WHERE drug_era_start_date < DATEADD(DAY, @end_day, cohort.cohort_start_date)
+		AND drug_era_end_date >= DATEADD(DAY, @start_day, cohort.cohort_start_date)
+		AND drug_concept_id != 0
 }
-{@has_excluded_covariate_concept_ids} ? {	AND drug_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
-{@has_included_covariate_concept_ids} ? {	AND drug_concept_id IN (SELECT concept_id FROM #included_cov)}
-{@has_included_covariate_ids} ? {	AND CAST(drug_concept_id AS BIGINT) * 1000 + @analysis_id IN (SELECT concept_id FROM #included_cov_by_id)}
+{@has_excluded_covariate_concept_ids} ? {		AND drug_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
+{@has_included_covariate_concept_ids} ? {		AND drug_concept_id IN (SELECT concept_id FROM #included_cov)}
+{@has_included_covariate_ids} ? {		AND CAST(drug_concept_id AS BIGINT) * 1000 + @analysis_id IN (SELECT concept_id FROM #included_cov_by_id)}
+) by_row_id
 {@aggregated} ? {		
 GROUP BY drug_concept_id
 {@temporal} ? {
     ,time_id
-}	
-}
+} 
+} 
 ;
 
 -- Reference construction

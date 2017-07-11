@@ -5,7 +5,11 @@ SELECT YEAR(cohort_start_date) * 1000 + @analysis_id AS covariate_id,
     NULL AS time_id,
 }	
 {@aggregated} ? {
-	COUNT(*) AS covariate_value
+	COUNT(*) AS sum_value,
+	CASE WHEN COUNT(*) = (SELECT COUNT(*) FROM @cohort_table) THEN 1 ELSE 0 END AS min_value,
+	1 AS max_value,
+	COUNT(*) / (1.0 * (SELECT COUNT(*) FROM @cohort_table)) AS average_value,
+	SQRT((COUNT(*) / (1.0 * (SELECT COUNT(*) FROM @cohort_table)))*(1 - (COUNT(*) / (1.0 * (SELECT COUNT(*) FROM @cohort_table))))/(1.0 * (SELECT COUNT(*) FROM @cohort_table)))  AS standard_deviation
 } : {
 	cohort.@row_id_field AS row_id,
 	1 AS covariate_value 

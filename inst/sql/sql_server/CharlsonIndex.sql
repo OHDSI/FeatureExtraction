@@ -379,35 +379,41 @@ SELECT 1000 + @analysis_id AS covariate_id,
     NULL AS time_id,
 }	
 {@aggregated} ? {
-	SUM(weight) AS covariate_value
+	SUM(score) AS sum_value,
+	CASE WHEN COUNT(*) = (SELECT COUNT(*) FROM @cohort_table) THEN MIN(score) ELSE 0 END AS min_value,
+	MAX(score) AS max_value,
+	SUM(score) / (1.0 * (SELECT COUNT(*) FROM @cohort_table)) AS average_value,
+	SQRT((1.0 * COUNT(*)*SUM(score * score) - 1.0 * SUM(score)*SUM(score)) / (1.0 * COUNT(*)*(1.0 * COUNT(*) - 1)))  AS standard_deviation
 } : {
 	row_id,
-	SUM(weight) AS covariate_value 
+	score AS covariate_value 
 }
 INTO @covariate_table
 FROM (
-	SELECT DISTINCT cohort.@row_id_field AS row_id,
-		charlson_scoring.diag_category_id,
-		charlson_scoring.weight
-	FROM @cohort_table cohort
-	INNER JOIN @cdm_database_schema.condition_era condition_era
-		ON cohort.subject_id = condition_era.person_id
-	INNER JOIN #charlson_concepts charlson_concepts
-		ON condition_era.condition_concept_id = charlson_concepts.concept_id
-	INNER JOIN #charlson_scoring charlson_scoring
-		ON charlson_concepts.diag_category_id = charlson_scoring.diag_category_id
+	SELECT row_id,
+		SUM(weight) AS score
+	FROM (
+		SELECT DISTINCT cohort.@row_id_field AS row_id,
+			charlson_scoring.diag_category_id,
+			charlson_scoring.weight
+		FROM @cohort_table cohort
+		INNER JOIN @cdm_database_schema.condition_era condition_era
+			ON cohort.subject_id = condition_era.person_id
+		INNER JOIN #charlson_concepts charlson_concepts
+			ON condition_era.condition_concept_id = charlson_concepts.concept_id
+		INNER JOIN #charlson_scoring charlson_scoring
+			ON charlson_concepts.diag_category_id = charlson_scoring.diag_category_id
 {@temporal} ? {		
-	WHERE condition_era_start_date <= cohort.cohort_start_date
+		WHERE condition_era_start_date <= cohort.cohort_start_date
 } : {
-	WHERE condition_era_start_date <= DATEADD(DAY, @end_day, cohort.cohort_start_date)
+		WHERE condition_era_start_date <= DATEADD(DAY, @end_day, cohort.cohort_start_date)
 }
-) temp
+	) temp
+	GROUP BY row_id
+) scores_per_row
 {@has_excluded_covariate_concept_ids} ? {}
 {@has_included_covariate_concept_ids} ? {}
 {@has_included_covariate_ids} ? {WHERE 1000 + @analysis_id IN (SELECT concept_id FROM #included_cov_by_id)}
-{!@aggregated} ? {
-GROUP BY row_id
-}
 ;
 
 TRUNCATE TABLE #charlson_concepts;
