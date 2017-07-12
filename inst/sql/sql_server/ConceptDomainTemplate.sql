@@ -38,7 +38,7 @@ FROM (
 }
 {@has_excluded_covariate_concept_ids} ? {		AND @domain_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {		AND @domain_concept_id IN (SELECT concept_id FROM #included_cov)}
-{@has_included_covariate_ids} ? {		AND CAST(@domain_concept_id AS BIGINT) * 1000 + @analysis_id IN (SELECT concept_id FROM #included_cov_by_id)}
+{@has_included_covariate_ids} ? {		AND CAST(@domain_concept_id AS BIGINT) * 1000 + @analysis_id IN (SELECT covariate_id FROM #included_cov_by_id)}
 ) by_row_id
 {@aggregated} ? {		
 GROUP BY @domain_concept_id

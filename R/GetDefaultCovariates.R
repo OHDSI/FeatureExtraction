@@ -49,8 +49,8 @@ getDbDefaultCovariateData <- function(connection,
   featureSets$endDay <- plyr::mapvalues(featureSets$endDay, names(days), -days, warn_missing = FALSE)
   
   # Upload excluded concept IDs if needed -----------------------------------
-  excludedCovariateConceptIds <- covariateSettings$inclusionExclusion$excludedCovariateConceptIds
-  addDescendantsToExclude <- covariateSettings$inclusionExclusion$addDescendantsToExclude
+  excludedCovariateConceptIds <- covariateSettings$excludedCovariateConceptIds
+  addDescendantsToExclude <- covariateSettings$addDescendantsToExclude
   if (is.null(excludedCovariateConceptIds) || length(excludedCovariateConceptIds) ==
       0) {
     hasExcludedCovariateConceptIds <- FALSE
@@ -78,8 +78,8 @@ getDbDefaultCovariateData <- function(connection,
   }
   
   # Upload included concept IDs if needed -----------------------------------
-  includedCovariateConceptIds <- covariateSettings$inclusionExclusion$includedCovariateConceptIds
-  addDescendantsToInclude <- covariateSettings$inclusionExclusion$addDescendantsToInclude
+  includedCovariateConceptIds <- covariateSettings$includedCovariateConceptIds
+  addDescendantsToInclude <- covariateSettings$addDescendantsToInclude
   if (is.null(includedCovariateConceptIds) || length(includedCovariateConceptIds) ==
       0) {
     hasIncludedCovariateConceptIds <- FALSE
@@ -107,7 +107,7 @@ getDbDefaultCovariateData <- function(connection,
   }
   
   # Upload included covariate IDs if needed -----------------------------------
-  includedCovariateIds <- covariateSettings$inclusionExclusion$includedCovariatIds
+  includedCovariateIds <- covariateSettings$includedCovariateIds
   if (is.null(includedCovariateIds) || length(includedCovariateIds) ==
       0) {
     hasIncludedCovariateIds <- FALSE
@@ -117,7 +117,7 @@ getDbDefaultCovariateData <- function(connection,
     hasIncludedCovariateIds <- TRUE
     DatabaseConnector::insertTable(connection,
                                    tableName = "#included_cov_by_id",
-                                   data = data.frame(concept_id = as.integer(includedCovariateIds)),
+                                   data = data.frame(covariate_id = includedCovariateIds),
                                    dropTableIfExists = TRUE,
                                    createTable = TRUE,
                                    tempTable = TRUE,

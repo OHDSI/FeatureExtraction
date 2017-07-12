@@ -20,7 +20,7 @@ INNER JOIN @cdm_database_schema.person
 	ON cohort.subject_id = person.person_id
 {@has_excluded_covariate_concept_ids} ? {}
 {@has_included_covariate_concept_ids} ? {}
-{@has_included_covariate_ids} ? {WHERE MONTH(cohort_start_date) * 1000 + @analysis_id IN (SELECT concept_id FROM #included_cov_by_id)}	
+{@has_included_covariate_ids} ? {WHERE MONTH(cohort_start_date) * 1000 + @analysis_id IN (SELECT covariate_id FROM #included_cov_by_id)}	
 {@aggregated} ? {		
 GROUP BY MONTH(cohort_start_date)
 {@temporal} ? {

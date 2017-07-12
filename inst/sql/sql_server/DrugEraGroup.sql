@@ -55,7 +55,7 @@ FROM (
 		AND drug_era_end_date >= DATEADD(DAY, @start_day, cohort.cohort_start_date)
 		AND drug_concept_id != 0
 }
-{@has_included_covariate_ids} ? {		AND CAST(ancestor_concept_id AS BIGINT) * 1000 + @analysis_id IN (SELECT concept_id FROM #included_cov_by_id)}
+{@has_included_covariate_ids} ? {		AND CAST(ancestor_concept_id AS BIGINT) * 1000 + @analysis_id IN (SELECT covariate_id FROM #included_cov_by_id)}
 ) temp
 {@aggregated} ? {		
 GROUP BY ancestor_concept_id

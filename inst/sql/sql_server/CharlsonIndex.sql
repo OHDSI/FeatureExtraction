@@ -413,7 +413,7 @@ FROM (
 ) scores_per_row
 {@has_excluded_covariate_concept_ids} ? {}
 {@has_included_covariate_concept_ids} ? {}
-{@has_included_covariate_ids} ? {WHERE 1000 + @analysis_id IN (SELECT concept_id FROM #included_cov_by_id)}
+{@has_included_covariate_ids} ? {WHERE 1000 + @analysis_id IN (SELECT covariate_id FROM #included_cov_by_id)}
 ;
 
 TRUNCATE TABLE #charlson_concepts;
