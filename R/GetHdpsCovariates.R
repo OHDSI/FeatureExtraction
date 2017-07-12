@@ -144,7 +144,7 @@ getDbHdpsCovariateData <- function(connection,
   sql <- SqlRender::renderSql(sql, cohort_temp_table = cohortTempTable)$sql
   sql <- SqlRender::translateSql(sql = sql,
                                  targetDialect = attr(connection, "dbms"),
-                                 oracleTempSchemaoracleTempSchema = oracleTempSchema)$sql
+                                 oracleTempSchema = oracleTempSchema)$sql
   populationSize <- DatabaseConnector::querySql(connection, sql)[1, 1]
 
   delta <- Sys.time() - start
