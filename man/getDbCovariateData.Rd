@@ -5,10 +5,10 @@
 \title{Get covariate information from the database}
 \usage{
 getDbCovariateData(connectionDetails = NULL, connection = NULL,
-  oracleTempSchema = NULL, cdmDatabaseSchema, cohortTable = "cohort",
-  cohortDatabaseSchema = cdmDatabaseSchema, cohortTableIsTemp = FALSE,
-  cohortIds = c(), rowIdField = "subject_id", covariateSettings,
-  aggregated = FALSE, temporal = FALSE)
+  oracleTempSchema = NULL, cdmDatabaseSchema, cdmVersion = "5",
+  cohortTable = "cohort", cohortDatabaseSchema = cdmDatabaseSchema,
+  cohortTableIsTemp = FALSE, cohortIds = c(), rowIdField = "subject_id",
+  covariateSettings, aggregated = FALSE, temporal = FALSE)
 }
 \arguments{
 \item{connectionDetails}{An R object of type \code{connectionDetails} created using the
@@ -27,6 +27,8 @@ should be specified.}
 Requires read permissions to this database. On SQL Server, this should
 specifiy both the database and the schema, so for example
 'cdm_instance.dbo'.}
+
+\item{cdmVersion}{Define the OMOP CDM version used: currently supported is "5".}
 
 \item{cohortTable}{Name of the (temp) table holding the cohort for which we want to
 construct covariates}

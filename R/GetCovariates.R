@@ -38,6 +38,7 @@
 #'                               Requires read permissions to this database. On SQL Server, this should
 #'                               specifiy both the database and the schema, so for example
 #'                               'cdm_instance.dbo'.
+#' @param cdmVersion             Define the OMOP CDM version used: currently supported is "5".
 #' @param cohortTable            Name of the (temp) table holding the cohort for which we want to
 #'                               construct covariates
 #' @param cohortDatabaseSchema   If the cohort table is not a temp table, specify the database schema
@@ -70,6 +71,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
                                connection = NULL,
                                oracleTempSchema = NULL,
                                cdmDatabaseSchema,
+                               cdmVersion = "5",
                                cohortTable = "cohort",
                                cohortDatabaseSchema = cdmDatabaseSchema,
                                cohortTableIsTemp = FALSE,
@@ -87,9 +89,13 @@ getDbCovariateData <- function(connectionDetails = NULL,
   if (!is(covariateSettings, "covariateSettings")) {
     stop("Covariate settings object not of type covariateSettings") 
   }
+  if (cdmVersion == "4") {
+    stop("CDM version 4 is not supported any more")
+  }
   if (!is.null(connectionDetails)) {
     connection <- DatabaseConnector::connect(connectionDetails)
   }
+  
   
   # Make sure temp cohort table exists --------------------------------------
   if (cohortTableIsTemp && length(cohortIds) == 0) {
