@@ -587,8 +587,8 @@ createCovariateSettings <- function(useCovariateDemographics = FALSE,
     useCovariateDrugExposureLongTerm <- useCovariateDrugExposure365d
   }
   if (!missing(useCovariateMeasurementCount365d)) {
-    warning("Argument useCovariateMeasurementCount365d is deprecated. Use useCovariateObservationCountLongTerm instead")
-    useCovariateObservationCountLongTerm <- useCovariateMeasurementCount365d
+    warning("Argument useCovariateMeasurementCount365d is deprecated. Use useCovariateMeasurementCountLongTerm instead")
+    useCovariateMeasurementCountLongTerm <- useCovariateMeasurementCount365d
   }
   if (!missing(useCovariateDrugEra365d)) {
     warning("Argument useCovariateDrugEra365d is deprecated. Use useCovariateDrugEraLongTerm instead")
