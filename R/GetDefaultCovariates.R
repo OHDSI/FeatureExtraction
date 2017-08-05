@@ -178,24 +178,13 @@ getDbDefaultCovariateData <- function(connection,
   }
   sql <- paste("SELECT", 
                fieldString, 
-               "\nINTO #cov_all\nFROM (\n",
+               "\nFROM (\n",
                paste(paste("SELECT", fieldString, "FROM", covTableNames), collapse = "\nUNION ALL\n"),
                "\n) all_covariates;")
-  if (!aggregated) {
-    sql <- paste("--HINT DISTRIBUTE_ON_KEY(row_id)", sql, sep = "\n")
-  }
   sql <- SqlRender::translateSql(sql = sql, 
                                  targetDialect = attr(connection, "dbms"),
                                  oracleTempSchema = oracleTempSchema)$sql
-  DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
-  covariateSql <- paste("SELECT", fieldString, "FROM #cov_all ORDER BY covariate_id")
-  if (!aggregated) {
-    covariateSql <- paste0(covariateSql, ", row_id")
-  }
-  covariateSql <- SqlRender::translateSql(sql = covariateSql,
-                                          targetDialect = attr(connection, "dbms"),
-                                          oracleTempSchema = oracleTempSchema)$sql
-  covariates <- DatabaseConnector::querySql.ffdf(connection, covariateSql)
+  covariates <- DatabaseConnector::querySql.ffdf(connection, sql)
   colnames(covariates) <- SqlRender::snakeCaseToCamelCase(colnames(covariates))
   covariateRefSql <- "SELECT covariate_id, covariate_name, analysis_id, concept_id  FROM #cov_ref ORDER BY covariate_id"
   covariateRefSql <- SqlRender::translateSql(sql = covariateRefSql,
@@ -209,7 +198,7 @@ getDbDefaultCovariateData <- function(connection,
   writeLines(paste("Downloading data took", signif(delta, 3), attr(delta, "units")))
   
   # Drop temp tables ----------------------------------
-  tempTables <- c(covTableNames, "#cov_all", "#cov_ref")
+  tempTables <- c(covTableNames, "#cov_ref")
   if (temporal) {
     tempTables <- c(tempTables, "#time_periods")
   }
@@ -233,65 +222,3 @@ getDbDefaultCovariateData <- function(connection,
 normName <- function(x) {
   return(gsub("[^a-z]", "", tolower(x)))
 }
-
- 
-# createCovariateSettings <- function(useDemographicsGender = FALSE,
-#                                     useDemographicsAge = FALSE,
-#                                     useDemographicsIndexYear = FALSE,
-#                                     useDemographicsIndexMonth = FALSE,
-#                                     useConditionOccurrenceLongTerm = FALSE,
-#                                     useConditionOccurrenceShortTerm = FALSE,
-#                                     useConditionEraLongTerm = FALSE,
-#                                     useConditionEraShortTerm = FALSE,
-#                                     useConditionGroupEraLongTerm = FALSE,
-#                                     useConditionGroupEraShortTerm = FALSE,
-#                                     useDrugExposureLongTerm = FALSE,
-#                                     useDrugExposureShortTerm = FALSE,
-#                                     useDrugEraLongTerm = FALSE,
-#                                     useDrugEraShortTerm = FALSE,
-#                                     useDrugGroupEraLongTerm = FALSE,
-#                                     useDrugGroupEraShortTerm = FALSE,
-#                                     useProcedureOccurrenceLongTerm = FALSE,
-#                                     useProcedureOccurrenceShortTerm = FALSE,
-#                                     useDeviceExposureLongTerm = FALSE,
-#                                     useDeviceExposureShortTerm = FALSE,
-#                                     useMeasurementLongTerm = FALSE,
-#                                     useMeasurementShortTerm = FALSE,
-#                                     useObservationLongTerm = FALSE,
-#                                     useObservationShortTerm = FALSE,
-#                                     useCharlsonIndex = FALSE,
-#                                     longTermDays = 365,
-#                                     shortTermDays = 30,
-#                                     windowEndDays = 0,
-#                                     excludedCovariateConceptIds = c(),
-#                                     addDescendantsToExclude = TRUE,
-#                                     includedCovariateConceptIds = c(),
-#                                     addDescendantsToInclude = TRUE,
-#                                     includedCovariateIds = c(),
-#                                     deleteCovariatesSmallCount = 100) {
-#   formalNames <- names(formals(createCovariateSettings))
-#   
-#   fileName <- system.file("csv","FeatureSets.csv", package = "FeatureExtraction")
-#   featureSet <- read.csv(fileName)
-#   
-#   useNames <- formalNames[grepl("use.*", formalNames)]
-#   useNames <- useNames[as.logical(mget(useNames))]
-#   featureSet <- featureSet[normName(featureSet$analysisName) %in% normName(gsub("use", "", useNames)), ]
-#   
-#   daysNames <- formalNames[grepl(".*Days$", formalNames)]
-#   days <- -as.integer(mget(daysNames))
-#   featureSet$startDay <- plyr::mapvalues(featureSet$startDay, daysNames, days, warn_missing = FALSE)
-#   featureSet$endDay <- plyr::mapvalues(featureSet$endDay, daysNames, days, warn_missing = FALSE)
-#   inclusionExclusion <- list(excludedCovariateConceptIds = excludedCovariateConceptIds,
-#                              addDescendantsToExclude = addDescendantsToExclude,
-#                              includedCovariateConceptIds = includedCovariateConceptIds,
-#                              addDescendantsToInclude = addDescendantsToInclude,
-#                              includedCovariateIds = includedCovariateIds,
-#                              deleteCovariatesSmallCount = deleteCovariatesSmallCount)
-#   covariateSettings <- list(featureSet = featureSet,
-#                             inclusionExclusion = inclusionExclusion)
-#   class(covariateSettings) <- append(class(covariateSettings), "covariateSettings")
-#   return(covariateSettings)
-# }
-# 
-

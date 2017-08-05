@@ -373,7 +373,6 @@ FROM @cdm_database_schema.concept_ancestor
 WHERE ancestor_concept_id IN (439727);
 
 -- Feature construction
-{!@aggregated} ? {--HINT DISTRIBUTE_ON_KEY(row_id)}
 SELECT 1000 + @analysis_id AS covariate_id,
 {@temporal} ? {
     NULL AS time_id,

@@ -64,7 +64,7 @@ DatabaseConnector::disconnect(conn)
 ### Create covariateSettings ###
 
 celecoxibDrugs <- 1118084
-x <- c(252351201, 2514584502, 2615790602, 440424201, 2212134701, 433950202, 40163038301, 42902283302, 380411101, 19115253302, 141508101, 2109262501, 440870101, 40175400301, 2212420701, 253321102, 2616540601, 40490966204, 198249204, 19003087302, 77069102, 259848101, 1201620402, 19035388301, 444084201, 2617130602, 40223423301, 4184252201, 2212996701, 40234152302, 19125485301, 21602471403, 4060101801, 442313204, 439502101, 1326303402, 440920202, 19040158302, 2414379501, 2313884502, 4204187204, 2721698801, 739209301, 376225102, 42742566701, 43021157201, 314131101, 2005962502, 133298201, 4157607204)
+# x <- c(252351201, 2514584502, 2615790602, 440424201, 2212134701, 433950202, 40163038301, 42902283302, 380411101, 19115253302, 141508101, 2109262501, 440870101, 40175400301, 2212420701, 253321102, 2616540601, 40490966204, 198249204, 19003087302, 77069102, 259848101, 1201620402, 19035388301, 444084201, 2617130602, 40223423301, 4184252201, 2212996701, 40234152302, 19125485301, 21602471403, 4060101801, 442313204, 439502101, 1326303402, 440920202, 19040158302, 2414379501, 2313884502, 4204187204, 2721698801, 739209301, 376225102, 42742566701, 43021157201, 314131101, 2005962502, 133298201, 4157607204)
 covariateSettings <- FeatureExtraction::createCovariateSettings(useDemographicsGender = TRUE,
                                                                 useDemographicsAge = TRUE,
                                                                 useDemographicsIndexYear = TRUE,
@@ -75,21 +75,21 @@ covariateSettings <- FeatureExtraction::createCovariateSettings(useDemographicsG
                                                                 useConditionEraShortTerm = TRUE,
                                                                 useConditionGroupEraLongTerm = TRUE,
                                                                 useConditionGroupEraShortTerm = TRUE,
-                                                                useDrugExposureLongTerm = TRUE,
-                                                                useDrugExposureShortTerm = TRUE,
-                                                                useDrugEraLongTerm = TRUE,
-                                                                useDrugEraShortTerm = TRUE,
-                                                                useDrugGroupEraLongTerm = TRUE,
-                                                                useDrugGroupEraShortTerm = TRUE,
-                                                                useProcedureOccurrenceLongTerm = TRUE,
-                                                                useProcedureOccurrenceShortTerm = TRUE,
-                                                                useDeviceExposureLongTerm = TRUE,
-                                                                useDeviceExposureShortTerm = TRUE,
-                                                                useMeasurementLongTerm = TRUE,
-                                                                useMeasurementShortTerm = TRUE,
-                                                                useObservationLongTerm = TRUE,
-                                                                useObservationShortTerm = TRUE,
-                                                                useCharlsonIndex = TRUE,
+                                                                useDrugExposureLongTerm = FALSE,
+                                                                useDrugExposureShortTerm = FALSE,
+                                                                useDrugEraLongTerm = FALSE,
+                                                                useDrugEraShortTerm = FALSE,
+                                                                useDrugGroupEraLongTerm = FALSE,
+                                                                useDrugGroupEraShortTerm = FALSE,
+                                                                useProcedureOccurrenceLongTerm = FALSE,
+                                                                useProcedureOccurrenceShortTerm = FALSE,
+                                                                useDeviceExposureLongTerm = FALSE,
+                                                                useDeviceExposureShortTerm = FALSE,
+                                                                useMeasurementLongTerm = FALSE,
+                                                                useMeasurementShortTerm = FALSE,
+                                                                useObservationLongTerm = FALSE,
+                                                                useObservationShortTerm = FALSE,
+                                                                useCharlsonIndex = FALSE,
                                                                 longTermDays = 365,
                                                                 shortTermDays = 30,
                                                                 windowEndDays = 0,
@@ -97,7 +97,7 @@ covariateSettings <- FeatureExtraction::createCovariateSettings(useDemographicsG
                                                                 addDescendantsToExclude = FALSE,
                                                                 includedCovariateConceptIds = c(),
                                                                 addDescendantsToInclude = FALSE,
-                                                                includedCovariateIds = x,
+                                                                includedCovariateIds = c(),
                                                                 deleteCovariatesSmallCount = 100)
 
 covs <- getDbCovariateData(connectionDetails = connectionDetails,
@@ -124,6 +124,9 @@ covs <- getDbCovariateData(connectionDetails = connectionDetails,
 # Generating features took 3.83 mins
 # Downloading data
 # Downloading data took 1.34 secs
+
+
+# Hint: 1.51 mins
 
 querySql(connection, "SELECT COUNT(*) FROM #cov_2 WHERE covariate_id IN (2, 1002, 2002, 3002, 4002, 5002, 6002, 7002, 8002, 9002, 10002, 11002, 12002, 13002, 14002, 15002, 16002, 17002, 18002)")
 querySql(connection, "SELECT COUNT(*) FROM #cov_all WHERE covariate_id IN (2, 1002, 2002, 3002, 4002, 5002, 6002, 7002, 8002, 9002, 10002, 11002, 12002, 13002, 14002, 15002, 16002, 17002, 18002)")

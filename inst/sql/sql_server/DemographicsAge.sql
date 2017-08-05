@@ -1,5 +1,4 @@
 -- Feature construction
-{!@aggregated} ? {--HINT DISTRIBUTE_ON_KEY(row_id)}
 SELECT FLOOR((YEAR(cohort_start_date) - year_of_birth) / 5) * 1000 + @analysis_id AS covariate_id,
 {@temporal} ? {
     NULL AS time_id,

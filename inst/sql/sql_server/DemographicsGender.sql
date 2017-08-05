@@ -1,5 +1,4 @@
 -- Feature construction
-{!@aggregated} ? {--HINT DISTRIBUTE_ON_KEY(row_id)}
 SELECT 
 	CAST(gender_concept_id AS BIGINT) * 1000 + @analysis_id AS covariate_id,
 {@temporal} ? {

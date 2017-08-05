@@ -1,5 +1,4 @@
 -- Feature construction
-{!@aggregated} ? {--HINT DISTRIBUTE_ON_KEY(row_id)}
 SELECT YEAR(cohort_start_date) * 1000 + @analysis_id AS covariate_id,
 {@temporal} ? {
     NULL AS time_id,
