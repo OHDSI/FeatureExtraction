@@ -1,6 +1,7 @@
 library(FeatureExtraction)
 options(fftempdir = "s:/FFtemp")
 
+test(as.character("SELECT * FROM #table;"))
 
 # Pdw ---------------------------------------------------------------------
 dbms <- "pdw"
@@ -90,16 +91,16 @@ covariateSettings <- FeatureExtraction::createCovariateSettings(useDemographicsG
                                                                 useObservationLongTerm = FALSE,
                                                                 useObservationShortTerm = FALSE,
                                                                 useCharlsonIndex = FALSE,
-                                                                longTermDays = 365,
-                                                                shortTermDays = 30,
-                                                                windowEndDays = 0,
+                                                                longTermStartDays = -365,
+                                                                shortTermStartDays = -30,
+                                                                endDays = 0,
                                                                 excludedCovariateConceptIds = c(),
                                                                 addDescendantsToExclude = FALSE,
                                                                 includedCovariateConceptIds = c(),
                                                                 addDescendantsToInclude = FALSE,
-                                                                includedCovariateIds = c(),
-                                                                deleteCovariatesSmallCount = 100)
+                                                                includedCovariateIds = c())
 
+covariateSettings <- convertPrespecSettingsToDetailedSettings(covariateSettings)
 covs <- getDbCovariateData(connectionDetails = connectionDetails,
                            oracleTempSchema = oracleTempSchema,
                            cdmDatabaseSchema = cdmDatabaseSchema,

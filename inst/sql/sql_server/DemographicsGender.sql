@@ -19,9 +19,10 @@ FROM @cohort_table cohort
 INNER JOIN @cdm_database_schema.person
 	ON cohort.subject_id = person.person_id
 WHERE gender_concept_id != 0
-{@has_excluded_covariate_concept_ids} ? {	AND gender_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
-{@has_included_covariate_concept_ids} ? {	AND gender_concept_id IN (SELECT concept_id FROM #included_cov)}	
-{@has_included_covariate_ids} ? {	AND CAST(gender_concept_id AS BIGINT) * 1000 + @analysis_id IN (SELECT covariate_id FROM #included_cov_by_id)}	
+{@excluded_concept_table != ''} ? {	AND gender_concept_id NOT IN (SELECT id FROM @excluded_concept_table)}
+{@included_concept_table != ''} ? {	AND gender_concept_id IN (SELECT id FROM @included_concept_table)}	
+{@included_cov_table != ''} ? {	AND CAST(gender_concept_id AS BIGINT) * 1000 + @analysis_id IN (SELECT id FROM @included_cov_table)}	
+{@cohort_definition_id != -1} ? {		AND cohort.cohort_definition_id = @cohort_definition_id}
 {@aggregated} ? {		
 GROUP BY gender_concept_id
 {@temporal} ? {
@@ -38,7 +39,7 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT covariate_id,
-	CONCAT('Gender = ', concept_name) AS covariate_name,
+	CONCAT('gender = ', concept_name) AS covariate_name,
 	@analysis_id AS analysis_id,
 	concept_id
 FROM (

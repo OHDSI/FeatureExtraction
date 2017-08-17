@@ -17,9 +17,10 @@ INTO @covariate_table
 FROM @cohort_table cohort
 INNER JOIN @cdm_database_schema.person
 	ON cohort.subject_id = person.person_id
-{@has_excluded_covariate_concept_ids} ? {}
-{@has_included_covariate_concept_ids} ? {}
-{@has_included_covariate_ids} ? {	AND FLOOR((YEAR(cohort_start_date) - year_of_birth) / 5) * 1000 + @analysis_id IN (SELECT covariate_id FROM #included_cov_by_id)}
+{@included_cov_table != ''} ? {WHERE FLOOR((YEAR(cohort_start_date) - year_of_birth) / 5) * 1000 + @analysis_id IN (SELECT id FROM @included_cov_table)}
+{@cohort_definition_id != -1} ? {
+	{@included_cov_table != ''} ? {		AND} :{WHERE} cohort.cohort_definition_id = @cohort_definition_id
+}
 {@aggregated} ? {		
 GROUP BY FLOOR((YEAR(cohort_start_date) - year_of_birth) / 5)
 {@temporal} ? {
@@ -37,7 +38,7 @@ INSERT INTO #cov_ref (
 	)
 SELECT covariate_id,
 	CONCAT (
-		'Age group: ',
+		'age group: ',
 		CAST(5 * (covariate_id - @analysis_id) / 1000 AS VARCHAR),
 		'-',
 		CAST(1 + 5 * (covariate_id - @analysis_id) / 1000 AS VARCHAR)

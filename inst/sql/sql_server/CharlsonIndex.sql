@@ -407,12 +407,11 @@ FROM (
 } : {
 		WHERE condition_era_start_date <= DATEADD(DAY, @end_day, cohort.cohort_start_date)
 }
+{@cohort_definition_id != -1} ? {		AND cohort.cohort_definition_id = @cohort_definition_id}
 	) temp
 	GROUP BY row_id
 ) scores_per_row
-{@has_excluded_covariate_concept_ids} ? {}
-{@has_included_covariate_concept_ids} ? {}
-{@has_included_covariate_ids} ? {WHERE 1000 + @analysis_id IN (SELECT covariate_id FROM #included_cov_by_id)}
+{@included_cov_table != ''} ? {WHERE 1000 + @analysis_id IN (SELECT id FROM @included_cov_table)}
 ;
 
 TRUNCATE TABLE #charlson_concepts;

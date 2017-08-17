@@ -29,7 +29,10 @@
 NULL
 
 .onLoad <- function(libname, pkgname) {
-  # Copied this from the ff package:
+
+  rJava::.jpackage(pkgname, lib.loc = libname)
+  
+    # Copied this from the ff package:
   if (is.null(getOption("ffmaxbytes"))) {
     # memory.limit is windows specific
     if (.Platform$OS.type == "windows") {
@@ -44,4 +47,12 @@ NULL
   # Workaround for problem with ff on machines with lots of memory (see
   # https://github.com/edwindj/ffbase/issues/37)
   options(ffmaxbytes = min(getOption("ffmaxbytes"), .Machine$integer.max * 12))
+}
+
+.toJson <- function(object) {
+  return(as.character(jsonlite::toJSON(object, force = TRUE, auto_unbox = TRUE)))
+}
+
+.fromJson <- function(json) {
+  return(jsonlite::fromJSON(json, simplifyVector = TRUE, simplifyDataFrame = FALSE))
 }

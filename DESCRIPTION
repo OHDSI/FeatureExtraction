@@ -19,6 +19,8 @@ Imports:
     ffbase (>= 0.12.1),
     plyr,
     Rcpp (>= 0.11.2),
+    rJava,
+    jsonlite,
     SqlRender (>= 1.1.3),
 Suggests:
     testthat,

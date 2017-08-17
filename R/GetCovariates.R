@@ -78,8 +78,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
                                cohortIds = c(),
                                rowIdField = "subject_id",
                                covariateSettings,
-                               aggregated = FALSE,
-                               temporal = FALSE) {
+                               aggregated = FALSE) {
   if (is.null(connectionDetails) && is.null(connection)) {
     stop("Need to provide either connectionDetails or connection")
   }
@@ -142,8 +141,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
                      cohortTempTable = cohortTempTable,
                      rowIdField = rowIdField,
                      covariateSettings = covariateSettings[[i]],
-                     aggregated = aggregated,
-                     temporal = temporal)
+                     aggregated = aggregated)
         tempCovariateData <- do.call(fun, args)
         
         if (!is.null(tempCovariateData) && nrow(tempCovariateData$covariates) != 0) {

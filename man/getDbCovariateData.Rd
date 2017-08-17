@@ -8,7 +8,7 @@ getDbCovariateData(connectionDetails = NULL, connection = NULL,
   oracleTempSchema = NULL, cdmDatabaseSchema, cdmVersion = "5",
   cohortTable = "cohort", cohortDatabaseSchema = cdmDatabaseSchema,
   cohortTableIsTemp = FALSE, cohortIds = c(), rowIdField = "subject_id",
-  covariateSettings, aggregated = FALSE, temporal = FALSE)
+  covariateSettings, aggregated = FALSE)
 }
 \arguments{
 \item{connectionDetails}{An R object of type \code{connectionDetails} created using the

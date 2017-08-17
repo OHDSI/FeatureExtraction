@@ -22,41 +22,23 @@
 #' creates an object specifying how covariates should be contructed from data in the CDM model.
 #'
 %roxygen%
-#' @param longTermDays                              What is the length (in days) of the long-term window?
-#' @param mediumTermDays                            What is the length (in days) of the medium-term window?
-#' @param shortTermDays                             What is the length (in days) of the short-term window?
-#' @param windowEndDays                             What is the last day of the window? 0 means the cohort
-#'                                                  start date is the last date (included), 1 means the window
-#'                                                  stops the day before the cohort start date, etc.
-#'
 #'
 #' @return
 #' An object of type \code{covariateSettings}, to be used in other functions.
 #' 
-#' @examples
-#' \dontrun{
-#' # This will create the default set of covariates:
-#' settings <- createCovariateSettings(%argumentsRoxygen%)
-#' 
-#' }
-#'
 #' @export
-createCovariateSettings <- function(%arguments%
-                                    longTermDays = 365,
-                                    shortTermDays = 30,
-                                    windowEndDays = 0,
-                                    excludedCovariateConceptIds = c(),
-                                    addDescendantsToExclude = TRUE,
-                                    includedCovariateConceptIds = c(),
-                                    addDescendantsToInclude = TRUE,
-                                    includedCovariateIds = c(),
-                                    deleteCovariatesSmallCount = 100) {
-  covariateSettings <- list()
+createCovariateSettings <- function(%arguments%) {
+  covariateSettings <- list(temporal = %temporal%)
   formalNames <- names(formals(createCovariateSettings))
   for (name in formalNames) {
     value <- get(name)
-    if (!grepl("use.*", name) || value)
+    if (grepl("use.*", name)) {
+       if (value) {
+         covariateSettings[[sub("use", "", name)]] <- value
+       }
+    } else {
       covariateSettings[[name]] <- value
+    }
   }
   attr(covariateSettings, "fun") <- "getDbDefaultCovariateData"
   class(covariateSettings) <- "covariateSettings"

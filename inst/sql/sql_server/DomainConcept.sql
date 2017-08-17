@@ -1,4 +1,3 @@
-@warning
 -- Feature construction
 SELECT 
 	CAST(@domain_concept_id AS BIGINT) * 1000 + @analysis_id AS covariate_id,
@@ -35,9 +34,10 @@ FROM (
 		AND @domain_end_date >= DATEADD(DAY, @start_day, cohort.cohort_start_date)
 		AND @domain_concept_id != 0
 }
-{@has_excluded_covariate_concept_ids} ? {		AND @domain_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
-{@has_included_covariate_concept_ids} ? {		AND @domain_concept_id IN (SELECT concept_id FROM #included_cov)}
-{@has_included_covariate_ids} ? {		AND CAST(@domain_concept_id AS BIGINT) * 1000 + @analysis_id IN (SELECT covariate_id FROM #included_cov_by_id)}
+{@excluded_concept_table != ''} ? {		AND @domain_concept_id NOT IN (SELECT id FROM @excluded_concept_table)}
+{@included_concept_table != ''} ? {		AND @domain_concept_id IN (SELECT id FROM @included_concept_table)}
+{@included_cov_table != ''} ? {		AND CAST(@domain_concept_id AS BIGINT) * 1000 + @analysis_id IN (SELECT id FROM @included_cov_table)}
+{@cohort_definition_id != -1} ? {		AND cohort.cohort_definition_id = @cohort_definition_id}
 ) by_row_id
 {@aggregated} ? {		
 GROUP BY @domain_concept_id
@@ -56,9 +56,9 @@ INSERT INTO #cov_ref (
 	)
 SELECT covariate_id,
 {@temporal} ? {
-	CONCAT('@domain_label: ', concept_id, '-', concept_name) AS covariate_name,
+	CONCAT('@domain_table: ', concept_id, '-', concept_name) AS covariate_name,
 } : {
-	CONCAT('@domain_label during day @start_day through @end_day days relative to index: ', concept_id, '-', concept_name) AS covariate_name,
+	CONCAT('@domain_table during day @start_day through @end_day days relative to index: ', concept_id, '-', concept_name) AS covariate_name,
 }
 	@analysis_id AS analysis_id,
 	concept_id

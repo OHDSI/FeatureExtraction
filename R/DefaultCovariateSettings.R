@@ -72,47 +72,26 @@
 #'                                          the short term window.
 #' @param useCharlsonIndex                  The Charlson comorbidity index (Romano adaptation) using
 #'                                          all conditions prior to the window end.
-#' @param longTermDays                      What is the length (in days) of the long-term window?
-#' @param mediumTermDays                    What is the length (in days) of the medium-term window?
-#' @param shortTermDays                     What is the length (in days) of the short-term window?
-#' @param windowEndDays                     What is the last day of the window? 0 means the cohort
-#'                                          start date is the last date (included), 1 means the window
-#'                                          stops the day before the cohort start date, etc.
-#'
+#' @param longTermStartDays                 What is the start day (relative to the index date) of the
+#'                                          long-term window?
+#' @param mediumTermStartDays               What is the start day (relative to the index date) of the
+#'                                          medium-term window?
+#' @param shortTermStartDays                What is the start day (relative to the index date) of the
+#'                                          short-term window?
+#' @param endDays                           What is the end day (relative to the index date) of the
+#'                                          window?
+#' @param includedCovariateConceptIds       A list of concept IDs that should be used to construct
+#'                                          covariates.
+#' @param addDescendantsToInclude           Should descendant concept IDs be added to the list of
+#'                                          concepts to include?
+#' @param excludedCovariateConceptIds       A list of concept IDs that should NOT be used to construct
+#'                                          covariates.
+#' @param addDescendantsToExclude           Should descendant concept IDs be added to the list of
+#'                                          concepts to exclude?
+#' @param includedCovariateIds              A list of covariate IDs that should be restricted to.
 #'
 #' @return
 #' An object of type \code{covariateSettings}, to be used in other functions.
-#'
-#' @examples
-#' \dontrun{
-#' # This will create the default set of covariates:
-#' settings <- createCovariateSettings(useDemographicsGender = TRUE,
-#'                                     useDemographicsAge = TRUE,
-#'                                     useDemographicsIndexYear = TRUE,
-#'                                     useDemographicsIndexMonth = TRUE,
-#'                                     useConditionOccurrenceLongTerm = TRUE,
-#'                                     useConditionOccurrenceShortTerm = TRUE,
-#'                                     useConditionEraLongTerm = TRUE,
-#'                                     useConditionEraShortTerm = TRUE,
-#'                                     useConditionGroupEraShortTerm = TRUE,
-#'                                     useConditionGroupEraLongTerm = TRUE,
-#'                                     useDrugExposureLongTerm = TRUE,
-#'                                     useDrugExposureShortTerm = TRUE,
-#'                                     useDrugEraLongTerm = TRUE,
-#'                                     useDrugEraShortTerm = TRUE,
-#'                                     useDrugGroupEraLongTerm = TRUE,
-#'                                     useDrugGroupEraShortTerm = TRUE,
-#'                                     useProcedureOccurrenceLongTerm = TRUE,
-#'                                     useProcedureOccurrenceShortTerm = TRUE,
-#'                                     useDeviceExposureLongTerm = TRUE,
-#'                                     useDeviceExposureShortTerm = TRUE,
-#'                                     useMeasurementLongTerm = TRUE,
-#'                                     useMeasurementShortTerm = TRUE,
-#'                                     useObservationLongTerm = TRUE,
-#'                                     useObservationShortTerm = TRUE,
-#'                                     useCharlsonIndex = TRUE)
-#'
-#' }
 #'
 #' @export
 createCovariateSettings <- function(useDemographicsGender = FALSE,
@@ -140,21 +119,29 @@ createCovariateSettings <- function(useDemographicsGender = FALSE,
                                     useObservationLongTerm = FALSE,
                                     useObservationShortTerm = FALSE,
                                     useCharlsonIndex = FALSE,
-                                    longTermDays = 365,
-                                    shortTermDays = 30,
-                                    windowEndDays = 0,
-                                    excludedCovariateConceptIds = c(),
-                                    addDescendantsToExclude = TRUE,
+                                    longTermStartDays = -365,
+                                    mediumTermStartDays = -180,
+                                    shortTermStartDays = -30,
+                                    endDays = 0,
                                     includedCovariateConceptIds = c(),
-                                    addDescendantsToInclude = TRUE,
-                                    includedCovariateIds = c(),
-                                    deleteCovariatesSmallCount = 100) {
-  covariateSettings <- list()
+                                    addDescendantsToInclude = FALSE,
+                                    excludedCovariateConceptIds = c(),
+                                    addDescendantsToExclude = FALSE,
+                                    includedCovariateIds = c()) {
+  covariateSettings <- list(temporal = FALSE)
   formalNames <- names(formals(createCovariateSettings))
   for (name in formalNames) {
     value <- get(name)
-    if (!grepl("use.*", name) || value)
+    if (is.null(value)) {
+      value <- vector()
+    }
+    if (grepl("use.*", name)) {
+      if (value) {
+        covariateSettings[[sub("use", "", name)]] <- value
+      }
+    } else {
       covariateSettings[[name]] <- value
+    }
   }
   attr(covariateSettings, "fun") <- "getDbDefaultCovariateData"
   class(covariateSettings) <- "covariateSettings"

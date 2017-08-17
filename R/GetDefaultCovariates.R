@@ -30,186 +30,80 @@
 getDbDefaultCovariateData <- function(connection,
                                       oracleTempSchema = NULL,
                                       cdmDatabaseSchema,
-                                      cohortTempTable = "cohort_person",
+                                      cohortTempTable = "#cohort_person",
                                       rowIdField = "subject_id",
                                       covariateSettings,
-                                      aggregated = FALSE,
-                                      temporal = FALSE) {
+                                      aggregated = FALSE) {
   if (!is(covariateSettings, "covariateSettings")) {
     stop("Covariate settings object not of type covariateSettings") 
   }
-  
-  # Convert arguments to table of feature sets:
-  fileName <- system.file("csv","FeatureSets.csv", package = "FeatureExtraction")
-  featureSets <- read.csv(fileName)
-  useNames <- names(covariateSettings)[grepl("use.*", names(covariateSettings))]
-  featureSets <- featureSets[normName(featureSets$analysisName) %in% normName(gsub("use", "", useNames)), ]
-  days <- unlist(covariateSettings[grepl(".*Days$", names(covariateSettings))])
-  featureSets$startDay <- plyr::mapvalues(featureSets$startDay, names(days), -days, warn_missing = FALSE)
-  featureSets$endDay <- plyr::mapvalues(featureSets$endDay, names(days), -days, warn_missing = FALSE)
-  
-  # Upload excluded concept IDs if needed -----------------------------------
-  excludedCovariateConceptIds <- covariateSettings$excludedCovariateConceptIds
-  addDescendantsToExclude <- covariateSettings$addDescendantsToExclude
-  if (is.null(excludedCovariateConceptIds) || length(excludedCovariateConceptIds) ==
-      0) {
-    hasExcludedCovariateConceptIds <- FALSE
-  } else {
-    if (!is.numeric(excludedCovariateConceptIds))
-      stop("excludedCovariateConceptIds must be a (vector of) numeric")
-    hasExcludedCovariateConceptIds <- TRUE
-    DatabaseConnector::insertTable(connection,
-                                   tableName = "#excluded_cov",
-                                   data = data.frame(concept_id = as.integer(excludedCovariateConceptIds)),
-                                   dropTableIfExists = TRUE,
-                                   createTable = TRUE,
-                                   tempTable = TRUE,
-                                   oracleTempSchema = oracleTempSchema)
-    if (!is.null(addDescendantsToExclude) && addDescendantsToExclude) {
-      writeLines("Adding descendants to concepts to exclude")
-      sql <- SqlRender::loadRenderTranslateSql(sqlFilename = "IncludeDescendants.sql",
-                                               packageName = "FeatureExtraction",
-                                               dbms = attr(connection, "dbms"),
-                                               oracleTempSchema = oracleTempSchema,
-                                               cdm_database_schema = cdmDatabaseSchema,
-                                               table_name = "#excluded_cov")
-      DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
+  settings <- .toJson(covariateSettings)
+  rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$init(system.file("", package = "FeatureExtraction"))
+  json <- rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$createSql(settings, aggregated, cohortTempTable, rowIdField, as.integer(-1), cdmDatabaseSchema)
+  todo <- .fromJson(json)
+  if (length(todo$idSets) != 0) {
+    writeLines("Sending ID sets to server")
+    for(i in 1:length(sqls$idSets)) {
+      DatabaseConnector::insertTable(connection,
+                                     tableName = names(todo$idSets)[i],
+                                     data = data.frame(id = todo$idSets[[i]]),
+                                     dropTableIfExists = TRUE,
+                                     createTable = TRUE,
+                                     tempTable = TRUE,
+                                     oracleTempSchema = oracleTempSchema)
     }
   }
   
-  # Upload included concept IDs if needed -----------------------------------
-  includedCovariateConceptIds <- covariateSettings$includedCovariateConceptIds
-  addDescendantsToInclude <- covariateSettings$addDescendantsToInclude
-  if (is.null(includedCovariateConceptIds) || length(includedCovariateConceptIds) ==
-      0) {
-    hasIncludedCovariateConceptIds <- FALSE
-  } else {
-    if (!is.numeric(includedCovariateConceptIds))
-      stop("includedCovariateConceptIds must be a (vector of) numeric")
-    hasIncludedCovariateConceptIds <- TRUE
-    DatabaseConnector::insertTable(connection,
-                                   tableName = "#included_cov",
-                                   data = data.frame(concept_id = as.integer(includedCovariateConceptIds)),
-                                   dropTableIfExists = TRUE,
-                                   createTable = TRUE,
-                                   tempTable = TRUE,
-                                   oracleTempSchema = oracleTempSchema)
-    if (!is.null(addDescendantsToInclude) && addDescendantsToInclude) {
-      writeLines("Adding descendants to concepts to include")
-      sql <- SqlRender::loadRenderTranslateSql(sqlFilename = "IncludeDescendants.sql",
-                                               packageName = "FeatureExtraction",
-                                               dbms = attr(connection, "dbms"),
-                                               oracleTempSchema = oracleTempSchema,
-                                               cdm_database_schema = cdmDatabaseSchema,
-                                               table_name = "#included_cov")
-      DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
-    }
-  }
+  writeLines("Constructing features on server")
+  sql <- SqlRender::translateSql(sql = todo$sqlConstruction, 
+                                 targetDialect = attr(connection, "dbms"), 
+                                 oracleTempSchema = oracleTempSchema)$sql
+  DatabaseConnector::executeSql(connection, sql)
   
-  # Upload included covariate IDs if needed -----------------------------------
-  includedCovariateIds <- covariateSettings$includedCovariateIds
-  if (is.null(includedCovariateIds) || length(includedCovariateIds) ==
-      0) {
-    hasIncludedCovariateIds <- FALSE
-  } else {
-    if (!is.numeric(includedCovariateIds))
-      stop("includedCovariateIds must be a (vector of) numeric")
-    hasIncludedCovariateIds <- TRUE
-    DatabaseConnector::insertTable(connection,
-                                   tableName = "#included_cov_by_id",
-                                   data = data.frame(covariate_id = includedCovariateIds),
-                                   dropTableIfExists = TRUE,
-                                   createTable = TRUE,
-                                   tempTable = TRUE,
-                                   oracleTempSchema = oracleTempSchema)
-  }
-  
-  ### TODO: create #time_period for temporal features
-  
-  # Generate covariates and refs  ----------------------------------
-  writeLines("Generating features")
+  writeLines("Fetching data from server")
   start <- Sys.time()
-  ### TODO: maybe possible to filter analysis IDs based on includedCovariateIds
-  sql <- SqlRender::loadRenderTranslateSql(sqlFilename = "CreateCovRefTable.sql",
-                                           packageName = "FeatureExtraction",
-                                           dbms = attr(connection, "dbms"),
-                                           oracleTempSchema = oracleTempSchema)
-  DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
-  covTableNames <- paste0("#cov_", featureSets$analysisId)
-  for (i in 1:nrow(featureSets)) {
-    writeLines(paste("-", featureSets$analysisName[i]))
-    args <- list(sqlFilename = featureSets$sqlFileName[i],
-                 packageName = featureSets$sqlPackage[i],
-                 dbms = attr(connection, "dbms"),
-                 oracleTempSchema = oracleTempSchema,
-                 temporal = temporal,
-                 aggregated = aggregated,
-                 covariate_table = covTableNames[i],
-                 cohort_table = cohortTempTable,
-                 row_id_field = rowIdField,
-                 analysis_id = featureSets$analysisId[i],
-                 cdm_database_schema = cdmDatabaseSchema,
-                 has_excluded_covariate_concept_ids = hasExcludedCovariateConceptIds,
-                 has_included_covariate_concept_ids = hasIncludedCovariateConceptIds,
-                 has_included_covariate_ids = hasIncludedCovariateIds)
-    if (featureSets$startDay[i] != "") {
-      args$start_day <- featureSets$startDay[i]
-    }
-    if (featureSets$endDay[i] != "") {
-      args$end_day <- featureSets$endDay[i]
-    }
-    sql <- do.call(SqlRender::loadRenderTranslateSql, args)
-    DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
-  }
-  delta <- Sys.time() - start
-  writeLines(paste("Generating features took", signif(delta, 3), attr(delta, "units")))
-  
-  # Download covariates and ref  -----------------------------------
-  writeLines("Downloading data")
-  start <- Sys.time()
-  
-  if (aggregated) {
-    fieldString <- "covariate_id, sum_value, min_value, max_value, average_value, standard_deviation"
-  } else {
-    fieldString <- "covariate_id, covariate_value, row_id"
-  }
-  if (temporal) {
-    fieldString <- paste0(fieldString, ", time_id")
-  }
-  sql <- paste("SELECT", 
-               fieldString, 
-               "\nFROM (\n",
-               paste(paste("SELECT", fieldString, "FROM", covTableNames), collapse = "\nUNION ALL\n"),
-               "\n) all_covariates;")
-  sql <- SqlRender::translateSql(sql = sql, 
-                                 targetDialect = attr(connection, "dbms"),
+  sql <- SqlRender::translateSql(sql = todo$sqlQueryFeatures, 
+                                 targetDialect = attr(connection, "dbms"), 
                                  oracleTempSchema = oracleTempSchema)$sql
   covariates <- DatabaseConnector::querySql.ffdf(connection, sql)
   colnames(covariates) <- SqlRender::snakeCaseToCamelCase(colnames(covariates))
-  covariateRefSql <- "SELECT covariate_id, covariate_name, analysis_id, concept_id  FROM #cov_ref ORDER BY covariate_id"
-  covariateRefSql <- SqlRender::translateSql(sql = covariateRefSql,
-                                             targetDialect = attr(connection, "dbms"),
-                                             oracleTempSchema = oracleTempSchema)$sql
-  covariateRef <- DatabaseConnector::querySql.ffdf(connection, covariateRefSql)
-  colnames(covariateRef) <- SqlRender::snakeCaseToCamelCase(colnames(covariateRef))
-  covariateRef$analysisName <- covariateSettings$analysisName[match(covariateRef$analysisId, covariateSettings$analysisId)]
-
-  delta <- Sys.time() - start
-  writeLines(paste("Downloading data took", signif(delta, 3), attr(delta, "units")))
   
-  # Drop temp tables ----------------------------------
-  tempTables <- c(covTableNames, "#cov_ref")
-  if (temporal) {
-    tempTables <- c(tempTables, "#time_periods")
-  }
-  sql <- paste0("TRUNCATE TABLE ", tempTables, "; DROP TABLE ", tempTables, ";")
-  sql <- paste(sql, collapse = "\n")
+  sql <- SqlRender::translateSql(sql = todo$sqlQueryFeatureRef, 
+                                 targetDialect = attr(connection, "dbms"), 
+                                 oracleTempSchema = oracleTempSchema)$sql
+  covariateRef <- DatabaseConnector::querySql.ffdf(connection, sql)
+  colnames(covariateRef) <- SqlRender::snakeCaseToCamelCase(colnames(covariateRef))
+  
+  sql <- "SELECT COUNT_BIG(*) FROM @cohort_table"
+  sql <- SqlRender::renderSql(sql, cohort_table = cohortTempTable)$sql
   sql <- SqlRender::translateSql(sql = sql,
                                  targetDialect = attr(connection, "dbms"),
                                  oracleTempSchema = oracleTempSchema)$sql
-  DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
+  populationSize <- DatabaseConnector::querySql(connection, sql)[1, 1]  
   
-  covariateData <- list(covariates = covariates, covariateRef = covariateRef, metaData = list())
+  delta <- Sys.time() - start
+  writeLines(paste("Fetching data took", signif(delta, 3), attr(delta, "units")))
+  
+  # Drop temp tables
+  sql <- SqlRender::translateSql(sql = todo$sqlCleanup, 
+                                 targetDialect = attr(connection, "dbms"), 
+                                 oracleTempSchema = oracleTempSchema)$sql
+  DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
+  if (length(todo$idSets) != 0) {
+    writeLines("Sending ID sets to server")
+    for(i in 1:length(sqls$idSets)) {
+      sql <- "TRUNCATE TABLE @table;\nDROP TABLE @table;\n"
+      sql <- SqlRender::renderSql(sql, table = names(todo$idSets)[i])$sql
+      sql <- SqlRender::translateSql(sql = sql,
+                                     targetDialect = attr(connection, "dbms"),
+                                     oracleTempSchema = oracleTempSchema)$sql
+      DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
+    }
+  }
+  
+  covariateData <- list(covariates = covariates, 
+                        covariateRef = covariateRef, 
+                        metaData = list(populationSize = populationSize))
   if (nrow(covariateData$covariates) == 0) {
     warning("No data found")
   } else {
@@ -219,6 +113,13 @@ getDbDefaultCovariateData <- function(connection,
   return(covariateData)
 }
 
-normName <- function(x) {
-  return(gsub("[^a-z]", "", tolower(x)))
+#' @export
+convertPrespecSettingsToDetailedSettings <- function(covariateSettings) {
+  json <- .toJson(covariateSettings)
+  rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$init(system.file("", package = "FeatureExtraction"))
+  newJson <- rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$convertSettingsPrespecToDetails(json)
+  detailedCovariateSettings <- .fromJson(newJson)
+  attr(detailedCovariateSettings, "fun") <- "getDbDefaultCovariateData"
+  class(detailedCovariateSettings) <- "covariateSettings"
+  return(detailedCovariateSettings)
 }

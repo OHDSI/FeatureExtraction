@@ -1,0 +1,20 @@
+analysisId,analysisName,sqlFileName,domainTable,domainConceptId,domainStartDate,domainEndDate,isDefault,description
+1,DemographicsGender,DemographicsGender.sql,,,,,TRUE,Gender of the subject.
+2,DemographicsAge,DemographicsAge.sql,,,,,TRUE,Age of the subject on the index date (in 5 year increments).
+3,DemographicsIndexYear,DemographicsYear.sql,,,,,TRUE,Year of the index date.
+4,DemographicsIndexMonth,DemographicsMonth.sql,,,,,TRUE,Month of the index date.
+101,ConditionOccurrence,DomainConcept.sql,condition_occurrence,condition_concept_id,condition_start_date,condition_start_date,TRUE,One covariate per condition in the condition_occurrence table starting in the time window.
+201,ConditionEraStart,DomainConcept.sql,condition_era,condition_concept_id,condition_era_start_date,condition_era_start_date,TRUE,One covariate per condition in the condition_era table starting in the time window.
+202,ConditionEraOverlap,DomainConcept.sql,condition_era,condition_concept_id,condition_era_start_date,condition_era_end_date,TRUE,One covariate per condition in the condition_era table overlapping with any part of the time window.
+203,ConditionEraGroupStart,DomainConceptGroup.sql,condition_era,condition_concept_id,condition_era_start_date,condition_era_start_date,TRUE,One covariate per condition era rolled up to SNOMED groups in the condition_era table starting in the time window.
+203,ConditionEraGroupOverlap,DomainConceptGroup.sql,condition_era,condition_concept_id,condition_era_start_date,condition_era_end_date,TRUE,One covariate per condition era rolled up to SNOMED groups in the condition_era table overlapping with any part of the time window.
+301,DrugExposure,DomainConcept.sql,drug_exposure,drug_concept_id,drug_exposure_start_date,drug_exposure_start_date,TRUE,One covariate per drug in the drug_exposure table starting in the time window.
+401,DrugEraStart,DomainConcept.sql,drug_era,drug_concept_id,drug_era_start_date,drug_era_start_date,TRUE,One covariate per drug in the drug_era table starting in the time window.
+402,DrugEraOverlap,DomainConcept.sql,drug_era,drug_concept_id,drug_era_start_date,drug_era_end_date,TRUE,One covariate per drug in the drug_era table overlapping with any part of the time window.
+403,DrugEraGroupStart,DomainConceptGroup.sql,drug_era,drug_concept_id,drug_era_start_date,drug_era_start_date,TRUE,One covariate per drug rolled up to ATC groups in the drug_era table starting in thetime window.
+403,DrugEraGroupOverlap,DomainConceptGroup.sql,drug_era,drug_concept_id,drug_era_start_date,drug_era_end_date,TRUE,One covariate per drug rolled up to ATC groups in the drug_era table overlapping with any part of thetime window.
+501,ProcedureOccurrence,DomainConcept.sql,procedure_occurrence,procedure_concept_id,procedure_date,procedure_date,TRUE,One covariate per procedure in the procedure_occurrence table in the time window.
+601,DeviceExposure,DomainConcept.sql,device_exposure,device_concept_id,device_exposure_start_date,device_exposure_start_date,TRUE,One covariate per device in the device exposure table starting in the timewindow.
+701,Measurement,DomainConcept.sql,measurement,measurement_concept_id,measurement_date,measurement_date,TRUE,One covariate per measurement in the measurement table in the time window.
+801,Observation,DomainConcept.sql,observation,observation_concept_id,observation_date,observation_date,TRUE,One covariate per observation in the observation table in the time window.
+901,CharlsonIndex,CharlsonIndex.sql,,,,,TRUE,The Charlson comorbidity index (Romano adaptation) using all conditions prior to the window end.

@@ -17,11 +17,11 @@ createCovariateSettings(useDemographicsGender = FALSE,
   useDeviceExposureLongTerm = FALSE, useDeviceExposureShortTerm = FALSE,
   useMeasurementLongTerm = FALSE, useMeasurementShortTerm = FALSE,
   useObservationLongTerm = FALSE, useObservationShortTerm = FALSE,
-  useCharlsonIndex = FALSE, longTermDays = 365, shortTermDays = 30,
-  windowEndDays = 0, excludedCovariateConceptIds = c(),
-  addDescendantsToExclude = TRUE, includedCovariateConceptIds = c(),
-  addDescendantsToInclude = TRUE, includedCovariateIds = c(),
-  deleteCovariatesSmallCount = 100)
+  useCharlsonIndex = FALSE, longTermStartDays = -365,
+  mediumTermStartDays = -180, shortTermStartDays = -30, endDays = 0,
+  includedCovariateConceptIds = c(), addDescendantsToInclude = FALSE,
+  excludedCovariateConceptIds = c(), addDescendantsToExclude = FALSE,
+  includedCovariateIds = c())
 }
 \arguments{
 \item{useDemographicsGender}{Gender of the subject.}
@@ -100,15 +100,31 @@ the short term window.}
 \item{useCharlsonIndex}{The Charlson comorbidity index (Romano adaptation) using
 all conditions prior to the window end.}
 
-\item{longTermDays}{What is the length (in days) of the long-term window?}
+\item{longTermStartDays}{What is the start day (relative to the index date) of the
+long-term window?}
 
-\item{shortTermDays}{What is the length (in days) of the short-term window?}
+\item{mediumTermStartDays}{What is the start day (relative to the index date) of the
+medium-term window?}
 
-\item{windowEndDays}{What is the last day of the window? 0 means the cohort
-start date is the last date (included), 1 means the window
-stops the day before the cohort start date, etc.}
+\item{shortTermStartDays}{What is the start day (relative to the index date) of the
+short-term window?}
 
-\item{mediumTermDays}{What is the length (in days) of the medium-term window?}
+\item{endDays}{What is the end day (relative to the index date) of the
+window?}
+
+\item{includedCovariateConceptIds}{A list of concept IDs that should be used to construct
+covariates.}
+
+\item{addDescendantsToInclude}{Should descendant concept IDs be added to the list of
+concepts to include?}
+
+\item{excludedCovariateConceptIds}{A list of concept IDs that should NOT be used to construct
+covariates.}
+
+\item{addDescendantsToExclude}{Should descendant concept IDs be added to the list of
+concepts to exclude?}
+
+\item{includedCovariateIds}{A list of covariate IDs that should be restricted to.}
 }
 \value{
 An object of type \code{covariateSettings}, to be used in other functions.
@@ -118,36 +134,4 @@ Create covariate settings
 }
 \details{
 creates an object specifying how covariates should be contructed from data in the CDM model.
-}
-\examples{
-\dontrun{
-# This will create the default set of covariates:
-settings <- createCovariateSettings(useDemographicsGender = TRUE,
-                                    useDemographicsAge = TRUE,
-                                    useDemographicsIndexYear = TRUE,
-                                    useDemographicsIndexMonth = TRUE,
-                                    useConditionOccurrenceLongTerm = TRUE,
-                                    useConditionOccurrenceShortTerm = TRUE,
-                                    useConditionEraLongTerm = TRUE,
-                                    useConditionEraShortTerm = TRUE,
-                                    useConditionGroupEraShortTerm = TRUE,
-                                    useConditionGroupEraLongTerm = TRUE,
-                                    useDrugExposureLongTerm = TRUE,
-                                    useDrugExposureShortTerm = TRUE,
-                                    useDrugEraLongTerm = TRUE,
-                                    useDrugEraShortTerm = TRUE,
-                                    useDrugGroupEraLongTerm = TRUE,
-                                    useDrugGroupEraShortTerm = TRUE,
-                                    useProcedureOccurrenceLongTerm = TRUE,
-                                    useProcedureOccurrenceShortTerm = TRUE,
-                                    useDeviceExposureLongTerm = TRUE,
-                                    useDeviceExposureShortTerm = TRUE,
-                                    useMeasurementLongTerm = TRUE,
-                                    useMeasurementShortTerm = TRUE,
-                                    useObservationLongTerm = TRUE,
-                                    useObservationShortTerm = TRUE,
-                                    useCharlsonIndex = TRUE)
-
-}
-
 }
