@@ -857,3 +857,55 @@ createAnalysisDetails <- function(analysisId,
   class(analysisDetail) <- "analysisDetail"
   return(analysisDetail)
 }
+
+#' Convert prespecified covariate settings into detailed covariate settings
+#'
+#' @details
+#' For advanced users only.
+#'
+#' @param covariateSettings   An object of type \code{covariateSettings} as created for example by the
+#'                            \code{\link{createCovariateSettings}} function.
+#'
+#' @return
+#' An object of type \code{covariateSettings}, to be used in other functions.
+#'
+#' @export
+convertPrespecSettingsToDetailedSettings <- function(covariateSettings) {
+  json <- .toJson(covariateSettings)
+  rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$init(system.file("", package = "FeatureExtraction"))
+  newJson <- rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$convertSettingsPrespecToDetails(json)
+  detailedCovariateSettings <- .fromJson(newJson)
+  attr(detailedCovariateSettings, "fun") <- "getDbDefaultCovariateData"
+  class(detailedCovariateSettings) <- "covariateSettings"
+  return(detailedCovariateSettings)
+}
+
+#' Create default covariate settings
+#'
+#' @return
+#' An object of type \code{covariateSettings}, to be used in other functions.
+#'
+#' @export
+createDefaultCovariateSettings <- function() {
+  rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$init(system.file("", package = "FeatureExtraction"))
+  newJson <- rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$getDefaultPrespecAnalyses()
+  cvariateSettings <- .fromJson(newJson)
+  attr(cvariateSettings, "fun") <- "getDbDefaultCovariateData"
+  class(cvariateSettings) <- "covariateSettings"
+  return(cvariateSettings)
+}
+
+#' Create default covariate settings
+#'
+#' @return
+#' An object of type \code{covariateSettings}, to be used in other functions.
+#'
+#' @export
+createDefaultTemporalCovariateSettings <- function() {
+  rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$init(system.file("", package = "FeatureExtraction"))
+  newJson <- rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$getDefaultTemporalPrespecAnalyses()
+  cvariateSettings <- .fromJson(newJson)
+  attr(cvariateSettings, "fun") <- "getDbDefaultCovariateData"
+  class(cvariateSettings) <- "covariateSettings"
+  return(cvariateSettings)
+}

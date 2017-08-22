@@ -77,11 +77,11 @@ public class FeatureExtraction {
 		// System.out.println(convertSettingsPrespecToDetails("{\"temporal\":false,\"DemographicsGender\":true,\"DemographicsAge\":true,\"longTermStartDays\":-365,\"mediumTermStartDays\":-180,\"shortTermStartDays\":-30,\"endDays\":0,\"includedCovariateConceptIds\":[],\"addDescendantsToInclude\":false,\"excludedCovariateConceptIds\":[1,2,3],\"addDescendantsToExclude\":false,\"includedCovariateIds\":[]}"));
 		// System.out.println(getDefaultPrespecAnalyses());
 		//
-		// System.out.println(convertSettingsPrespecToDetails(getDefaultPrespecAnalyses()));
+		 System.out.println(getDefaultPrespecAnalyses());
 		//
-//		System.out.println(getDefaultPrespecTemporalAnalyses());
-		 System.out.println(convertSettingsPrespecToDetails(getDefaultPrespecTemporalAnalyses()));
-		 System.out.println(convertSettingsPrespecToDetails(getDefaultPrespecAnalyses()));
+		System.out.println(getDefaultPrespecTemporalAnalyses());
+//		 System.out.println(convertSettingsPrespecToDetails(getDefaultPrespecTemporalAnalyses()));
+//		 System.out.println(convertSettingsPrespecToDetails(getDefaultPrespecAnalyses()));
 		// String settings =
 		// "{\"temporal\":false,\"analyses\":[{\"analysisId\":301,\"sqlFileName\":\"DomainConcept.sql\",\"parameters\":{\"analysisId\":301,\"startDay\":-365,\"endDay\":0,\"inpatient\":\"\",\"domainTable\":\"drug_exposure\",\"domainConceptId\":\"drug_concept_id\",\"domainStartDate\":\"drug_exposure_start_date\",\"domainEndDate\":\"drug_exposure_start_date\"},\"addDescendantsToExclude\":true,\"includedCovariateConceptIds\":[1,2,3],\"excludedCovariateConceptIds\":[1,2,3],\"addDescendantsToInclude\":true,\"includedCovariateIds\":[1]}]}";
 		// String settings = convertSettingsPrespecToDetails(getDefaultPrespecAnalyses());

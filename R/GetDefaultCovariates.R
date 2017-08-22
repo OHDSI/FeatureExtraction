@@ -139,14 +139,3 @@ getDbDefaultCovariateData <- function(connection,
   class(covariateData) <- "covariateData"
   return(covariateData)
 }
-
-#' @export
-convertPrespecSettingsToDetailedSettings <- function(covariateSettings) {
-  json <- .toJson(covariateSettings)
-  rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$init(system.file("", package = "FeatureExtraction"))
-  newJson <- rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$convertSettingsPrespecToDetails(json)
-  detailedCovariateSettings <- .fromJson(newJson)
-  attr(detailedCovariateSettings, "fun") <- "getDbDefaultCovariateData"
-  class(detailedCovariateSettings) <- "covariateSettings"
-  return(detailedCovariateSettings)
-}
