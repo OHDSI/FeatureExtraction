@@ -12,6 +12,7 @@
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="true" exportOutputFolder="false">
         <javaElement handleIdentifier="=FeatureExtraction/java"/>
-        <folder path="/FeatureExtraction/inst/sql"/>
+        <folder path="/FeatureExtraction/inst/sql/sql_server"/>
+        <folder path="/FeatureExtraction/inst/csv"/>
     </selectedElements>
 </jardesc>

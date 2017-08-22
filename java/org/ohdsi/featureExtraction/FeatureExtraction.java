@@ -36,7 +36,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONWriter;
 import org.ohdsi.sql.SqlRender;
-import org.ohdsi.sql.StringUtils;
 
 /**
  * FeatureExtraction engine. Generates SQL for constructing and downloading features for cohorts of interest.
@@ -117,7 +116,7 @@ public class FeatureExtraction {
 		try {
 			InputStream inputStream;
 			if (packageFolder == null) // Use CSV file in JAR
-				inputStream = FeatureExtraction.class.getResourceAsStream("OtherParameters.csv");
+				inputStream = FeatureExtraction.class.getResourceAsStream("/inst/csv/OtherParameters.csv");
 			else
 				inputStream = new FileInputStream(packageFolder + "/csv/OtherParameters.csv");
 			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
@@ -163,7 +162,7 @@ public class FeatureExtraction {
 			try {
 				InputStream inputStream;
 				if (packageFolder == null) // Use file in JAR
-					inputStream = FeatureExtraction.class.getResourceAsStream(sqlFileName);
+					inputStream = FeatureExtraction.class.getResourceAsStream("/inst/sql/sql_server/" + sqlFileName);
 				else
 					inputStream = new FileInputStream(packageFolder + "/sql/sql_server/" + sqlFileName);
 				BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
@@ -185,7 +184,7 @@ public class FeatureExtraction {
 		try {
 			InputStream inputStream;
 			if (packageFolder == null) // Use file in JAR
-				inputStream = FeatureExtraction.class.getResourceAsStream(sqlFileName);
+				inputStream = FeatureExtraction.class.getResourceAsStream("/inst/sql/sql_server/" + sqlFileName);
 			else
 				inputStream = new FileInputStream(packageFolder + "/sql/sql_server/" + sqlFileName);
 			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
@@ -208,7 +207,7 @@ public class FeatureExtraction {
 		try {
 			InputStream inputStream;
 			if (packageFolder == null) // Use CSV file in JAR
-				inputStream = FeatureExtraction.class.getResourceAsStream(filename);
+				inputStream = FeatureExtraction.class.getResourceAsStream("/inst/csv/" + filename);
 			else
 				inputStream = new FileInputStream(packageFolder + "/csv/" + filename);
 			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
@@ -667,7 +666,7 @@ public class FeatureExtraction {
 	}
 
 	private static List<String> line2columns(String line) {
-		List<String> columns = StringUtils.safeSplit(line, ',');
+		List<String> columns = StringUtilities.safeSplit(line, ',');
 		for (int i = 0; i < columns.size(); i++) {
 			String column = columns.get(i);
 			if (column.startsWith("\"") && column.endsWith("\"") && column.length() > 1)
