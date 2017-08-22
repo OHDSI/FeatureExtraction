@@ -41,12 +41,12 @@ getDbDefaultCovariateData <- function(connection,
   rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$init(system.file("", package = "FeatureExtraction"))
   json <- rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$createSql(settings, aggregated, cohortTempTable, rowIdField, as.integer(-1), cdmDatabaseSchema)
   todo <- .fromJson(json)
-  if (length(todo$idSets) != 0) {
-    writeLines("Sending ID sets to server")
-    for(i in 1:length(sqls$idSets)) {
+  if (length(todo$tempTables) != 0) {
+    writeLines("Sending temp tables to server")
+    for(i in 1:length(todo$tempTables)) {
       DatabaseConnector::insertTable(connection,
-                                     tableName = names(todo$idSets)[i],
-                                     data = data.frame(id = todo$idSets[[i]]),
+                                     tableName = names(todo$tempTables)[i],
+                                     data = as.data.frame(todo$tempTables[[i]]),
                                      dropTableIfExists = TRUE,
                                      createTable = TRUE,
                                      tempTable = TRUE,
@@ -62,18 +62,43 @@ getDbDefaultCovariateData <- function(connection,
   
   writeLines("Fetching data from server")
   start <- Sys.time()
-  sql <- SqlRender::translateSql(sql = todo$sqlQueryFeatures, 
-                                 targetDialect = attr(connection, "dbms"), 
-                                 oracleTempSchema = oracleTempSchema)$sql
-  covariates <- DatabaseConnector::querySql.ffdf(connection, sql)
-  colnames(covariates) <- SqlRender::snakeCaseToCamelCase(colnames(covariates))
+  # Binary or non-aggregated features
+  if (!is.null(todo$sqlQueryFeatureRef)) {
+    sql <- SqlRender::translateSql(sql = todo$sqlQueryFeatures, 
+                                   targetDialect = attr(connection, "dbms"), 
+                                   oracleTempSchema = oracleTempSchema)$sql
+    covariates <- DatabaseConnector::querySql.ffdf(connection, sql)
+    colnames(covariates) <- SqlRender::snakeCaseToCamelCase(colnames(covariates))
+  } else {
+    covariates <- NULL
+  }
   
+  # Continuous aggregated features
+  if (!is.null(todo$sqlQueryContinuousFeatures)) {
+    sql <- SqlRender::translateSql(sql = todo$sqlQueryContinuousFeatures, 
+                                   targetDialect = attr(connection, "dbms"), 
+                                   oracleTempSchema = oracleTempSchema)$sql
+    covariatesContinuous <- DatabaseConnector::querySql.ffdf(connection, sql)
+    colnames(covariatesContinuous) <- SqlRender::snakeCaseToCamelCase(colnames(covariatesContinuous))
+  } else {
+    covariatesContinuous <- NULL
+  }
+  
+  # Covariate reference
   sql <- SqlRender::translateSql(sql = todo$sqlQueryFeatureRef, 
                                  targetDialect = attr(connection, "dbms"), 
                                  oracleTempSchema = oracleTempSchema)$sql
   covariateRef <- DatabaseConnector::querySql.ffdf(connection, sql)
   colnames(covariateRef) <- SqlRender::snakeCaseToCamelCase(colnames(covariateRef))
   
+  # Analysis reference
+  sql <- SqlRender::translateSql(sql = todo$sqlQueryAnalysisRef, 
+                                 targetDialect = attr(connection, "dbms"), 
+                                 oracleTempSchema = oracleTempSchema)$sql
+  analysisRef <- DatabaseConnector::querySql.ffdf(connection, sql)
+  colnames(analysisRef) <- SqlRender::snakeCaseToCamelCase(colnames(analysisRef))
+  
+  # Population size
   sql <- "SELECT COUNT_BIG(*) FROM @cohort_table"
   sql <- SqlRender::renderSql(sql, cohort_table = cohortTempTable)$sql
   sql <- SqlRender::translateSql(sql = sql,
@@ -91,7 +116,7 @@ getDbDefaultCovariateData <- function(connection,
   DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
   if (length(todo$idSets) != 0) {
     writeLines("Sending ID sets to server")
-    for(i in 1:length(sqls$idSets)) {
+    for(i in 1:length(todo$idSets)) {
       sql <- "TRUNCATE TABLE @table;\nDROP TABLE @table;\n"
       sql <- SqlRender::renderSql(sql, table = names(todo$idSets)[i])$sql
       sql <- SqlRender::translateSql(sql = sql,
@@ -102,7 +127,9 @@ getDbDefaultCovariateData <- function(connection,
   }
   
   covariateData <- list(covariates = covariates, 
+                        covariatesContinuous = covariatesContinuous,
                         covariateRef = covariateRef, 
+                        analysisRef = analysisRef,
                         metaData = list(populationSize = populationSize))
   if (nrow(covariateData$covariates) == 0) {
     warning("No data found")
