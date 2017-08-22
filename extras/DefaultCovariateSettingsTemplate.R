@@ -27,11 +27,14 @@
 #' An object of type \code{covariateSettings}, to be used in other functions.
 #' 
 #' @export
-createCovariateSettings <- function(%arguments%) {
+%functionName% <- function(%arguments%) {
   covariateSettings <- list(temporal = %temporal%)
-  formalNames <- names(formals(createCovariateSettings))
+  formalNames <- names(formals(%functionName%))
   for (name in formalNames) {
     value <- get(name)
+    if (is.null(value)) {
+      value <- vector()
+    }
     if (grepl("use.*", name)) {
        if (value) {
          covariateSettings[[sub("use", "", name)]] <- value

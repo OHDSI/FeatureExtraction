@@ -20,9 +20,6 @@ INNER JOIN @cdm_database_schema.person
 }
 {@aggregated} ? {		
 GROUP BY FLOOR((YEAR(cohort_start_date) - year_of_birth) / 5)
-{@temporal} ? {
-    ,time_id
-}	
 }
 ;
 

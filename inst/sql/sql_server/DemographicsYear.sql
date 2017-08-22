@@ -20,9 +20,6 @@ INNER JOIN @cdm_database_schema.person
 }
 {@aggregated} ? {		
 GROUP BY YEAR(cohort_start_date)
-{@temporal} ? {
-    ,time_id
-}	
 }
 ;
 

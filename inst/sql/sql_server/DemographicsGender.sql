@@ -22,9 +22,6 @@ WHERE gender_concept_id != 0
 {@cohort_definition_id != -1} ? {		AND cohort.cohort_definition_id = @cohort_definition_id}
 {@aggregated} ? {		
 GROUP BY gender_concept_id
-{@temporal} ? {
-    ,time_id
-}	
 }
 ;
 

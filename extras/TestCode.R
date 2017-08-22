@@ -93,7 +93,7 @@ covariateSettings <- FeatureExtraction::createCovariateSettings(useDemographicsG
                                                                 longTermStartDays = -365,
                                                                 shortTermStartDays = -30,
                                                                 endDays = 0,
-                                                                excludedCovariateConceptIds = c(1,2,3),
+                                                                excludedCovariateConceptIds = c(),
                                                                 addDescendantsToExclude = FALSE,
                                                                 includedCovariateConceptIds = c(),
                                                                 addDescendantsToInclude = FALSE,
@@ -109,6 +109,71 @@ covs <- getDbCovariateData(connectionDetails = connectionDetails,
                            cohortTableIsTemp = FALSE,
                            covariateSettings = covariateSettings,
                            aggregated = FALSE)
+
+
+covariateSettings <- FeatureExtraction::createTemporalCovariateSettings(useDemographicsGender = TRUE,
+                                                                        useDemographicsIndexYear = FALSE,
+                                                                        useDemographicsAge = FALSE,
+                                                                        useDemographicsIndexMonth = FALSE,
+                                                                        useConditionOccurrence = TRUE,
+                                                                        useConditionEraStart = FALSE,
+                                                                        useConditionEraOverlap = FALSE,
+                                                                        useConditionEraGroupStart = FALSE,
+                                                                        useConditionEraGroupOverlap = FALSE,
+                                                                        useDrugExposure = FALSE,
+                                                                        useDrugEraStart = FALSE,
+                                                                        useDrugEraOverlap = FALSE,
+                                                                        useDrugEraGroupStart = FALSE,
+                                                                        useDrugEraGroupOverlap = FALSE,
+                                                                        useProcedureOccurrence = FALSE,
+                                                                        useDeviceExposure = FALSE,
+                                                                        useMeasurement = FALSE,
+                                                                        useObservation = FALSE,
+                                                                        useCharlsonIndex = FALSE,
+                                                                        temporalStartDays = -365:-1, 
+                                                                        temporalEndDays = -365:-1, 
+                                                                        includedCovariateConceptIds = c(), 
+                                                                        addDescendantsToInclude = FALSE,
+                                                                        excludedCovariateConceptIds = c(), 
+                                                                        addDescendantsToExclude = FALSE,
+                                                                        includedCovariateIds = c())
+
+# covariateSettings <- convertPrespecSettingsToDetailedSettings(covariateSettings)
+
+covs <- getDbCovariateData(connectionDetails = connectionDetails,
+                           oracleTempSchema = oracleTempSchema,
+                           cdmDatabaseSchema = cdmDatabaseSchema,
+                           cohortDatabaseSchema = cohortDatabaseSchema,
+                           cohortTable = cohortTable,
+                           cohortIds = 1,
+                           cohortTableIsTemp = FALSE,
+                           covariateSettings = covariateSettings,
+                           aggregated = TRUE)
+
+
+analysisDetails <- createAnalysisDetails(analysisId = 1,
+                                         sqlFileName = "DemographicsGender.sql",
+                                         parameters = list(analysisId = 1,
+                                                           analysisName = "Gender",
+                                                           domainId = "Demographics"),
+                                         includedCovariateConceptIds = c(), 
+                                         addDescendantsToInclude = FALSE,
+                                         excludedCovariateConceptIds = c(), 
+                                         addDescendantsToExclude = FALSE,
+                                         includedCovariateIds = c())
+
+covariateSettings <- createDetailedCovariateSettings(analyses = list(analysisDetails))
+                      
+covs <- getDbCovariateData(connectionDetails = connectionDetails,
+                           oracleTempSchema = oracleTempSchema,
+                           cdmDatabaseSchema = cdmDatabaseSchema,
+                           cohortDatabaseSchema = cohortDatabaseSchema,
+                           cohortTable = cohortTable,
+                           cohortIds = 1,
+                           cohortTableIsTemp = FALSE,
+                           covariateSettings = covariateSettings,
+                           aggregated = TRUE)
+
 
 # All features:
 # Generating features took 2.65 mins
