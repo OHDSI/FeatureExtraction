@@ -91,7 +91,8 @@ public class FeatureExtraction {
 	}
 
 	/**
-	 * Initialize the FeatureExtraction engine, preloading the necessary content. packageFolder Need to specify for R package, else will load from the JAR file.
+	 * Initialize the FeatureExtraction engine, preloading the necessary content. 
+	 * @param packageFolder Need to specify for R package, else set to null to load content from the JAR file.
 	 */
 	public static void init(String packageFolder) {
 		if (nameToPrespecAnalysis != null)
@@ -306,7 +307,7 @@ public class FeatureExtraction {
 	 * Convert prespecified analysis settings to detailed analysis settings.
 	 * 
 	 * @param settings
-	 *            Prespec analysis settings
+	 *            A JSON object with prespec analysis settings
 	 * @return A JSON string
 	 */
 	public static String convertSettingsPrespecToDetails(String settings) {
@@ -367,7 +368,7 @@ public class FeatureExtraction {
 	/**
 	 * Construct the SQL for creating and retrieving the features. The output object consists of the following main components:
 	 * <ol>
-	 * <li>tempTables: a list of tables to insert into temp tables on the server.</li>
+	 * <li>tempTables: a list of tables to insert as temp tables on the server.</li>
 	 * <li>sqlConstruction: SQL for constructing the features on the server.</li>
 	 * <li>sqlQueryFeatures: SQL for fetching the features from the server. (limited to binary features when aggregated)</li>
 	 * <li>sqlQueryContinuousFeatures: SQL for fetching the continuous features from the server.</li>
