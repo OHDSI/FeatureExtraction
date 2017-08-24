@@ -498,7 +498,7 @@ public class FeatureExtraction {
 		if (aggregated) {
 			fields.append("covariate_id, sum_value, average_value");
 		} else {
-			fields.append("covariate_id, covariate_value, row_id");
+			fields.append("row_id, covariate_id, covariate_value");
 		}
 		if (temporal) {
 			fields.append(", time_id");
