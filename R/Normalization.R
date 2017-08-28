@@ -26,7 +26,7 @@
 #'
 #' @export
 byMaxFf <- function(values, bins) {
-  .byMax(values, bins)
+  byMax(values, bins)
 }
 
 #' Compute sum of values binned by a second variable
@@ -41,7 +41,7 @@ byMaxFf <- function(values, bins) {
 #'
 #' @export
 bySumFf <- function(values, bins) {
-  .bySum(values, bins)
+  bySum(values, bins)
 }
 
 #' Tidy covariate data

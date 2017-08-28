@@ -28,7 +28,7 @@
 
 using namespace Rcpp;
 
-// [[Rcpp::export(".bySum")]]
+// [[Rcpp::export]]
 DataFrame bySum(List ffValues, List ffBins) {
   
   using namespace ohdsi::featureExtraction;
@@ -50,7 +50,7 @@ DataFrame bySum(List ffValues, List ffBins) {
   return DataFrame::create();
 }
 
-// [[Rcpp::export(".byMax")]]
+// [[Rcpp::export]]
 DataFrame byMax(List ffValues, List ffBins) {
   
   using namespace ohdsi::featureExtraction;
