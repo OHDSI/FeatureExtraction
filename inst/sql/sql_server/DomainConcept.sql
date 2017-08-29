@@ -36,6 +36,7 @@ FROM (
 		AND @domain_end_date >= DATEADD(DAY, @start_day, cohort.cohort_start_date)
 		AND @domain_concept_id != 0
 }
+{@inpatient} ? {	AND condition_type_concept_id IN (38000183, 38000184, 38000199, 38000200)}
 {@excluded_concept_table != ''} ? {		AND @domain_concept_id NOT IN (SELECT id FROM @excluded_concept_table)}
 {@included_concept_table != ''} ? {		AND @domain_concept_id IN (SELECT id FROM @included_concept_table)}
 {@included_cov_table != ''} ? {		AND CAST(@domain_concept_id AS BIGINT) * 1000 + @analysis_id IN (SELECT id FROM @included_cov_table)}
@@ -79,7 +80,8 @@ INSERT INTO #analysis_ref (
 	start_day,
 	end_day,
 }
-	is_binary
+	is_binary,
+	missing_means_zero
 	)
 SELECT @analysis_id AS analysis_id,
 	'@analysis_name' AS analysis_name,
@@ -88,5 +90,6 @@ SELECT @analysis_id AS analysis_id,
 	@start_day AS start_day,
 	@end_day AS end_day,
 }
-	'Y' AS is_binary;
+	'Y' AS is_binary,
+	NULL AS missing_means_zero;
 

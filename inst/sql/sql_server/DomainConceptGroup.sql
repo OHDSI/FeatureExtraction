@@ -19,6 +19,7 @@ WHERE LOWER(vocabulary_id) = 'atc'
 }
 
 {@domain_table == 'condition_occurrence' | @domain_table == 'condition_era'} ? {
+{@hierachy == "snomed"} : {
 SELECT DISTINCT descendant_concept_id,
   ancestor_concept_id
 INTO #groups
@@ -52,6 +53,28 @@ WHERE ancestor_concept_id != descendant_concept_id
 {@excluded_concept_table != ''} ? {	AND ancestor_concept_id NOT IN (SELECT id FROM @excluded_concept_table)}
 {@included_concept_table != ''} ? {	AND ancestor_concept_id IN (SELECT id FROM @included_concept_table)}
 ;
+} : { -- hierachy == 'meddra'
+SELECT DISTINCT descendant_concept_id,
+  ancestor_concept_id
+INTO #groups
+FROM @cdm_database_schema.concept_ancestor
+INNER JOIN (
+	SELECT concept_id
+	FROM @cdm_database_schema.concept ancestor_concept
+	INNER JOIN @cdm_database_schema.concept_ancestor
+	ON ancestor_concept_id = ancestor_concept.concept_id
+	WHERE LOWER(ancestor_concept.vocabulary_id) == 'meddra'
+		AND LOWER(ancestor_concept.concept_class_id) != 'system organ class'
+		AND ancestor_concept_id NOT IN (36302170, 36303153, 36313966)
+{@excluded_concept_table != ''} ? {		AND descendant_concept_id NOT IN (SELECT id FROM @excluded_concept_table)}
+{@included_concept_table != ''} ? {		AND descendant_concept_id IN (SELECT id FROM @included_concept_table)}
+) valid_groups
+	ON ancestor_concept_id = valid_groups.concept_id
+WHERE ancestor_concept_id != descendant_concept_id
+{@excluded_concept_table != ''} ? {	AND ancestor_concept_id NOT IN (SELECT id FROM @excluded_concept_table)}
+{@included_concept_table != ''} ? {	AND ancestor_concept_id IN (SELECT id FROM @included_concept_table)}
+;
+}
 }
 
 -- Feature construction
@@ -94,6 +117,7 @@ FROM (
 		AND @domain_end_date >= DATEADD(DAY, @start_day, cohort.cohort_start_date)
 		AND @domain_concept_id != 0
 }
+{@inpatient} ? {	AND condition_type_concept_id IN (38000183, 38000184, 38000199, 38000200)}
 {@included_cov_table != ''} ? {		AND CAST(ancestor_concept_id AS BIGINT) * 1000 + @analysis_id IN (SELECT id FROM @included_cov_table)}
 {@cohort_definition_id != -1} ? {		AND cohort.cohort_definition_id = @cohort_definition_id}
 ) temp
@@ -138,7 +162,8 @@ INSERT INTO #analysis_ref (
 	start_day,
 	end_day,
 }
-	is_binary
+	is_binary,
+	missing_means_zero
 	)
 SELECT @analysis_id AS analysis_id,
 	'@analysis_name' AS analysis_name,
@@ -147,4 +172,5 @@ SELECT @analysis_id AS analysis_id,
 	@start_day AS start_day,
 	@end_day AS end_day,
 }
-	'Y' AS is_binary;	
+	'Y' AS is_binary,
+	NULL AS missing_means_zero;	

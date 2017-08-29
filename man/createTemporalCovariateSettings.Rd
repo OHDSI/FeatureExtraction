@@ -5,7 +5,7 @@
 \title{Create covariate settings}
 \usage{
 createTemporalCovariateSettings(useDemographicsGender = FALSE,
-  useDemographicsAge = FALSE, useDemographicsIndexYear = FALSE,
+  useDemographicsAgeGroup = FALSE, useDemographicsIndexYear = FALSE,
   useDemographicsIndexMonth = FALSE, useConditionOccurrence = FALSE,
   useConditionEraStart = FALSE, useConditionEraOverlap = FALSE,
   useConditionEraGroupStart = FALSE, useConditionEraGroupOverlap = FALSE,
@@ -76,7 +76,7 @@ createTemporalCovariateSettings(useDemographicsGender = FALSE,
 \arguments{
 \item{useDemographicsGender}{Gender of the subject.}
 
-\item{useDemographicsAge}{Age of the subject on the index date (in 5 year increments).}
+\item{useDemographicsAgeGroup}{Age of the subject on the index date (in 5 year increments).}
 
 \item{useDemographicsIndexYear}{Year of the index date.}
 

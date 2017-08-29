@@ -22,7 +22,7 @@
 #' creates an object specifying how covariates should be contructed from data in the CDM model.
 #'
 #' @param useDemographicsGender         Gender of the subject.
-#' @param useDemographicsAge            Age of the subject on the index date (in 5 year increments).
+#' @param useDemographicsAgeGroup       Age of the subject on the index date (in 5 year increments).
 #' @param useDemographicsIndexYear      Year of the index date.
 #' @param useDemographicsIndexMonth     Month of the index date.
 #' @param useConditionOccurrence        One covariate per condition in the condition_occurrence table
@@ -79,7 +79,7 @@
 #'
 #' @export
 createTemporalCovariateSettings <- function(useDemographicsGender = FALSE,
-                                            useDemographicsAge = FALSE,
+                                            useDemographicsAgeGroup = FALSE,
                                             useDemographicsIndexYear = FALSE,
                                             useDemographicsIndexMonth = FALSE,
                                             useConditionOccurrence = FALSE,

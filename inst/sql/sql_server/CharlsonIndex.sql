@@ -415,10 +415,10 @@ AS (
 {@cohort_definition_id != -1} ? {		AND cohort.cohort_definition_id = @cohort_definition_id}
 	) temp
 {@aggregated} ? {
-		GROUP BY subject_id,
+	GROUP BY subject_id,
 			cohort_start_date
 } : {
-		GROUP BY row_id
+	GROUP BY row_id
 }	
 )
 {@aggregated} ? {
@@ -556,7 +556,8 @@ INSERT INTO #analysis_ref (
 	start_day,
 	end_day,
 }
-	is_binary
+	is_binary,
+	missing_means_zero
 	)
 SELECT @analysis_id AS analysis_id,
 	'@analysis_name' AS analysis_name,
@@ -565,4 +566,5 @@ SELECT @analysis_id AS analysis_id,
 	NULL AS start_day,
 	@end_day AS end_day,
 }
-	'N' AS is_binary;
+	'N' AS is_binary,
+	'Y' AS missing_means_zero;

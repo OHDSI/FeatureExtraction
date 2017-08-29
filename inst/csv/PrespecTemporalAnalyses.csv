@@ -1,6 +1,6 @@
 analysisId,analysisName,sqlFileName,domainId,domainTable,domainConceptId,domainStartDate,domainEndDate,isDefault,description
 1,DemographicsGender,DemographicsGender.sql,Demographics,,,,,TRUE,Gender of the subject.
-2,DemographicsAge,DemographicsAge.sql,Demographics,,,,,TRUE,Age of the subject on the index date (in 5 year increments).
+2,DemographicsAgeGroup,DemographicsAgeGroup.sql,Demographics,,,,,TRUE,Age of the subject on the index date (in 5 year increments).
 3,DemographicsIndexYear,DemographicsYear.sql,Demographics,,,,,TRUE,Year of the index date.
 4,DemographicsIndexMonth,DemographicsMonth.sql,Demographics,,,,,TRUE,Month of the index date.
 101,ConditionOccurrence,DomainConcept.sql,Condition,condition_occurrence,condition_concept_id,condition_start_date,condition_start_date,TRUE,One covariate per condition in the condition_occurrence table starting in the time window.

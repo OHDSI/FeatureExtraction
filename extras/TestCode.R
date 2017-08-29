@@ -1,5 +1,5 @@
 library(FeatureExtraction)
-options(fftempdir = "s:/FFtemp")
+options(fftempdir = "c:/FFtemp")
 
 
 # Pdw ---------------------------------------------------------------------
@@ -43,7 +43,7 @@ conn <- DatabaseConnector::connect(connectionDetails)
 ### Populate cohort table ###
 sql <- "IF OBJECT_ID('@cohort_database_schema.@cohort_table', 'U') IS NOT NULL
 DROP TABLE @cohort_database_schema.@cohort_table;
-SELECT 1 AS cohort_definition_id, person_id AS subject_id, drug_era_start_date AS cohort_start_date 
+SELECT 1 AS cohort_definition_id, person_id AS subject_id, drug_era_start_date AS cohort_start_date, ROW_NUMBER() OVER (ORDER BY person_id, drug_era_start_date) AS row_id
 INTO @cohort_database_schema.@cohort_table FROM @cdm_database_schema.drug_era 
 WHERE drug_concept_id = 1118084;"
 sql <- SqlRender::renderSql(sql, 
@@ -65,32 +65,34 @@ DatabaseConnector::disconnect(conn)
 
 celecoxibDrugs <- 1118084
 # x <- c(252351201, 2514584502, 2615790602, 440424201, 2212134701, 433950202, 40163038301, 42902283302, 380411101, 19115253302, 141508101, 2109262501, 440870101, 40175400301, 2212420701, 253321102, 2616540601, 40490966204, 198249204, 19003087302, 77069102, 259848101, 1201620402, 19035388301, 444084201, 2617130602, 40223423301, 4184252201, 2212996701, 40234152302, 19125485301, 21602471403, 4060101801, 442313204, 439502101, 1326303402, 440920202, 19040158302, 2414379501, 2313884502, 4204187204, 2721698801, 739209301, 376225102, 42742566701, 43021157201, 314131101, 2005962502, 133298201, 4157607204)
-covariateSettings <- createCovariateSettings(useDemographicsGender = TRUE,
-                                             useDemographicsAge = TRUE,
-                                             useDemographicsIndexYear = TRUE,
-                                             useDemographicsIndexMonth = TRUE,
-                                             useConditionOccurrenceLongTerm = TRUE,
-                                             useConditionOccurrenceShortTerm = TRUE,
-                                             useConditionEraLongTerm = TRUE,
-                                             useConditionEraShortTerm = TRUE,
-                                             useConditionGroupEraLongTerm = TRUE,
-                                             useConditionGroupEraShortTerm = TRUE,
-                                             useDrugExposureLongTerm = TRUE,
-                                             useDrugExposureShortTerm = TRUE,
-                                             useDrugEraLongTerm = TRUE,
-                                             useDrugEraShortTerm = TRUE,
-                                             useDrugGroupEraLongTerm = TRUE,
-                                             useDrugGroupEraShortTerm = TRUE,
-                                             useProcedureOccurrenceLongTerm = TRUE,
-                                             useProcedureOccurrenceShortTerm = TRUE,
-                                             useDeviceExposureLongTerm = TRUE,
-                                             useDeviceExposureShortTerm = TRUE,
-                                             useMeasurementLongTerm = TRUE,
-                                             useMeasurementShortTerm = TRUE,
-                                             useObservationLongTerm = TRUE,
-                                             useObservationShortTerm = TRUE,
+covariateSettings <- createCovariateSettings(useDemographicsGender = FALSE,
+                                             useDemographicsAgeGroup = TRUE,
+                                             useDemographicsIndexYear = FALSE,
+                                             useDemographicsIndexMonth = FALSE,
+                                             useConditionOccurrenceLongTerm = FALSE,
+                                             useConditionOccurrenceShortTerm = FALSE,
+                                             useConditionEraLongTerm = FALSE,
+                                             useConditionEraShortTerm = FALSE,
+                                             useConditionSnomedGroupEraLongTerm = FALSE,
+                                             useConditionSnomedGroupEraShortTerm = FALSE,
+                                             useDrugExposureLongTerm = FALSE,
+                                             useDrugExposureShortTerm = FALSE,
+                                             useDrugEraLongTerm = FALSE,
+                                             useDrugEraShortTerm = FALSE,
+                                             useDrugGroupEraLongTerm = FALSE,
+                                             useDrugGroupEraShortTerm = FALSE,
+                                             useProcedureOccurrenceLongTerm = FALSE,
+                                             useProcedureOccurrenceShortTerm = FALSE,
+                                             useDeviceExposureLongTerm = FALSE,
+                                             useDeviceExposureShortTerm = FALSE,
+                                             useMeasurementLongTerm = FALSE,
+                                             useMeasurementShortTerm = FALSE,
+                                             useObservationLongTerm = FALSE,
+                                             useObservationShortTerm = FALSE,
                                              useCharlsonIndex = TRUE,
+                                             useDcsi = FALSE,
                                              longTermStartDays = -365,
+                                             mediumTermStartDays = 180,
                                              shortTermStartDays = -30,
                                              endDays = 0,
                                              excludedCovariateConceptIds = c(),
@@ -106,10 +108,33 @@ covs <- getDbCovariateData(connectionDetails = connectionDetails,
                            cohortDatabaseSchema = cohortDatabaseSchema,
                            cohortTable = cohortTable,
                            cohortIds = 1,
+                           rowIdField = "row_id",
                            cohortTableIsTemp = FALSE,
                            covariateSettings = covariateSettings,
-                           aggregated = TRUE)
+                           aggregated = FALSE)
 
+saveCovariateData(covs, "c:/temp/covsPp")
+saveCovariateData(covs, "c:/temp/covsAgg")
+covariateData <- loadCovariateData("c:/temp/covsPp")
+covs <- loadCovariateData("c:/temp/covsAgg")
+
+covs2 <- aggregateCovariates(covariateData)
+
+covariates1 <- ff::as.ram(covs$covariates)
+covariates2 <- ff::as.ram(covs2$covariates)
+covariates1 <- covariates1[order(covariates1$covariateId), ]
+covariates2 <- covariates2[order(covariates2$covariateId), ]
+row.names(covariates1) <- NULL
+row.names(covariates2) <- NULL
+testthat::expect_equal(covariates1, covariates2)
+
+covariates1 <- ff::as.ram(covs$covariatesContinuous)
+covariates2 <- ff::as.ram(covs2$covariatesContinuous)
+covariates1 <- covariates1[order(covariates1$covariateId), ]
+covariates2 <- covariates2[order(covariates2$covariateId), ]
+row.names(covariates1) <- NULL
+row.names(covariates2) <- NULL
+testthat::expect_equal(covariates1, covariates2, tolerance = 0.01)
 
 covariateSettings <- createDefaultCovariateSettings()
 

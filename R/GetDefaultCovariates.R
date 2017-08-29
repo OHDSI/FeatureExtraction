@@ -63,12 +63,16 @@ getDbDefaultCovariateData <- function(connection,
   writeLines("Fetching data from server")
   start <- Sys.time()
   # Binary or non-aggregated features
-  if (!is.null(todo$sqlQueryFeatureRef)) {
+  if (!is.null(todo$sqlQueryFeatures)) {
     sql <- SqlRender::translateSql(sql = todo$sqlQueryFeatures, 
                                    targetDialect = attr(connection, "dbms"), 
                                    oracleTempSchema = oracleTempSchema)$sql
     covariates <- DatabaseConnector::querySql.ffdf(connection, sql)
-    colnames(covariates) <- SqlRender::snakeCaseToCamelCase(colnames(covariates))
+    if (nrow(covariates) == 0) {
+      covariates <- NULL
+    } else {
+      colnames(covariates) <- SqlRender::snakeCaseToCamelCase(colnames(covariates))  
+    }
   } else {
     covariates <- NULL
   }
@@ -79,7 +83,11 @@ getDbDefaultCovariateData <- function(connection,
                                    targetDialect = attr(connection, "dbms"), 
                                    oracleTempSchema = oracleTempSchema)$sql
     covariatesContinuous <- DatabaseConnector::querySql.ffdf(connection, sql)
-    colnames(covariatesContinuous) <- SqlRender::snakeCaseToCamelCase(colnames(covariatesContinuous))
+    if (nrow(covariatesContinuous) == 0) {
+      covariatesContinuous <- NULL
+    } else {
+      colnames(covariatesContinuous) <- SqlRender::snakeCaseToCamelCase(colnames(covariatesContinuous))
+    }
   } else {
     covariatesContinuous <- NULL
   }
@@ -131,10 +139,15 @@ getDbDefaultCovariateData <- function(connection,
                         covariateRef = covariateRef, 
                         analysisRef = analysisRef,
                         metaData = list(populationSize = populationSize))
-  if (nrow(covariateData$covariates) == 0) {
+  if (is.null(covariateData$covariates)  && is.null(covariateData$covariatesContinuous)) {
     warning("No data found")
   } else {
-    open(covariateData$covariates)
+    if (!is.null(covariateData$covariates)) {
+      open(covariateData$covariates)
+    }
+    if (!is.null(covariateData$covariatesContinuous)) {
+      open(covariateData$covariatesContinuous)
+    }
   }
   class(covariateData) <- "covariateData"
   return(covariateData)

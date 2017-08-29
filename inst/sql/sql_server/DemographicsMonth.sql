@@ -47,7 +47,8 @@ INSERT INTO #analysis_ref (
 	start_day,
 	end_day,
 }
-	is_binary
+	is_binary,
+	missing_means_zero
 	)
 SELECT @analysis_id AS analysis_id,
 	'@analysis_name' AS analysis_name,
@@ -56,4 +57,5 @@ SELECT @analysis_id AS analysis_id,
 	NULL AS start_day,
 	NULL AS end_day,
 }
-	'Y' AS is_binary;
+	'Y' AS is_binary,
+	NULL AS missing_means_zero;

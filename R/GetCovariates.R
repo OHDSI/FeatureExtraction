@@ -85,9 +85,6 @@ getDbCovariateData <- function(connectionDetails = NULL,
   if (!is.null(connectionDetails) && !is.null(connection)) {
     stop("Need to provide either connectionDetails or connection, not both")
   }
-  if (!is(covariateSettings, "covariateSettings")) {
-    stop("Covariate settings object not of type covariateSettings") 
-  }
   if (cdmVersion == "4") {
     stop("CDM version 4 is not supported any more")
   }
@@ -144,13 +141,27 @@ getDbCovariateData <- function(connectionDetails = NULL,
                      aggregated = aggregated)
         tempCovariateData <- do.call(fun, args)
         
-        if (!is.null(tempCovariateData) && nrow(tempCovariateData$covariates) != 0) {
+        if (!is.null(tempCovariateData$covariates) || !is.null(tempCovariateData$covariatesContinuous)) {
           if (is.null(covariateData)) {
             covariateData <- tempCovariateData
           } else {
             # Concatenate covariate data:
-            covariateData$covariates <- ffbase::ffdfappend(covariateData$covariates,
-                                                           tempCovariateData$covariates)
+            if (!is.null(tempCovariateData$covariates)) {
+              if (!is.null(covariateData$covariates)) {
+                covariateData$covariates <- ffbase::ffdfappend(covariateData$covariates,
+                                                               tempCovariateData$covariates)
+              } else {
+                covariateData$covariates <- tempCovariateData$covariates
+              }
+            }
+            if (!is.null(tempCovariateData$covariatesContinuous)) {
+              if (!is.null(covariateData$covariatesContinuous)) {
+                covariateData$covariatesContinuous <- ffbase::ffdfappend(covariateData$covariatesContinuous,
+                                                                         tempCovariateData$covariatesContinuous)
+              } else {
+                covariateData$covariatesContinuous <- tempCovariateData$covariatesContinuous
+              }
+            }
             covariateData$covariateRef <- ffbase::ffdfappend(covariateData$covariateRef,
                                                              ff::as.ram(tempCovariateData$covariateRef))
             for (name in names(tempCovariateData$metaData)) {
@@ -207,11 +218,25 @@ saveCovariateData <- function(covariateData, file) {
   if (class(covariateData) != "covariateData")
     stop("Data not of class covariateData")
   
-  covariates <- covariateData$covariates
   covariateRef <- covariateData$covariateRef
-  ffbase::save.ffdf(covariates, covariateRef, dir = file)
-  open(covariateData$covariates)
+  analysisRef <- covariateData$analysisRef
+  if (!is.null(covariateData$covariates) && !is.null(covariateData$covariatesContinuous)) {
+    covariates <- covariateData$covariates
+    covariatesContinuous <- covariateData$covariatesContinuous
+    ffbase::save.ffdf(analysisRef, covariateRef, covariates, covariatesContinuous, dir = file)
+    open(covariateData$covariates)
+    open(covariateData$covariatesContinuous)
+  } else if (!is.null(covariateData$covariates) && is.null(covariateData$covariatesContinuous)) {
+    covariates <- covariateData$covariates
+    ffbase::save.ffdf(analysisRef, covariateRef, covariates, dir = file)   
+    open(covariateData$covariates)
+  } else if (is.null(covariateData$covariates) && !is.null(covariateData$covariatesContinuous)) {
+    covariatesContinuous <- covariateData$covariatesContinuous
+    ffbase::save.ffdf(analysisRef, covariateRef, covariatesContinuous, dir = file)
+    open(covariateData$covariatesContinuous)
+  }
   open(covariateData$covariateRef)
+  open(covariateData$analysisRef)
   metaData <- covariateData$metaData
   save(metaData, file = file.path(file, "metaData.Rdata"))
 }
@@ -228,7 +253,7 @@ saveCovariateData <- function(covariateData, file) {
 #' The data will be written to a set of files in the folder specified by the user.
 #'
 #' @return
-#' An object of class covariateData
+#' An object of class \code{covariateData}.
 #'
 #' @examples
 #' # todo
@@ -246,32 +271,47 @@ loadCovariateData <- function(file, readOnly = FALSE) {
   e <- new.env()
   ffbase::load.ffdf(absolutePath, e)
   load(file.path(absolutePath, "metaData.Rdata"), e)
-  result <- list(covariates = get("covariates", envir = e),
+  result <- list(analysisRef = get("analysisRef", envir = e),
                  covariateRef = get("covariateRef", envir = e),
                  metaData = get("metaData", envir = e))
-  # Open all ffdfs to prevent annoying messages later:
-  open(result$covariates, readonly = readOnly)
+  open(result$analysisRef, readonly = readOnly)
   open(result$covariateRef, readonly = readOnly)
-  
+  # 'exists' for some reason generates false positives, so checking object names instead:
+  eNames <- ls(envir = e)
+  if (any(eNames == "covariates")) {
+    result$covariates <- get("covariates", envir = e)
+    open(result$covariates, readonly = readOnly)
+  }
+  if (any(eNames == "covariatesContinuous")) {
+    result$covariatesContinuous <- get("covariatesContinuous", envir = e)
+    open(result$covariatesContinuous, readonly = readOnly)
+  }
   class(result) <- "covariateData"
   rm(e)
   return(result)
 }
 
-
 #' @export
 print.covariateData <- function(x, ...) {
   writeLines("CovariateData object")
   writeLines("")
-  writeLines(paste("Cohort of interest concept ID(s):",
+  writeLines(paste("Cohort of interest ID(s):",
                    paste(x$metaData$cohortIds, collapse = ",")))
 }
 
 #' @export
 summary.covariateData <- function(object, ...) {
+  covariateValueCount <- 0
+  if (!is.null(object$covariates)) {
+    covariateValueCount <- covariateValueCount + nrow(object$covariates)
+  }
+  if (!is.null(object$covariatesContinuous)) {
+    covariateValueCount <- covariateValueCount + nrow(object$covariatesContinuous)
+  }
+  
   result <- list(metaData = object$metaData,
                  covariateCount = nrow(object$covariateRef),
-                 covariateValueCount = nrow(object$covariates))
+                 covariateValueCount = covariateValueCount)
   class(result) <- "summary.covariateData"
   return(result)
 }

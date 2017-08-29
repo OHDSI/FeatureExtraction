@@ -1,8 +1,9 @@
 -- Feature construction
-SELECT FLOOR((YEAR(cohort_start_date) - year_of_birth) / 5) * 1000 + @analysis_id AS covariate_id,
+SELECT 
+	CAST(race_concept_id AS BIGINT) * 1000 + @analysis_id AS covariate_id,
 {@temporal} ? {
     NULL AS time_id,
-}	
+}		
 {@aggregated} ? {
 	COUNT(*) AS sum_value,
 	COUNT(*) / (1.0 * (SELECT COUNT(*) FROM @cohort_table {@cohort_definition_id != -1} ? {WHERE cohort_definition_id = @cohort_definition_id})) AS average_value
@@ -14,12 +15,17 @@ INTO @covariate_table
 FROM @cohort_table cohort
 INNER JOIN @cdm_database_schema.person
 	ON cohort.subject_id = person.person_id
-{@included_cov_table != ''} ? {WHERE FLOOR((YEAR(cohort_start_date) - year_of_birth) / 5) * 1000 + @analysis_id IN (SELECT id FROM @included_cov_table)}
-{@cohort_definition_id != -1} ? {
-	{@included_cov_table != ''} ? {		AND} :{WHERE} cohort.cohort_definition_id = @cohort_definition_id
-}
+WHERE race_concept_id IN (
+		SELECT concept_id
+		FROM @cdm_database_schema.concept
+		WHERE LOWER(concept_class_id) = 'race'
+		)
+{@excluded_concept_table != ''} ? {	AND race_concept_id NOT IN (SELECT id FROM @excluded_concept_table)}
+{@included_concept_table != ''} ? {	AND race_concept_id IN (SELECT id FROM @included_concept_table)}	
+{@included_cov_table != ''} ? {	AND CAST(race_concept_id AS BIGINT) * 1000 + @analysis_id IN (SELECT id FROM @included_cov_table)}	
+{@cohort_definition_id != -1} ? {		AND cohort.cohort_definition_id = @cohort_definition_id}
 {@aggregated} ? {		
-GROUP BY FLOOR((YEAR(cohort_start_date) - year_of_birth) / 5)
+GROUP BY race_concept_id
 }
 ;
 
@@ -31,18 +37,15 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT covariate_id,
-	CONCAT (
-		'age group: ',
-		CAST(5 * (covariate_id - @analysis_id) / 1000 AS VARCHAR),
-		'-',
-		CAST(1 + 5 * (covariate_id - @analysis_id) / 1000 AS VARCHAR)
-		) AS covariate_name,
+	CONCAT('race = ', concept_name) AS covariate_name,
 	@analysis_id AS analysis_id,
-	0 AS concept_id
+	concept_id
 FROM (
 	SELECT DISTINCT covariate_id
 	FROM @covariate_table
-	) t1;
+	) t1
+INNER JOIN @cdm_database_schema.concept
+	ON concept_id = CAST((covariate_id - @analysis_id) / 1000 AS INT);
 	
 INSERT INTO #analysis_ref (
 	analysis_id,
@@ -52,7 +55,8 @@ INSERT INTO #analysis_ref (
 	start_day,
 	end_day,
 }
-	is_binary
+	is_binary,
+	missing_means_zero
 	)
 SELECT @analysis_id AS analysis_id,
 	'@analysis_name' AS analysis_name,
@@ -61,4 +65,5 @@ SELECT @analysis_id AS analysis_id,
 	NULL AS start_day,
 	NULL AS end_day,
 }
-	'Y' AS is_binary;	
+	'Y' AS is_binary,
+	NULL AS missing_means_zero;

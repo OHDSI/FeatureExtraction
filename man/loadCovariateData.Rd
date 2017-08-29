@@ -12,7 +12,7 @@ loadCovariateData(file, readOnly = FALSE)
 \item{readOnly}{If true, the data is opened read only.}
 }
 \value{
-An object of class covariateData
+An object of class \code{covariateData}.
 }
 \description{
 \code{loadCovariateData} loads an object of type covariateData from a folder in the file system.

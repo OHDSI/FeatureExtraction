@@ -1,9 +1,8 @@
 -- Feature construction
-SELECT 
-	CAST(gender_concept_id AS BIGINT) * 1000 + @analysis_id AS covariate_id,
+SELECT FLOOR((YEAR(cohort_start_date) - year_of_birth) / 5) * 1000 + @analysis_id AS covariate_id,
 {@temporal} ? {
     NULL AS time_id,
-}		
+}	
 {@aggregated} ? {
 	COUNT(*) AS sum_value,
 	COUNT(*) / (1.0 * (SELECT COUNT(*) FROM @cohort_table {@cohort_definition_id != -1} ? {WHERE cohort_definition_id = @cohort_definition_id})) AS average_value
@@ -15,13 +14,12 @@ INTO @covariate_table
 FROM @cohort_table cohort
 INNER JOIN @cdm_database_schema.person
 	ON cohort.subject_id = person.person_id
-WHERE gender_concept_id != 0
-{@excluded_concept_table != ''} ? {	AND gender_concept_id NOT IN (SELECT id FROM @excluded_concept_table)}
-{@included_concept_table != ''} ? {	AND gender_concept_id IN (SELECT id FROM @included_concept_table)}	
-{@included_cov_table != ''} ? {	AND CAST(gender_concept_id AS BIGINT) * 1000 + @analysis_id IN (SELECT id FROM @included_cov_table)}	
-{@cohort_definition_id != -1} ? {		AND cohort.cohort_definition_id = @cohort_definition_id}
+{@included_cov_table != ''} ? {WHERE FLOOR((YEAR(cohort_start_date) - year_of_birth) / 5) * 1000 + @analysis_id IN (SELECT id FROM @included_cov_table)}
+{@cohort_definition_id != -1} ? {
+	{@included_cov_table != ''} ? {		AND} :{WHERE} cohort.cohort_definition_id = @cohort_definition_id
+}
 {@aggregated} ? {		
-GROUP BY gender_concept_id
+GROUP BY FLOOR((YEAR(cohort_start_date) - year_of_birth) / 5)
 }
 ;
 
@@ -33,15 +31,18 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT covariate_id,
-	CONCAT('gender = ', concept_name) AS covariate_name,
+	CONCAT (
+		'age group: ',
+		CAST(5 * (covariate_id - @analysis_id) / 1000 AS VARCHAR),
+		'-',
+		CAST(1 + 5 * (covariate_id - @analysis_id) / 1000 AS VARCHAR)
+		) AS covariate_name,
 	@analysis_id AS analysis_id,
-	concept_id
+	0 AS concept_id
 FROM (
 	SELECT DISTINCT covariate_id
 	FROM @covariate_table
-	) t1
-INNER JOIN @cdm_database_schema.concept
-	ON concept_id = CAST((covariate_id - @analysis_id) / 1000 AS INT);
+	) t1;
 	
 INSERT INTO #analysis_ref (
 	analysis_id,
@@ -62,4 +63,4 @@ SELECT @analysis_id AS analysis_id,
 	NULL AS end_day,
 }
 	'Y' AS is_binary,
-	NULL AS missing_means_zero;
+	NULL AS missing_means_zero;	

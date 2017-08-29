@@ -457,9 +457,9 @@ public class FeatureExtraction {
 
 		jsonWriter.key("sqlQueryAnalysisRef");
 		if (temporal) {
-			jsonWriter.value("SELECT analysis_id, analysis_name, domain_id, is_binary FROM #analysis_ref ORDER BY analysis_id");
+			jsonWriter.value("SELECT analysis_id, analysis_name, domain_id, is_binary, missing_means_zero FROM #analysis_ref ORDER BY analysis_id");
 		} else {
-			jsonWriter.value("SELECT analysis_id, analysis_name, domain_id, start_day, end_day, is_binary FROM #analysis_ref ORDER BY analysis_id");
+			jsonWriter.value("SELECT analysis_id, analysis_name, domain_id, start_day, end_day, is_binary, missing_means_zero FROM #analysis_ref ORDER BY analysis_id");
 		}
 
 		jsonWriter.key("sqlCleanup");

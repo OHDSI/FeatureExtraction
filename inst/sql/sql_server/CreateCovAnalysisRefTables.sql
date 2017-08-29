@@ -20,5 +20,6 @@ CREATE TABLE #analysis_ref (
 	start_day INT,
 	end_day INT,
 }
-	is_binary VARCHAR(1)
+	is_binary VARCHAR(1),
+	missing_means_zero VARCHAR(1)
 	);
