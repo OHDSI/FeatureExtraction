@@ -186,6 +186,15 @@
 #' @param useMeasurementValueShortTerm                One covariate containing the value per
 #'                                                    measurement-unit combination in the short term
 #'                                                    window.
+#' @param useMeasurementRangeGroupLongTerm            Covariates indicating whether measurements are
+#'                                                    below, within, or above normal range in the long
+#'                                                    term window.
+#' @param useMeasurementRangeGroupMediumTerm          Covariates indicating whether measurements are
+#'                                                    below, within, or above normal range in the
+#'                                                    medium term window.
+#' @param useMeasurementRangeGroupShortTerm           Covariates indicating whether measurements are
+#'                                                    below, within, or above normal range in the short
+#'                                                    term window.
 #' @param useObservationLongTerm                      One covariate per observation in the observation
 #'                                                    table in the long term window.
 #' @param useObservationMediumTerm                    One covariate per observation in the observation
@@ -283,6 +292,9 @@
 #'                                     useMeasurementValueLongTerm = FALSE,
 #'                                     useMeasurementValueMediumTerm = FALSE,
 #'                                     useMeasurementValueShortTerm = FALSE,
+#'                                     useMeasurementRangeGroupLongTerm = TRUE,
+#'                                     useMeasurementRangeGroupMediumTerm = FALSE,
+#'                                     useMeasurementRangeGroupShortTerm = FALSE,
 #'                                     useObservationLongTerm = TRUE,
 #'                                     useObservationMediumTerm = FALSE,
 #'                                     useObservationShortTerm = TRUE,
@@ -362,6 +374,9 @@ createCovariateSettings <- function(useDemographicsGender = FALSE,
                                     useMeasurementValueLongTerm = FALSE,
                                     useMeasurementValueMediumTerm = FALSE,
                                     useMeasurementValueShortTerm = FALSE,
+                                    useMeasurementRangeGroupLongTerm = FALSE,
+                                    useMeasurementRangeGroupMediumTerm = FALSE,
+                                    useMeasurementRangeGroupShortTerm = FALSE,
                                     useObservationLongTerm = FALSE,
                                     useObservationMediumTerm = FALSE,
                                     useObservationShortTerm = FALSE,

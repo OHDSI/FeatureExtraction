@@ -51,7 +51,10 @@ createCovariateSettings(useDemographicsGender = FALSE,
   useMeasurementMediumTerm = FALSE, useMeasurementShortTerm = FALSE,
   useMeasurementValueLongTerm = FALSE,
   useMeasurementValueMediumTerm = FALSE,
-  useMeasurementValueShortTerm = FALSE, useObservationLongTerm = FALSE,
+  useMeasurementValueShortTerm = FALSE,
+  useMeasurementRangeGroupLongTerm = FALSE,
+  useMeasurementRangeGroupMediumTerm = FALSE,
+  useMeasurementRangeGroupShortTerm = FALSE, useObservationLongTerm = FALSE,
   useObservationMediumTerm = FALSE, useObservationShortTerm = FALSE,
   useCharlsonIndex = FALSE, useDcsi = FALSE, longTermStartDays = -365,
   mediumTermStartDays = -180, shortTermStartDays = -30, endDays = 0,
@@ -288,6 +291,18 @@ window.}
 measurement-unit combination in the short term
 window.}
 
+\item{useMeasurementRangeGroupLongTerm}{Covariates indicating whether measurements are
+below, within, or above normal range in the long
+term window.}
+
+\item{useMeasurementRangeGroupMediumTerm}{Covariates indicating whether measurements are
+below, within, or above normal range in the
+medium term window.}
+
+\item{useMeasurementRangeGroupShortTerm}{Covariates indicating whether measurements are
+below, within, or above normal range in the short
+term window.}
+
 \item{useObservationLongTerm}{One covariate per observation in the observation
 table in the long term window.}
 
@@ -404,6 +419,9 @@ settings <- createCovariateSettings(useDemographicsGender = TRUE,
                                     useMeasurementValueLongTerm = FALSE,
                                     useMeasurementValueMediumTerm = FALSE,
                                     useMeasurementValueShortTerm = FALSE,
+                                    useMeasurementRangeGroupLongTerm = TRUE,
+                                    useMeasurementRangeGroupMediumTerm = FALSE,
+                                    useMeasurementRangeGroupShortTerm = FALSE,
                                     useObservationLongTerm = TRUE,
                                     useObservationMediumTerm = FALSE,
                                     useObservationShortTerm = TRUE,

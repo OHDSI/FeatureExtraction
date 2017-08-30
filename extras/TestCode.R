@@ -125,9 +125,12 @@ settings <- createCovariateSettings(useDemographicsGender = FALSE,
                                     useMeasurementLongTerm = FALSE,
                                     useMeasurementMediumTerm = FALSE,
                                     useMeasurementShortTerm = FALSE,
-                                    useMeasurementValueLongTerm = TRUE,
+                                    useMeasurementValueLongTerm = FALSE,
                                     useMeasurementValueMediumTerm = FALSE,
                                     useMeasurementValueShortTerm = FALSE,
+                                    useMeasurementRangeGroupLongTerm = TRUE,
+                                    useMeasurementRangeGroupMediumTerm = FALSE,
+                                    useMeasurementRangeGroupShortTerm = FALSE,
                                     useObservationLongTerm = FALSE,
                                     useObservationMediumTerm = FALSE,
                                     useObservationShortTerm = FALSE,
@@ -153,7 +156,7 @@ covs <- getDbCovariateData(connectionDetails = connectionDetails,
                            rowIdField = "row_id",
                            cohortTableIsTemp = FALSE,
                            covariateSettings = settings,
-                           aggregated = TRUE)
+                           aggregated = FALSE)
 
 saveCovariateData(covs, "c:/temp/covsPp")
 saveCovariateData(covs, "c:/temp/covsAgg")
