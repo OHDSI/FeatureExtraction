@@ -13,7 +13,7 @@ connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = dbms,
                                                                 user = user,
                                                                 password = pw,
                                                                 port = port)
-cdmDatabaseSchema <- "cdm_truven_mdcd_v521.dbo"
+cdmDatabaseSchema <- "cdm_truven_mdcr_v609.dbo"
 cohortDatabaseSchema <- "scratch.dbo"
 cohortTable <- "ohdsi_celecoxib_prediction"
 oracleTempSchema <- NULL
@@ -45,7 +45,7 @@ sql <- "IF OBJECT_ID('@cohort_database_schema.@cohort_table', 'U') IS NOT NULL
 DROP TABLE @cohort_database_schema.@cohort_table;
 SELECT 1 AS cohort_definition_id, person_id AS subject_id, drug_era_start_date AS cohort_start_date, ROW_NUMBER() OVER (ORDER BY person_id, drug_era_start_date) AS row_id
 INTO @cohort_database_schema.@cohort_table FROM @cdm_database_schema.drug_era 
-WHERE drug_concept_id = 1118084;"
+WHERE drug_concept_id = 1125443;"
 sql <- SqlRender::renderSql(sql, 
                             cdm_database_schema = cdmDatabaseSchema,
                             cohort_database_schema = cohortDatabaseSchema,
@@ -65,41 +65,83 @@ DatabaseConnector::disconnect(conn)
 
 celecoxibDrugs <- 1118084
 # x <- c(252351201, 2514584502, 2615790602, 440424201, 2212134701, 433950202, 40163038301, 42902283302, 380411101, 19115253302, 141508101, 2109262501, 440870101, 40175400301, 2212420701, 253321102, 2616540601, 40490966204, 198249204, 19003087302, 77069102, 259848101, 1201620402, 19035388301, 444084201, 2617130602, 40223423301, 4184252201, 2212996701, 40234152302, 19125485301, 21602471403, 4060101801, 442313204, 439502101, 1326303402, 440920202, 19040158302, 2414379501, 2313884502, 4204187204, 2721698801, 739209301, 376225102, 42742566701, 43021157201, 314131101, 2005962502, 133298201, 4157607204)
-covariateSettings <- createCovariateSettings(useDemographicsGender = FALSE,
-                                             useDemographicsAgeGroup = TRUE,
-                                             useDemographicsIndexYear = FALSE,
-                                             useDemographicsIndexMonth = FALSE,
-                                             useConditionOccurrenceLongTerm = FALSE,
-                                             useConditionOccurrenceShortTerm = FALSE,
-                                             useConditionEraLongTerm = FALSE,
-                                             useConditionEraShortTerm = FALSE,
-                                             useConditionSnomedGroupEraLongTerm = FALSE,
-                                             useConditionSnomedGroupEraShortTerm = FALSE,
-                                             useDrugExposureLongTerm = FALSE,
-                                             useDrugExposureShortTerm = FALSE,
-                                             useDrugEraLongTerm = FALSE,
-                                             useDrugEraShortTerm = FALSE,
-                                             useDrugGroupEraLongTerm = FALSE,
-                                             useDrugGroupEraShortTerm = FALSE,
-                                             useProcedureOccurrenceLongTerm = FALSE,
-                                             useProcedureOccurrenceShortTerm = FALSE,
-                                             useDeviceExposureLongTerm = FALSE,
-                                             useDeviceExposureShortTerm = FALSE,
-                                             useMeasurementLongTerm = FALSE,
-                                             useMeasurementShortTerm = FALSE,
-                                             useObservationLongTerm = FALSE,
-                                             useObservationShortTerm = FALSE,
-                                             useCharlsonIndex = TRUE,
-                                             useDcsi = FALSE,
-                                             longTermStartDays = -365,
-                                             mediumTermStartDays = 180,
-                                             shortTermStartDays = -30,
-                                             endDays = 0,
-                                             excludedCovariateConceptIds = c(),
-                                             addDescendantsToExclude = FALSE,
-                                             includedCovariateConceptIds = c(),
-                                             addDescendantsToInclude = FALSE,
-                                             includedCovariateIds = c())
+settings <- createCovariateSettings(useDemographicsGender = FALSE,
+                                    useDemographicsAge = FALSE,
+                                    useDemographicsAgeGroup = FALSE,
+                                    useDemographicsRace = FALSE,
+                                    useDemographicsEthnicity = FALSE,
+                                    useDemographicsIndexYear = FALSE,
+                                    useDemographicsIndexMonth = FALSE,
+                                    useConditionOccurrenceLongTerm = FALSE,
+                                    useConditionOccurrenceMediumTerm = FALSE,
+                                    useConditionOccurrenceShortTerm = FALSE,
+                                    useConditionOccurrenceInpatientLongTerm = FALSE,
+                                    useConditionOccurrenceInpatientMediumTerm = FALSE,
+                                    useConditionOccurrenceInpatientShortTerm = FALSE,
+                                    useConditionEraLongTerm = FALSE,
+                                    useConditionEraMediumTerm = FALSE,
+                                    useConditionEraShortTerm = FALSE,
+                                    useConditionEraOverlapping = FALSE,
+                                    useConditionEraStartLongTerm = FALSE,
+                                    useConditionEraStartMediumTerm = FALSE,
+                                    useConditionEraStartShortTerm = FALSE,
+                                    useConditionSnomedGroupEraLongTerm = FALSE,
+                                    useConditionSnomedGroupEraMediumTerm = FALSE,
+                                    useConditionSnomedGroupEraShortTerm = FALSE,
+                                    useConditionSnomedGroupEraOverlapping = FALSE,
+                                    useConditionSnomedGroupEraStartLongTerm = FALSE,
+                                    useConditionSnomedGroupEraStartMediumTerm = FALSE,
+                                    useConditionSnomedGroupEraStartShortTerm = FALSE,
+                                    useConditionMeddraGroupEraLongTerm = FALSE,
+                                    useConditionMeddraGroupEraMediumTerm = FALSE,
+                                    useConditionMeddraGroupEraShortTerm = FALSE,
+                                    useConditionMeddraGroupEraOverlapping = FALSE,
+                                    useConditionMeddraGroupEraStartLongTerm = FALSE,
+                                    useConditionMeddraGroupEraStartMediumTerm = FALSE,
+                                    useConditionMeddraGroupEraStartShortTerm = FALSE,
+                                    useDrugExposureLongTerm = FALSE,
+                                    useDrugExposureMediumTerm = FALSE,
+                                    useDrugExposureShortTerm = FALSE,
+                                    useDrugEraLongTerm = FALSE,
+                                    useDrugEraMediumTerm = FALSE,
+                                    useDrugEraShortTerm = FALSE,
+                                    useDrugEraOverlapping = FALSE,
+                                    useDrugEraStartLongTerm = FALSE,
+                                    useDrugEraStartMediumTerm = FALSE,
+                                    useDrugEraStartShortTerm = FALSE,
+                                    useDrugGroupEraLongTerm = FALSE,
+                                    useDrugGroupEraMediumTerm = FALSE,
+                                    useDrugGroupEraShortTerm = FALSE,
+                                    useDrugGroupEraOverlapping = FALSE,
+                                    useDrugGroupEraStartLongTerm = FALSE,
+                                    useDrugGroupEraStartMediumTerm = FALSE,
+                                    useDrugGroupEraStartShortTerm = FALSE,
+                                    useProcedureOccurrenceLongTerm = FALSE,
+                                    useProcedureOccurrenceMediumTerm = FALSE,
+                                    useProcedureOccurrenceShortTerm = FALSE,
+                                    useDeviceExposureLongTerm = FALSE,
+                                    useDeviceExposureMediumTerm = FALSE,
+                                    useDeviceExposureShortTerm = FALSE,
+                                    useMeasurementLongTerm = FALSE,
+                                    useMeasurementMediumTerm = FALSE,
+                                    useMeasurementShortTerm = FALSE,
+                                    useMeasurementValueLongTerm = TRUE,
+                                    useMeasurementValueMediumTerm = FALSE,
+                                    useMeasurementValueShortTerm = FALSE,
+                                    useObservationLongTerm = FALSE,
+                                    useObservationMediumTerm = FALSE,
+                                    useObservationShortTerm = FALSE,
+                                    useCharlsonIndex = FALSE,
+                                    useDcsi = FALSE,
+                                    longTermStartDays = -365,
+                                    mediumTermStartDays = -180,
+                                    shortTermStartDays = -30,
+                                    endDays = 0,
+                                    includedCovariateConceptIds = c(),
+                                    addDescendantsToInclude = FALSE,
+                                    excludedCovariateConceptIds = c(),
+                                    addDescendantsToExclude = FALSE,
+                                    includedCovariateIds = c())
 
 # covariateSettings <- convertPrespecSettingsToDetailedSettings(covariateSettings)
 covs <- getDbCovariateData(connectionDetails = connectionDetails,
@@ -110,8 +152,8 @@ covs <- getDbCovariateData(connectionDetails = connectionDetails,
                            cohortId = 1,
                            rowIdField = "row_id",
                            cohortTableIsTemp = FALSE,
-                           covariateSettings = covariateSettings,
-                           aggregated = FALSE)
+                           covariateSettings = settings,
+                           aggregated = TRUE)
 
 saveCovariateData(covs, "c:/temp/covsPp")
 saveCovariateData(covs, "c:/temp/covsAgg")
@@ -134,7 +176,11 @@ covariates1 <- covariates1[order(covariates1$covariateId), ]
 covariates2 <- covariates2[order(covariates2$covariateId), ]
 row.names(covariates1) <- NULL
 row.names(covariates2) <- NULL
+covariates1 <- covariates1[covariates1$countValue > 3,]
+covariates2 <- covariates1[covariates1$countValue > 3,]
 testthat::expect_equal(covariates1, covariates2, tolerance = 0.01)
+head(covariates1)
+head(covariates2)
 
 covariateSettings <- createDefaultCovariateSettings()
 

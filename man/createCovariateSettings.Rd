@@ -5,36 +5,41 @@
 \title{Create covariate settings}
 \usage{
 createCovariateSettings(useDemographicsGender = FALSE,
-  useDemographicsAgeGroup = FALSE, useDemographicsRace = FALSE,
-  useDemographicsEthnicity = FALSE, useDemographicsIndexYear = FALSE,
-  useDemographicsIndexMonth = FALSE, useConditionOccurrenceLongTerm = FALSE,
+  useDemographicsAge = FALSE, useDemographicsAgeGroup = FALSE,
+  useDemographicsRace = FALSE, useDemographicsEthnicity = FALSE,
+  useDemographicsIndexYear = FALSE, useDemographicsIndexMonth = FALSE,
+  useConditionOccurrenceLongTerm = FALSE,
   useConditionOccurrenceMediumTerm = FALSE,
   useConditionOccurrenceShortTerm = FALSE,
   useConditionOccurrenceInpatientLongTerm = FALSE,
   useConditionOccurrenceInpatientMediumTerm = FALSE,
   useConditionOccurrenceInpatientShortTerm = FALSE,
   useConditionEraLongTerm = FALSE, useConditionEraMediumTerm = FALSE,
-  useConditionEraShortTerm = FALSE, useConditionEraStartLongTerm = FALSE,
+  useConditionEraShortTerm = FALSE, useConditionEraOverlapping = FALSE,
+  useConditionEraStartLongTerm = FALSE,
   useConditionEraStartMediumTerm = FALSE,
   useConditionEraStartShortTerm = FALSE,
   useConditionSnomedGroupEraLongTerm = FALSE,
   useConditionSnomedGroupEraMediumTerm = FALSE,
   useConditionSnomedGroupEraShortTerm = FALSE,
+  useConditionSnomedGroupEraOverlapping = FALSE,
   useConditionSnomedGroupEraStartLongTerm = FALSE,
   useConditionSnomedGroupEraStartMediumTerm = FALSE,
   useConditionSnomedGroupEraStartShortTerm = FALSE,
   useConditionMeddraGroupEraLongTerm = FALSE,
   useConditionMeddraGroupEraMediumTerm = FALSE,
   useConditionMeddraGroupEraShortTerm = FALSE,
+  useConditionMeddraGroupEraOverlapping = FALSE,
   useConditionMeddraGroupEraStartLongTerm = FALSE,
   useConditionMeddraGroupEraStartMediumTerm = FALSE,
   useConditionMeddraGroupEraStartShortTerm = FALSE,
   useDrugExposureLongTerm = FALSE, useDrugExposureMediumTerm = FALSE,
   useDrugExposureShortTerm = FALSE, useDrugEraLongTerm = FALSE,
   useDrugEraMediumTerm = FALSE, useDrugEraShortTerm = FALSE,
-  useDrugEraStartLongTerm = FALSE, useDrugEraStartMediumTerm = FALSE,
-  useDrugEraStartShortTerm = FALSE, useDrugGroupEraLongTerm = FALSE,
-  useDrugGroupEraMediumTerm = FALSE, useDrugGroupEraShortTerm = FALSE,
+  useDrugEraOverlapping = FALSE, useDrugEraStartLongTerm = FALSE,
+  useDrugEraStartMediumTerm = FALSE, useDrugEraStartShortTerm = FALSE,
+  useDrugGroupEraLongTerm = FALSE, useDrugGroupEraMediumTerm = FALSE,
+  useDrugGroupEraShortTerm = FALSE, useDrugGroupEraOverlapping = FALSE,
   useDrugGroupEraStartLongTerm = FALSE,
   useDrugGroupEraStartMediumTerm = FALSE,
   useDrugGroupEraStartShortTerm = FALSE,
@@ -44,10 +49,12 @@ createCovariateSettings(useDemographicsGender = FALSE,
   useDeviceExposureLongTerm = FALSE, useDeviceExposureMediumTerm = FALSE,
   useDeviceExposureShortTerm = FALSE, useMeasurementLongTerm = FALSE,
   useMeasurementMediumTerm = FALSE, useMeasurementShortTerm = FALSE,
-  useObservationLongTerm = FALSE, useObservationMediumTerm = FALSE,
-  useObservationShortTerm = FALSE, useCharlsonIndex = FALSE,
-  useDcsi = FALSE, longTermStartDays = -365, mediumTermStartDays = -180,
-  shortTermStartDays = -30, endDays = 0,
+  useMeasurementValueLongTerm = FALSE,
+  useMeasurementValueMediumTerm = FALSE,
+  useMeasurementValueShortTerm = FALSE, useObservationLongTerm = FALSE,
+  useObservationMediumTerm = FALSE, useObservationShortTerm = FALSE,
+  useCharlsonIndex = FALSE, useDcsi = FALSE, longTermStartDays = -365,
+  mediumTermStartDays = -180, shortTermStartDays = -30, endDays = 0,
   includedCovariateConceptIds = c(), addDescendantsToInclude = FALSE,
   excludedCovariateConceptIds = c(), addDescendantsToExclude = FALSE,
   includedCovariateIds = c())
@@ -55,8 +62,10 @@ createCovariateSettings(useDemographicsGender = FALSE,
 \arguments{
 \item{useDemographicsGender}{Gender of the subject.}
 
+\item{useDemographicsAge}{Age of the subject on the index date (in years).}
+
 \item{useDemographicsAgeGroup}{Age of the subject on the index date (in 5 year
-increments).}
+age groups)}
 
 \item{useDemographicsRace}{Race of the subject.}
 
@@ -102,6 +111,10 @@ term window.}
 table overlapping with any part of the short term
 window.}
 
+\item{useConditionEraOverlapping}{One covariate per condition in the condition_era
+table overlapping with the end of the risk
+window.}
+
 \item{useConditionEraStartLongTerm}{One covariate per condition in the condition_era
 table starting in the long term window.}
 
@@ -125,6 +138,10 @@ window.}
 SNOMED groups in the condition_era table
 overlapping with any part of the short term
 window.}
+
+\item{useConditionSnomedGroupEraOverlapping}{One covariate per condition era rolled up to
+SNOMED groups in the condition_era table
+overlapping with the end of the risk window.}
 
 \item{useConditionSnomedGroupEraStartLongTerm}{One covariate per condition era rolled up to
 SNOMED groups in the condition_era table starting
@@ -152,6 +169,10 @@ window.}
 MedDRA groups in the condition_era table
 overlapping with any part of the short term
 window.}
+
+\item{useConditionMeddraGroupEraOverlapping}{One covariate per condition era rolled up to
+MedDRA groups in the condition_era table
+overlapping with the end of the risk window.}
 
 \item{useConditionMeddraGroupEraStartLongTerm}{One covariate per condition era rolled up to
 MedDRA groups in the condition_era table starting
@@ -185,6 +206,9 @@ window.}
 \item{useDrugEraShortTerm}{One covariate per drug in the drug_era table
 overlapping with any part of the short window.}
 
+\item{useDrugEraOverlapping}{One covariate per drug in the drug_era table
+overlapping with the end of the risk window.}
+
 \item{useDrugEraStartLongTerm}{One covariate per drug in the drug_era table
 starting in the long term window.}
 
@@ -205,6 +229,10 @@ the medium term window.}
 \item{useDrugGroupEraShortTerm}{One covariate per drug rolled up to ATC groups in
 the drug_era table overlapping with any part of
 the short term window.}
+
+\item{useDrugGroupEraOverlapping}{One covariate per drug rolled up to ATC groups in
+the drug_era table overlapping with the end of
+the risk window.}
 
 \item{useDrugGroupEraStartLongTerm}{One covariate per drug rolled up to ATC groups in
 the drug_era table starting in the long term
@@ -247,6 +275,18 @@ table in the medium term window.}
 
 \item{useMeasurementShortTerm}{One covariate per measurement in the measurement
 table in the short term window.}
+
+\item{useMeasurementValueLongTerm}{One covariate containing the value per
+measurement-unit combination in the long term
+window.}
+
+\item{useMeasurementValueMediumTerm}{One covariate containing the value per
+measurement-unit combination in the medium term
+window.}
+
+\item{useMeasurementValueShortTerm}{One covariate containing the value per
+measurement-unit combination in the short term
+window.}
 
 \item{useObservationLongTerm}{One covariate per observation in the observation
 table in the long term window.}
@@ -299,4 +339,84 @@ Create covariate settings
 }
 \details{
 creates an object specifying how covariates should be contructed from data in the CDM model.
+}
+\examples{
+settings <- createCovariateSettings(useDemographicsGender = TRUE,
+                                    useDemographicsAge = FALSE,
+                                    useDemographicsAgeGroup = TRUE,
+                                    useDemographicsRace = TRUE,
+                                    useDemographicsEthnicity = TRUE,
+                                    useDemographicsIndexYear = TRUE,
+                                    useDemographicsIndexMonth = TRUE,
+                                    useConditionOccurrenceLongTerm = TRUE,
+                                    useConditionOccurrenceMediumTerm = FALSE,
+                                    useConditionOccurrenceShortTerm = TRUE,
+                                    useConditionOccurrenceInpatientLongTerm = FALSE,
+                                    useConditionOccurrenceInpatientMediumTerm = FALSE,
+                                    useConditionOccurrenceInpatientShortTerm = FALSE,
+                                    useConditionEraLongTerm = TRUE,
+                                    useConditionEraMediumTerm = FALSE,
+                                    useConditionEraShortTerm = TRUE,
+                                    useConditionEraOverlapping = FALSE,
+                                    useConditionEraStartLongTerm = FALSE,
+                                    useConditionEraStartMediumTerm = FALSE,
+                                    useConditionEraStartShortTerm = FALSE,
+                                    useConditionSnomedGroupEraLongTerm = TRUE,
+                                    useConditionSnomedGroupEraMediumTerm = FALSE,
+                                    useConditionSnomedGroupEraShortTerm = TRUE,
+                                    useConditionSnomedGroupEraOverlapping = FALSE,
+                                    useConditionSnomedGroupEraStartLongTerm = TRUE,
+                                    useConditionSnomedGroupEraStartMediumTerm = FALSE,
+                                    useConditionSnomedGroupEraStartShortTerm = TRUE,
+                                    useConditionMeddraGroupEraLongTerm = TRUE,
+                                    useConditionMeddraGroupEraMediumTerm = FALSE,
+                                    useConditionMeddraGroupEraShortTerm = TRUE,
+                                    useConditionMeddraGroupEraOverlapping = FALSE,
+                                    useConditionMeddraGroupEraStartLongTerm = TRUE,
+                                    useConditionMeddraGroupEraStartMediumTerm = FALSE,
+                                    useConditionMeddraGroupEraStartShortTerm = TRUE,
+                                    useDrugExposureLongTerm = FALSE,
+                                    useDrugExposureMediumTerm = FALSE,
+                                    useDrugExposureShortTerm = FALSE,
+                                    useDrugEraLongTerm = TRUE,
+                                    useDrugEraMediumTerm = FALSE,
+                                    useDrugEraShortTerm = TRUE,
+                                    useDrugEraOverlapping = TRUE,
+                                    useDrugEraStartLongTerm = FALSE,
+                                    useDrugEraStartMediumTerm = FALSE,
+                                    useDrugEraStartShortTerm = FALSE,
+                                    useDrugGroupEraLongTerm = TRUE,
+                                    useDrugGroupEraMediumTerm = FALSE,
+                                    useDrugGroupEraShortTerm = TRUE,
+                                    useDrugGroupEraOverlapping = TRUE,
+                                    useDrugGroupEraStartLongTerm = FALSE,
+                                    useDrugGroupEraStartMediumTerm = FALSE,
+                                    useDrugGroupEraStartShortTerm = FALSE,
+                                    useProcedureOccurrenceLongTerm = TRUE,
+                                    useProcedureOccurrenceMediumTerm = FALSE,
+                                    useProcedureOccurrenceShortTerm = TRUE,
+                                    useDeviceExposureLongTerm = TRUE,
+                                    useDeviceExposureMediumTerm = FALSE,
+                                    useDeviceExposureShortTerm = TRUE,
+                                    useMeasurementLongTerm = TRUE,
+                                    useMeasurementMediumTerm = FALSE,
+                                    useMeasurementShortTerm = TRUE,
+                                    useMeasurementValueLongTerm = FALSE,
+                                    useMeasurementValueMediumTerm = FALSE,
+                                    useMeasurementValueShortTerm = FALSE,
+                                    useObservationLongTerm = TRUE,
+                                    useObservationMediumTerm = FALSE,
+                                    useObservationShortTerm = TRUE,
+                                    useCharlsonIndex = TRUE,
+                                    useDcsi = TRUE,
+                                    longTermStartDays = -365,
+                                    mediumTermStartDays = -180,
+                                    shortTermStartDays = -30,
+                                    endDays = 0,
+                                    includedCovariateConceptIds = c(),
+                                    addDescendantsToInclude = FALSE,
+                                    excludedCovariateConceptIds = c(),
+                                    addDescendantsToExclude = FALSE,
+                                    includedCovariateIds = c())
+
 }

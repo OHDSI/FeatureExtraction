@@ -54,6 +54,8 @@
 #'                               there is more than one period per person.
 #' @param covariateSettings      Either an object of type \code{covariateSettings} as created using one
 #'                               of the createCovariate functions, or a list of such objects.
+#' @param aggregated             Should aggregate statistics be computed instead of covariates per
+#'                               cohort entry? 
 #'
 #' @return
 #' Returns an object of type \code{covariateData}, containing information on the baseline covariates.
@@ -276,8 +278,7 @@ loadCovariateData <- function(file, readOnly = FALSE) {
 print.covariateData <- function(x, ...) {
   writeLines("CovariateData object")
   writeLines("")
-  writeLines(paste("Cohort of interest ID(s):",
-                   paste(x$metaData$cohortIds, collapse = ",")))
+  writeLines(paste("Cohort of interest ID:", x$metaData$cohortId))
 }
 
 #' @export

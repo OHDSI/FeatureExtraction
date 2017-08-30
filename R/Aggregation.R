@@ -69,7 +69,7 @@ aggregateCovariates <- function(covariateData) {
           allProbs <- c(0, 0.1, 0.25, 0.5, 0.75, 0.9, 1)
           probs <- allProbs[allProbs > zeroFraction]
           probs <- (probs - zeroFraction) / (1-zeroFraction)
-          quants <- quantile(values, probs = probs)
+          quants <- quantile(values, probs = probs, type = 1)
           quants <- c(rep(0, length(allProbs) - length(quants)), quants)
           result <- data.frame(covariateId = covariateId,
                             countValue = length(values),
@@ -108,7 +108,7 @@ aggregateCovariates <- function(covariateData) {
         if (ffbase::any.ff(idx)) {
           values <- ff::as.ram(covariateData$covariates$covariateValue[idx])
           probs <- c(0, 0.1, 0.25, 0.5, 0.75, 0.9, 1)
-          quants <- quantile(values, probs = probs)
+          quants <- quantile(values, probs = probs, type = 1)
           result <- data.frame(covariateId = covariateId,
                                countValue = length(values),
                                minValue = quants[1],

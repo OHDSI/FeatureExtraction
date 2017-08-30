@@ -19,7 +19,7 @@ WHERE LOWER(vocabulary_id) = 'atc'
 }
 
 {@domain_table == 'condition_occurrence' | @domain_table == 'condition_era'} ? {
-{@hierachy == "snomed"} : {
+{@hierarchy == "snomed"} ? {
 SELECT DISTINCT descendant_concept_id,
   ancestor_concept_id
 INTO #groups
@@ -63,7 +63,7 @@ INNER JOIN (
 	FROM @cdm_database_schema.concept ancestor_concept
 	INNER JOIN @cdm_database_schema.concept_ancestor
 	ON ancestor_concept_id = ancestor_concept.concept_id
-	WHERE LOWER(ancestor_concept.vocabulary_id) == 'meddra'
+	WHERE LOWER(ancestor_concept.vocabulary_id) = 'meddra'
 		AND LOWER(ancestor_concept.concept_class_id) != 'system organ class'
 		AND ancestor_concept_id NOT IN (36302170, 36303153, 36313966)
 {@excluded_concept_table != ''} ? {		AND descendant_concept_id NOT IN (SELECT id FROM @excluded_concept_table)}
@@ -113,7 +113,7 @@ FROM (
 		AND @domain_end_date >= DATEADD(DAY, time_period.start_day, cohort.cohort_start_date)
 	WHERE drug_concept_id != 0
 } : {
-	WHERE @domain_start_date < DATEADD(DAY, @end_day, cohort.cohort_start_date)
+	WHERE @domain_start_date <= DATEADD(DAY, @end_day, cohort.cohort_start_date)
 		AND @domain_end_date >= DATEADD(DAY, @start_day, cohort.cohort_start_date)
 		AND @domain_concept_id != 0
 }

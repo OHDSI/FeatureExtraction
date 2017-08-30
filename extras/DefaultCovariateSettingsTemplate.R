@@ -26,6 +26,9 @@
 #' @return
 #' An object of type \code{covariateSettings}, to be used in other functions.
 #' 
+#' @examples 
+#' settings <- %functionName%(%roxygenArgs%)
+#' 
 #' @export
 %functionName% <- function(%arguments%) {
   covariateSettings <- list(temporal = %temporal%)

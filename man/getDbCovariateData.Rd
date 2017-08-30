@@ -50,6 +50,9 @@ there is more than one period per person.}
 
 \item{covariateSettings}{Either an object of type \code{covariateSettings} as created using one
 of the createCovariate functions, or a list of such objects.}
+
+\item{aggregated}{Should aggregate statistics be computed instead of covariates per
+cohort entry?}
 }
 \value{
 Returns an object of type \code{covariateData}, containing information on the baseline covariates.
