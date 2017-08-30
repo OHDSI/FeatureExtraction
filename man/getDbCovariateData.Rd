@@ -7,7 +7,7 @@
 getDbCovariateData(connectionDetails = NULL, connection = NULL,
   oracleTempSchema = NULL, cdmDatabaseSchema, cdmVersion = "5",
   cohortTable = "cohort", cohortDatabaseSchema = cdmDatabaseSchema,
-  cohortTableIsTemp = FALSE, cohortIds = c(), rowIdField = "subject_id",
+  cohortTableIsTemp = FALSE, cohortId = -1, rowIdField = "subject_id",
   covariateSettings, aggregated = FALSE)
 }
 \arguments{
@@ -40,7 +40,7 @@ specifiy both the database and the schema, so for example
 
 \item{cohortTableIsTemp}{Is the cohort table a temp table?}
 
-\item{cohortIds}{For which cohort IDs should covariates be constructed? If left empty,
+\item{cohortId}{For which cohort ID should covariates be constructed? If set to -1,
 covariates will be constructed for all cohorts in the specified cohort
 table.}
 

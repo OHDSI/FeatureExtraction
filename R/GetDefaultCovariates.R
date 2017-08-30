@@ -30,7 +30,8 @@
 getDbDefaultCovariateData <- function(connection,
                                       oracleTempSchema = NULL,
                                       cdmDatabaseSchema,
-                                      cohortTempTable = "#cohort_person",
+                                      cohortTable = "#cohort_person",
+                                      cohortId = -1,
                                       rowIdField = "subject_id",
                                       covariateSettings,
                                       aggregated = FALSE) {
@@ -39,7 +40,7 @@ getDbDefaultCovariateData <- function(connection,
   }
   settings <- .toJson(covariateSettings)
   rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$init(system.file("", package = "FeatureExtraction"))
-  json <- rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$createSql(settings, aggregated, cohortTempTable, rowIdField, as.integer(-1), cdmDatabaseSchema)
+  json <- rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$createSql(settings, aggregated, cohortTable, rowIdField, as.integer(cohortId), cdmDatabaseSchema)
   todo <- .fromJson(json)
   if (length(todo$tempTables) != 0) {
     writeLines("Sending temp tables to server")
@@ -106,14 +107,6 @@ getDbDefaultCovariateData <- function(connection,
   analysisRef <- DatabaseConnector::querySql.ffdf(connection, sql)
   colnames(analysisRef) <- SqlRender::snakeCaseToCamelCase(colnames(analysisRef))
   
-  # Population size
-  sql <- "SELECT COUNT_BIG(*) FROM @cohort_table"
-  sql <- SqlRender::renderSql(sql, cohort_table = cohortTempTable)$sql
-  sql <- SqlRender::translateSql(sql = sql,
-                                 targetDialect = attr(connection, "dbms"),
-                                 oracleTempSchema = oracleTempSchema)$sql
-  populationSize <- DatabaseConnector::querySql(connection, sql)[1, 1]  
-  
   delta <- Sys.time() - start
   writeLines(paste("Fetching data took", signif(delta, 3), attr(delta, "units")))
   
@@ -138,7 +131,7 @@ getDbDefaultCovariateData <- function(connection,
                         covariatesContinuous = covariatesContinuous,
                         covariateRef = covariateRef, 
                         analysisRef = analysisRef,
-                        metaData = list(populationSize = populationSize))
+                        metaData = list())
   if (is.null(covariateData$covariates)  && is.null(covariateData$covariatesContinuous)) {
     warning("No data found")
   } else {

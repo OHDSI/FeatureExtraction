@@ -5,7 +5,7 @@
 \title{Get HDPS covariate information from the database}
 \usage{
 getDbHdpsCovariateData(connection, oracleTempSchema = NULL, cdmDatabaseSchema,
-  cdmVersion = "4", cohortTempTable = "cohort_person",
+  cdmVersion = "4", cohortTable = "cohort_person", cohortId = -1,
   rowIdField = "subject_id", covariateSettings)
 }
 \arguments{
@@ -21,15 +21,15 @@ specifiy both the database and the schema, so for example
 
 \item{cdmVersion}{Define the OMOP CDM version used: currently support "4" and "5".}
 
-\item{cohortTempTable}{Name of the temp table holding the cohort for which we want to construct
-covaraites}
-
 \item{rowIdField}{The name of the field in the cohort temp table that is to be used as the
 row_id field in the output table. This can be especially usefull if there
 is more than one period per person.}
 
 \item{covariateSettings}{An object of type \code{covariateSettings} as created using the
 \code{\link{createHdpsCovariateSettings}} function.}
+
+\item{cohortTempTable}{Name of the temp table holding the cohort for which we want to construct
+covaraites}
 }
 \value{
 Returns an object of type \code{covariateData}, containing information on the baseline covariates.

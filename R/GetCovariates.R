@@ -46,7 +46,7 @@
 #'                               specifiy both the database and the schema, so for example
 #'                               'cdm_instance.dbo'.
 #' @param cohortTableIsTemp      Is the cohort table a temp table?
-#' @param cohortIds              For which cohort IDs should covariates be constructed? If left empty,
+#' @param cohortId               For which cohort ID should covariates be constructed? If set to -1,
 #'                               covariates will be constructed for all cohorts in the specified cohort
 #'                               table.
 #' @param rowIdField             The name of the field in the cohort table that is to be used as the
@@ -75,7 +75,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
                                cohortTable = "cohort",
                                cohortDatabaseSchema = cdmDatabaseSchema,
                                cohortTableIsTemp = FALSE,
-                               cohortIds = c(),
+                               cohortId = -1,
                                rowIdField = "subject_id",
                                covariateSettings,
                                aggregated = FALSE) {
@@ -91,34 +91,23 @@ getDbCovariateData <- function(connectionDetails = NULL,
   if (!is.null(connectionDetails)) {
     connection <- DatabaseConnector::connect(connectionDetails)
   }
-  
-  
-  # Make sure temp cohort table exists --------------------------------------
-  if (cohortTableIsTemp && length(cohortIds) == 0) {
-    cohortTempTable <- cohortTable
-  } else {
-    cohortTempTable <- "#cohort_for_cov_temp"
-    if (cohortTableIsTemp) {
+  if (cohortTableIsTemp) {
+    if (substr(cohortTable, 1, 1) == "#") {
       cohortDatabaseSchemaTable <- cohortTable
     } else {
-      cohortDatabaseSchemaTable <- paste(cohortDatabaseSchema, cohortTable, sep = ".")
+      cohortDatabaseSchemaTable <- paste0("#", cohortTable)
     }
-    sql <- SqlRender::loadRenderTranslateSql("CreateTempCohortTable.sql",
-                                             packageName = "FeatureExtraction",
-                                             dbms = attr(connection, "dbms"),
-                                             oracleTempSchema = oracleTempSchema,
-                                             cohort_database_schema_table = cohortDatabaseSchemaTable,
-                                             cohort_ids = cohortIds)
-    DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
+  } else {
+    cohortDatabaseSchemaTable <- paste(cohortDatabaseSchema, cohortTable, sep = ".")
   }
-  
-  sql <- "SELECT COUNT_BIG(*) FROM @cohort_temp_table"
-  sql <- SqlRender::renderSql(sql, cohort_temp_table = cohortTempTable)$sql
+  sql <- "SELECT COUNT_BIG(*) FROM @cohort_database_schema_table {@cohort_id != -1} ? {WHERE cohort_definition_id = @cohort_id} "
+  sql <- SqlRender::renderSql(sql = sql, 
+                              cohort_database_schema_table = cohortDatabaseSchemaTable,
+                              cohort_id = cohortId)$sql
   sql <- SqlRender::translateSql(sql = sql,
                                  targetDialect = attr(connection, "dbms"),
                                  oracleTempSchema = oracleTempSchema)$sql
   populationSize <- DatabaseConnector::querySql(connection, sql)[1, 1]
-  
   if (populationSize == 0) {
     covariateData <- list(covariates = data.frame(),
                           covariateRef = data.frame(),
@@ -135,7 +124,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
         args <- list(connection = connection,
                      oracleTempSchema = oracleTempSchema,
                      cdmDatabaseSchema = cdmDatabaseSchema,
-                     cohortTempTable = cohortTempTable,
+                     cohortTable = cohortDatabaseSchemaTable,
                      rowIdField = rowIdField,
                      covariateSettings = covariateSettings[[i]],
                      aggregated = aggregated)
@@ -178,15 +167,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
     }
   }
   covariateData$metaData$populationSize <- populationSize
-  covariateData$metaData$cohortIds <- cohortIds
-  
-  if (!cohortTableIsTemp || length(cohortIds) != 0) {
-    sql <- "TRUNCATE TABLE #cohort_for_cov_temp; DROP TABLE #cohort_for_cov_temp;"
-    sql <- SqlRender::translateSql(sql = sql,
-                                   targetDialect = attr(connection, "dbms"),
-                                   oracleTempSchema = oracleTempSchema)$sql
-    DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
-  }
+  covariateData$metaData$cohortId <- cohortId
   if (!is.null(connectionDetails)) {
     DatabaseConnector::disconnect(connection)
   }

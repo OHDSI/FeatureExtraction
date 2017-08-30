@@ -32,13 +32,13 @@ getDbHdpsCovariateData <- function(connection,
                                    oracleTempSchema = NULL,
                                    cdmDatabaseSchema,
                                    cdmVersion = "4",
-                                   cohortTempTable = "cohort_person",
+                                   cohortTable = "cohort_person",
+                                   cohortId = -1,
                                    rowIdField = "subject_id",
                                    covariateSettings) {
+  if (cohortId != -1)
+    stop("Haven't implemented restricting to cohort ID yet.")
   writeLines("Constructing HDPS covariates")
-  if (substr(cohortTempTable, 1, 1) != "#") {
-    cohortTempTable <- paste("#", cohortTempTable, sep = "")
-  }
   cdmDatabase <- strsplit(cdmDatabaseSchema, "\\.")[[1]][1]
 
   if (cdmVersion == "4") {
@@ -89,7 +89,7 @@ getDbHdpsCovariateData <- function(connection,
                                                    oracleTempSchema = oracleTempSchema,
                                                    cdm_database = cdmDatabase,
                                                    cdm_version = cdmVersion,
-                                                   cohort_temp_table = cohortTempTable,
+                                                   cohort_temp_table = cohortTable,
                                                    row_id_field = rowIdField,
                                                    cohort_definition_id = cohortDefinitionId,
                                                    concept_class_id = conceptClassId,
@@ -141,7 +141,7 @@ getDbHdpsCovariateData <- function(connection,
   covariateRef <- DatabaseConnector::querySql.ffdf(connection, covariateRefSql)
 
   sql <- "SELECT COUNT_BIG(*) FROM @cohort_temp_table"
-  sql <- SqlRender::renderSql(sql, cohort_temp_table = cohortTempTable)$sql
+  sql <- SqlRender::renderSql(sql, cohort_temp_table = cohortTable)$sql
   sql <- SqlRender::translateSql(sql = sql,
                                  targetDialect = attr(connection, "dbms"),
                                  oracleTempSchema = oracleTempSchema)$sql

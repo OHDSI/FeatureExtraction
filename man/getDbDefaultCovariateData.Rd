@@ -5,7 +5,7 @@
 \title{Get default covariate information from the database}
 \usage{
 getDbDefaultCovariateData(connection, oracleTempSchema = NULL,
-  cdmDatabaseSchema, cohortTempTable = "#cohort_person",
+  cdmDatabaseSchema, cohortTable = "#cohort_person", cohortId = -1,
   rowIdField = "subject_id", covariateSettings, aggregated = FALSE)
 }
 \arguments{
@@ -19,9 +19,6 @@ Requires read permissions to this database. On SQL Server, this should
 specifiy both the database and the schema, so for example
 'cdm_instance.dbo'.}
 
-\item{cohortTempTable}{Name of the temp table holding the cohort for which we want to construct
-covaraites}
-
 \item{rowIdField}{The name of the field in the cohort temp table that is to be used as the
 row_id field in the output table. This can be especially usefull if there
 is more than one period per person.}
@@ -30,6 +27,9 @@ is more than one period per person.}
 \code{\link{createCovariateSettings}} function.}
 
 \item{cdmVersion}{Define the OMOP CDM version used: currently support "4" and "5".}
+
+\item{cohortTempTable}{Name of the temp table holding the cohort for which we want to construct
+covaraites}
 }
 \value{
 Returns an object of type \code{covariateData}, containing information on the baseline covariates.
