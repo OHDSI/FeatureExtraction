@@ -128,13 +128,14 @@ settings <- createCovariateSettings(useDemographicsGender = FALSE,
                                     useMeasurementValueLongTerm = FALSE,
                                     useMeasurementValueMediumTerm = FALSE,
                                     useMeasurementValueShortTerm = FALSE,
-                                    useMeasurementRangeGroupLongTerm = TRUE,
+                                    useMeasurementRangeGroupLongTerm = FALSE,
                                     useMeasurementRangeGroupMediumTerm = FALSE,
                                     useMeasurementRangeGroupShortTerm = FALSE,
                                     useObservationLongTerm = FALSE,
                                     useObservationMediumTerm = FALSE,
                                     useObservationShortTerm = FALSE,
                                     useCharlsonIndex = FALSE,
+                                    useChads2 = TRUE,
                                     useDcsi = FALSE,
                                     longTermStartDays = -365,
                                     mediumTermStartDays = -180,
@@ -156,7 +157,7 @@ covs <- getDbCovariateData(connectionDetails = connectionDetails,
                            rowIdField = "row_id",
                            cohortTableIsTemp = FALSE,
                            covariateSettings = settings,
-                           aggregated = FALSE)
+                           aggregated = TRUE)
 
 saveCovariateData(covs, "c:/temp/covsPp")
 saveCovariateData(covs, "c:/temp/covsAgg")

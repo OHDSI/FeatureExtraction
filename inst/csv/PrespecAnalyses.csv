@@ -70,3 +70,4 @@ analysisId,analysisName,sqlFileName,startDay,endDay,inpatient,hierarchy,domainId
 803,ObservationShortTerm,DomainConcept.sql,shortTermStartDays,endDays,FALSE,,Observation,observation,observation_concept_id,observation_date,observation_date,TRUE,One covariate per observation in the observation table in the short term window.
 901,CharlsonIndex,CharlsonIndex.sql,,endDays,,,Condition,,,,,TRUE,The Charlson comorbidity index (Romano adaptation) using all conditions prior to the window end.
 902,Dcsi,Dcsi.sql,,endDays,,,Condition,,,,,TRUE,The Diabetes Comorbidity Severity Index (DCSI) using all conditions prior to the window end.
+903,Chads2,Chads2.sql,,endDays,,,Condition,,,,,TRUE,The CHADS2 score using all conditions prior to the window end.

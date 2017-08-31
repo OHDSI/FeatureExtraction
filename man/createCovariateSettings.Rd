@@ -56,8 +56,9 @@ createCovariateSettings(useDemographicsGender = FALSE,
   useMeasurementRangeGroupMediumTerm = FALSE,
   useMeasurementRangeGroupShortTerm = FALSE, useObservationLongTerm = FALSE,
   useObservationMediumTerm = FALSE, useObservationShortTerm = FALSE,
-  useCharlsonIndex = FALSE, useDcsi = FALSE, longTermStartDays = -365,
-  mediumTermStartDays = -180, shortTermStartDays = -30, endDays = 0,
+  useCharlsonIndex = FALSE, useDcsi = FALSE, useChads2 = FALSE,
+  longTermStartDays = -365, mediumTermStartDays = -180,
+  shortTermStartDays = -30, endDays = 0,
   includedCovariateConceptIds = c(), addDescendantsToInclude = FALSE,
   excludedCovariateConceptIds = c(), addDescendantsToExclude = FALSE,
   includedCovariateIds = c())
@@ -319,6 +320,9 @@ window end.}
 \item{useDcsi}{The Diabetes Comorbidity Severity Index (DCSI)
 using all conditions prior to the window end.}
 
+\item{useChads2}{The CHADS2 score using all conditions prior to
+the window end.}
+
 \item{longTermStartDays}{What is the start day (relative to the index
 date) of the long-term window?}
 
@@ -427,6 +431,7 @@ settings <- createCovariateSettings(useDemographicsGender = TRUE,
                                     useObservationShortTerm = TRUE,
                                     useCharlsonIndex = TRUE,
                                     useDcsi = TRUE,
+                                    useChads2 = TRUE,
                                     longTermStartDays = -365,
                                     mediumTermStartDays = -180,
                                     shortTermStartDays = -30,

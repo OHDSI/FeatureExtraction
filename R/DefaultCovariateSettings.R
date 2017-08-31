@@ -206,6 +206,8 @@
 #'                                                    window end.
 #' @param useDcsi                                     The Diabetes Comorbidity Severity Index (DCSI)
 #'                                                    using all conditions prior to the window end.
+#' @param useChads2                                   The CHADS2 score using all conditions prior to
+#'                                                    the window end.
 #' @param longTermStartDays                           What is the start day (relative to the index
 #'                                                    date) of the long-term window?
 #' @param mediumTermStartDays                         What is the start day (relative to the index
@@ -300,6 +302,7 @@
 #'                                     useObservationShortTerm = TRUE,
 #'                                     useCharlsonIndex = TRUE,
 #'                                     useDcsi = TRUE,
+#'                                     useChads2 = TRUE,
 #'                                     longTermStartDays = -365,
 #'                                     mediumTermStartDays = -180,
 #'                                     shortTermStartDays = -30,
@@ -382,6 +385,7 @@ createCovariateSettings <- function(useDemographicsGender = FALSE,
                                     useObservationShortTerm = FALSE,
                                     useCharlsonIndex = FALSE,
                                     useDcsi = FALSE,
+                                    useChads2 = FALSE,
                                     longTermStartDays = -365,
                                     mediumTermStartDays = -180,
                                     shortTermStartDays = -30,
