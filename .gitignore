@@ -25,3 +25,4 @@ standalone/build/*
 # Java compiled files
 /bin
 
+/target/
