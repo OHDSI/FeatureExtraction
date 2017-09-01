@@ -8,6 +8,7 @@ createCovariateSettings(useDemographicsGender = FALSE,
   useDemographicsAge = FALSE, useDemographicsAgeGroup = FALSE,
   useDemographicsRace = FALSE, useDemographicsEthnicity = FALSE,
   useDemographicsIndexYear = FALSE, useDemographicsIndexMonth = FALSE,
+  useDemographicsPriorObservationTime = FALSE,
   useConditionOccurrenceLongTerm = FALSE,
   useConditionOccurrenceMediumTerm = FALSE,
   useConditionOccurrenceShortTerm = FALSE,
@@ -57,8 +58,21 @@ createCovariateSettings(useDemographicsGender = FALSE,
   useMeasurementRangeGroupShortTerm = FALSE, useObservationLongTerm = FALSE,
   useObservationMediumTerm = FALSE, useObservationShortTerm = FALSE,
   useCharlsonIndex = FALSE, useDcsi = FALSE, useChads2 = FALSE,
-  longTermStartDays = -365, mediumTermStartDays = -180,
-  shortTermStartDays = -30, endDays = 0,
+  useChads2Vasc = FALSE, useDistinctConditionCountLongTerm = FALSE,
+  useDistinctConditionCountMediumTerm = FALSE,
+  useDistinctConditionCountShortTerm = FALSE,
+  useDistinctIngredientCountLongTerm = FALSE,
+  useDistinctIngredientCountMediumTerm = FALSE,
+  useDistinctIngredientCountShortTerm = FALSE,
+  useDistinctProcedureCountLongTerm = FALSE,
+  useDistinctProcedureCountMediumTerm = FALSE,
+  useDistinctProcedureCountShortTerm = FALSE,
+  useDistinctMeasurementCountLongTerm = FALSE,
+  useDistinctMeasurementCountMediumTerm = FALSE,
+  useDistinctMeasurementCountShortTerm = FALSE,
+  useVisitCountLongTerm = FALSE, useVisitCountMediumTerm = FALSE,
+  useVisitCountShortTerm = FALSE, longTermStartDays = -365,
+  mediumTermStartDays = -180, shortTermStartDays = -30, endDays = 0,
   includedCovariateConceptIds = c(), addDescendantsToInclude = FALSE,
   excludedCovariateConceptIds = c(), addDescendantsToExclude = FALSE,
   includedCovariateIds = c())
@@ -78,6 +92,9 @@ age groups)}
 \item{useDemographicsIndexYear}{Year of the index date.}
 
 \item{useDemographicsIndexMonth}{Month of the index date.}
+
+\item{useDemographicsPriorObservationTime}{Number of days of observation time preceding the
+index date.}
 
 \item{useConditionOccurrenceLongTerm}{One covariate per condition in the
 condition_occurrence table starting in the long
@@ -323,6 +340,54 @@ using all conditions prior to the window end.}
 \item{useChads2}{The CHADS2 score using all conditions prior to
 the window end.}
 
+\item{useChads2Vasc}{The CHADS2VASc score using all conditions prior
+to the window end.}
+
+\item{useDistinctConditionCountLongTerm}{The number of distinct condition concepts
+observed in the long term window.}
+
+\item{useDistinctConditionCountMediumTerm}{The number of distinct condition concepts
+observed in the medium term window.}
+
+\item{useDistinctConditionCountShortTerm}{The number of distinct condition concepts
+observed in the medium term window.}
+
+\item{useDistinctIngredientCountLongTerm}{The number of distinct ingredients observed in
+the long term window.}
+
+\item{useDistinctIngredientCountMediumTerm}{The number of distinct ingredients observed in
+the medium term window.}
+
+\item{useDistinctIngredientCountShortTerm}{The number of distinct ingredients observed in
+the medium term window.}
+
+\item{useDistinctProcedureCountLongTerm}{The number of distinct procedures observed in the
+long term window.}
+
+\item{useDistinctProcedureCountMediumTerm}{The number of distinct procedures observed in the
+medium term window.}
+
+\item{useDistinctProcedureCountShortTerm}{The number of distinct procedures observed in the
+medium term window.}
+
+\item{useDistinctMeasurementCountLongTerm}{The number of distinct measurements observed in
+the long term window.}
+
+\item{useDistinctMeasurementCountMediumTerm}{The number of distinct measurements observed in
+the medium term window.}
+
+\item{useDistinctMeasurementCountShortTerm}{The number of distinct measurements observed in
+the medium term window.}
+
+\item{useVisitCountLongTerm}{The number of visits observed in the long term
+window.}
+
+\item{useVisitCountMediumTerm}{The number of visits observed in the medium term
+window.}
+
+\item{useVisitCountShortTerm}{The number of visits observed in the medium term
+window.}
+
 \item{longTermStartDays}{What is the start day (relative to the index
 date) of the long-term window?}
 
@@ -367,6 +432,7 @@ settings <- createCovariateSettings(useDemographicsGender = TRUE,
                                     useDemographicsEthnicity = TRUE,
                                     useDemographicsIndexYear = TRUE,
                                     useDemographicsIndexMonth = TRUE,
+                                    useDemographicsPriorObservationTime = FALSE,
                                     useConditionOccurrenceLongTerm = TRUE,
                                     useConditionOccurrenceMediumTerm = FALSE,
                                     useConditionOccurrenceShortTerm = TRUE,
@@ -432,6 +498,22 @@ settings <- createCovariateSettings(useDemographicsGender = TRUE,
                                     useCharlsonIndex = TRUE,
                                     useDcsi = TRUE,
                                     useChads2 = TRUE,
+                                    useChads2Vasc = TRUE,
+                                    useDistinctConditionCountLongTerm = FALSE,
+                                    useDistinctConditionCountMediumTerm = FALSE,
+                                    useDistinctConditionCountShortTerm = FALSE,
+                                    useDistinctIngredientCountLongTerm = FALSE,
+                                    useDistinctIngredientCountMediumTerm = FALSE,
+                                    useDistinctIngredientCountShortTerm = FALSE,
+                                    useDistinctProcedureCountLongTerm = FALSE,
+                                    useDistinctProcedureCountMediumTerm = FALSE,
+                                    useDistinctProcedureCountShortTerm = FALSE,
+                                    useDistinctMeasurementCountLongTerm = FALSE,
+                                    useDistinctMeasurementCountMediumTerm = FALSE,
+                                    useDistinctMeasurementCountShortTerm = FALSE,
+                                    useVisitCountLongTerm = FALSE,
+                                    useVisitCountMediumTerm = FALSE,
+                                    useVisitCountShortTerm = FALSE,
                                     longTermStartDays = -365,
                                     mediumTermStartDays = -180,
                                     shortTermStartDays = -30,

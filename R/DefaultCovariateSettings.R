@@ -29,6 +29,8 @@
 #' @param useDemographicsEthnicity                    Ethnicity of the subject.
 #' @param useDemographicsIndexYear                    Year of the index date.
 #' @param useDemographicsIndexMonth                   Month of the index date.
+#' @param useDemographicsPriorObservationTime         Number of days of observation time preceding the
+#'                                                    index date.
 #' @param useConditionOccurrenceLongTerm              One covariate per condition in the
 #'                                                    condition_occurrence table starting in the long
 #'                                                    term window.
@@ -208,6 +210,38 @@
 #'                                                    using all conditions prior to the window end.
 #' @param useChads2                                   The CHADS2 score using all conditions prior to
 #'                                                    the window end.
+#' @param useChads2Vasc                               The CHADS2VASc score using all conditions prior
+#'                                                    to the window end.
+#' @param useDistinctConditionCountLongTerm           The number of distinct condition concepts
+#'                                                    observed in the long term window.
+#' @param useDistinctConditionCountMediumTerm         The number of distinct condition concepts
+#'                                                    observed in the medium term window.
+#' @param useDistinctConditionCountShortTerm          The number of distinct condition concepts
+#'                                                    observed in the medium term window.
+#' @param useDistinctIngredientCountLongTerm          The number of distinct ingredients observed in
+#'                                                    the long term window.
+#' @param useDistinctIngredientCountMediumTerm        The number of distinct ingredients observed in
+#'                                                    the medium term window.
+#' @param useDistinctIngredientCountShortTerm         The number of distinct ingredients observed in
+#'                                                    the medium term window.
+#' @param useDistinctProcedureCountLongTerm           The number of distinct procedures observed in the
+#'                                                    long term window.
+#' @param useDistinctProcedureCountMediumTerm         The number of distinct procedures observed in the
+#'                                                    medium term window.
+#' @param useDistinctProcedureCountShortTerm          The number of distinct procedures observed in the
+#'                                                    medium term window.
+#' @param useDistinctMeasurementCountLongTerm         The number of distinct measurements observed in
+#'                                                    the long term window.
+#' @param useDistinctMeasurementCountMediumTerm       The number of distinct measurements observed in
+#'                                                    the medium term window.
+#' @param useDistinctMeasurementCountShortTerm        The number of distinct measurements observed in
+#'                                                    the medium term window.
+#' @param useVisitCountLongTerm                       The number of visits observed in the long term
+#'                                                    window.
+#' @param useVisitCountMediumTerm                     The number of visits observed in the medium term
+#'                                                    window.
+#' @param useVisitCountShortTerm                      The number of visits observed in the medium term
+#'                                                    window.
 #' @param longTermStartDays                           What is the start day (relative to the index
 #'                                                    date) of the long-term window?
 #' @param mediumTermStartDays                         What is the start day (relative to the index
@@ -238,6 +272,7 @@
 #'                                     useDemographicsEthnicity = TRUE,
 #'                                     useDemographicsIndexYear = TRUE,
 #'                                     useDemographicsIndexMonth = TRUE,
+#'                                     useDemographicsPriorObservationTime = FALSE,
 #'                                     useConditionOccurrenceLongTerm = TRUE,
 #'                                     useConditionOccurrenceMediumTerm = FALSE,
 #'                                     useConditionOccurrenceShortTerm = TRUE,
@@ -303,6 +338,22 @@
 #'                                     useCharlsonIndex = TRUE,
 #'                                     useDcsi = TRUE,
 #'                                     useChads2 = TRUE,
+#'                                     useChads2Vasc = TRUE,
+#'                                     useDistinctConditionCountLongTerm = FALSE,
+#'                                     useDistinctConditionCountMediumTerm = FALSE,
+#'                                     useDistinctConditionCountShortTerm = FALSE,
+#'                                     useDistinctIngredientCountLongTerm = FALSE,
+#'                                     useDistinctIngredientCountMediumTerm = FALSE,
+#'                                     useDistinctIngredientCountShortTerm = FALSE,
+#'                                     useDistinctProcedureCountLongTerm = FALSE,
+#'                                     useDistinctProcedureCountMediumTerm = FALSE,
+#'                                     useDistinctProcedureCountShortTerm = FALSE,
+#'                                     useDistinctMeasurementCountLongTerm = FALSE,
+#'                                     useDistinctMeasurementCountMediumTerm = FALSE,
+#'                                     useDistinctMeasurementCountShortTerm = FALSE,
+#'                                     useVisitCountLongTerm = FALSE,
+#'                                     useVisitCountMediumTerm = FALSE,
+#'                                     useVisitCountShortTerm = FALSE,
 #'                                     longTermStartDays = -365,
 #'                                     mediumTermStartDays = -180,
 #'                                     shortTermStartDays = -30,
@@ -321,6 +372,7 @@ createCovariateSettings <- function(useDemographicsGender = FALSE,
                                     useDemographicsEthnicity = FALSE,
                                     useDemographicsIndexYear = FALSE,
                                     useDemographicsIndexMonth = FALSE,
+                                    useDemographicsPriorObservationTime = FALSE,
                                     useConditionOccurrenceLongTerm = FALSE,
                                     useConditionOccurrenceMediumTerm = FALSE,
                                     useConditionOccurrenceShortTerm = FALSE,
@@ -386,6 +438,22 @@ createCovariateSettings <- function(useDemographicsGender = FALSE,
                                     useCharlsonIndex = FALSE,
                                     useDcsi = FALSE,
                                     useChads2 = FALSE,
+                                    useChads2Vasc = FALSE,
+                                    useDistinctConditionCountLongTerm = FALSE,
+                                    useDistinctConditionCountMediumTerm = FALSE,
+                                    useDistinctConditionCountShortTerm = FALSE,
+                                    useDistinctIngredientCountLongTerm = FALSE,
+                                    useDistinctIngredientCountMediumTerm = FALSE,
+                                    useDistinctIngredientCountShortTerm = FALSE,
+                                    useDistinctProcedureCountLongTerm = FALSE,
+                                    useDistinctProcedureCountMediumTerm = FALSE,
+                                    useDistinctProcedureCountShortTerm = FALSE,
+                                    useDistinctMeasurementCountLongTerm = FALSE,
+                                    useDistinctMeasurementCountMediumTerm = FALSE,
+                                    useDistinctMeasurementCountShortTerm = FALSE,
+                                    useVisitCountLongTerm = FALSE,
+                                    useVisitCountMediumTerm = FALSE,
+                                    useVisitCountShortTerm = FALSE,
                                     longTermStartDays = -365,
                                     mediumTermStartDays = -180,
                                     shortTermStartDays = -30,
