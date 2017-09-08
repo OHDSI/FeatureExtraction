@@ -8,7 +8,7 @@ INTO #groups
 FROM @cdm_database_schema.concept_ancestor
 INNER JOIN @cdm_database_schema.concept
 	ON ancestor_concept_id = concept_id
-WHERE LOWER(vocabulary_id) = 'atc'
+WHERE vocabulary_id = 'ATC'
 	AND LEN(concept_code) IN (1, 3, 4, 5)
 	AND concept_id != 0
 {@excluded_concept_table != ''} ? {	AND descendant_concept_id NOT IN (SELECT id FROM @excluded_concept_table)}
@@ -27,24 +27,27 @@ FROM @cdm_database_schema.concept_ancestor
 INNER JOIN (
 	SELECT concept_id
 	FROM @cdm_database_schema.concept
-	INNER JOIN @cdm_database_schema.concept_ancestor
-	ON ancestor_concept_id = 441840 /* SNOMED clinical finding */
-		AND concept_id = descendant_concept_id
-	WHERE (min_levels_of_separation > 2
-		OR concept_id IN (433736, 433595, 441408, 72404, 192671, 137977, 434621, 437312, 439847, 4171917, 438555, 4299449, 375258, 76784, 40483532, 4145627, 434157, 433778, 258449, 313878)
+	INNER JOIN (
+	  SELECT *
+	  FROM @cdm_database_schema.concept_ancestor
+	  WHERE ancestor_concept_id = 441840 /* SNOMED clinical finding */
+	  AND (min_levels_of_separation > 2
+		OR descendant_concept_id IN (433736, 433595, 441408, 72404, 192671, 137977, 434621, 437312, 439847, 4171917, 438555, 4299449, 375258, 76784, 40483532, 4145627, 434157, 433778, 258449, 313878)
 		) 
-		AND LOWER(concept_name) NOT LIKE '%finding'
-		AND LOWER(concept_name) NOT LIKE 'disorder of%'
-		AND LOWER(concept_name) NOT LIKE 'finding of%'
-		AND LOWER(concept_name) NOT LIKE 'disease of%'
-		AND LOWER(concept_name) NOT LIKE 'injury of%'
-		AND LOWER(concept_name) NOT LIKE '%by site'
-		AND LOWER(concept_name) NOT LIKE '%by body site'
-		AND LOWER(concept_name) NOT LIKE '%by mechanism'
-		AND LOWER(concept_name) NOT LIKE '%of body region'
-		AND LOWER(concept_name) NOT LIKE '%of anatomical site'
-		AND LOWER(concept_name) NOT LIKE '%of specific body structure%'
-		AND LOWER(domain_id) = 'condition'
+	) temp
+	  ON concept_id = descendant_concept_id
+	WHERE concept_name NOT LIKE '%finding'
+		AND concept_name NOT LIKE 'Disorder of%'
+		AND concept_name NOT LIKE 'Finding of%'
+		AND concept_name NOT LIKE 'Disease of%'
+		AND concept_name NOT LIKE 'Injury of%'
+		AND concept_name NOT LIKE '%by site'
+		AND concept_name NOT LIKE '%by body site'
+		AND concept_name NOT LIKE '%by mechanism'
+		AND concept_name NOT LIKE '%of body region'
+		AND concept_name NOT LIKE '%of anatomical site'
+		AND concept_name NOT LIKE '%of specific body structure%'
+		AND domain_id = 'Condition'
 {@excluded_concept_table != ''} ? {		AND concept_id NOT IN (SELECT id FROM @excluded_concept_table)}
 {@included_concept_table != ''} ? {		AND concept_id IN (SELECT id FROM @included_concept_table)}
 ) valid_groups
@@ -60,19 +63,17 @@ INTO #groups
 FROM @cdm_database_schema.concept_ancestor
 INNER JOIN (
 	SELECT concept_id
-	FROM @cdm_database_schema.concept ancestor_concept
-	INNER JOIN @cdm_database_schema.concept_ancestor
-	ON ancestor_concept_id = ancestor_concept.concept_id
-	WHERE LOWER(ancestor_concept.vocabulary_id) = 'meddra'
-		AND LOWER(ancestor_concept.concept_class_id) != 'system organ class'
-		AND ancestor_concept_id NOT IN (36302170, 36303153, 36313966)
-{@excluded_concept_table != ''} ? {		AND descendant_concept_id NOT IN (SELECT id FROM @excluded_concept_table)}
-{@included_concept_table != ''} ? {		AND descendant_concept_id IN (SELECT id FROM @included_concept_table)}
-) valid_groups
+	FROM @cdm_database_schema.concept
+	WHERE vocabulary_id = 'MedDRA'
+		AND concept_class_id != 'SOC'
+		AND concept_id NOT IN (36302170, 36303153, 36313966)
+{@excluded_concept_table != ''} ? {	AND concept_id NOT IN (SELECT id FROM @excluded_concept_table)}
+{@included_concept_table != ''} ? {	AND concept_id IN (SELECT id FROM @included_concept_table)}
+	) valid_groups
 	ON ancestor_concept_id = valid_groups.concept_id
 WHERE ancestor_concept_id != descendant_concept_id
-{@excluded_concept_table != ''} ? {	AND ancestor_concept_id NOT IN (SELECT id FROM @excluded_concept_table)}
-{@included_concept_table != ''} ? {	AND ancestor_concept_id IN (SELECT id FROM @included_concept_table)}
+{@excluded_concept_table != ''} ? {		AND descendant_concept_id NOT IN (SELECT id FROM @excluded_concept_table)}
+{@included_concept_table != ''} ? {		AND descendant_concept_id IN (SELECT id FROM @included_concept_table)}
 ;
 }
 }
