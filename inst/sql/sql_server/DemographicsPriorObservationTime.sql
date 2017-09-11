@@ -1,20 +1,37 @@
 -- Feature construction
-WITH rawData (
 {@aggregated} ? {
-	subject_id,
+IF OBJECT_ID('tempdb..#raw_data', 'U') IS NOT NULL
+	DROP TABLE #raw_data;
+
+IF OBJECT_ID('tempdb..#overall_stats', 'U') IS NOT NULL
+	DROP TABLE #overall_stats;
+
+IF OBJECT_ID('tempdb..#prep_stats', 'U') IS NOT NULL
+	DROP TABLE #prep_stats;
+
+IF OBJECT_ID('tempdb..#prep_stats2', 'U') IS NOT NULL
+	DROP TABLE #prep_stats2;
+
+SELECT subject_id,
 	cohort_start_date,
-} : {
-	row_id,
-}
 	days
-	)
-AS (
+INTO #raw_data
+} : {
+SELECT 1000 + @analysis_id AS covariate_id,
+{@temporal} ? {
+    NULL AS time_id,
+}	
+	row_id,
+	days AS covariate_value
+INTO @covariate_table	
+}
+FROM (
 	SELECT 
 {@aggregated} ? {
 		subject_id,
-		cohort_start_date,
+		cohort_start_date,	
 } : {
-		cohort.@row_id_field AS row_id,
+		cohort.@row_id_field AS row_id,	
 }
 		DATEDIFF(DAY, observation_period_start_date, cohort_start_date) AS days
 	FROM @cohort_table cohort
@@ -23,57 +40,34 @@ AS (
 		AND observation_period_start_date <= cohort_start_date
 		AND observation_period_end_date >= cohort_start_date
 {@cohort_definition_id != -1} ? {	WHERE cohort.cohort_definition_id = @cohort_definition_id}
-)
+	) raw_data;
+
 {@aggregated} ? {
-, overallStats (
-	min_value,
-	max_value,
-	average_value,
-	standard_deviation,
-	count_value,
-	count_no_value,
-	population_size
-	)
-AS (
-	SELECT CASE WHEN COUNT(*) = (SELECT COUNT(*) FROM @cohort_table {@cohort_definition_id != -1} ? {WHERE cohort_definition_id = @cohort_definition_id}) THEN MIN(days) ELSE 0 END AS min_value,
-		MAX(days) AS max_value,
-		SUM(days) / (1.0 * (SELECT COUNT(*) FROM @cohort_table {@cohort_definition_id != -1} ? {WHERE cohort_definition_id = @cohort_definition_id})) AS average_value,
-		CASE WHEN COUNT(*) = 1 THEN 0 ELSE SQRT((1.0 * COUNT(*)*SUM(days * days) - 1.0 * SUM(days)*SUM(days)) / (1.0 * COUNT(*)*(1.0 * COUNT(*) - 1))) END AS standard_deviation,
-		COUNT(*) AS count_value,
-		(SELECT COUNT(*) FROM @cohort_table {@cohort_definition_id != -1} ? {WHERE cohort_definition_id = @cohort_definition_id}) - COUNT(*) AS count_no_value,
-		(SELECT COUNT(*) FROM @cohort_table {@cohort_definition_id != -1} ? {WHERE cohort_definition_id = @cohort_definition_id}) AS population_size
-	FROM rawData
-	),
-prepStats (
-	days,
-	total,
-	rn
-	)
-AS (
-	SELECT days,
-		COUNT(*) AS total,
-		ROW_NUMBER() OVER (
-			ORDER BY days
-			) AS rn
-	FROM rawData
-	GROUP BY days
-	),
-prepStats2 (
-	days,
-	total,
-	accumulated
-	)
-AS (
-	SELECT s.days,
-		s.total,
-		SUM(p.total) AS accumulated
-	FROM prepStats s
-	INNER JOIN prepStats p
-		ON p.rn <= s.rn
-	GROUP BY s.days,
-		s.total,
-		s.rn
-	)
+SELECT CASE WHEN COUNT(*) = (SELECT COUNT(*) FROM @cohort_table {@cohort_definition_id != -1} ? {WHERE cohort_definition_id = @cohort_definition_id}) THEN MIN(days) ELSE 0 END AS min_value,
+	MAX(days) AS max_value,
+	SUM(CAST(days AS BIGINT)) / (1.0 * (SELECT COUNT(*) FROM @cohort_table {@cohort_definition_id != -1} ? {WHERE cohort_definition_id = @cohort_definition_id})) AS average_value,
+	CASE WHEN COUNT(*) = 1 THEN 0 ELSE SQRT((1.0 * COUNT(*)*SUM(CAST(days AS BIGINT) * CAST(days AS BIGINT)) - 1.0 * SUM(CAST(days AS BIGINT))*SUM(CAST(days AS BIGINT))) / (1.0 * COUNT(*)*(1.0 * COUNT(*) - 1))) END AS standard_deviation,
+	COUNT(*) AS count_value,
+	(SELECT COUNT(*) FROM @cohort_table {@cohort_definition_id != -1} ? {WHERE cohort_definition_id = @cohort_definition_id}) - COUNT(*) AS count_no_value,
+	(SELECT COUNT(*) FROM @cohort_table {@cohort_definition_id != -1} ? {WHERE cohort_definition_id = @cohort_definition_id}) AS population_size
+INTO #overall_stats
+FROM #raw_data;
+
+SELECT days,
+	COUNT(*) AS total,
+	ROW_NUMBER() OVER (ORDER BY days) AS rn
+INTO #prep_stats
+FROM #raw_data
+GROUP BY days;
+	
+SELECT s.days,
+	SUM(p.total) AS accumulated
+INTO #prep_stats2	
+FROM #prep_stats s
+INNER JOIN #prep_stats p
+	ON p.rn <= s.rn
+GROUP BY s.days;
+
 SELECT 1000 + @analysis_id AS covariate_id,
 {@temporal} ? {
     NULL AS time_id,
@@ -104,8 +98,8 @@ SELECT 1000 + @analysis_id AS covariate_id,
 		ELSE MIN(CASE WHEN p.accumulated + count_no_value >= .90 * o.population_size THEN days	END) 
 		END AS p90_value		
 INTO @covariate_table
-FROM prepStats2 p
-CROSS JOIN overallStats o
+FROM #prep_stats2 p
+CROSS JOIN #overall_stats o
 {@included_cov_table != ''} ? {WHERE 1000 + @analysis_id IN (SELECT id FROM @included_cov_table)}
 GROUP BY o.count_value,
 	o.count_no_value,
@@ -114,18 +108,19 @@ GROUP BY o.count_value,
 	o.average_value,
 	o.standard_deviation,
 	o.population_size;
-} : {
-SELECT 1000 + @analysis_id AS covariate_id,
-{@temporal} ? {
-    NULL AS time_id,
-}	
-	row_id,
-	days AS covariate_value 
-INTO @covariate_table
-FROM rawData
-{@included_cov_table != ''} ? {WHERE 1000 + @analysis_id IN (SELECT id FROM @included_cov_table)}
-;
-}
+	
+TRUNCATE TABLE #raw_data;
+DROP TABLE #raw_data;
+
+TRUNCATE TABLE #overall_stats;
+DROP TABLE #overall_stats;
+
+TRUNCATE TABLE #prep_stats;
+DROP TABLE #prep_stats;
+
+TRUNCATE TABLE #prep_stats2;
+DROP TABLE #prep_stats2;	
+} 
 
 -- Reference construction
 INSERT INTO #cov_ref (

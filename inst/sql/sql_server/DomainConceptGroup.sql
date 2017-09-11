@@ -19,7 +19,6 @@ WHERE vocabulary_id = 'ATC'
 }
 
 {@domain_table == 'condition_occurrence' | @domain_table == 'condition_era'} ? {
-{@hierarchy == "snomed"} ? {
 SELECT DISTINCT descendant_concept_id,
   ancestor_concept_id
 INTO #groups
@@ -56,26 +55,6 @@ WHERE ancestor_concept_id != descendant_concept_id
 {@excluded_concept_table != ''} ? {	AND ancestor_concept_id NOT IN (SELECT id FROM @excluded_concept_table)}
 {@included_concept_table != ''} ? {	AND ancestor_concept_id IN (SELECT id FROM @included_concept_table)}
 ;
-} : { -- hierachy == 'meddra'
-SELECT DISTINCT descendant_concept_id,
-  ancestor_concept_id
-INTO #groups
-FROM @cdm_database_schema.concept_ancestor
-INNER JOIN (
-	SELECT concept_id
-	FROM @cdm_database_schema.concept
-	WHERE vocabulary_id = 'MedDRA'
-		AND concept_class_id != 'SOC'
-		AND concept_id NOT IN (36302170, 36303153, 36313966)
-{@excluded_concept_table != ''} ? {	AND concept_id NOT IN (SELECT id FROM @excluded_concept_table)}
-{@included_concept_table != ''} ? {	AND concept_id IN (SELECT id FROM @included_concept_table)}
-	) valid_groups
-	ON ancestor_concept_id = valid_groups.concept_id
-WHERE ancestor_concept_id != descendant_concept_id
-{@excluded_concept_table != ''} ? {		AND descendant_concept_id NOT IN (SELECT id FROM @excluded_concept_table)}
-{@included_concept_table != ''} ? {		AND descendant_concept_id IN (SELECT id FROM @included_concept_table)}
-;
-}
 }
 
 -- Feature construction

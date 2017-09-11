@@ -9,22 +9,10 @@ FROM @cdm_database_schema.measurement
 WHERE value_as_number IS NOT NULL; 
 
 -- Feature construction
-WITH rawData (
-{@aggregated} ? {
-	subject_id,
-	cohort_start_date,
-} : {
-	row_id,
-}
-{@temporal} ? {
-	time_id,
-}
-	measurement_concept_id,
-	unit_concept_id,
-	value_as_number
-	)
-AS (
-	SELECT 
+IF OBJECT_ID('tempdb..#raw_data', 'U') IS NOT NULL
+	DROP TABLE #raw_data;
+	
+SELECT 
 {@aggregated} ? {
 		subject_id,
 		cohort_start_date,
@@ -32,140 +20,116 @@ AS (
 		row_id,
 }
 {@temporal} ? {
+    time_id,
+}	
+	measurement_concept_id,
+	unit_concept_id,
+	value_as_number
+INTO #raw_data
+FROM (
+	SELECT 
+{@aggregated} ? {
+		subject_id,
+		cohort_start_date,
+{@temporal} ? {
 		time_id,
+		ROW_NUMBER() OVER (PARTITION BY subject_id, cohort_start_date, measurement_concept_id, time_id ORDER BY measurement_date DESC) AS rn,
+} : {
+		ROW_NUMBER() OVER (PARTITION BY subject_id, cohort_start_date, measurement_concept_id ORDER BY measurement_date DESC) AS rn,
+}
+} : {
+		row_id,
+{@temporal} ? {
+		time_id,
+		ROW_NUMBER() OVER (PARTITION BY row_id, measurement_concept_id, time_id ORDER BY measurement_date DESC) AS rn,
+} : {
+		ROW_NUMBER() OVER (PARTITION BY row_id, measurement_concept_id ORDER BY measurement_date DESC) AS rn,
+}
 }
 		measurement_concept_id,
 		unit_concept_id,
 		value_as_number
-	FROM (
-		SELECT 
-{@aggregated} ? {
-			subject_id,
-			cohort_start_date,
+	FROM @cohort_table cohort
+	INNER JOIN @cdm_database_schema.measurement
+		ON cohort.subject_id = measurement.person_id
 {@temporal} ? {
-			time_id,
-			ROW_NUMBER() OVER (PARTITION BY subject_id, cohort_start_date, measurement_concept_id, time_id ORDER BY measurement_date DESC) AS rn,
+	INNER JOIN #time_period time_period
+		ON measurement_date <= DATEADD(DAY, time_period.end_day, cohort.cohort_start_date)
+		AND measurement_date >= DATEADD(DAY, time_period.start_day, cohort.cohort_start_date)
+	WHERE measurement_concept_id != 0 
 } : {
-			ROW_NUMBER() OVER (PARTITION BY subject_id, cohort_start_date, measurement_concept_id ORDER BY measurement_date DESC) AS rn,
-}
-} : {
-			row_id,
-{@temporal} ? {
-			time_id,
-			ROW_NUMBER() OVER (PARTITION BY row_id, measurement_concept_id, time_id ORDER BY measurement_date DESC) AS rn,
-} : {
-			ROW_NUMBER() OVER (PARTITION BY row_id, measurement_concept_id ORDER BY measurement_date DESC) AS rn,
-}
-}
-			measurement_concept_id,
-			unit_concept_id,
-			value_as_number
-		FROM @cohort_table cohort
-		INNER JOIN @cdm_database_schema.measurement
-			ON cohort.subject_id = measurement.person_id
-{@temporal} ? {
-		INNER JOIN #time_period time_period
-			ON measurement_date <= DATEADD(DAY, time_period.end_day, cohort.cohort_start_date)
-			AND measurement_date >= DATEADD(DAY, time_period.start_day, cohort.cohort_start_date)
-		WHERE measurement_concept_id != 0 
-} : {
-		WHERE measurement_date <= DATEADD(DAY, @end_day, cohort.cohort_start_date)
-			AND measurement_date >= DATEADD(DAY, @start_day, cohort.cohort_start_date)
-			AND measurement_concept_id != 0
+	WHERE measurement_date <= DATEADD(DAY, @end_day, cohort.cohort_start_date)
+		AND measurement_date >= DATEADD(DAY, @start_day, cohort.cohort_start_date)
+		AND measurement_concept_id != 0
 }	
-			AND value_as_number IS NOT NULL 			
-{@cohort_definition_id != -1} ? {			AND cohort.cohort_definition_id = @cohort_definition_id}
-	) temp
-	WHERE rn = 1
-)
+		AND value_as_number IS NOT NULL 			
+{@cohort_definition_id != -1} ? {		AND cohort.cohort_definition_id = @cohort_definition_id}
+) temp
+WHERE rn = 1;	
+
 {@aggregated} ? {
-, overallStats (
-	measurement_concept_id,
+IF OBJECT_ID('tempdb..#overall_stats', 'U') IS NOT NULL
+	DROP TABLE #overall_stats;
+
+IF OBJECT_ID('tempdb..#prep_stats', 'U') IS NOT NULL
+	DROP TABLE #prep_stats;
+
+IF OBJECT_ID('tempdb..#prep_stats2', 'U') IS NOT NULL
+	DROP TABLE #prep_stats2;
+
+SELECT measurement_concept_id,
 	unit_concept_id,
 {@temporal} ? {
-    time_id,
-}	
-	min_value,
-	max_value,
-	average_value,
-	standard_deviation,
-	count_value
-	)
-AS (
-	SELECT measurement_concept_id,
-		unit_concept_id,
-{@temporal} ? {
-		time_id,
+	time_id,
 }
-		MIN(value_as_number) AS min_value,
-		MAX(value_as_number) AS max_value,
-		AVG(value_as_number) AS average_value,
-		STDEV(value_as_number) AS standard_deviation,
-		COUNT(*) AS count_value
-	FROM rawData
-	GROUP BY measurement_concept_id,
-		unit_concept_id
+	MIN(value_as_number) AS min_value,
+	MAX(value_as_number) AS max_value,
+	AVG(value_as_number) AS average_value,
+	STDEV(value_as_number) AS standard_deviation,
+	COUNT(*) AS count_value
+INTO #overall_stats
+FROM #raw_data
+GROUP BY measurement_concept_id,
 {@temporal} ? {
-		,time_id
-}		
-	),
-prepStats (
-	measurement_concept_id,
-	unit_concept_id,
-{@temporal} ? {
-		time_id,
-}	
-	value_as_number,
-	total,
-	rn
-	)
-AS (
-	SELECT measurement_concept_id,
-		unit_concept_id,
-	{@temporal} ? {
-		time_id,
-	}	value_as_number,
-		COUNT(*) AS total,
-		ROW_NUMBER() OVER (PARTITION BY measurement_concept_id, unit_concept_id	ORDER BY value_as_number) AS rn
-	FROM rawData
-	GROUP BY value_as_number,
-{@temporal} ? {
-		time_id,
-}	
-		measurement_concept_id,
-		unit_concept_id
-	),
-prepStats2 (
-	measurement_concept_id,
+	time_id,
+}
+	unit_concept_id;
+
+SELECT measurement_concept_id,
 	unit_concept_id,
 {@temporal} ? {
 	time_id,
 }	
 	value_as_number,
-	total,
-	accumulated
-	)
-AS (
-	SELECT s.measurement_concept_id,
-		s.unit_concept_id,
+	COUNT(*) AS total,
+	ROW_NUMBER() OVER (PARTITION BY measurement_concept_id, unit_concept_id	ORDER BY value_as_number) AS rn
+INTO #prep_stats
+FROM #raw_data
+GROUP BY value_as_number,
 {@temporal} ? {
-		s.time_id,
+	time_id,
 }	
-		s.value_as_number,
-		s.total,
-		SUM(p.total) AS accumulated
-	FROM prepStats s
-	INNER JOIN prepStats p
-		ON p.rn <= s.rn
-	GROUP BY s.measurement_concept_id,
-		s.unit_concept_id,
+	measurement_concept_id,
+	unit_concept_id;
+	
+SELECT s.measurement_concept_id,
+	s.unit_concept_id,
 {@temporal} ? {
-		s.time_id,
+	s.time_id,
+}	
+	s.value_as_number,
+	SUM(p.total) AS accumulated
+INTO #prep_stats2	
+FROM #prep_stats s
+INNER JOIN #prep_stats p
+	ON p.rn <= s.rn
+GROUP BY s.measurement_concept_id,
+	s.unit_concept_id,
+{@temporal} ? {
+	s.time_id,
 }			
-		s.value_as_number,
-		s.total,
-		s.rn		
-	)
+	s.value_as_number;
+	
 SELECT covariate_id,
 {@temporal} ? {
     o.time_id,
@@ -181,8 +145,8 @@ SELECT covariate_id,
 	MIN(CASE WHEN p.accumulated >= .75 * o.count_value THEN value_as_number END) AS p75_value,
 	MIN(CASE WHEN p.accumulated >= .90 * o.count_value THEN value_as_number END) AS p90_value	
 INTO @covariate_table
-FROM prepStats2 p
-INNER JOIN overallStats o
+FROM #prep_stats2 p
+INNER JOIN #overall_stats o
 	ON o.measurement_concept_id = p.measurement_concept_id
 		AND	o.unit_concept_id = p.unit_concept_id
 {@temporal} ? {
@@ -209,10 +173,10 @@ SELECT covariate_id,
 	row_id,
 	value_as_number AS covariate_value 
 INTO @covariate_table
-FROM rawData
+FROM #raw_data raw_data
 INNER JOIN #covariate_ids covariate_ids
-	ON rawData.measurement_concept_id = covariate_ids.measurement_concept_id
-		AND	rawData.unit_concept_id = covariate_ids.unit_concept_id	
+	ON raw_data.measurement_concept_id = covariate_ids.measurement_concept_id
+		AND	raw_data.unit_concept_id = covariate_ids.unit_concept_id	
 {@included_cov_table != ''} ? {WHERE covariate_id IN (SELECT id FROM @included_cov_table)}
 ;
 }

@@ -369,110 +369,95 @@ WHERE source_code LIKE '250.1%'
 	OR source_code LIKE '250.3%';
 
 -- Feature construction
-WITH rawData (
 {@aggregated} ? {
-	subject_id,
+IF OBJECT_ID('tempdb..#raw_data', 'U') IS NOT NULL
+	DROP TABLE #raw_data;
+
+IF OBJECT_ID('tempdb..#overall_stats', 'U') IS NOT NULL
+	DROP TABLE #overall_stats;
+
+IF OBJECT_ID('tempdb..#prep_stats', 'U') IS NOT NULL
+	DROP TABLE #prep_stats;
+
+IF OBJECT_ID('tempdb..#prep_stats2', 'U') IS NOT NULL
+	DROP TABLE #prep_stats2;
+
+SELECT subject_id,
 	cohort_start_date,
+	SUM(max_score) AS score
+INTO #raw_data
 } : {
+SELECT 1000 + @analysis_id AS covariate_id,
+{@temporal} ? {
+    NULL AS time_id,
+}	
 	row_id,
+	SUM(max_score) AS covariate_value
+INTO @covariate_table
 }
-	score
-	)
-AS (
-	SELECT 
+FROM (
+	SELECT dcsi_category,
+		MAX(dcsi_score) AS max_score,
 {@aggregated} ? {
-		subject_id,
-		cohort_start_date,
+		cohort.subject_id,
+		cohort.cohort_start_date
 } : {
-		row_id,
-}
-		SUM(max_score) AS score
-	FROM (
-		SELECT dcsi_category,
-			MAX(dcsi_score) AS max_score,
-{@aggregated} ? {
-			cohort.subject_id,
-			cohort.cohort_start_date
-} : {
-			cohort.@row_id_field AS row_id
+		cohort.@row_id_field AS row_id
 }			
-		FROM @cohort_table cohort
-		INNER JOIN @cdm_database_schema.condition_era condition_era
-			ON cohort.subject_id = condition_era.person_id
-		INNER JOIN #dcsi_scoring dcsi_scoring
-			ON condition_concept_id = dcsi_scoring.dcsi_concept_id
+	FROM @cohort_table cohort
+	INNER JOIN @cdm_database_schema.condition_era condition_era
+		ON cohort.subject_id = condition_era.person_id
+	INNER JOIN #dcsi_scoring dcsi_scoring
+		ON condition_concept_id = dcsi_scoring.dcsi_concept_id
 {@temporal} ? {		
-		WHERE condition_era_start_date <= cohort.cohort_start_date
+	WHERE condition_era_start_date <= cohort.cohort_start_date
 } : {
-		WHERE condition_era_start_date <= DATEADD(DAY, @end_day, cohort.cohort_start_date)
+	WHERE condition_era_start_date <= DATEADD(DAY, @end_day, cohort.cohort_start_date)
 }
 {@cohort_definition_id != -1} ? {		AND cohort.cohort_definition_id = @cohort_definition_id}
 {@aggregated} ? {
-		GROUP BY subject_id,
-			cohort_start_date,
-			dcsi_category
+	GROUP BY subject_id,
+		cohort_start_date,
+		dcsi_category
 } : {
-		GROUP BY row_id,
-			dcsi_category
+	GROUP BY row_id,
+		dcsi_category
 }
 	) temp
 {@aggregated} ? {
-	GROUP BY subject_id,
+GROUP BY subject_id,
 			cohort_start_date
 } : {
-	GROUP BY row_id
-}
-)
+GROUP BY row_id
+}	
+;
+
 {@aggregated} ? {
-, overallStats (
-	min_value,
-	max_value,
-	average_value,
-	standard_deviation,
-	count_value,
-	count_no_value,
-	population_size
-	)
-AS (
-	SELECT CASE WHEN COUNT(*) = (SELECT COUNT(*) FROM @cohort_table {@cohort_definition_id != -1} ? {WHERE cohort_definition_id = @cohort_definition_id}) THEN MIN(score) ELSE 0 END AS min_value,
-		MAX(score) AS max_value,
-		SUM(score) / (1.0 * (SELECT COUNT(*) FROM @cohort_table {@cohort_definition_id != -1} ? {WHERE cohort_definition_id = @cohort_definition_id})) AS average_value,
-		SQRT((1.0 * COUNT(*)*SUM(score * score) - 1.0 * SUM(score)*SUM(score)) / (1.0 * COUNT(*)*(1.0 * COUNT(*) - 1)))  AS standard_deviation,
-		COUNT(*) AS count_value,
-		(SELECT COUNT(*) FROM @cohort_table {@cohort_definition_id != -1} ? {WHERE cohort_definition_id = @cohort_definition_id}) - COUNT(*) AS count_no_value,
-		(SELECT COUNT(*) FROM @cohort_table {@cohort_definition_id != -1} ? {WHERE cohort_definition_id = @cohort_definition_id}) AS population_size
-	FROM rawData
-	),
-prepStats (
-	score,
-	total,
-	rn
-	)
-AS (
-	SELECT score,
-		COUNT(*) AS total,
-		ROW_NUMBER() OVER (
-			ORDER BY score
-			) AS rn
-	FROM rawData
-	GROUP BY score
-	),
-prepStats2 (
-	score,
-	total,
-	accumulated
-	)
-AS (
-	SELECT s.score,
-		s.total,
-		SUM(p.total) AS accumulated
-	FROM prepStats s
-	INNER JOIN prepStats p
-		ON p.rn <= s.rn
-	GROUP BY s.score,
-		s.total,
-		s.rn
-	)
+SELECT CASE WHEN COUNT(*) = (SELECT COUNT(*) FROM @cohort_table {@cohort_definition_id != -1} ? {WHERE cohort_definition_id = @cohort_definition_id}) THEN MIN(score) ELSE 0 END AS min_value,
+	MAX(score) AS max_value,
+	SUM(score) / (1.0 * (SELECT COUNT(*) FROM @cohort_table {@cohort_definition_id != -1} ? {WHERE cohort_definition_id = @cohort_definition_id})) AS average_value,
+	CASE WHEN COUNT(*) = 1 THEN 0 ELSE SQRT((1.0 * COUNT(*)*SUM(score * score) - 1.0 * SUM(score)*SUM(score)) / (1.0 * COUNT(*)*(1.0 * COUNT(*) - 1))) END AS standard_deviation,
+	COUNT(*) AS count_value,
+	(SELECT COUNT(*) FROM @cohort_table {@cohort_definition_id != -1} ? {WHERE cohort_definition_id = @cohort_definition_id}) - COUNT(*) AS count_no_value,
+	(SELECT COUNT(*) FROM @cohort_table {@cohort_definition_id != -1} ? {WHERE cohort_definition_id = @cohort_definition_id}) AS population_size
+INTO #overall_stats
+FROM #raw_data;
+
+SELECT score,
+	COUNT(*) AS total,
+	ROW_NUMBER() OVER (ORDER BY score) AS rn
+INTO #prep_stats
+FROM #raw_data
+GROUP BY score;
+	
+SELECT s.score,
+	SUM(p.total) AS accumulated
+INTO #prep_stats2	
+FROM #prep_stats s
+INNER JOIN #prep_stats p
+	ON p.rn <= s.rn
+GROUP BY s.score;
+
 SELECT 1000 + @analysis_id AS covariate_id,
 {@temporal} ? {
     NULL AS time_id,
@@ -503,8 +488,8 @@ SELECT 1000 + @analysis_id AS covariate_id,
 		ELSE MIN(CASE WHEN p.accumulated + count_no_value >= .90 * o.population_size THEN score	END) 
 		END AS p90_value		
 INTO @covariate_table
-FROM prepStats2 p
-CROSS JOIN overallStats o
+FROM #prep_stats2 p
+CROSS JOIN #overall_stats o
 {@included_cov_table != ''} ? {WHERE 1000 + @analysis_id IN (SELECT id FROM @included_cov_table)}
 GROUP BY o.count_value,
 	o.count_no_value,
@@ -513,18 +498,19 @@ GROUP BY o.count_value,
 	o.average_value,
 	o.standard_deviation,
 	o.population_size;
-} : {
-SELECT 1000 + @analysis_id AS covariate_id,
-{@temporal} ? {
-    NULL AS time_id,
-}	
-	row_id,
-	score AS covariate_value 
-INTO @covariate_table
-FROM rawData
-{@included_cov_table != ''} ? {WHERE 1000 + @analysis_id IN (SELECT id FROM @included_cov_table)}
-;
-}
+	
+TRUNCATE TABLE #raw_data;
+DROP TABLE #raw_data;
+
+TRUNCATE TABLE #overall_stats;
+DROP TABLE #overall_stats;
+
+TRUNCATE TABLE #prep_stats;
+DROP TABLE #prep_stats;
+
+TRUNCATE TABLE #prep_stats2;
+DROP TABLE #prep_stats2;	
+} 
 
 TRUNCATE TABLE #dcsi_scoring;
 

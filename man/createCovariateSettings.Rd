@@ -20,20 +20,13 @@ createCovariateSettings(useDemographicsGender = FALSE,
   useConditionEraStartLongTerm = FALSE,
   useConditionEraStartMediumTerm = FALSE,
   useConditionEraStartShortTerm = FALSE,
-  useConditionSnomedGroupEraLongTerm = FALSE,
-  useConditionSnomedGroupEraMediumTerm = FALSE,
-  useConditionSnomedGroupEraShortTerm = FALSE,
-  useConditionSnomedGroupEraOverlapping = FALSE,
-  useConditionSnomedGroupEraStartLongTerm = FALSE,
-  useConditionSnomedGroupEraStartMediumTerm = FALSE,
-  useConditionSnomedGroupEraStartShortTerm = FALSE,
-  useConditionMeddraGroupEraLongTerm = FALSE,
-  useConditionMeddraGroupEraMediumTerm = FALSE,
-  useConditionMeddraGroupEraShortTerm = FALSE,
-  useConditionMeddraGroupEraOverlapping = FALSE,
-  useConditionMeddraGroupEraStartLongTerm = FALSE,
-  useConditionMeddraGroupEraStartMediumTerm = FALSE,
-  useConditionMeddraGroupEraStartShortTerm = FALSE,
+  useConditionGroupEraLongTerm = FALSE,
+  useConditionGroupEraMediumTerm = FALSE,
+  useConditionGroupEraShortTerm = FALSE,
+  useConditionGroupEraOverlapping = FALSE,
+  useConditionGroupEraStartLongTerm = FALSE,
+  useConditionGroupEraStartMediumTerm = FALSE,
+  useConditionGroupEraStartShortTerm = FALSE,
   useDrugExposureLongTerm = FALSE, useDrugExposureMediumTerm = FALSE,
   useDrugExposureShortTerm = FALSE, useDrugEraLongTerm = FALSE,
   useDrugEraMediumTerm = FALSE, useDrugEraShortTerm = FALSE,
@@ -145,67 +138,33 @@ table starting in the medium term window.}
 \item{useConditionEraStartShortTerm}{One covariate per condition in the condition_era
 table starting in the short term window.}
 
-\item{useConditionSnomedGroupEraLongTerm}{One covariate per condition era rolled up to
-SNOMED groups in the condition_era table
-overlapping with any part of the long term
-window.}
+\item{useConditionGroupEraLongTerm}{One covariate per condition era rolled up to
+groups in the condition_era table overlapping
+with any part of the long term window.}
 
-\item{useConditionSnomedGroupEraMediumTerm}{One covariate per condition era rolled up to
-SNOMED groups in the condition_era table
-overlapping with any part of the medium term
-window.}
+\item{useConditionGroupEraMediumTerm}{One covariate per condition era rolled up to
+groups in the condition_era table overlapping
+with any part of the medium term window.}
 
-\item{useConditionSnomedGroupEraShortTerm}{One covariate per condition era rolled up to
-SNOMED groups in the condition_era table
-overlapping with any part of the short term
-window.}
+\item{useConditionGroupEraShortTerm}{One covariate per condition era rolled up to
+groups in the condition_era table overlapping
+with any part of the short term window.}
 
-\item{useConditionSnomedGroupEraOverlapping}{One covariate per condition era rolled up to
-SNOMED groups in the condition_era table
-overlapping with the end of the risk window.}
+\item{useConditionGroupEraOverlapping}{One covariate per condition era rolled up to
+groups in the condition_era table overlapping
+with the end of the risk window.}
 
-\item{useConditionSnomedGroupEraStartLongTerm}{One covariate per condition era rolled up to
-SNOMED groups in the condition_era table starting
-in the long term window.}
+\item{useConditionGroupEraStartLongTerm}{One covariate per condition era rolled up to
+groups in the condition_era table starting in the
+long term window.}
 
-\item{useConditionSnomedGroupEraStartMediumTerm}{One covariate per condition era rolled up to
-SNOMED groups in the condition_era table starting
-in the medium term window.}
+\item{useConditionGroupEraStartMediumTerm}{One covariate per condition era rolled up to
+groups in the condition_era table starting in the
+medium term window.}
 
-\item{useConditionSnomedGroupEraStartShortTerm}{One covariate per condition era rolled up to
-SNOMED groups in the condition_era table starting
-in the short term window.}
-
-\item{useConditionMeddraGroupEraLongTerm}{One covariate per condition era rolled up to
-MedDRA groups in the condition_era table
-overlapping with any part of the long term
-window.}
-
-\item{useConditionMeddraGroupEraMediumTerm}{One covariate per condition era rolled up to
-MedDRA groups in the condition_era table
-overlapping with any part of the medium term
-window.}
-
-\item{useConditionMeddraGroupEraShortTerm}{One covariate per condition era rolled up to
-MedDRA groups in the condition_era table
-overlapping with any part of the short term
-window.}
-
-\item{useConditionMeddraGroupEraOverlapping}{One covariate per condition era rolled up to
-MedDRA groups in the condition_era table
-overlapping with the end of the risk window.}
-
-\item{useConditionMeddraGroupEraStartLongTerm}{One covariate per condition era rolled up to
-MedDRA groups in the condition_era table starting
-in the long term window.}
-
-\item{useConditionMeddraGroupEraStartMediumTerm}{One covariate per condition era rolled up to
-MedDRA groups in the condition_era table starting
-in the medium term window.}
-
-\item{useConditionMeddraGroupEraStartShortTerm}{One covariate per condition era rolled up to
-MedDRA groups in the condition_era table starting
-in the short term window.}
+\item{useConditionGroupEraStartShortTerm}{One covariate per condition era rolled up to
+groups in the condition_era table starting in the
+short term window.}
 
 \item{useDrugExposureLongTerm}{One covariate per drug in the drug_exposure table
 starting in the long term window.}
@@ -446,20 +405,13 @@ settings <- createCovariateSettings(useDemographicsGender = TRUE,
                                     useConditionEraStartLongTerm = FALSE,
                                     useConditionEraStartMediumTerm = FALSE,
                                     useConditionEraStartShortTerm = FALSE,
-                                    useConditionSnomedGroupEraLongTerm = TRUE,
-                                    useConditionSnomedGroupEraMediumTerm = FALSE,
-                                    useConditionSnomedGroupEraShortTerm = TRUE,
-                                    useConditionSnomedGroupEraOverlapping = FALSE,
-                                    useConditionSnomedGroupEraStartLongTerm = TRUE,
-                                    useConditionSnomedGroupEraStartMediumTerm = FALSE,
-                                    useConditionSnomedGroupEraStartShortTerm = TRUE,
-                                    useConditionMeddraGroupEraLongTerm = TRUE,
-                                    useConditionMeddraGroupEraMediumTerm = FALSE,
-                                    useConditionMeddraGroupEraShortTerm = TRUE,
-                                    useConditionMeddraGroupEraOverlapping = FALSE,
-                                    useConditionMeddraGroupEraStartLongTerm = TRUE,
-                                    useConditionMeddraGroupEraStartMediumTerm = FALSE,
-                                    useConditionMeddraGroupEraStartShortTerm = TRUE,
+                                    useConditionGroupEraLongTerm = TRUE,
+                                    useConditionGroupEraMediumTerm = FALSE,
+                                    useConditionGroupEraShortTerm = TRUE,
+                                    useConditionGroupEraOverlapping = FALSE,
+                                    useConditionGroupEraStartLongTerm = TRUE,
+                                    useConditionGroupEraStartMediumTerm = FALSE,
+                                    useConditionGroupEraStartShortTerm = TRUE,
                                     useDrugExposureLongTerm = FALSE,
                                     useDrugExposureMediumTerm = FALSE,
                                     useDrugExposureShortTerm = FALSE,

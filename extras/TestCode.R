@@ -44,7 +44,7 @@ sql <- "IF OBJECT_ID('@cohort_database_schema.@cohort_table', 'U') IS NOT NULL
 DROP TABLE @cohort_database_schema.@cohort_table;
 SELECT 1 AS cohort_definition_id, person_id AS subject_id, drug_era_start_date AS cohort_start_date, ROW_NUMBER() OVER (ORDER BY person_id, drug_era_start_date) AS row_id
 INTO @cohort_database_schema.@cohort_table FROM @cdm_database_schema.drug_era 
-WHERE drug_concept_id = 1125443;"
+WHERE drug_concept_id = 1118084;"
 sql <- SqlRender::renderSql(sql, 
                             cdm_database_schema = cdmDatabaseSchema,
                             cohort_database_schema = cohortDatabaseSchema,
@@ -85,20 +85,13 @@ settings <- createCovariateSettings(useDemographicsGender = TRUE,
                                     useConditionEraStartLongTerm = TRUE,
                                     useConditionEraStartMediumTerm = TRUE,
                                     useConditionEraStartShortTerm = TRUE,
-                                    useConditionSnomedGroupEraLongTerm = TRUE,
-                                    useConditionSnomedGroupEraMediumTerm = TRUE,
-                                    useConditionSnomedGroupEraShortTerm = TRUE,
-                                    useConditionSnomedGroupEraOverlapping = TRUE,
-                                    useConditionSnomedGroupEraStartLongTerm = TRUE,
-                                    useConditionSnomedGroupEraStartMediumTerm = TRUE,
-                                    useConditionSnomedGroupEraStartShortTerm = TRUE,
-                                    useConditionMeddraGroupEraLongTerm = TRUE,
-                                    useConditionMeddraGroupEraMediumTerm = TRUE,
-                                    useConditionMeddraGroupEraShortTerm = TRUE,
-                                    useConditionMeddraGroupEraOverlapping = TRUE,
-                                    useConditionMeddraGroupEraStartLongTerm = TRUE,
-                                    useConditionMeddraGroupEraStartMediumTerm = TRUE,
-                                    useConditionMeddraGroupEraStartShortTerm = TRUE,
+                                    useConditionGroupEraLongTerm = TRUE,
+                                    useConditionGroupEraMediumTerm = TRUE,
+                                    useConditionGroupEraShortTerm = TRUE,
+                                    useConditionGroupEraOverlapping = TRUE,
+                                    useConditionGroupEraStartLongTerm = TRUE,
+                                    useConditionGroupEraStartMediumTerm = TRUE,
+                                    useConditionGroupEraStartShortTerm = TRUE,
                                     useDrugExposureLongTerm = TRUE,
                                     useDrugExposureMediumTerm = TRUE,
                                     useDrugExposureShortTerm = TRUE,
@@ -173,14 +166,14 @@ covs <- getDbCovariateData(connectionDetails = connectionDetails,
                            rowIdField = "row_id",
                            cohortTableIsTemp = FALSE,
                            covariateSettings = settings,
-                           aggregated = TRUE)
+                           aggregated = FALSE)
 
 saveCovariateData(covs, "s:/temp/covsPp")
 saveCovariateData(covs, "s:/temp/covsAgg")
 covariateData <- loadCovariateData("c:/temp/covsPp")
 covs <- loadCovariateData("c:/temp/covsAgg")
 
-covs2 <- aggregateCovariates(covariateData)
+covs2 <- aggregateCovariates(covs)
 
 covariates1 <- ff::as.ram(covs$covariates)
 covariates2 <- ff::as.ram(covs2$covariates)

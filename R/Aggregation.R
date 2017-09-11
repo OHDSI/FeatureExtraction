@@ -132,6 +132,9 @@ aggregateCovariates <- function(covariateData) {
       result$covariatesContinuous <- do.call("rbind", stats)
     }
   }
+  if (!is.null(result$covariatesContinuous) && nrow(result$covariatesContinuous) != 0) {
+    result$covariatesContinuous <- ff::as.ffdf(result$covariatesContinuous)
+  }
   class(result) <- "covariateData"
   return(result)
 }
