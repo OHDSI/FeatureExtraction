@@ -33,10 +33,10 @@ FROM (
 	WHERE @domain_concept_id != 0
 } : {
 	WHERE @domain_start_date <= DATEADD(DAY, @end_day, cohort.cohort_start_date)
-		AND @domain_end_date >= DATEADD(DAY, @start_day, cohort.cohort_start_date)
+{@start_day != 'anyTimePrior'} ? {		AND @domain_end_date >= DATEADD(DAY, @start_day, cohort.cohort_start_date)}
 		AND @domain_concept_id != 0
 }
-{@inpatient} ? {	AND condition_type_concept_id IN (38000183, 38000184, 38000199, 38000200)}
+{@sub_type == 'inpatient'} ? {	AND condition_type_concept_id IN (38000183, 38000184, 38000199, 38000200)}
 {@excluded_concept_table != ''} ? {		AND @domain_concept_id NOT IN (SELECT id FROM @excluded_concept_table)}
 {@included_concept_table != ''} ? {		AND @domain_concept_id IN (SELECT id FROM @included_concept_table)}
 {@included_cov_table != ''} ? {		AND CAST(@domain_concept_id AS BIGINT) * 1000 + @analysis_id IN (SELECT id FROM @included_cov_table)}
@@ -61,7 +61,11 @@ SELECT covariate_id,
 {@temporal} ? {
 	CONCAT('@domain_table: ', concept_id, '-', concept_name) AS covariate_name,
 } : {
+{@start_day == 'anyTimePrior'} ? {
+	CONCAT('@domain_table any time prior through @end_day days relative to index: ', concept_id, '-', concept_name) AS covariate_name,
+} : {
 	CONCAT('@domain_table during day @start_day through @end_day days relative to index: ', concept_id, '-', concept_name) AS covariate_name,
+}
 }
 	@analysis_id AS analysis_id,
 	concept_id
@@ -87,7 +91,11 @@ SELECT @analysis_id AS analysis_id,
 	'@analysis_name' AS analysis_name,
 	'@domain_id' AS domain_id,
 {!@temporal} ? {
+{@start_day == 'anyTimePrior'} ? {
+	NULL AS start_day,
+} : {
 	@start_day AS start_day,
+}
 	@end_day AS end_day,
 }
 	'Y' AS is_binary,

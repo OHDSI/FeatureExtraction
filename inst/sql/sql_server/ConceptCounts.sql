@@ -39,7 +39,7 @@ FROM (
 } : {
 		cohort.@row_id_field AS row_id,
 }
-{@distinct_concepts} ? {
+{@sub_type == 'distinct'} ? {
 		COUNT(DISTINCT @domain_concept_id) AS concept_count
 } : {
 		COUNT(*) AS concept_count
@@ -161,13 +161,13 @@ INSERT INTO #cov_ref (
 	)
 SELECT covariate_id,
 {@temporal} ? {
-{@distinct_concepts} ? {
+{@sub_type == 'distinct'} ? {
 	'@domain_table distinct concept count' AS covariate_name,
 } : {
 	'@domain_table concept count' AS covariate_name,
 }
 } : {
-{@distinct_concepts} ? {
+{@sub_type == 'distinct'} ? {
 	'@domain_table distinct concept count during day @start_day through @end_day concept_count relative to index' AS covariate_name,
 } : {
 	'@domain_table concept count during day @start_day through @end_day concept_count relative to index' AS covariate_name,

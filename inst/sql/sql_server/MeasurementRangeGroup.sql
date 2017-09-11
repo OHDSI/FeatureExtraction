@@ -38,7 +38,7 @@ FROM (
 	WHERE measurement_concept_id != 0
 } : {
 	WHERE measurement_date <= DATEADD(DAY, @end_day, cohort.cohort_start_date)
-		AND measurement_date >= DATEADD(DAY, @start_day, cohort.cohort_start_date)
+{@start_day != 'anyTimePrior'} ? {				AND measurement_date >= DATEADD(DAY, @start_day, cohort.cohort_start_date)}
 		AND measurement_concept_id != 0
 }
 		AND range_low IS NOT NULL
@@ -69,7 +69,11 @@ SELECT covariate_id,
 {@temporal} ? {
 	CONCAT('measurement ', range_name, ': ', concept_id, '-', concept_name) AS covariate_name,
 } : {
+{@start_day == 'anyTimePrior'} ? {
+	CONCAT('measurement ', range_name, ' during any time prior through @end_day days relative to index: ', concept_id, '-', concept_name) AS covariate_name,
+} : {
 	CONCAT('measurement ', range_name, ' during day @start_day through @end_day days relative to index: ', concept_id, '-', concept_name) AS covariate_name,
+}
 }
 	@analysis_id AS analysis_id,
 	concept_id
@@ -103,7 +107,11 @@ SELECT @analysis_id AS analysis_id,
 	'@analysis_name' AS analysis_name,
 	'@domain_id' AS domain_id,
 {!@temporal} ? {
+{@start_day == 'anyTimePrior'} ? {
+	NULL AS start_day,
+} : {
 	@start_day AS start_day,
+}
 	@end_day AS end_day,
 }
 	'Y' AS is_binary,

@@ -9,17 +9,22 @@ createCovariateSettings(useDemographicsGender = FALSE,
   useDemographicsRace = FALSE, useDemographicsEthnicity = FALSE,
   useDemographicsIndexYear = FALSE, useDemographicsIndexMonth = FALSE,
   useDemographicsPriorObservationTime = FALSE,
+  useDemographicsPostObservationTime = FALSE,
+  useDemographicsTimeInCohort = FALSE,
+  useConditionOccurrenceAnyTimePrior = FALSE,
   useConditionOccurrenceLongTerm = FALSE,
   useConditionOccurrenceMediumTerm = FALSE,
   useConditionOccurrenceShortTerm = FALSE,
+  useConditionOccurrenceInpatientAnyTimePrior = FALSE,
   useConditionOccurrenceInpatientLongTerm = FALSE,
   useConditionOccurrenceInpatientMediumTerm = FALSE,
   useConditionOccurrenceInpatientShortTerm = FALSE,
-  useConditionEraLongTerm = FALSE, useConditionEraMediumTerm = FALSE,
-  useConditionEraShortTerm = FALSE, useConditionEraOverlapping = FALSE,
-  useConditionEraStartLongTerm = FALSE,
+  useConditionEraAnyTimePrior = FALSE, useConditionEraLongTerm = FALSE,
+  useConditionEraMediumTerm = FALSE, useConditionEraShortTerm = FALSE,
+  useConditionEraOverlapping = FALSE, useConditionEraStartLongTerm = FALSE,
   useConditionEraStartMediumTerm = FALSE,
   useConditionEraStartShortTerm = FALSE,
+  useConditionGroupEraAnyTimePrior = FALSE,
   useConditionGroupEraLongTerm = FALSE,
   useConditionGroupEraMediumTerm = FALSE,
   useConditionGroupEraShortTerm = FALSE,
@@ -27,28 +32,34 @@ createCovariateSettings(useDemographicsGender = FALSE,
   useConditionGroupEraStartLongTerm = FALSE,
   useConditionGroupEraStartMediumTerm = FALSE,
   useConditionGroupEraStartShortTerm = FALSE,
-  useDrugExposureLongTerm = FALSE, useDrugExposureMediumTerm = FALSE,
-  useDrugExposureShortTerm = FALSE, useDrugEraLongTerm = FALSE,
+  useDrugExposureAnyTimePrior = FALSE, useDrugExposureLongTerm = FALSE,
+  useDrugExposureMediumTerm = FALSE, useDrugExposureShortTerm = FALSE,
+  useDrugEraAnyTimePrior = FALSE, useDrugEraLongTerm = FALSE,
   useDrugEraMediumTerm = FALSE, useDrugEraShortTerm = FALSE,
   useDrugEraOverlapping = FALSE, useDrugEraStartLongTerm = FALSE,
   useDrugEraStartMediumTerm = FALSE, useDrugEraStartShortTerm = FALSE,
-  useDrugGroupEraLongTerm = FALSE, useDrugGroupEraMediumTerm = FALSE,
-  useDrugGroupEraShortTerm = FALSE, useDrugGroupEraOverlapping = FALSE,
-  useDrugGroupEraStartLongTerm = FALSE,
+  useDrugGroupEraAnyTimePrior = FALSE, useDrugGroupEraLongTerm = FALSE,
+  useDrugGroupEraMediumTerm = FALSE, useDrugGroupEraShortTerm = FALSE,
+  useDrugGroupEraOverlapping = FALSE, useDrugGroupEraStartLongTerm = FALSE,
   useDrugGroupEraStartMediumTerm = FALSE,
   useDrugGroupEraStartShortTerm = FALSE,
+  useProcedureOccurrenceAnyTimePrior = FALSE,
   useProcedureOccurrenceLongTerm = FALSE,
   useProcedureOccurrenceMediumTerm = FALSE,
   useProcedureOccurrenceShortTerm = FALSE,
-  useDeviceExposureLongTerm = FALSE, useDeviceExposureMediumTerm = FALSE,
-  useDeviceExposureShortTerm = FALSE, useMeasurementLongTerm = FALSE,
+  useDeviceExposureAnyTimePrior = FALSE, useDeviceExposureLongTerm = FALSE,
+  useDeviceExposureMediumTerm = FALSE, useDeviceExposureShortTerm = FALSE,
+  useMeasurementAnyTimePrior = FALSE, useMeasurementLongTerm = FALSE,
   useMeasurementMediumTerm = FALSE, useMeasurementShortTerm = FALSE,
+  useMeasurementValueAnyTimePrior = FALSE,
   useMeasurementValueLongTerm = FALSE,
   useMeasurementValueMediumTerm = FALSE,
   useMeasurementValueShortTerm = FALSE,
+  useMeasurementRangeGroupAnyTimePrior = FALSE,
   useMeasurementRangeGroupLongTerm = FALSE,
   useMeasurementRangeGroupMediumTerm = FALSE,
-  useMeasurementRangeGroupShortTerm = FALSE, useObservationLongTerm = FALSE,
+  useMeasurementRangeGroupShortTerm = FALSE,
+  useObservationAnyTimePrior = FALSE, useObservationLongTerm = FALSE,
   useObservationMediumTerm = FALSE, useObservationShortTerm = FALSE,
   useCharlsonIndex = FALSE, useDcsi = FALSE, useChads2 = FALSE,
   useChads2Vasc = FALSE, useDistinctConditionCountLongTerm = FALSE,
@@ -73,7 +84,8 @@ createCovariateSettings(useDemographicsGender = FALSE,
 \arguments{
 \item{useDemographicsGender}{Gender of the subject.}
 
-\item{useDemographicsAge}{Age of the subject on the index date (in years).}
+\item{useDemographicsAge}{Age of the subject on the index date (in
+years).}
 
 \item{useDemographicsAgeGroup}{Age of the subject on the index date (in 5 year
 age groups)}
@@ -86,20 +98,34 @@ age groups)}
 
 \item{useDemographicsIndexMonth}{Month of the index date.}
 
-\item{useDemographicsPriorObservationTime}{Number of days of observation time preceding the
-index date.}
+\item{useDemographicsPriorObservationTime}{Number of days of observation time preceding
+the index date.}
+
+\item{useDemographicsPostObservationTime}{Number of days of observation time preceding
+the index date.}
+
+\item{useDemographicsTimeInCohort}{Number of days of observation time preceding
+the index date.}
+
+\item{useConditionOccurrenceAnyTimePrior}{One covariate per condition in the
+condition_occurrence table starting any time
+prior to index.}
 
 \item{useConditionOccurrenceLongTerm}{One covariate per condition in the
 condition_occurrence table starting in the long
 term window.}
 
 \item{useConditionOccurrenceMediumTerm}{One covariate per condition in the
-condition_occurrence table starting in the medium
-term window.}
+condition_occurrence table starting in the
+medium term window.}
 
 \item{useConditionOccurrenceShortTerm}{One covariate per condition in the
-condition_occurrence table starting in the short
-term window.}
+condition_occurrence table starting in the
+short term window.}
+
+\item{useConditionOccurrenceInpatientAnyTimePrior}{One covariate per condition observed in an
+inpatient setting in the condition_occurrence
+table starting any time prior to index.}
 
 \item{useConditionOccurrenceInpatientLongTerm}{One covariate per condition observed in an
 inpatient setting in the condition_occurrence
@@ -113,30 +139,41 @@ table starting in the medium term window.}
 inpatient setting in the condition_occurrence
 table starting in the short term window.}
 
-\item{useConditionEraLongTerm}{One covariate per condition in the condition_era
-table overlapping with any part of the long term
+\item{useConditionEraAnyTimePrior}{One covariate per condition in the
+condition_era table overlapping with any time
+prior to index.}
+
+\item{useConditionEraLongTerm}{One covariate per condition in the
+condition_era table overlapping with any part
+of the long term window.}
+
+\item{useConditionEraMediumTerm}{One covariate per condition in the
+condition_era table overlapping with any part
+of the medium term window.}
+
+\item{useConditionEraShortTerm}{One covariate per condition in the
+condition_era table overlapping with any part
+of the short term window.}
+
+\item{useConditionEraOverlapping}{One covariate per condition in the
+condition_era table overlapping with the end of
+the risk window.}
+
+\item{useConditionEraStartLongTerm}{One covariate per condition in the
+condition_era table starting in the long term
 window.}
 
-\item{useConditionEraMediumTerm}{One covariate per condition in the condition_era
-table overlapping with any part of the medium
-term window.}
-
-\item{useConditionEraShortTerm}{One covariate per condition in the condition_era
-table overlapping with any part of the short term
+\item{useConditionEraStartMediumTerm}{One covariate per condition in the
+condition_era table starting in the medium term
 window.}
 
-\item{useConditionEraOverlapping}{One covariate per condition in the condition_era
-table overlapping with the end of the risk
+\item{useConditionEraStartShortTerm}{One covariate per condition in the
+condition_era table starting in the short term
 window.}
 
-\item{useConditionEraStartLongTerm}{One covariate per condition in the condition_era
-table starting in the long term window.}
-
-\item{useConditionEraStartMediumTerm}{One covariate per condition in the condition_era
-table starting in the medium term window.}
-
-\item{useConditionEraStartShortTerm}{One covariate per condition in the condition_era
-table starting in the short term window.}
+\item{useConditionGroupEraAnyTimePrior}{One covariate per condition era rolled up to
+groups in the condition_era table overlapping
+with any time prior to index.}
 
 \item{useConditionGroupEraLongTerm}{One covariate per condition era rolled up to
 groups in the condition_era table overlapping
@@ -155,25 +192,31 @@ groups in the condition_era table overlapping
 with the end of the risk window.}
 
 \item{useConditionGroupEraStartLongTerm}{One covariate per condition era rolled up to
-groups in the condition_era table starting in the
-long term window.}
+groups in the condition_era table starting in
+the long term window.}
 
 \item{useConditionGroupEraStartMediumTerm}{One covariate per condition era rolled up to
-groups in the condition_era table starting in the
-medium term window.}
+groups in the condition_era table starting in
+the medium term window.}
 
 \item{useConditionGroupEraStartShortTerm}{One covariate per condition era rolled up to
-groups in the condition_era table starting in the
-short term window.}
+groups in the condition_era table starting in
+the short term window.}
 
-\item{useDrugExposureLongTerm}{One covariate per drug in the drug_exposure table
-starting in the long term window.}
+\item{useDrugExposureAnyTimePrior}{One covariate per drug in the drug_exposure
+table starting any time prior to index.}
 
-\item{useDrugExposureMediumTerm}{One covariate per drug in the drug_exposure table
-starting in the medium term window.}
+\item{useDrugExposureLongTerm}{One covariate per drug in the drug_exposure
+table starting in the long term window.}
 
-\item{useDrugExposureShortTerm}{One covariate per drug in the drug_exposure table
-starting in the short term window.}
+\item{useDrugExposureMediumTerm}{One covariate per drug in the drug_exposure
+table starting in the medium term window.}
+
+\item{useDrugExposureShortTerm}{One covariate per drug in the drug_exposure
+table starting in the short term window.}
+
+\item{useDrugEraAnyTimePrior}{One covariate per drug in the drug_era table
+overlapping with any time prior to index.}
 
 \item{useDrugEraLongTerm}{One covariate per drug in the drug_era table
 overlapping with any part of the long term
@@ -198,33 +241,41 @@ starting in the medium term window.}
 \item{useDrugEraStartShortTerm}{One covariate per drug in the drug_era table
 starting in the long short window.}
 
-\item{useDrugGroupEraLongTerm}{One covariate per drug rolled up to ATC groups in
-the drug_era table overlapping with any part of
-the long term window.}
+\item{useDrugGroupEraAnyTimePrior}{One covariate per drug rolled up to ATC groups
+in the drug_era table overlapping with any time
+prior to index.}
 
-\item{useDrugGroupEraMediumTerm}{One covariate per drug rolled up to ATC groups in
-the drug_era table overlapping with any part of
-the medium term window.}
+\item{useDrugGroupEraLongTerm}{One covariate per drug rolled up to ATC groups
+in the drug_era table overlapping with any part
+of the long term window.}
 
-\item{useDrugGroupEraShortTerm}{One covariate per drug rolled up to ATC groups in
-the drug_era table overlapping with any part of
-the short term window.}
+\item{useDrugGroupEraMediumTerm}{One covariate per drug rolled up to ATC groups
+in the drug_era table overlapping with any part
+of the medium term window.}
 
-\item{useDrugGroupEraOverlapping}{One covariate per drug rolled up to ATC groups in
-the drug_era table overlapping with the end of
-the risk window.}
+\item{useDrugGroupEraShortTerm}{One covariate per drug rolled up to ATC groups
+in the drug_era table overlapping with any part
+of the short term window.}
 
-\item{useDrugGroupEraStartLongTerm}{One covariate per drug rolled up to ATC groups in
-the drug_era table starting in the long term
+\item{useDrugGroupEraOverlapping}{One covariate per drug rolled up to ATC groups
+in the drug_era table overlapping with the end
+of the risk window.}
+
+\item{useDrugGroupEraStartLongTerm}{One covariate per drug rolled up to ATC groups
+in the drug_era table starting in the long term
 window.}
 
-\item{useDrugGroupEraStartMediumTerm}{One covariate per drug rolled up to ATC groups in
-the drug_era table starting in the medium term
-window.}
+\item{useDrugGroupEraStartMediumTerm}{One covariate per drug rolled up to ATC groups
+in the drug_era table starting in the medium
+term window.}
 
-\item{useDrugGroupEraStartShortTerm}{One covariate per drug rolled up to ATC groups in
-the drug_era table starting in the short term
-window.}
+\item{useDrugGroupEraStartShortTerm}{One covariate per drug rolled up to ATC groups
+in the drug_era table starting in the short
+term window.}
+
+\item{useProcedureOccurrenceAnyTimePrior}{One covariate per procedure in the
+procedure_occurrence table any time prior to
+index.}
 
 \item{useProcedureOccurrenceLongTerm}{One covariate per procedure in the
 procedure_occurrence table in the long term
@@ -238,6 +289,9 @@ window.}
 procedure_occurrence table in the short term
 window.}
 
+\item{useDeviceExposureAnyTimePrior}{One covariate per device in the device exposure
+table starting any time prior to index.}
+
 \item{useDeviceExposureLongTerm}{One covariate per device in the device exposure
 table starting in the long term window.}
 
@@ -247,14 +301,21 @@ table starting in the medium term window.}
 \item{useDeviceExposureShortTerm}{One covariate per device in the device exposure
 table starting in the short term window.}
 
-\item{useMeasurementLongTerm}{One covariate per measurement in the measurement
-table in the long term window.}
+\item{useMeasurementAnyTimePrior}{One covariate per measurement in the
+measurement table any time prior to index.}
 
-\item{useMeasurementMediumTerm}{One covariate per measurement in the measurement
-table in the medium term window.}
+\item{useMeasurementLongTerm}{One covariate per measurement in the
+measurement table in the long term window.}
 
-\item{useMeasurementShortTerm}{One covariate per measurement in the measurement
-table in the short term window.}
+\item{useMeasurementMediumTerm}{One covariate per measurement in the
+measurement table in the medium term window.}
+
+\item{useMeasurementShortTerm}{One covariate per measurement in the
+measurement table in the short term window.}
+
+\item{useMeasurementValueAnyTimePrior}{One covariate containing the value per
+measurement-unit combination any time prior to
+index.}
 
 \item{useMeasurementValueLongTerm}{One covariate containing the value per
 measurement-unit combination in the long term
@@ -268,26 +329,33 @@ window.}
 measurement-unit combination in the short term
 window.}
 
+\item{useMeasurementRangeGroupAnyTimePrior}{Covariates indicating whether measurements are
+below, within, or above normal range any time
+prior to index.}
+
 \item{useMeasurementRangeGroupLongTerm}{Covariates indicating whether measurements are
-below, within, or above normal range in the long
-term window.}
+below, within, or above normal range in the
+long term window.}
 
 \item{useMeasurementRangeGroupMediumTerm}{Covariates indicating whether measurements are
 below, within, or above normal range in the
 medium term window.}
 
 \item{useMeasurementRangeGroupShortTerm}{Covariates indicating whether measurements are
-below, within, or above normal range in the short
-term window.}
+below, within, or above normal range in the
+short term window.}
 
-\item{useObservationLongTerm}{One covariate per observation in the observation
-table in the long term window.}
+\item{useObservationAnyTimePrior}{One covariate per observation in the
+observation table any time prior to index.}
 
-\item{useObservationMediumTerm}{One covariate per observation in the observation
-table in the medium term window.}
+\item{useObservationLongTerm}{One covariate per observation in the
+observation table in the long term window.}
 
-\item{useObservationShortTerm}{One covariate per observation in the observation
-table in the short term window.}
+\item{useObservationMediumTerm}{One covariate per observation in the
+observation table in the medium term window.}
+
+\item{useObservationShortTerm}{One covariate per observation in the
+observation table in the short term window.}
 
 \item{useCharlsonIndex}{The Charlson comorbidity index (Romano
 adaptation) using all conditions prior to the
@@ -320,14 +388,14 @@ the medium term window.}
 \item{useDistinctIngredientCountShortTerm}{The number of distinct ingredients observed in
 the medium term window.}
 
-\item{useDistinctProcedureCountLongTerm}{The number of distinct procedures observed in the
-long term window.}
+\item{useDistinctProcedureCountLongTerm}{The number of distinct procedures observed in
+the long term window.}
 
-\item{useDistinctProcedureCountMediumTerm}{The number of distinct procedures observed in the
-medium term window.}
+\item{useDistinctProcedureCountMediumTerm}{The number of distinct procedures observed in
+the medium term window.}
 
-\item{useDistinctProcedureCountShortTerm}{The number of distinct procedures observed in the
-medium term window.}
+\item{useDistinctProcedureCountShortTerm}{The number of distinct procedures observed in
+the medium term window.}
 
 \item{useDistinctMeasurementCountLongTerm}{The number of distinct measurements observed in
 the long term window.}
@@ -341,11 +409,11 @@ the medium term window.}
 \item{useVisitCountLongTerm}{The number of visits observed in the long term
 window.}
 
-\item{useVisitCountMediumTerm}{The number of visits observed in the medium term
-window.}
+\item{useVisitCountMediumTerm}{The number of visits observed in the medium
+term window.}
 
-\item{useVisitCountShortTerm}{The number of visits observed in the medium term
-window.}
+\item{useVisitCountShortTerm}{The number of visits observed in the medium
+term window.}
 
 \item{longTermStartDays}{What is the start day (relative to the index
 date) of the long-term window?}
@@ -356,8 +424,8 @@ date) of the medium-term window?}
 \item{shortTermStartDays}{What is the start day (relative to the index
 date) of the short-term window?}
 
-\item{endDays}{What is the end day (relative to the index date)
-of the window?}
+\item{endDays}{What is the end day (relative to the index
+date) of the window?}
 
 \item{includedCovariateConceptIds}{A list of concept IDs that should be used to
 construct covariates.}
@@ -365,14 +433,14 @@ construct covariates.}
 \item{addDescendantsToInclude}{Should descendant concept IDs be added to the
 list of concepts to include?}
 
-\item{excludedCovariateConceptIds}{A list of concept IDs that should NOT be used to
-construct covariates.}
+\item{excludedCovariateConceptIds}{A list of concept IDs that should NOT be used
+to construct covariates.}
 
 \item{addDescendantsToExclude}{Should descendant concept IDs be added to the
 list of concepts to exclude?}
 
-\item{includedCovariateIds}{A list of covariate IDs that should be restricted
-to.}
+\item{includedCovariateIds}{A list of covariate IDs that should be
+restricted to.}
 }
 \value{
 An object of type \code{covariateSettings}, to be used in other functions.
@@ -392,12 +460,17 @@ settings <- createCovariateSettings(useDemographicsGender = TRUE,
                                     useDemographicsIndexYear = TRUE,
                                     useDemographicsIndexMonth = TRUE,
                                     useDemographicsPriorObservationTime = FALSE,
+                                    useDemographicsPostObservationTime = FALSE,
+                                    useDemographicsTimeInCohort = FALSE,
+                                    useConditionOccurrenceAnyTimePrior = FALSE,
                                     useConditionOccurrenceLongTerm = TRUE,
                                     useConditionOccurrenceMediumTerm = FALSE,
                                     useConditionOccurrenceShortTerm = TRUE,
+                                    useConditionOccurrenceInpatientAnyTimePrior = FALSE,
                                     useConditionOccurrenceInpatientLongTerm = FALSE,
                                     useConditionOccurrenceInpatientMediumTerm = FALSE,
                                     useConditionOccurrenceInpatientShortTerm = FALSE,
+                                    useConditionEraAnyTimePrior = FALSE,
                                     useConditionEraLongTerm = TRUE,
                                     useConditionEraMediumTerm = FALSE,
                                     useConditionEraShortTerm = TRUE,
@@ -405,6 +478,7 @@ settings <- createCovariateSettings(useDemographicsGender = TRUE,
                                     useConditionEraStartLongTerm = FALSE,
                                     useConditionEraStartMediumTerm = FALSE,
                                     useConditionEraStartShortTerm = FALSE,
+                                    useConditionGroupEraAnyTimePrior = FALSE,
                                     useConditionGroupEraLongTerm = TRUE,
                                     useConditionGroupEraMediumTerm = FALSE,
                                     useConditionGroupEraShortTerm = TRUE,
@@ -412,9 +486,11 @@ settings <- createCovariateSettings(useDemographicsGender = TRUE,
                                     useConditionGroupEraStartLongTerm = TRUE,
                                     useConditionGroupEraStartMediumTerm = FALSE,
                                     useConditionGroupEraStartShortTerm = TRUE,
+                                    useDrugExposureAnyTimePrior = FALSE,
                                     useDrugExposureLongTerm = FALSE,
                                     useDrugExposureMediumTerm = FALSE,
                                     useDrugExposureShortTerm = FALSE,
+                                    useDrugEraAnyTimePrior = FALSE,
                                     useDrugEraLongTerm = TRUE,
                                     useDrugEraMediumTerm = FALSE,
                                     useDrugEraShortTerm = TRUE,
@@ -422,6 +498,7 @@ settings <- createCovariateSettings(useDemographicsGender = TRUE,
                                     useDrugEraStartLongTerm = FALSE,
                                     useDrugEraStartMediumTerm = FALSE,
                                     useDrugEraStartShortTerm = FALSE,
+                                    useDrugGroupEraAnyTimePrior = FALSE,
                                     useDrugGroupEraLongTerm = TRUE,
                                     useDrugGroupEraMediumTerm = FALSE,
                                     useDrugGroupEraShortTerm = TRUE,
@@ -429,21 +506,27 @@ settings <- createCovariateSettings(useDemographicsGender = TRUE,
                                     useDrugGroupEraStartLongTerm = FALSE,
                                     useDrugGroupEraStartMediumTerm = FALSE,
                                     useDrugGroupEraStartShortTerm = FALSE,
+                                    useProcedureOccurrenceAnyTimePrior = FALSE,
                                     useProcedureOccurrenceLongTerm = TRUE,
                                     useProcedureOccurrenceMediumTerm = FALSE,
                                     useProcedureOccurrenceShortTerm = TRUE,
+                                    useDeviceExposureAnyTimePrior = FALSE,
                                     useDeviceExposureLongTerm = TRUE,
                                     useDeviceExposureMediumTerm = FALSE,
                                     useDeviceExposureShortTerm = TRUE,
+                                    useMeasurementAnyTimePrior = FALSE,
                                     useMeasurementLongTerm = TRUE,
                                     useMeasurementMediumTerm = FALSE,
                                     useMeasurementShortTerm = TRUE,
+                                    useMeasurementValueAnyTimePrior = FALSE,
                                     useMeasurementValueLongTerm = FALSE,
                                     useMeasurementValueMediumTerm = FALSE,
                                     useMeasurementValueShortTerm = FALSE,
+                                    useMeasurementRangeGroupAnyTimePrior = FALSE,
                                     useMeasurementRangeGroupLongTerm = TRUE,
                                     useMeasurementRangeGroupMediumTerm = FALSE,
                                     useMeasurementRangeGroupShortTerm = FALSE,
+                                    useObservationAnyTimePrior = FALSE,
                                     useObservationLongTerm = TRUE,
                                     useObservationMediumTerm = FALSE,
                                     useObservationShortTerm = TRUE,

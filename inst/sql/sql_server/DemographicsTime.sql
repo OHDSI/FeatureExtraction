@@ -33,12 +33,22 @@ FROM (
 } : {
 		cohort.@row_id_field AS row_id,	
 }
+{@sub_type == 'priorObservation'} ? {
 		DATEDIFF(DAY, observation_period_start_date, cohort_start_date) AS days
+} 
+{@sub_type == 'postObservation'} ? {
+		DATEDIFF(DAY, cohort_start_date, observation_period_end_date) AS days
+} 
+{@sub_type == 'inCohort'} ? {
+		DATEDIFF(DAY, cohort_start_date, cohort_end_date) AS days
+} 
 	FROM @cohort_table cohort
+{@sub_type != 'inCohort'} ? {
 	INNER JOIN @cdm_database_schema.observation_period
 		ON cohort.subject_id = observation_period.person_id
 		AND observation_period_start_date <= cohort_start_date
 		AND observation_period_end_date >= cohort_start_date
+}
 {@cohort_definition_id != -1} ? {	WHERE cohort.cohort_definition_id = @cohort_definition_id}
 	) raw_data;
 
@@ -130,7 +140,15 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT covariate_id,
-	'observation time (days) prior to index ' AS covariate_name,
+{@sub_type == 'priorObservation'} ? {
+	'observation time (days) prior to index' AS covariate_name,
+} 
+{@sub_type == 'postObservation'} ? {
+	'observation time (days) after index' AS covariate_name,
+} 
+{@sub_type == 'inCohort'} ? {
+	'time (days) between cohort start and end' AS covariate_name,
+}
 	@analysis_id AS analysis_id,
 	0 AS concept_id
 FROM (

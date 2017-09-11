@@ -59,7 +59,7 @@ getDbDefaultCovariateData <- function(connection,
   sql <- SqlRender::translateSql(sql = todo$sqlConstruction, 
                                  targetDialect = attr(connection, "dbms"), 
                                  oracleTempSchema = oracleTempSchema)$sql
-  DatabaseConnector::executeSql(connection, sql, profile = TRUE)
+  DatabaseConnector::executeSql(connection, sql)
   
   writeLines("Fetching data from server")
   start <- Sys.time()

@@ -21,218 +21,260 @@
 #' @details
 #' creates an object specifying how covariates should be contructed from data in the CDM model.
 #'
-#' @param useDemographicsGender                       Gender of the subject.
-#' @param useDemographicsAge                          Age of the subject on the index date (in years).
-#' @param useDemographicsAgeGroup                     Age of the subject on the index date (in 5 year
-#'                                                    age groups)
-#' @param useDemographicsRace                         Race of the subject.
-#' @param useDemographicsEthnicity                    Ethnicity of the subject.
-#' @param useDemographicsIndexYear                    Year of the index date.
-#' @param useDemographicsIndexMonth                   Month of the index date.
-#' @param useDemographicsPriorObservationTime         Number of days of observation time preceding the
-#'                                                    index date.
-#' @param useConditionOccurrenceLongTerm              One covariate per condition in the
-#'                                                    condition_occurrence table starting in the long
-#'                                                    term window.
-#' @param useConditionOccurrenceMediumTerm            One covariate per condition in the
-#'                                                    condition_occurrence table starting in the medium
-#'                                                    term window.
-#' @param useConditionOccurrenceShortTerm             One covariate per condition in the
-#'                                                    condition_occurrence table starting in the short
-#'                                                    term window.
-#' @param useConditionOccurrenceInpatientLongTerm     One covariate per condition observed in an
-#'                                                    inpatient setting in the condition_occurrence
-#'                                                    table starting in the long term window.
-#' @param useConditionOccurrenceInpatientMediumTerm   One covariate per condition observed in an
-#'                                                    inpatient setting in the condition_occurrence
-#'                                                    table starting in the medium term window.
-#' @param useConditionOccurrenceInpatientShortTerm    One covariate per condition observed in an
-#'                                                    inpatient setting in the condition_occurrence
-#'                                                    table starting in the short term window.
-#' @param useConditionEraLongTerm                     One covariate per condition in the condition_era
-#'                                                    table overlapping with any part of the long term
-#'                                                    window.
-#' @param useConditionEraMediumTerm                   One covariate per condition in the condition_era
-#'                                                    table overlapping with any part of the medium
-#'                                                    term window.
-#' @param useConditionEraShortTerm                    One covariate per condition in the condition_era
-#'                                                    table overlapping with any part of the short term
-#'                                                    window.
-#' @param useConditionEraOverlapping                  One covariate per condition in the condition_era
-#'                                                    table overlapping with the end of the risk
-#'                                                    window.
-#' @param useConditionEraStartLongTerm                One covariate per condition in the condition_era
-#'                                                    table starting in the long term window.
-#' @param useConditionEraStartMediumTerm              One covariate per condition in the condition_era
-#'                                                    table starting in the medium term window.
-#' @param useConditionEraStartShortTerm               One covariate per condition in the condition_era
-#'                                                    table starting in the short term window.
-#' @param useConditionGroupEraLongTerm                One covariate per condition era rolled up to
-#'                                                    groups in the condition_era table overlapping
-#'                                                    with any part of the long term window.
-#' @param useConditionGroupEraMediumTerm              One covariate per condition era rolled up to
-#'                                                    groups in the condition_era table overlapping
-#'                                                    with any part of the medium term window.
-#' @param useConditionGroupEraShortTerm               One covariate per condition era rolled up to
-#'                                                    groups in the condition_era table overlapping
-#'                                                    with any part of the short term window.
-#' @param useConditionGroupEraOverlapping             One covariate per condition era rolled up to
-#'                                                    groups in the condition_era table overlapping
-#'                                                    with the end of the risk window.
-#' @param useConditionGroupEraStartLongTerm           One covariate per condition era rolled up to
-#'                                                    groups in the condition_era table starting in the
-#'                                                    long term window.
-#' @param useConditionGroupEraStartMediumTerm         One covariate per condition era rolled up to
-#'                                                    groups in the condition_era table starting in the
-#'                                                    medium term window.
-#' @param useConditionGroupEraStartShortTerm          One covariate per condition era rolled up to
-#'                                                    groups in the condition_era table starting in the
-#'                                                    short term window.
-#' @param useDrugExposureLongTerm                     One covariate per drug in the drug_exposure table
-#'                                                    starting in the long term window.
-#' @param useDrugExposureMediumTerm                   One covariate per drug in the drug_exposure table
-#'                                                    starting in the medium term window.
-#' @param useDrugExposureShortTerm                    One covariate per drug in the drug_exposure table
-#'                                                    starting in the short term window.
-#' @param useDrugEraLongTerm                          One covariate per drug in the drug_era table
-#'                                                    overlapping with any part of the long term
-#'                                                    window.
-#' @param useDrugEraMediumTerm                        One covariate per drug in the drug_era table
-#'                                                    overlapping with any part of the medium term
-#'                                                    window.
-#' @param useDrugEraShortTerm                         One covariate per drug in the drug_era table
-#'                                                    overlapping with any part of the short window.
-#' @param useDrugEraOverlapping                       One covariate per drug in the drug_era table
-#'                                                    overlapping with the end of the risk window.
-#' @param useDrugEraStartLongTerm                     One covariate per drug in the drug_era table
-#'                                                    starting in the long term window.
-#' @param useDrugEraStartMediumTerm                   One covariate per drug in the drug_era table
-#'                                                    starting in the medium term window.
-#' @param useDrugEraStartShortTerm                    One covariate per drug in the drug_era table
-#'                                                    starting in the long short window.
-#' @param useDrugGroupEraLongTerm                     One covariate per drug rolled up to ATC groups in
-#'                                                    the drug_era table overlapping with any part of
-#'                                                    the long term window.
-#' @param useDrugGroupEraMediumTerm                   One covariate per drug rolled up to ATC groups in
-#'                                                    the drug_era table overlapping with any part of
-#'                                                    the medium term window.
-#' @param useDrugGroupEraShortTerm                    One covariate per drug rolled up to ATC groups in
-#'                                                    the drug_era table overlapping with any part of
-#'                                                    the short term window.
-#' @param useDrugGroupEraOverlapping                  One covariate per drug rolled up to ATC groups in
-#'                                                    the drug_era table overlapping with the end of
-#'                                                    the risk window.
-#' @param useDrugGroupEraStartLongTerm                One covariate per drug rolled up to ATC groups in
-#'                                                    the drug_era table starting in the long term
-#'                                                    window.
-#' @param useDrugGroupEraStartMediumTerm              One covariate per drug rolled up to ATC groups in
-#'                                                    the drug_era table starting in the medium term
-#'                                                    window.
-#' @param useDrugGroupEraStartShortTerm               One covariate per drug rolled up to ATC groups in
-#'                                                    the drug_era table starting in the short term
-#'                                                    window.
-#' @param useProcedureOccurrenceLongTerm              One covariate per procedure in the
-#'                                                    procedure_occurrence table in the long term
-#'                                                    window.
-#' @param useProcedureOccurrenceMediumTerm            One covariate per procedure in the
-#'                                                    procedure_occurrence table in the medium term
-#'                                                    window.
-#' @param useProcedureOccurrenceShortTerm             One covariate per procedure in the
-#'                                                    procedure_occurrence table in the short term
-#'                                                    window.
-#' @param useDeviceExposureLongTerm                   One covariate per device in the device exposure
-#'                                                    table starting in the long term window.
-#' @param useDeviceExposureMediumTerm                 One covariate per device in the device exposure
-#'                                                    table starting in the medium term window.
-#' @param useDeviceExposureShortTerm                  One covariate per device in the device exposure
-#'                                                    table starting in the short term window.
-#' @param useMeasurementLongTerm                      One covariate per measurement in the measurement
-#'                                                    table in the long term window.
-#' @param useMeasurementMediumTerm                    One covariate per measurement in the measurement
-#'                                                    table in the medium term window.
-#' @param useMeasurementShortTerm                     One covariate per measurement in the measurement
-#'                                                    table in the short term window.
-#' @param useMeasurementValueLongTerm                 One covariate containing the value per
-#'                                                    measurement-unit combination in the long term
-#'                                                    window.
-#' @param useMeasurementValueMediumTerm               One covariate containing the value per
-#'                                                    measurement-unit combination in the medium term
-#'                                                    window.
-#' @param useMeasurementValueShortTerm                One covariate containing the value per
-#'                                                    measurement-unit combination in the short term
-#'                                                    window.
-#' @param useMeasurementRangeGroupLongTerm            Covariates indicating whether measurements are
-#'                                                    below, within, or above normal range in the long
-#'                                                    term window.
-#' @param useMeasurementRangeGroupMediumTerm          Covariates indicating whether measurements are
-#'                                                    below, within, or above normal range in the
-#'                                                    medium term window.
-#' @param useMeasurementRangeGroupShortTerm           Covariates indicating whether measurements are
-#'                                                    below, within, or above normal range in the short
-#'                                                    term window.
-#' @param useObservationLongTerm                      One covariate per observation in the observation
-#'                                                    table in the long term window.
-#' @param useObservationMediumTerm                    One covariate per observation in the observation
-#'                                                    table in the medium term window.
-#' @param useObservationShortTerm                     One covariate per observation in the observation
-#'                                                    table in the short term window.
-#' @param useCharlsonIndex                            The Charlson comorbidity index (Romano
-#'                                                    adaptation) using all conditions prior to the
-#'                                                    window end.
-#' @param useDcsi                                     The Diabetes Comorbidity Severity Index (DCSI)
-#'                                                    using all conditions prior to the window end.
-#' @param useChads2                                   The CHADS2 score using all conditions prior to
-#'                                                    the window end.
-#' @param useChads2Vasc                               The CHADS2VASc score using all conditions prior
-#'                                                    to the window end.
-#' @param useDistinctConditionCountLongTerm           The number of distinct condition concepts
-#'                                                    observed in the long term window.
-#' @param useDistinctConditionCountMediumTerm         The number of distinct condition concepts
-#'                                                    observed in the medium term window.
-#' @param useDistinctConditionCountShortTerm          The number of distinct condition concepts
-#'                                                    observed in the medium term window.
-#' @param useDistinctIngredientCountLongTerm          The number of distinct ingredients observed in
-#'                                                    the long term window.
-#' @param useDistinctIngredientCountMediumTerm        The number of distinct ingredients observed in
-#'                                                    the medium term window.
-#' @param useDistinctIngredientCountShortTerm         The number of distinct ingredients observed in
-#'                                                    the medium term window.
-#' @param useDistinctProcedureCountLongTerm           The number of distinct procedures observed in the
-#'                                                    long term window.
-#' @param useDistinctProcedureCountMediumTerm         The number of distinct procedures observed in the
-#'                                                    medium term window.
-#' @param useDistinctProcedureCountShortTerm          The number of distinct procedures observed in the
-#'                                                    medium term window.
-#' @param useDistinctMeasurementCountLongTerm         The number of distinct measurements observed in
-#'                                                    the long term window.
-#' @param useDistinctMeasurementCountMediumTerm       The number of distinct measurements observed in
-#'                                                    the medium term window.
-#' @param useDistinctMeasurementCountShortTerm        The number of distinct measurements observed in
-#'                                                    the medium term window.
-#' @param useVisitCountLongTerm                       The number of visits observed in the long term
-#'                                                    window.
-#' @param useVisitCountMediumTerm                     The number of visits observed in the medium term
-#'                                                    window.
-#' @param useVisitCountShortTerm                      The number of visits observed in the medium term
-#'                                                    window.
-#' @param longTermStartDays                           What is the start day (relative to the index
-#'                                                    date) of the long-term window?
-#' @param mediumTermStartDays                         What is the start day (relative to the index
-#'                                                    date) of the medium-term window?
-#' @param shortTermStartDays                          What is the start day (relative to the index
-#'                                                    date) of the short-term window?
-#' @param endDays                                     What is the end day (relative to the index date)
-#'                                                    of the window?
-#' @param includedCovariateConceptIds                 A list of concept IDs that should be used to
-#'                                                    construct covariates.
-#' @param addDescendantsToInclude                     Should descendant concept IDs be added to the
-#'                                                    list of concepts to include?
-#' @param excludedCovariateConceptIds                 A list of concept IDs that should NOT be used to
-#'                                                    construct covariates.
-#' @param addDescendantsToExclude                     Should descendant concept IDs be added to the
-#'                                                    list of concepts to exclude?
-#' @param includedCovariateIds                        A list of covariate IDs that should be restricted
-#'                                                    to.
+#' @param useDemographicsGender                         Gender of the subject.
+#' @param useDemographicsAge                            Age of the subject on the index date (in
+#'                                                      years).
+#' @param useDemographicsAgeGroup                       Age of the subject on the index date (in 5 year
+#'                                                      age groups)
+#' @param useDemographicsRace                           Race of the subject.
+#' @param useDemographicsEthnicity                      Ethnicity of the subject.
+#' @param useDemographicsIndexYear                      Year of the index date.
+#' @param useDemographicsIndexMonth                     Month of the index date.
+#' @param useDemographicsPriorObservationTime           Number of days of observation time preceding
+#'                                                      the index date.
+#' @param useDemographicsPostObservationTime            Number of days of observation time preceding
+#'                                                      the index date.
+#' @param useDemographicsTimeInCohort                   Number of days of observation time preceding
+#'                                                      the index date.
+#' @param useConditionOccurrenceAnyTimePrior            One covariate per condition in the
+#'                                                      condition_occurrence table starting any time
+#'                                                      prior to index.
+#' @param useConditionOccurrenceLongTerm                One covariate per condition in the
+#'                                                      condition_occurrence table starting in the long
+#'                                                      term window.
+#' @param useConditionOccurrenceMediumTerm              One covariate per condition in the
+#'                                                      condition_occurrence table starting in the
+#'                                                      medium term window.
+#' @param useConditionOccurrenceShortTerm               One covariate per condition in the
+#'                                                      condition_occurrence table starting in the
+#'                                                      short term window.
+#' @param useConditionOccurrenceInpatientAnyTimePrior   One covariate per condition observed in an
+#'                                                      inpatient setting in the condition_occurrence
+#'                                                      table starting any time prior to index.
+#' @param useConditionOccurrenceInpatientLongTerm       One covariate per condition observed in an
+#'                                                      inpatient setting in the condition_occurrence
+#'                                                      table starting in the long term window.
+#' @param useConditionOccurrenceInpatientMediumTerm     One covariate per condition observed in an
+#'                                                      inpatient setting in the condition_occurrence
+#'                                                      table starting in the medium term window.
+#' @param useConditionOccurrenceInpatientShortTerm      One covariate per condition observed in an
+#'                                                      inpatient setting in the condition_occurrence
+#'                                                      table starting in the short term window.
+#' @param useConditionEraAnyTimePrior                   One covariate per condition in the
+#'                                                      condition_era table overlapping with any time
+#'                                                      prior to index.
+#' @param useConditionEraLongTerm                       One covariate per condition in the
+#'                                                      condition_era table overlapping with any part
+#'                                                      of the long term window.
+#' @param useConditionEraMediumTerm                     One covariate per condition in the
+#'                                                      condition_era table overlapping with any part
+#'                                                      of the medium term window.
+#' @param useConditionEraShortTerm                      One covariate per condition in the
+#'                                                      condition_era table overlapping with any part
+#'                                                      of the short term window.
+#' @param useConditionEraOverlapping                    One covariate per condition in the
+#'                                                      condition_era table overlapping with the end of
+#'                                                      the risk window.
+#' @param useConditionEraStartLongTerm                  One covariate per condition in the
+#'                                                      condition_era table starting in the long term
+#'                                                      window.
+#' @param useConditionEraStartMediumTerm                One covariate per condition in the
+#'                                                      condition_era table starting in the medium term
+#'                                                      window.
+#' @param useConditionEraStartShortTerm                 One covariate per condition in the
+#'                                                      condition_era table starting in the short term
+#'                                                      window.
+#' @param useConditionGroupEraAnyTimePrior              One covariate per condition era rolled up to
+#'                                                      groups in the condition_era table overlapping
+#'                                                      with any time prior to index.
+#' @param useConditionGroupEraLongTerm                  One covariate per condition era rolled up to
+#'                                                      groups in the condition_era table overlapping
+#'                                                      with any part of the long term window.
+#' @param useConditionGroupEraMediumTerm                One covariate per condition era rolled up to
+#'                                                      groups in the condition_era table overlapping
+#'                                                      with any part of the medium term window.
+#' @param useConditionGroupEraShortTerm                 One covariate per condition era rolled up to
+#'                                                      groups in the condition_era table overlapping
+#'                                                      with any part of the short term window.
+#' @param useConditionGroupEraOverlapping               One covariate per condition era rolled up to
+#'                                                      groups in the condition_era table overlapping
+#'                                                      with the end of the risk window.
+#' @param useConditionGroupEraStartLongTerm             One covariate per condition era rolled up to
+#'                                                      groups in the condition_era table starting in
+#'                                                      the long term window.
+#' @param useConditionGroupEraStartMediumTerm           One covariate per condition era rolled up to
+#'                                                      groups in the condition_era table starting in
+#'                                                      the medium term window.
+#' @param useConditionGroupEraStartShortTerm            One covariate per condition era rolled up to
+#'                                                      groups in the condition_era table starting in
+#'                                                      the short term window.
+#' @param useDrugExposureAnyTimePrior                   One covariate per drug in the drug_exposure
+#'                                                      table starting any time prior to index.
+#' @param useDrugExposureLongTerm                       One covariate per drug in the drug_exposure
+#'                                                      table starting in the long term window.
+#' @param useDrugExposureMediumTerm                     One covariate per drug in the drug_exposure
+#'                                                      table starting in the medium term window.
+#' @param useDrugExposureShortTerm                      One covariate per drug in the drug_exposure
+#'                                                      table starting in the short term window.
+#' @param useDrugEraAnyTimePrior                        One covariate per drug in the drug_era table
+#'                                                      overlapping with any time prior to index.
+#' @param useDrugEraLongTerm                            One covariate per drug in the drug_era table
+#'                                                      overlapping with any part of the long term
+#'                                                      window.
+#' @param useDrugEraMediumTerm                          One covariate per drug in the drug_era table
+#'                                                      overlapping with any part of the medium term
+#'                                                      window.
+#' @param useDrugEraShortTerm                           One covariate per drug in the drug_era table
+#'                                                      overlapping with any part of the short window.
+#' @param useDrugEraOverlapping                         One covariate per drug in the drug_era table
+#'                                                      overlapping with the end of the risk window.
+#' @param useDrugEraStartLongTerm                       One covariate per drug in the drug_era table
+#'                                                      starting in the long term window.
+#' @param useDrugEraStartMediumTerm                     One covariate per drug in the drug_era table
+#'                                                      starting in the medium term window.
+#' @param useDrugEraStartShortTerm                      One covariate per drug in the drug_era table
+#'                                                      starting in the long short window.
+#' @param useDrugGroupEraAnyTimePrior                   One covariate per drug rolled up to ATC groups
+#'                                                      in the drug_era table overlapping with any time
+#'                                                      prior to index.
+#' @param useDrugGroupEraLongTerm                       One covariate per drug rolled up to ATC groups
+#'                                                      in the drug_era table overlapping with any part
+#'                                                      of the long term window.
+#' @param useDrugGroupEraMediumTerm                     One covariate per drug rolled up to ATC groups
+#'                                                      in the drug_era table overlapping with any part
+#'                                                      of the medium term window.
+#' @param useDrugGroupEraShortTerm                      One covariate per drug rolled up to ATC groups
+#'                                                      in the drug_era table overlapping with any part
+#'                                                      of the short term window.
+#' @param useDrugGroupEraOverlapping                    One covariate per drug rolled up to ATC groups
+#'                                                      in the drug_era table overlapping with the end
+#'                                                      of the risk window.
+#' @param useDrugGroupEraStartLongTerm                  One covariate per drug rolled up to ATC groups
+#'                                                      in the drug_era table starting in the long term
+#'                                                      window.
+#' @param useDrugGroupEraStartMediumTerm                One covariate per drug rolled up to ATC groups
+#'                                                      in the drug_era table starting in the medium
+#'                                                      term window.
+#' @param useDrugGroupEraStartShortTerm                 One covariate per drug rolled up to ATC groups
+#'                                                      in the drug_era table starting in the short
+#'                                                      term window.
+#' @param useProcedureOccurrenceAnyTimePrior            One covariate per procedure in the
+#'                                                      procedure_occurrence table any time prior to
+#'                                                      index.
+#' @param useProcedureOccurrenceLongTerm                One covariate per procedure in the
+#'                                                      procedure_occurrence table in the long term
+#'                                                      window.
+#' @param useProcedureOccurrenceMediumTerm              One covariate per procedure in the
+#'                                                      procedure_occurrence table in the medium term
+#'                                                      window.
+#' @param useProcedureOccurrenceShortTerm               One covariate per procedure in the
+#'                                                      procedure_occurrence table in the short term
+#'                                                      window.
+#' @param useDeviceExposureAnyTimePrior                 One covariate per device in the device exposure
+#'                                                      table starting any time prior to index.
+#' @param useDeviceExposureLongTerm                     One covariate per device in the device exposure
+#'                                                      table starting in the long term window.
+#' @param useDeviceExposureMediumTerm                   One covariate per device in the device exposure
+#'                                                      table starting in the medium term window.
+#' @param useDeviceExposureShortTerm                    One covariate per device in the device exposure
+#'                                                      table starting in the short term window.
+#' @param useMeasurementAnyTimePrior                    One covariate per measurement in the
+#'                                                      measurement table any time prior to index.
+#' @param useMeasurementLongTerm                        One covariate per measurement in the
+#'                                                      measurement table in the long term window.
+#' @param useMeasurementMediumTerm                      One covariate per measurement in the
+#'                                                      measurement table in the medium term window.
+#' @param useMeasurementShortTerm                       One covariate per measurement in the
+#'                                                      measurement table in the short term window.
+#' @param useMeasurementValueAnyTimePrior               One covariate containing the value per
+#'                                                      measurement-unit combination any time prior to
+#'                                                      index.
+#' @param useMeasurementValueLongTerm                   One covariate containing the value per
+#'                                                      measurement-unit combination in the long term
+#'                                                      window.
+#' @param useMeasurementValueMediumTerm                 One covariate containing the value per
+#'                                                      measurement-unit combination in the medium term
+#'                                                      window.
+#' @param useMeasurementValueShortTerm                  One covariate containing the value per
+#'                                                      measurement-unit combination in the short term
+#'                                                      window.
+#' @param useMeasurementRangeGroupAnyTimePrior          Covariates indicating whether measurements are
+#'                                                      below, within, or above normal range any time
+#'                                                      prior to index.
+#' @param useMeasurementRangeGroupLongTerm              Covariates indicating whether measurements are
+#'                                                      below, within, or above normal range in the
+#'                                                      long term window.
+#' @param useMeasurementRangeGroupMediumTerm            Covariates indicating whether measurements are
+#'                                                      below, within, or above normal range in the
+#'                                                      medium term window.
+#' @param useMeasurementRangeGroupShortTerm             Covariates indicating whether measurements are
+#'                                                      below, within, or above normal range in the
+#'                                                      short term window.
+#' @param useObservationAnyTimePrior                    One covariate per observation in the
+#'                                                      observation table any time prior to index.
+#' @param useObservationLongTerm                        One covariate per observation in the
+#'                                                      observation table in the long term window.
+#' @param useObservationMediumTerm                      One covariate per observation in the
+#'                                                      observation table in the medium term window.
+#' @param useObservationShortTerm                       One covariate per observation in the
+#'                                                      observation table in the short term window.
+#' @param useCharlsonIndex                              The Charlson comorbidity index (Romano
+#'                                                      adaptation) using all conditions prior to the
+#'                                                      window end.
+#' @param useDcsi                                       The Diabetes Comorbidity Severity Index (DCSI)
+#'                                                      using all conditions prior to the window end.
+#' @param useChads2                                     The CHADS2 score using all conditions prior to
+#'                                                      the window end.
+#' @param useChads2Vasc                                 The CHADS2VASc score using all conditions prior
+#'                                                      to the window end.
+#' @param useDistinctConditionCountLongTerm             The number of distinct condition concepts
+#'                                                      observed in the long term window.
+#' @param useDistinctConditionCountMediumTerm           The number of distinct condition concepts
+#'                                                      observed in the medium term window.
+#' @param useDistinctConditionCountShortTerm            The number of distinct condition concepts
+#'                                                      observed in the medium term window.
+#' @param useDistinctIngredientCountLongTerm            The number of distinct ingredients observed in
+#'                                                      the long term window.
+#' @param useDistinctIngredientCountMediumTerm          The number of distinct ingredients observed in
+#'                                                      the medium term window.
+#' @param useDistinctIngredientCountShortTerm           The number of distinct ingredients observed in
+#'                                                      the medium term window.
+#' @param useDistinctProcedureCountLongTerm             The number of distinct procedures observed in
+#'                                                      the long term window.
+#' @param useDistinctProcedureCountMediumTerm           The number of distinct procedures observed in
+#'                                                      the medium term window.
+#' @param useDistinctProcedureCountShortTerm            The number of distinct procedures observed in
+#'                                                      the medium term window.
+#' @param useDistinctMeasurementCountLongTerm           The number of distinct measurements observed in
+#'                                                      the long term window.
+#' @param useDistinctMeasurementCountMediumTerm         The number of distinct measurements observed in
+#'                                                      the medium term window.
+#' @param useDistinctMeasurementCountShortTerm          The number of distinct measurements observed in
+#'                                                      the medium term window.
+#' @param useVisitCountLongTerm                         The number of visits observed in the long term
+#'                                                      window.
+#' @param useVisitCountMediumTerm                       The number of visits observed in the medium
+#'                                                      term window.
+#' @param useVisitCountShortTerm                        The number of visits observed in the medium
+#'                                                      term window.
+#' @param longTermStartDays                             What is the start day (relative to the index
+#'                                                      date) of the long-term window?
+#' @param mediumTermStartDays                           What is the start day (relative to the index
+#'                                                      date) of the medium-term window?
+#' @param shortTermStartDays                            What is the start day (relative to the index
+#'                                                      date) of the short-term window?
+#' @param endDays                                       What is the end day (relative to the index
+#'                                                      date) of the window?
+#' @param includedCovariateConceptIds                   A list of concept IDs that should be used to
+#'                                                      construct covariates.
+#' @param addDescendantsToInclude                       Should descendant concept IDs be added to the
+#'                                                      list of concepts to include?
+#' @param excludedCovariateConceptIds                   A list of concept IDs that should NOT be used
+#'                                                      to construct covariates.
+#' @param addDescendantsToExclude                       Should descendant concept IDs be added to the
+#'                                                      list of concepts to exclude?
+#' @param includedCovariateIds                          A list of covariate IDs that should be
+#'                                                      restricted to.
 #'
 #' @return
 #' An object of type \code{covariateSettings}, to be used in other functions.
@@ -246,12 +288,17 @@
 #'                                     useDemographicsIndexYear = TRUE,
 #'                                     useDemographicsIndexMonth = TRUE,
 #'                                     useDemographicsPriorObservationTime = FALSE,
+#'                                     useDemographicsPostObservationTime = FALSE,
+#'                                     useDemographicsTimeInCohort = FALSE,
+#'                                     useConditionOccurrenceAnyTimePrior = FALSE,
 #'                                     useConditionOccurrenceLongTerm = TRUE,
 #'                                     useConditionOccurrenceMediumTerm = FALSE,
 #'                                     useConditionOccurrenceShortTerm = TRUE,
+#'                                     useConditionOccurrenceInpatientAnyTimePrior = FALSE,
 #'                                     useConditionOccurrenceInpatientLongTerm = FALSE,
 #'                                     useConditionOccurrenceInpatientMediumTerm = FALSE,
 #'                                     useConditionOccurrenceInpatientShortTerm = FALSE,
+#'                                     useConditionEraAnyTimePrior = FALSE,
 #'                                     useConditionEraLongTerm = TRUE,
 #'                                     useConditionEraMediumTerm = FALSE,
 #'                                     useConditionEraShortTerm = TRUE,
@@ -259,6 +306,7 @@
 #'                                     useConditionEraStartLongTerm = FALSE,
 #'                                     useConditionEraStartMediumTerm = FALSE,
 #'                                     useConditionEraStartShortTerm = FALSE,
+#'                                     useConditionGroupEraAnyTimePrior = FALSE,
 #'                                     useConditionGroupEraLongTerm = TRUE,
 #'                                     useConditionGroupEraMediumTerm = FALSE,
 #'                                     useConditionGroupEraShortTerm = TRUE,
@@ -266,9 +314,11 @@
 #'                                     useConditionGroupEraStartLongTerm = TRUE,
 #'                                     useConditionGroupEraStartMediumTerm = FALSE,
 #'                                     useConditionGroupEraStartShortTerm = TRUE,
+#'                                     useDrugExposureAnyTimePrior = FALSE,
 #'                                     useDrugExposureLongTerm = FALSE,
 #'                                     useDrugExposureMediumTerm = FALSE,
 #'                                     useDrugExposureShortTerm = FALSE,
+#'                                     useDrugEraAnyTimePrior = FALSE,
 #'                                     useDrugEraLongTerm = TRUE,
 #'                                     useDrugEraMediumTerm = FALSE,
 #'                                     useDrugEraShortTerm = TRUE,
@@ -276,6 +326,7 @@
 #'                                     useDrugEraStartLongTerm = FALSE,
 #'                                     useDrugEraStartMediumTerm = FALSE,
 #'                                     useDrugEraStartShortTerm = FALSE,
+#'                                     useDrugGroupEraAnyTimePrior = FALSE,
 #'                                     useDrugGroupEraLongTerm = TRUE,
 #'                                     useDrugGroupEraMediumTerm = FALSE,
 #'                                     useDrugGroupEraShortTerm = TRUE,
@@ -283,21 +334,27 @@
 #'                                     useDrugGroupEraStartLongTerm = FALSE,
 #'                                     useDrugGroupEraStartMediumTerm = FALSE,
 #'                                     useDrugGroupEraStartShortTerm = FALSE,
+#'                                     useProcedureOccurrenceAnyTimePrior = FALSE,
 #'                                     useProcedureOccurrenceLongTerm = TRUE,
 #'                                     useProcedureOccurrenceMediumTerm = FALSE,
 #'                                     useProcedureOccurrenceShortTerm = TRUE,
+#'                                     useDeviceExposureAnyTimePrior = FALSE,
 #'                                     useDeviceExposureLongTerm = TRUE,
 #'                                     useDeviceExposureMediumTerm = FALSE,
 #'                                     useDeviceExposureShortTerm = TRUE,
+#'                                     useMeasurementAnyTimePrior = FALSE,
 #'                                     useMeasurementLongTerm = TRUE,
 #'                                     useMeasurementMediumTerm = FALSE,
 #'                                     useMeasurementShortTerm = TRUE,
+#'                                     useMeasurementValueAnyTimePrior = FALSE,
 #'                                     useMeasurementValueLongTerm = FALSE,
 #'                                     useMeasurementValueMediumTerm = FALSE,
 #'                                     useMeasurementValueShortTerm = FALSE,
+#'                                     useMeasurementRangeGroupAnyTimePrior = FALSE,
 #'                                     useMeasurementRangeGroupLongTerm = TRUE,
 #'                                     useMeasurementRangeGroupMediumTerm = FALSE,
 #'                                     useMeasurementRangeGroupShortTerm = FALSE,
+#'                                     useObservationAnyTimePrior = FALSE,
 #'                                     useObservationLongTerm = TRUE,
 #'                                     useObservationMediumTerm = FALSE,
 #'                                     useObservationShortTerm = TRUE,
@@ -339,12 +396,17 @@ createCovariateSettings <- function(useDemographicsGender = FALSE,
                                     useDemographicsIndexYear = FALSE,
                                     useDemographicsIndexMonth = FALSE,
                                     useDemographicsPriorObservationTime = FALSE,
+                                    useDemographicsPostObservationTime = FALSE,
+                                    useDemographicsTimeInCohort = FALSE,
+                                    useConditionOccurrenceAnyTimePrior = FALSE,
                                     useConditionOccurrenceLongTerm = FALSE,
                                     useConditionOccurrenceMediumTerm = FALSE,
                                     useConditionOccurrenceShortTerm = FALSE,
+                                    useConditionOccurrenceInpatientAnyTimePrior = FALSE,
                                     useConditionOccurrenceInpatientLongTerm = FALSE,
                                     useConditionOccurrenceInpatientMediumTerm = FALSE,
                                     useConditionOccurrenceInpatientShortTerm = FALSE,
+                                    useConditionEraAnyTimePrior = FALSE,
                                     useConditionEraLongTerm = FALSE,
                                     useConditionEraMediumTerm = FALSE,
                                     useConditionEraShortTerm = FALSE,
@@ -352,6 +414,7 @@ createCovariateSettings <- function(useDemographicsGender = FALSE,
                                     useConditionEraStartLongTerm = FALSE,
                                     useConditionEraStartMediumTerm = FALSE,
                                     useConditionEraStartShortTerm = FALSE,
+                                    useConditionGroupEraAnyTimePrior = FALSE,
                                     useConditionGroupEraLongTerm = FALSE,
                                     useConditionGroupEraMediumTerm = FALSE,
                                     useConditionGroupEraShortTerm = FALSE,
@@ -359,9 +422,11 @@ createCovariateSettings <- function(useDemographicsGender = FALSE,
                                     useConditionGroupEraStartLongTerm = FALSE,
                                     useConditionGroupEraStartMediumTerm = FALSE,
                                     useConditionGroupEraStartShortTerm = FALSE,
+                                    useDrugExposureAnyTimePrior = FALSE,
                                     useDrugExposureLongTerm = FALSE,
                                     useDrugExposureMediumTerm = FALSE,
                                     useDrugExposureShortTerm = FALSE,
+                                    useDrugEraAnyTimePrior = FALSE,
                                     useDrugEraLongTerm = FALSE,
                                     useDrugEraMediumTerm = FALSE,
                                     useDrugEraShortTerm = FALSE,
@@ -369,6 +434,7 @@ createCovariateSettings <- function(useDemographicsGender = FALSE,
                                     useDrugEraStartLongTerm = FALSE,
                                     useDrugEraStartMediumTerm = FALSE,
                                     useDrugEraStartShortTerm = FALSE,
+                                    useDrugGroupEraAnyTimePrior = FALSE,
                                     useDrugGroupEraLongTerm = FALSE,
                                     useDrugGroupEraMediumTerm = FALSE,
                                     useDrugGroupEraShortTerm = FALSE,
@@ -376,21 +442,27 @@ createCovariateSettings <- function(useDemographicsGender = FALSE,
                                     useDrugGroupEraStartLongTerm = FALSE,
                                     useDrugGroupEraStartMediumTerm = FALSE,
                                     useDrugGroupEraStartShortTerm = FALSE,
+                                    useProcedureOccurrenceAnyTimePrior = FALSE,
                                     useProcedureOccurrenceLongTerm = FALSE,
                                     useProcedureOccurrenceMediumTerm = FALSE,
                                     useProcedureOccurrenceShortTerm = FALSE,
+                                    useDeviceExposureAnyTimePrior = FALSE,
                                     useDeviceExposureLongTerm = FALSE,
                                     useDeviceExposureMediumTerm = FALSE,
                                     useDeviceExposureShortTerm = FALSE,
+                                    useMeasurementAnyTimePrior = FALSE,
                                     useMeasurementLongTerm = FALSE,
                                     useMeasurementMediumTerm = FALSE,
                                     useMeasurementShortTerm = FALSE,
+                                    useMeasurementValueAnyTimePrior = FALSE,
                                     useMeasurementValueLongTerm = FALSE,
                                     useMeasurementValueMediumTerm = FALSE,
                                     useMeasurementValueShortTerm = FALSE,
+                                    useMeasurementRangeGroupAnyTimePrior = FALSE,
                                     useMeasurementRangeGroupLongTerm = FALSE,
                                     useMeasurementRangeGroupMediumTerm = FALSE,
                                     useMeasurementRangeGroupShortTerm = FALSE,
+                                    useObservationAnyTimePrior = FALSE,
                                     useObservationLongTerm = FALSE,
                                     useObservationMediumTerm = FALSE,
                                     useObservationShortTerm = FALSE,

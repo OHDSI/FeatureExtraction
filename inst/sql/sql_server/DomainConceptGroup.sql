@@ -51,9 +51,11 @@ INNER JOIN (
 {@included_concept_table != ''} ? {		AND concept_id IN (SELECT id FROM @included_concept_table)}
 ) valid_groups
 	ON ancestor_concept_id = valid_groups.concept_id
-WHERE ancestor_concept_id != descendant_concept_id
-{@excluded_concept_table != ''} ? {	AND ancestor_concept_id NOT IN (SELECT id FROM @excluded_concept_table)}
-{@included_concept_table != ''} ? {	AND ancestor_concept_id IN (SELECT id FROM @included_concept_table)}
+{@excluded_concept_table != '' | @included_concept_table != ''} ? {
+WHERE 
+{@excluded_concept_table != ''} ? {	ancestor_concept_id NOT IN (SELECT id FROM @excluded_concept_table)}
+{@included_concept_table != ''} ? {{@excluded_concept_table != ''} ? {	AND} : {	}ancestor_concept_id IN (SELECT id FROM @included_concept_table)}
+}
 ;
 }
 
@@ -94,10 +96,10 @@ FROM (
 	WHERE drug_concept_id != 0
 } : {
 	WHERE @domain_start_date <= DATEADD(DAY, @end_day, cohort.cohort_start_date)
-		AND @domain_end_date >= DATEADD(DAY, @start_day, cohort.cohort_start_date)
+{@start_day != 'anyTimePrior'} ? {				AND @domain_end_date >= DATEADD(DAY, @start_day, cohort.cohort_start_date)}
 		AND @domain_concept_id != 0
 }
-{@inpatient} ? {	AND condition_type_concept_id IN (38000183, 38000184, 38000199, 38000200)}
+{@sub_type == 'inpatient'} ? {	AND condition_type_concept_id IN (38000183, 38000184, 38000199, 38000200)}
 {@included_cov_table != ''} ? {		AND CAST(ancestor_concept_id AS BIGINT) * 1000 + @analysis_id IN (SELECT id FROM @included_cov_table)}
 {@cohort_definition_id != -1} ? {		AND cohort.cohort_definition_id = @cohort_definition_id}
 ) temp
@@ -123,7 +125,11 @@ SELECT covariate_id,
 {@temporal} ? {
 	CONCAT('@domain_table group: ', concept_id, '-', concept_name) AS covariate_name,
 } : {
+{@start_day == 'anyTimePrior'} ? {
+	CONCAT('@domain_table group any time prior through @end_day days relative to index: ', concept_id, '-', concept_name) AS covariate_name,
+} : {
 	CONCAT('@domain_table group during day @start_day through @end_day days relative to index: ', concept_id, '-', concept_name) AS covariate_name,
+}
 }
 	@analysis_id AS analysis_id,
 	concept_id
@@ -149,7 +155,11 @@ SELECT @analysis_id AS analysis_id,
 	'@analysis_name' AS analysis_name,
 	'@domain_id' AS domain_id,
 {!@temporal} ? {
+{@start_day == 'anyTimePrior'} ? {
+	NULL AS start_day,
+} : {
 	@start_day AS start_day,
+}
 	@end_day AS end_day,
 }
 	'Y' AS is_binary,

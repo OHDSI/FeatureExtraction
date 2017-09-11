@@ -59,7 +59,7 @@ FROM (
 	WHERE measurement_concept_id != 0 
 } : {
 	WHERE measurement_date <= DATEADD(DAY, @end_day, cohort.cohort_start_date)
-		AND measurement_date >= DATEADD(DAY, @start_day, cohort.cohort_start_date)
+{@start_day != 'anyTimePrior'} ? {				AND measurement_date >= DATEADD(DAY, @start_day, cohort.cohort_start_date)}
 		AND measurement_concept_id != 0
 }	
 		AND value_as_number IS NOT NULL 			
@@ -196,11 +196,20 @@ SELECT temp.covariate_id,
 		CONCAT('measurement value: ', measurement_concept.concept_id, '-', measurement_concept.concept_name, ' (', unit_concept.concept_name, ')')
 	END AS covariate_name,
 } : {
+{@start_day == 'anyTimePrior'} ? {
+	CASE WHEN unit_concept.concept_id = 0 THEN
+		CONCAT('measurement value during any time prior through @end_day days relative to index: ', measurement_concept.concept_id, '-', measurement_concept.concept_name, ' (Unknown unit)')
+	ELSE 	
+		CONCAT('measurement value during any time prior through @end_day days relative to index: ', measurement_concept.concept_id, '-', measurement_concept.concept_name, ' (', unit_concept.concept_name, ')')
+	END AS covariate_name,
+
+} : {
 	CASE WHEN unit_concept.concept_id = 0 THEN
 		CONCAT('measurement value during day @start_day through @end_day days relative to index: ', measurement_concept.concept_id, '-', measurement_concept.concept_name, ' (Unknown unit)')
 	ELSE 	
 		CONCAT('measurement value during day @start_day through @end_day days relative to index: ', measurement_concept.concept_id, '-', measurement_concept.concept_name, ' (', unit_concept.concept_name, ')')
 	END AS covariate_name,
+}
 }
 	@analysis_id AS analysis_id,
 	covariate_ids.measurement_concept_id AS concept_id
