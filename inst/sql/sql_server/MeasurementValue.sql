@@ -191,23 +191,23 @@ INSERT INTO #cov_ref (
 SELECT temp.covariate_id,
 {@temporal} ? {
 	CASE WHEN unit_concept.concept_id = 0 THEN
-		CONCAT('measurement value: ', measurement_concept.concept_id, '-', measurement_concept.concept_name, ' (Unknown unit)')
+		CONCAT('measurement value: ', measurement_concept.concept_name, ' (Unknown unit)')
 	ELSE 	
-		CONCAT('measurement value: ', measurement_concept.concept_id, '-', measurement_concept.concept_name, ' (', unit_concept.concept_name, ')')
+		CONCAT('measurement value: ', measurement_concept.concept_name, ' (', unit_concept.concept_name, ')')
 	END AS covariate_name,
 } : {
 {@start_day == 'anyTimePrior'} ? {
 	CASE WHEN unit_concept.concept_id = 0 THEN
-		CONCAT('measurement value during any time prior through @end_day days relative to index: ', measurement_concept.concept_id, '-', measurement_concept.concept_name, ' (Unknown unit)')
+		CONCAT('measurement value during any time prior through @end_day days relative to index: ', measurement_concept.concept_name, ' (Unknown unit)')
 	ELSE 	
-		CONCAT('measurement value during any time prior through @end_day days relative to index: ', measurement_concept.concept_id, '-', measurement_concept.concept_name, ' (', unit_concept.concept_name, ')')
+		CONCAT('measurement value during any time prior through @end_day days relative to index: ', measurement_concept.concept_name, ' (', unit_concept.concept_name, ')')
 	END AS covariate_name,
 
 } : {
 	CASE WHEN unit_concept.concept_id = 0 THEN
-		CONCAT('measurement value during day @start_day through @end_day days relative to index: ', measurement_concept.concept_id, '-', measurement_concept.concept_name, ' (Unknown unit)')
+		CONCAT('measurement value during day @start_day through @end_day days relative to index: ', measurement_concept.concept_name, ' (Unknown unit)')
 	ELSE 	
-		CONCAT('measurement value during day @start_day through @end_day days relative to index: ', measurement_concept.concept_id, '-', measurement_concept.concept_name, ' (', unit_concept.concept_name, ')')
+		CONCAT('measurement value during day @start_day through @end_day days relative to index: ', measurement_concept.concept_name, ' (', unit_concept.concept_name, ')')
 	END AS covariate_name,
 }
 }

@@ -59,12 +59,12 @@ INSERT INTO #cov_ref (
 	)
 SELECT covariate_id,
 {@temporal} ? {
-	CONCAT('@domain_table: ', concept_id, '-', concept_name) AS covariate_name,
+	CONCAT('@domain_table: ', concept_name) AS covariate_name,
 } : {
 {@start_day == 'anyTimePrior'} ? {
-	CONCAT('@domain_table any time prior through @end_day days relative to index: ', concept_id, '-', concept_name) AS covariate_name,
+	CONCAT('@domain_table any time prior through @end_day days relative to index: ', concept_name) AS covariate_name,
 } : {
-	CONCAT('@domain_table during day @start_day through @end_day days relative to index: ', concept_id, '-', concept_name) AS covariate_name,
+	CONCAT('@domain_table during day @start_day through @end_day days relative to index: ', concept_name) AS covariate_name,
 }
 }
 	@analysis_id AS analysis_id,
