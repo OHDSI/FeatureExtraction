@@ -21,41 +21,44 @@
 #' @details
 #' creates an object specifying how covariates should be contructed from data in the CDM model.
 #'
-#' @param useDemographicsGender         Gender of the subject.
+#' @param useDemographicsGender         Gender of the subject. (analysis ID 1)
 #' @param useDemographicsAgeGroup       Age of the subject on the index date (in 5 year increments).
-#' @param useDemographicsIndexYear      Year of the index date.
-#' @param useDemographicsIndexMonth     Month of the index date.
+#'                                      (analysis ID 2)
+#' @param useDemographicsIndexYear      Year of the index date. (analysis ID 3)
+#' @param useDemographicsIndexMonth     Month of the index date. (analysis ID 4)
 #' @param useConditionOccurrence        One covariate per condition in the condition_occurrence table
-#'                                      starting in the time window.
+#'                                      starting in the time window. (analysis ID 101)
 #' @param useConditionEraStart          One covariate per condition in the condition_era table starting
-#'                                      in the time window.
+#'                                      in the time window. (analysis ID 201)
 #' @param useConditionEraOverlap        One covariate per condition in the condition_era table
-#'                                      overlapping with any part of the time window.
+#'                                      overlapping with any part of the time window. (analysis ID 202)
 #' @param useConditionEraGroupStart     One covariate per condition era rolled up to SNOMED groups in
-#'                                      the condition_era table starting in the time window.
+#'                                      the condition_era table starting in the time window. (analysis
+#'                                      ID 203)
 #' @param useConditionEraGroupOverlap   One covariate per condition era rolled up to SNOMED groups in
 #'                                      the condition_era table overlapping with any part of the time
-#'                                      window.
+#'                                      window. (analysis ID 203)
 #' @param useDrugExposure               One covariate per drug in the drug_exposure table starting in
-#'                                      the time window.
+#'                                      the time window. (analysis ID 301)
 #' @param useDrugEraStart               One covariate per drug in the drug_era table starting in the
-#'                                      time window.
+#'                                      time window. (analysis ID 401)
 #' @param useDrugEraOverlap             One covariate per drug in the drug_era table overlapping with
-#'                                      any part of the time window.
+#'                                      any part of the time window. (analysis ID 402)
 #' @param useDrugEraGroupStart          One covariate per drug rolled up to ATC groups in the drug_era
-#'                                      table starting in thetime window.
+#'                                      table starting in thetime window. (analysis ID 403)
 #' @param useDrugEraGroupOverlap        One covariate per drug rolled up to ATC groups in the drug_era
-#'                                      table overlapping with any part of thetime window.
+#'                                      table overlapping with any part of thetime window. (analysis ID
+#'                                      403)
 #' @param useProcedureOccurrence        One covariate per procedure in the procedure_occurrence table
-#'                                      in the time window.
+#'                                      in the time window. (analysis ID 501)
 #' @param useDeviceExposure             One covariate per device in the device exposure table starting
-#'                                      in the timewindow.
+#'                                      in the timewindow. (analysis ID 601)
 #' @param useMeasurement                One covariate per measurement in the measurement table in the
-#'                                      time window.
+#'                                      time window. (analysis ID 701)
 #' @param useObservation                One covariate per observation in the observation table in the
-#'                                      time window.
+#'                                      time window. (analysis ID 801)
 #' @param useCharlsonIndex              The Charlson comorbidity index (Romano adaptation) using all
-#'                                      conditions prior to the window end.
+#'                                      conditions prior to the window end. (analysis ID 901)
 #' @param temporalStartDays             A list of integers representing the start of a time period,
 #'                                      relative to the index date. 0 indicates the index date, -1
 #'                                      indicates the day before the index date, etc. The start day is

@@ -21,242 +21,276 @@
 #' @details
 #' creates an object specifying how covariates should be contructed from data in the CDM model.
 #'
-#' @param useDemographicsGender                         Gender of the subject.
+#' @param useDemographicsGender                         Gender of the subject. (analysis ID 1)
 #' @param useDemographicsAge                            Age of the subject on the index date (in
-#'                                                      years).
+#'                                                      years). (analysis ID 2)
 #' @param useDemographicsAgeGroup                       Age of the subject on the index date (in 5 year
-#'                                                      age groups)
-#' @param useDemographicsRace                           Race of the subject.
-#' @param useDemographicsEthnicity                      Ethnicity of the subject.
-#' @param useDemographicsIndexYear                      Year of the index date.
-#' @param useDemographicsIndexMonth                     Month of the index date.
+#'                                                      age groups) (analysis ID 3)
+#' @param useDemographicsRace                           Race of the subject. (analysis ID 4)
+#' @param useDemographicsEthnicity                      Ethnicity of the subject. (analysis ID 5)
+#' @param useDemographicsIndexYear                      Year of the index date. (analysis ID 6)
+#' @param useDemographicsIndexMonth                     Month of the index date. (analysis ID 7)
 #' @param useDemographicsPriorObservationTime           Number of days of observation time preceding
-#'                                                      the index date.
+#'                                                      the index date. (analysis ID 8)
 #' @param useDemographicsPostObservationTime            Number of days of observation time preceding
-#'                                                      the index date.
+#'                                                      the index date. (analysis ID 9)
 #' @param useDemographicsTimeInCohort                   Number of days of observation time preceding
-#'                                                      the index date.
+#'                                                      the index date. (analysis ID 10)
 #' @param useConditionOccurrenceAnyTimePrior            One covariate per condition in the
 #'                                                      condition_occurrence table starting any time
-#'                                                      prior to index.
+#'                                                      prior to index. (analysis ID 101)
 #' @param useConditionOccurrenceLongTerm                One covariate per condition in the
 #'                                                      condition_occurrence table starting in the long
-#'                                                      term window.
+#'                                                      term window. (analysis ID 102)
 #' @param useConditionOccurrenceMediumTerm              One covariate per condition in the
 #'                                                      condition_occurrence table starting in the
-#'                                                      medium term window.
+#'                                                      medium term window. (analysis ID 103)
 #' @param useConditionOccurrenceShortTerm               One covariate per condition in the
 #'                                                      condition_occurrence table starting in the
-#'                                                      short term window.
+#'                                                      short term window. (analysis ID 104)
 #' @param useConditionOccurrenceInpatientAnyTimePrior   One covariate per condition observed in an
 #'                                                      inpatient setting in the condition_occurrence
 #'                                                      table starting any time prior to index.
+#'                                                      (analysis ID 105)
 #' @param useConditionOccurrenceInpatientLongTerm       One covariate per condition observed in an
 #'                                                      inpatient setting in the condition_occurrence
 #'                                                      table starting in the long term window.
+#'                                                      (analysis ID 106)
 #' @param useConditionOccurrenceInpatientMediumTerm     One covariate per condition observed in an
 #'                                                      inpatient setting in the condition_occurrence
 #'                                                      table starting in the medium term window.
+#'                                                      (analysis ID 107)
 #' @param useConditionOccurrenceInpatientShortTerm      One covariate per condition observed in an
 #'                                                      inpatient setting in the condition_occurrence
 #'                                                      table starting in the short term window.
+#'                                                      (analysis ID 108)
 #' @param useConditionEraAnyTimePrior                   One covariate per condition in the
 #'                                                      condition_era table overlapping with any time
-#'                                                      prior to index.
+#'                                                      prior to index. (analysis ID 201)
 #' @param useConditionEraLongTerm                       One covariate per condition in the
 #'                                                      condition_era table overlapping with any part
-#'                                                      of the long term window.
+#'                                                      of the long term window. (analysis ID 202)
 #' @param useConditionEraMediumTerm                     One covariate per condition in the
 #'                                                      condition_era table overlapping with any part
-#'                                                      of the medium term window.
+#'                                                      of the medium term window. (analysis ID 203)
 #' @param useConditionEraShortTerm                      One covariate per condition in the
 #'                                                      condition_era table overlapping with any part
-#'                                                      of the short term window.
+#'                                                      of the short term window. (analysis ID 204)
 #' @param useConditionEraOverlapping                    One covariate per condition in the
 #'                                                      condition_era table overlapping with the end of
-#'                                                      the risk window.
+#'                                                      the risk window. (analysis ID 205)
 #' @param useConditionEraStartLongTerm                  One covariate per condition in the
 #'                                                      condition_era table starting in the long term
-#'                                                      window.
+#'                                                      window. (analysis ID 206)
 #' @param useConditionEraStartMediumTerm                One covariate per condition in the
 #'                                                      condition_era table starting in the medium term
-#'                                                      window.
+#'                                                      window. (analysis ID 207)
 #' @param useConditionEraStartShortTerm                 One covariate per condition in the
 #'                                                      condition_era table starting in the short term
-#'                                                      window.
+#'                                                      window. (analysis ID 208)
 #' @param useConditionGroupEraAnyTimePrior              One covariate per condition era rolled up to
 #'                                                      groups in the condition_era table overlapping
-#'                                                      with any time prior to index.
+#'                                                      with any time prior to index. (analysis ID 209)
 #' @param useConditionGroupEraLongTerm                  One covariate per condition era rolled up to
 #'                                                      groups in the condition_era table overlapping
 #'                                                      with any part of the long term window.
+#'                                                      (analysis ID 210)
 #' @param useConditionGroupEraMediumTerm                One covariate per condition era rolled up to
 #'                                                      groups in the condition_era table overlapping
 #'                                                      with any part of the medium term window.
+#'                                                      (analysis ID 211)
 #' @param useConditionGroupEraShortTerm                 One covariate per condition era rolled up to
 #'                                                      groups in the condition_era table overlapping
 #'                                                      with any part of the short term window.
+#'                                                      (analysis ID 212)
 #' @param useConditionGroupEraOverlapping               One covariate per condition era rolled up to
 #'                                                      groups in the condition_era table overlapping
-#'                                                      with the end of the risk window.
+#'                                                      with the end of the risk window. (analysis ID
+#'                                                      213)
 #' @param useConditionGroupEraStartLongTerm             One covariate per condition era rolled up to
 #'                                                      groups in the condition_era table starting in
-#'                                                      the long term window.
+#'                                                      the long term window. (analysis ID 214)
 #' @param useConditionGroupEraStartMediumTerm           One covariate per condition era rolled up to
 #'                                                      groups in the condition_era table starting in
-#'                                                      the medium term window.
+#'                                                      the medium term window. (analysis ID 215)
 #' @param useConditionGroupEraStartShortTerm            One covariate per condition era rolled up to
 #'                                                      groups in the condition_era table starting in
-#'                                                      the short term window.
+#'                                                      the short term window. (analysis ID 216)
 #' @param useDrugExposureAnyTimePrior                   One covariate per drug in the drug_exposure
 #'                                                      table starting any time prior to index.
+#'                                                      (analysis ID 301)
 #' @param useDrugExposureLongTerm                       One covariate per drug in the drug_exposure
 #'                                                      table starting in the long term window.
+#'                                                      (analysis ID 302)
 #' @param useDrugExposureMediumTerm                     One covariate per drug in the drug_exposure
 #'                                                      table starting in the medium term window.
+#'                                                      (analysis ID 303)
 #' @param useDrugExposureShortTerm                      One covariate per drug in the drug_exposure
 #'                                                      table starting in the short term window.
+#'                                                      (analysis ID 304)
 #' @param useDrugEraAnyTimePrior                        One covariate per drug in the drug_era table
 #'                                                      overlapping with any time prior to index.
+#'                                                      (analysis ID 401)
 #' @param useDrugEraLongTerm                            One covariate per drug in the drug_era table
 #'                                                      overlapping with any part of the long term
-#'                                                      window.
+#'                                                      window. (analysis ID 402)
 #' @param useDrugEraMediumTerm                          One covariate per drug in the drug_era table
 #'                                                      overlapping with any part of the medium term
-#'                                                      window.
+#'                                                      window. (analysis ID 403)
 #' @param useDrugEraShortTerm                           One covariate per drug in the drug_era table
 #'                                                      overlapping with any part of the short window.
+#'                                                      (analysis ID 404)
 #' @param useDrugEraOverlapping                         One covariate per drug in the drug_era table
 #'                                                      overlapping with the end of the risk window.
+#'                                                      (analysis ID 405)
 #' @param useDrugEraStartLongTerm                       One covariate per drug in the drug_era table
-#'                                                      starting in the long term window.
+#'                                                      starting in the long term window. (analysis ID
+#'                                                      406)
 #' @param useDrugEraStartMediumTerm                     One covariate per drug in the drug_era table
-#'                                                      starting in the medium term window.
+#'                                                      starting in the medium term window. (analysis
+#'                                                      ID 407)
 #' @param useDrugEraStartShortTerm                      One covariate per drug in the drug_era table
-#'                                                      starting in the long short window.
+#'                                                      starting in the long short window. (analysis ID
+#'                                                      408)
 #' @param useDrugGroupEraAnyTimePrior                   One covariate per drug rolled up to ATC groups
 #'                                                      in the drug_era table overlapping with any time
-#'                                                      prior to index.
+#'                                                      prior to index. (analysis ID 409)
 #' @param useDrugGroupEraLongTerm                       One covariate per drug rolled up to ATC groups
 #'                                                      in the drug_era table overlapping with any part
-#'                                                      of the long term window.
+#'                                                      of the long term window. (analysis ID 410)
 #' @param useDrugGroupEraMediumTerm                     One covariate per drug rolled up to ATC groups
 #'                                                      in the drug_era table overlapping with any part
-#'                                                      of the medium term window.
+#'                                                      of the medium term window. (analysis ID 411)
 #' @param useDrugGroupEraShortTerm                      One covariate per drug rolled up to ATC groups
 #'                                                      in the drug_era table overlapping with any part
-#'                                                      of the short term window.
+#'                                                      of the short term window. (analysis ID 412)
 #' @param useDrugGroupEraOverlapping                    One covariate per drug rolled up to ATC groups
 #'                                                      in the drug_era table overlapping with the end
-#'                                                      of the risk window.
+#'                                                      of the risk window. (analysis ID 413)
 #' @param useDrugGroupEraStartLongTerm                  One covariate per drug rolled up to ATC groups
 #'                                                      in the drug_era table starting in the long term
-#'                                                      window.
+#'                                                      window. (analysis ID 414)
 #' @param useDrugGroupEraStartMediumTerm                One covariate per drug rolled up to ATC groups
 #'                                                      in the drug_era table starting in the medium
-#'                                                      term window.
+#'                                                      term window. (analysis ID 415)
 #' @param useDrugGroupEraStartShortTerm                 One covariate per drug rolled up to ATC groups
 #'                                                      in the drug_era table starting in the short
-#'                                                      term window.
+#'                                                      term window. (analysis ID 416)
 #' @param useProcedureOccurrenceAnyTimePrior            One covariate per procedure in the
 #'                                                      procedure_occurrence table any time prior to
-#'                                                      index.
+#'                                                      index. (analysis ID 501)
 #' @param useProcedureOccurrenceLongTerm                One covariate per procedure in the
 #'                                                      procedure_occurrence table in the long term
-#'                                                      window.
+#'                                                      window. (analysis ID 502)
 #' @param useProcedureOccurrenceMediumTerm              One covariate per procedure in the
 #'                                                      procedure_occurrence table in the medium term
-#'                                                      window.
+#'                                                      window. (analysis ID 503)
 #' @param useProcedureOccurrenceShortTerm               One covariate per procedure in the
 #'                                                      procedure_occurrence table in the short term
-#'                                                      window.
+#'                                                      window. (analysis ID 504)
 #' @param useDeviceExposureAnyTimePrior                 One covariate per device in the device exposure
 #'                                                      table starting any time prior to index.
+#'                                                      (analysis ID 601)
 #' @param useDeviceExposureLongTerm                     One covariate per device in the device exposure
 #'                                                      table starting in the long term window.
+#'                                                      (analysis ID 602)
 #' @param useDeviceExposureMediumTerm                   One covariate per device in the device exposure
 #'                                                      table starting in the medium term window.
+#'                                                      (analysis ID 603)
 #' @param useDeviceExposureShortTerm                    One covariate per device in the device exposure
 #'                                                      table starting in the short term window.
+#'                                                      (analysis ID 604)
 #' @param useMeasurementAnyTimePrior                    One covariate per measurement in the
 #'                                                      measurement table any time prior to index.
+#'                                                      (analysis ID 701)
 #' @param useMeasurementLongTerm                        One covariate per measurement in the
 #'                                                      measurement table in the long term window.
+#'                                                      (analysis ID 702)
 #' @param useMeasurementMediumTerm                      One covariate per measurement in the
 #'                                                      measurement table in the medium term window.
+#'                                                      (analysis ID 703)
 #' @param useMeasurementShortTerm                       One covariate per measurement in the
 #'                                                      measurement table in the short term window.
+#'                                                      (analysis ID 704)
 #' @param useMeasurementValueAnyTimePrior               One covariate containing the value per
 #'                                                      measurement-unit combination any time prior to
-#'                                                      index.
+#'                                                      index. (analysis ID 705)
 #' @param useMeasurementValueLongTerm                   One covariate containing the value per
 #'                                                      measurement-unit combination in the long term
-#'                                                      window.
+#'                                                      window. (analysis ID 706)
 #' @param useMeasurementValueMediumTerm                 One covariate containing the value per
 #'                                                      measurement-unit combination in the medium term
-#'                                                      window.
+#'                                                      window. (analysis ID 707)
 #' @param useMeasurementValueShortTerm                  One covariate containing the value per
 #'                                                      measurement-unit combination in the short term
-#'                                                      window.
+#'                                                      window. (analysis ID 708)
 #' @param useMeasurementRangeGroupAnyTimePrior          Covariates indicating whether measurements are
 #'                                                      below, within, or above normal range any time
-#'                                                      prior to index.
+#'                                                      prior to index. (analysis ID 709)
 #' @param useMeasurementRangeGroupLongTerm              Covariates indicating whether measurements are
 #'                                                      below, within, or above normal range in the
-#'                                                      long term window.
+#'                                                      long term window. (analysis ID 710)
 #' @param useMeasurementRangeGroupMediumTerm            Covariates indicating whether measurements are
 #'                                                      below, within, or above normal range in the
-#'                                                      medium term window.
+#'                                                      medium term window. (analysis ID 711)
 #' @param useMeasurementRangeGroupShortTerm             Covariates indicating whether measurements are
 #'                                                      below, within, or above normal range in the
-#'                                                      short term window.
+#'                                                      short term window. (analysis ID 712)
 #' @param useObservationAnyTimePrior                    One covariate per observation in the
 #'                                                      observation table any time prior to index.
+#'                                                      (analysis ID 801)
 #' @param useObservationLongTerm                        One covariate per observation in the
 #'                                                      observation table in the long term window.
+#'                                                      (analysis ID 802)
 #' @param useObservationMediumTerm                      One covariate per observation in the
 #'                                                      observation table in the medium term window.
+#'                                                      (analysis ID 803)
 #' @param useObservationShortTerm                       One covariate per observation in the
 #'                                                      observation table in the short term window.
+#'                                                      (analysis ID 804)
 #' @param useCharlsonIndex                              The Charlson comorbidity index (Romano
 #'                                                      adaptation) using all conditions prior to the
-#'                                                      window end.
+#'                                                      window end. (analysis ID 901)
 #' @param useDcsi                                       The Diabetes Comorbidity Severity Index (DCSI)
 #'                                                      using all conditions prior to the window end.
+#'                                                      (analysis ID 902)
 #' @param useChads2                                     The CHADS2 score using all conditions prior to
-#'                                                      the window end.
+#'                                                      the window end. (analysis ID 903)
 #' @param useChads2Vasc                                 The CHADS2VASc score using all conditions prior
-#'                                                      to the window end.
+#'                                                      to the window end. (analysis ID 904)
 #' @param useDistinctConditionCountLongTerm             The number of distinct condition concepts
-#'                                                      observed in the long term window.
+#'                                                      observed in the long term window. (analysis ID
+#'                                                      905)
 #' @param useDistinctConditionCountMediumTerm           The number of distinct condition concepts
-#'                                                      observed in the medium term window.
+#'                                                      observed in the medium term window. (analysis
+#'                                                      ID 906)
 #' @param useDistinctConditionCountShortTerm            The number of distinct condition concepts
-#'                                                      observed in the medium term window.
+#'                                                      observed in the medium term window. (analysis
+#'                                                      ID 907)
 #' @param useDistinctIngredientCountLongTerm            The number of distinct ingredients observed in
-#'                                                      the long term window.
+#'                                                      the long term window. (analysis ID 908)
 #' @param useDistinctIngredientCountMediumTerm          The number of distinct ingredients observed in
-#'                                                      the medium term window.
+#'                                                      the medium term window. (analysis ID 909)
 #' @param useDistinctIngredientCountShortTerm           The number of distinct ingredients observed in
-#'                                                      the medium term window.
+#'                                                      the medium term window. (analysis ID 910)
 #' @param useDistinctProcedureCountLongTerm             The number of distinct procedures observed in
-#'                                                      the long term window.
+#'                                                      the long term window. (analysis ID 911)
 #' @param useDistinctProcedureCountMediumTerm           The number of distinct procedures observed in
-#'                                                      the medium term window.
+#'                                                      the medium term window. (analysis ID 912)
 #' @param useDistinctProcedureCountShortTerm            The number of distinct procedures observed in
-#'                                                      the medium term window.
+#'                                                      the medium term window. (analysis ID 913)
 #' @param useDistinctMeasurementCountLongTerm           The number of distinct measurements observed in
-#'                                                      the long term window.
+#'                                                      the long term window. (analysis ID 914)
 #' @param useDistinctMeasurementCountMediumTerm         The number of distinct measurements observed in
-#'                                                      the medium term window.
+#'                                                      the medium term window. (analysis ID 915)
 #' @param useDistinctMeasurementCountShortTerm          The number of distinct measurements observed in
-#'                                                      the medium term window.
+#'                                                      the medium term window. (analysis ID 916)
 #' @param useVisitCountLongTerm                         The number of visits observed in the long term
-#'                                                      window.
+#'                                                      window. (analysis ID 917)
 #' @param useVisitCountMediumTerm                       The number of visits observed in the medium
-#'                                                      term window.
+#'                                                      term window. (analysis ID 918)
 #' @param useVisitCountShortTerm                        The number of visits observed in the medium
-#'                                                      term window.
+#'                                                      term window. (analysis ID 919)
 #' @param longTermStartDays                             What is the start day (relative to the index
 #'                                                      date) of the long-term window?
 #' @param mediumTermStartDays                           What is the start day (relative to the index

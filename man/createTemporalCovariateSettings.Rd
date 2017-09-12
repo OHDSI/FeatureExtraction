@@ -74,59 +74,62 @@ createTemporalCovariateSettings(useDemographicsGender = FALSE,
   includedCovariateIds = c())
 }
 \arguments{
-\item{useDemographicsGender}{Gender of the subject.}
+\item{useDemographicsGender}{Gender of the subject. (analysis ID 1)}
 
-\item{useDemographicsAgeGroup}{Age of the subject on the index date (in 5 year increments).}
+\item{useDemographicsAgeGroup}{Age of the subject on the index date (in 5 year increments).
+(analysis ID 2)}
 
-\item{useDemographicsIndexYear}{Year of the index date.}
+\item{useDemographicsIndexYear}{Year of the index date. (analysis ID 3)}
 
-\item{useDemographicsIndexMonth}{Month of the index date.}
+\item{useDemographicsIndexMonth}{Month of the index date. (analysis ID 4)}
 
 \item{useConditionOccurrence}{One covariate per condition in the condition_occurrence table
-starting in the time window.}
+starting in the time window. (analysis ID 101)}
 
 \item{useConditionEraStart}{One covariate per condition in the condition_era table starting
-in the time window.}
+in the time window. (analysis ID 201)}
 
 \item{useConditionEraOverlap}{One covariate per condition in the condition_era table
-overlapping with any part of the time window.}
+overlapping with any part of the time window. (analysis ID 202)}
 
 \item{useConditionEraGroupStart}{One covariate per condition era rolled up to SNOMED groups in
-the condition_era table starting in the time window.}
+the condition_era table starting in the time window. (analysis
+ID 203)}
 
 \item{useConditionEraGroupOverlap}{One covariate per condition era rolled up to SNOMED groups in
 the condition_era table overlapping with any part of the time
-window.}
+window. (analysis ID 203)}
 
 \item{useDrugExposure}{One covariate per drug in the drug_exposure table starting in
-the time window.}
+the time window. (analysis ID 301)}
 
 \item{useDrugEraStart}{One covariate per drug in the drug_era table starting in the
-time window.}
+time window. (analysis ID 401)}
 
 \item{useDrugEraOverlap}{One covariate per drug in the drug_era table overlapping with
-any part of the time window.}
+any part of the time window. (analysis ID 402)}
 
 \item{useDrugEraGroupStart}{One covariate per drug rolled up to ATC groups in the drug_era
-table starting in thetime window.}
+table starting in thetime window. (analysis ID 403)}
 
 \item{useDrugEraGroupOverlap}{One covariate per drug rolled up to ATC groups in the drug_era
-table overlapping with any part of thetime window.}
+table overlapping with any part of thetime window. (analysis ID
+403)}
 
 \item{useProcedureOccurrence}{One covariate per procedure in the procedure_occurrence table
-in the time window.}
+in the time window. (analysis ID 501)}
 
 \item{useDeviceExposure}{One covariate per device in the device exposure table starting
-in the timewindow.}
+in the timewindow. (analysis ID 601)}
 
 \item{useMeasurement}{One covariate per measurement in the measurement table in the
-time window.}
+time window. (analysis ID 701)}
 
 \item{useObservation}{One covariate per observation in the observation table in the
-time window.}
+time window. (analysis ID 801)}
 
 \item{useCharlsonIndex}{The Charlson comorbidity index (Romano adaptation) using all
-conditions prior to the window end.}
+conditions prior to the window end. (analysis ID 901)}
 
 \item{temporalStartDays}{A list of integers representing the start of a time period,
 relative to the index date. 0 indicates the index date, -1

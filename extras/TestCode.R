@@ -39,14 +39,15 @@ outputFolder <- "S:/temp/CelecoxibPredictiveModelsPg"
 
 
 # Popular drug: 1118084
+# Medium drug: 945286
 # Rare drug: 1125443
 conn <- DatabaseConnector::connect(connectionDetails)
 ### Populate cohort table ###
 sql <- "IF OBJECT_ID('@cohort_database_schema.@cohort_table', 'U') IS NOT NULL
 DROP TABLE @cohort_database_schema.@cohort_table;
-SELECT 1 AS cohort_definition_id, person_id AS subject_id, drug_era_start_date AS cohort_start_date, ROW_NUMBER() OVER (ORDER BY person_id, drug_era_start_date) AS row_id
+SELECT 1 AS cohort_definition_id, person_id AS subject_id, drug_era_start_date AS cohort_start_date, drug_era_end_date AS cohort_end_date, ROW_NUMBER() OVER (ORDER BY person_id, drug_era_start_date) AS row_id
 INTO @cohort_database_schema.@cohort_table FROM @cdm_database_schema.drug_era 
-WHERE drug_concept_id = 1125443;"
+WHERE drug_concept_id = 945286;"
 sql <- SqlRender::renderSql(sql, 
                             cdm_database_schema = cdmDatabaseSchema,
                             cohort_database_schema = cohortDatabaseSchema,
@@ -278,96 +279,33 @@ covs <- getDbCovariateData(connectionDetails = connectionDetails,
                            aggregated = TRUE)
 
 
-# All features:
-# Generating features took 2.65 mins
-# Downloading data
-# Downloading data took 7.57 mins
 
-# Filtering at end:
-# Generating features took 2.27 mins
-# Downloading data
-# Downloading data took 1.58 secs
+# Table 1 -----------------------------------------------------------------
 
-# Filtering by concept ID instead of covariate ID:
-# Generating features took 3.83 mins
-# Downloading data
-# Downloading data took 1.34 secs
+settings <- createCovariateSettings(useDemographicsAgeGroup = TRUE,
+                                    useDemographicsGender = TRUE,
+                                    useDemographicsEthnicity = TRUE,
+                                    useConditionGroupEraLongTerm = TRUE,
+                                    useDrugGroupEraLongTerm = TRUE,
+                                    useCharlsonIndex = TRUE,
+                                    useChads2Vasc = TRUE,
+                                    useDcsi = TRUE)
 
+covs <- getDbCovariateData(connectionDetails = connectionDetails,
+                           oracleTempSchema = oracleTempSchema,
+                           cdmDatabaseSchema = cdmDatabaseSchema,
+                           cohortDatabaseSchema = cohortDatabaseSchema,
+                           cohortTable = cohortTable,
+                           cohortId = 1,
+                           rowIdField = "row_id",
+                           cohortTableIsTemp = FALSE,
+                           covariateSettings = settings,
+                           aggregated = TRUE)
 
-# Hint: 1.51 mins
-
-querySql(connection, "SELECT COUNT(*) FROM #cov_2 WHERE covariate_id IN (2, 1002, 2002, 3002, 4002, 5002, 6002, 7002, 8002, 9002, 10002, 11002, 12002, 13002, 14002, 15002, 16002, 17002, 18002)")
-querySql(connection, "SELECT COUNT(*) FROM #cov_all WHERE covariate_id IN (2, 1002, 2002, 3002, 4002, 5002, 6002, 7002, 8002, 9002, 10002, 11002, 12002, 13002, 14002, 15002, 16002, 17002, 18002)")
-summary(covs)
-saveCovariateData(covs, "s:/temp/covs")
+saveCovariateData(covs, "s:/temp/covsTable1Medium")
 covariateData <- covs
-covs <- loadCovariateData("s:/temp/covs")
-covs2 <- tidyCovariateData(covs, normalize = TRUE, removeRedundancy = TRUE)
+covariateData <- loadCovariateData("s:/temp/covsTable1Medium")
 
-x <- ff::as.ram(covs$covariateRef)
-covs <- loadCovariateData("s:/temp/covsOld")
-library(ffbase)
-covs$covariateRef[covs$covariateRef$analysisId == 4, ]
-
-
-conn <- connect(connectionDetails)
-
-x <- ff::as.ram(covs$covariateRef$covariateId)
-x <- sample(x, 50)
-paste(x, collapse = ", ")
-x <- c(252351201, 2514584502, 2615790602, 440424201, 2212134701, 433950202, 40163038301, 42902283302, 380411101, 19115253302, 141508101, 2109262501, 440870101, 40175400301, 2212420701, 253321102, 2616540601, 40490966204, 198249204, 19003087302, 77069102, 259848101, 1201620402, 19035388301, 444084201, 2617130602, 40223423301, 4184252201, 2212996701, 40234152302, 19125485301, 21602471403, 4060101801, 442313204, 439502101, 1326303402, 440920202, 19040158302, 2414379501, 2313884502, 4204187204, 2721698801, 739209301, 376225102, 42742566701, 43021157201, 314131101, 2005962502, 133298201, 4157607204)
-
-# deprecated --------------------------------------------------------------
-
-covariateSettings <- FeatureExtraction::createCovariateSettings(useCovariateDemographics = TRUE,
-                                                                useCovariateDemographicsGender = TRUE,
-                                                                useCovariateDemographicsRace = TRUE,
-                                                                useCovariateDemographicsEthnicity = TRUE,
-                                                                useCovariateDemographicsAge = TRUE,
-                                                                useCovariateDemographicsYear = TRUE,
-                                                                useCovariateDemographicsMonth = TRUE,
-                                                                useCovariateConditionOccurrence = TRUE,
-                                                                useCovariateConditionOccurrence365d = TRUE,
-                                                                useCovariateConditionOccurrence30d = TRUE,
-                                                                useCovariateConditionOccurrenceInpt180d = TRUE,
-                                                                useCovariateConditionEra = TRUE,
-                                                                useCovariateConditionEraEver = TRUE,
-                                                                useCovariateConditionEraOverlap = TRUE,
-                                                                useCovariateConditionGroup = TRUE,
-                                                                useCovariateConditionGroupMeddra = TRUE,
-                                                                useCovariateConditionGroupSnomed = TRUE,
-                                                                useCovariateDrugExposure = TRUE,
-                                                                useCovariateDrugExposure365d = TRUE,
-                                                                useCovariateDrugExposure30d = TRUE,
-                                                                useCovariateDrugEra = TRUE,
-                                                                useCovariateDrugEra365d = TRUE,
-                                                                useCovariateDrugEra30d = TRUE,
-                                                                useCovariateDrugEraOverlap = TRUE,
-                                                                useCovariateDrugEraEver = TRUE,
-                                                                useCovariateDrugGroup = TRUE,
-                                                                useCovariateProcedureOccurrence = TRUE,
-                                                                useCovariateProcedureOccurrence365d = TRUE,
-                                                                useCovariateProcedureOccurrence30d = TRUE,
-                                                                useCovariateProcedureGroup = TRUE,
-                                                                useCovariateObservation = TRUE,
-                                                                useCovariateObservation365d = TRUE,
-                                                                useCovariateObservation30d = TRUE,
-                                                                useCovariateObservationCount365d = TRUE,
-                                                                useCovariateMeasurement = TRUE,
-                                                                useCovariateMeasurement365d = TRUE,
-                                                                useCovariateMeasurement30d = TRUE,
-                                                                useCovariateMeasurementCount365d = TRUE,
-                                                                useCovariateMeasurementBelow = TRUE,
-                                                                useCovariateMeasurementAbove = TRUE,
-                                                                useCovariateConceptCounts = TRUE,
-                                                                useCovariateRiskScores = TRUE,
-                                                                useCovariateRiskScoresCharlson = TRUE,
-                                                                useCovariateRiskScoresDCSI = TRUE,
-                                                                useCovariateRiskScoresCHADS2 = TRUE,
-                                                                useCovariateRiskScoresCHADS2VASc = TRUE,
-                                                                useCovariateInteractionYear = FALSE,
-                                                                useCovariateInteractionMonth = FALSE,
-                                                                excludedCovariateConceptIds = 1234,
-                                                                includedCovariateConceptIds = c(),
-                                                                deleteCovariatesSmallCount = 100)
-
+tables <- createTable1(covariateData)
+write.csv(tables$part1, "s:/temp/table1Part1.csv", row.names = FALSE)
+write.csv(tables$part2, "s:/temp/table1Part2.csv", row.names = FALSE)

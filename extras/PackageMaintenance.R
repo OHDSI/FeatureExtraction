@@ -42,7 +42,7 @@ prespecAnalyses <- read.csv("inst/csv/PrespecAnalyses.csv", stringsAsFactors = F
 otherParameters <- read.csv("inst/csv/OtherParameters.csv", stringsAsFactors = FALSE)
 arguments <- data.frame(name = paste0("use", prespecAnalyses$analysisName),
                         defaultValue = "FALSE",
-                        description = prespecAnalyses$description,
+                        description = paste0(prespecAnalyses$description, " (analysis ID ", prespecAnalyses$analysisId, ")"),
                         example = prespecAnalyses$isDefault,
                         stringsAsFactors = FALSE)
 otherParameters$example <- otherParameters$defaultValue
@@ -75,7 +75,7 @@ prespecAnalyses <- read.csv("inst/csv/PrespecTemporalAnalyses.csv", stringsAsFac
 otherParameters <- read.csv("inst/csv/OtherParameters.csv", stringsAsFactors = FALSE)
 arguments <- data.frame(name = paste0("use", prespecAnalyses$analysisName),
                         defaultValue = "FALSE",
-                        description = prespecAnalyses$description,
+                        description = paste0(prespecAnalyses$description, " (analysis ID ", prespecAnalyses$analysisId, ")"),
                         example = prespecAnalyses$isDefault,
                         stringsAsFactors = FALSE)
 otherParameters$example <- otherParameters$defaultValue
