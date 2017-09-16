@@ -15,17 +15,26 @@
 # limitations under the License.
 
 #' @export
-createTable1 <- function(covariateData, specifications) {
-  if (!is(covariateData, "covariateData")) {
-    stop("covariateData is not of type 'covariateData'")
+createTable1 <- function(covariateData1, covariateData2 = NULL, specifications) {
+  comparison <- !is.null(covariateData2)
+  if (!is(covariateData1, "covariateData")) {
+    stop("covariateData1 is not of type 'covariateData'")
   }
-  if (is.null(covariateData$covariatesContinuous) && is.null(covariateData$covariates$averageValue)) {
-    stop("Covariate data is not aggregated") 
+  if (comparison && !is(covariateData2, "covariateData")) {
+    stop("covariateData2 is not of type 'covariateData'")
   }
+  if (is.null(covariateData1$covariatesContinuous) && is.null(covariateData1$covariates$averageValue)) {
+    stop("Covariate1 data is not aggregated") 
+  }
+  if (comparison && is.null(covariateData2$covariatesContinuous) && is.null(covariateData2$covariates$averageValue)) {
+    stop("Covariate2 data is not aggregated") 
+  }
+  
   if (missing(specifications)) {
     fileName <- system.file("csv", "Table1Specs.csv" , package = "FeatureExtraction")
     specifications <- read.csv(fileName, stringsAsFactors = FALSE)
   }
+  
   fixCase <- function(label) {
     idx <- (toupper(label) == label)
     if (any(idx)) {
@@ -34,55 +43,87 @@ createTable1 <- function(covariateData, specifications) {
     return(label)
   }
   
+  covariates <- ff::as.ram(covariateData1$covariates[, c("covariateId", "averageValue")])
+  colnames(covariates)[2] <- "value1"
+  covariates$value1 <- format(covariates$value1 * 100, digits = 0)
+  covariatesContinuous <- ff::as.ram(covariateData1$covariatesContinuous[, c("covariateId", "minValue", "p25Value", "medianValue", "p75Value", "maxValue")])
+
+  
+  covariateRef <- ff::as.ram(covariateData1$covariateRef)
+  analysisRef <- ff::as.ram(covariateData1$analysisRef)  
+  if (comparison) {
+    covariates2 <- ff::as.ram(covariateData1$covariates[, c("covariateId", "averageValue")])
+    colnames(covariates2)[2] <- "value2"
+    covariates2$value2 <- format(covariates2$value2 * 100, digits = 0)
+    covariates <- merge(covariates, covariates2, all = TRUE)
+    covariates$value1[is.na(covariates$value1)] <- " 0"
+    covariates$value2[is.na(covariates$value2)] <- " 0"
+    stdDiff <- computeStandardizedDifference(covariateData1, covariateData2)
+    covariates <- merge(covariates, stdDiff[, c("covariateId", "stdDiff")])
+    idx <- !ffbase::`%in%`(covariateData2$covariateRef$covariateId, covariateData1$covariateRef$covariateId)
+    if (ffbase::any.ff(idx)) {
+      covariateRef <- rbind(covariateRef, ff::as.ram(covariateData2$covariateRef[idx, ]))
+    }
+  } else {
+    covariates$value2 <- 0
+    covariates$stdDiff <- 0
+  }
+  
   binaryTable <- data.frame()
   continuousTable <- data.frame()
   for (i in 1:nrow(specifications)) {
     if (specifications$analysisId[i] == "") {
       binaryTable <- binaryTable(binaryTable, data.frame(Characteristic = specifications$label[i], value = ""))
     } else {
-      idx <- covariateData$analysisRef$analysisId == specifications$analysisId[i]
+      idx <- analysisRef$analysisId == specifications$analysisId[i]
       if (ffbase::any.ff(idx)) {
-        isBinary <- ff::as.ram(covariateData$analysisRef$isBinary[idx])
+        isBinary <- ff::as.ram(analysisRef$isBinary[idx])
         covariateIds <- NULL
         if (isBinary == 'Y') {
           # Binary
           if (specifications$covariateIds[i] == "") {
-            idx <- covariateData$covariateRef$analysisId == specifications$analysisId[i]
+            idx <- covariateRef$analysisId == specifications$analysisId[i]
           } else {
             covariateIds <- as.numeric(strsplit(specifications$covariateIds[i], ",")[[1]])
-            idx <- ffbase::`%in%`(covariateData$covariateRef$covariateId, covariateIds)
+            idx <- covariateRef$covariateId %in% covariateIds
           }
-          if (ffbase::any.ff(idx)) {
-            covariateRef <- covariateData$covariateRef[idx, ]
-            covariates <- covariateData$covariates[ffbase::`%in%`(covariateData$covariates$covariateId, covariateRef$covariateId), ]
-            covariates <- merge(covariates, covariateRef)
-            covariates <- ff::as.ram(covariates)
+          if (any(idx)) {
+            covariateRefSubset <- covariateRef[idx, ]
+            covariatesSubset <- merge(covariates, covariateRefSubset)
             if (is.null(covariateIds)) {
-              covariates <- covariates[order(covariates$covariateId), ]
+              covariatesSubset <- covariatesSubset[order(covariatesSubset$covariateId), ]
             } else {
-              covariates <- merge(covariates, data.frame(covariateId = covariateIds, rn = 1:length(covariateIds)))
-              covariates <- covariates[order(covariates$rn, covariates$covariateId), ]
+              covariatesSubset <- merge(covariatesSubset, data.frame(covariateId = covariateIds, rn = 1:length(covariateIds)))
+              covariatesSubset <- covariatesSubset[order(covariatesSubset$rn, covariatesSubset$covariateId), ]
             }
-            covariates$covariateName <- fixCase(gsub("^.*: ", "", covariates$covariateName))
-            covariates$value <- format(covariates$averageValue * 100, digits = 0)
+            covariatesSubset$covariateName <- fixCase(gsub("^.*: ", "", covariatesSubset$covariateName))
             if (specifications$covariateIds[i] == "" || length(covariateIds) > 1) {
-              binaryTable <- rbind(binaryTable, data.frame(Characteristic = specifications$label[i], value = ""))
-              binaryTable <- rbind(binaryTable, data.frame(Characteristic = paste0("  ", covariates$covariateName), value = covariates$value))
+              binaryTable <- rbind(binaryTable, data.frame(Characteristic = specifications$label[i], 
+                                                           value1 = "", 
+                                                           value2 = "", 
+                                                           stdDiff = ""))
+              binaryTable <- rbind(binaryTable, data.frame(Characteristic = paste0("  ", covariatesSubset$covariateName), 
+                                                           value1 = covariatesSubset$value1,
+                                                           value2 = covariatesSubset$value2,
+                                                           stdDiff = covariatesSubset$stdDiff))
             } else {
-              binaryTable <- rbind(binaryTable, data.frame(Characteristic = specifications$label[i], value = covariates$value))
+              binaryTable <- rbind(binaryTable, data.frame(Characteristic = specifications$label[i], 
+                                                           value1 = covariatesSubset$value1,
+                                                           value2 = covariatesSubset$value2,
+                                                           stdDiff = covariatesSubset$stdDiff))
             }
           }
         } else {
           # Not binary
           if (specifications$covariateIds[i] == "") {
-            idx <- covariateData$covariateRef$analysisId == specifications$analysisId[i]
+            idx <- covariateRef$analysisId == specifications$analysisId[i]
           } else {
             covariateIds <- as.numeric(strsplit(specifications$covariateIds[i], ",")[[1]])
-            idx <- ffbase::`%in%`(covariateData$covariateRef$covariateId, covariateIds)
+            idx <- covariateRef$covariateId %in% covariateIds
           }
-          if (ffbase::any.ff(idx)) {
-            covariateRef <- covariateData$covariateRef[idx, ]
-            covariates <- covariateData$covariatesContinuous[ffbase::`%in%`(covariateData$covariatesContinuous$covariateId, covariateRef$covariateId), ]
+          if (any(idx)) {
+            covariateRef <- covariateRef[idx, ]
+            covariates <- covariatesContinuous[ffbase::`%in%`(covariateData$covariatesContinuous$covariateId, covariateRef$covariateId), ]
             covariates <- merge(covariates, covariateRef)
             covariates <- ff::as.ram(covariates)
             if (is.null(covariateIds)) {

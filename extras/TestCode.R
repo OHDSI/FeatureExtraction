@@ -309,3 +309,8 @@ covariateData <- loadCovariateData("s:/temp/covsTable1Medium")
 tables <- createTable1(covariateData)
 write.csv(tables$part1, "s:/temp/table1Part1.csv", row.names = FALSE)
 write.csv(tables$part2, "s:/temp/table1Part2.csv", row.names = FALSE)
+print(tables$part1)
+
+
+covariateData1 <- covariateData
+covariateData2 <- covariateData
