@@ -77,22 +77,24 @@ public class FeatureExtraction {
 		// System.out.println(convertSettingsPrespecToDetails("{\"temporal\":false,\"DemographicsGender\":true,\"DemographicsAge\":true,\"longTermStartDays\":-365,\"mediumTermStartDays\":-180,\"shortTermStartDays\":-30,\"endDays\":0,\"includedCovariateConceptIds\":[],\"addDescendantsToInclude\":false,\"excludedCovariateConceptIds\":[1,2,3],\"addDescendantsToExclude\":false,\"includedCovariateIds\":[]}"));
 		// System.out.println(getDefaultPrespecAnalyses());
 		//
-		 System.out.println(getDefaultPrespecAnalyses());
+		System.out.println(getDefaultPrespecAnalyses());
 		//
 		System.out.println(getDefaultPrespecTemporalAnalyses());
-//		 System.out.println(convertSettingsPrespecToDetails(getDefaultPrespecTemporalAnalyses()));
-//		 System.out.println(convertSettingsPrespecToDetails(getDefaultPrespecAnalyses()));
+		// System.out.println(convertSettingsPrespecToDetails(getDefaultPrespecTemporalAnalyses()));
+		// System.out.println(convertSettingsPrespecToDetails(getDefaultPrespecAnalyses()));
 		// String settings =
 		// "{\"temporal\":false,\"analyses\":[{\"analysisId\":301,\"sqlFileName\":\"DomainConcept.sql\",\"parameters\":{\"analysisId\":301,\"startDay\":-365,\"endDay\":0,\"inpatient\":\"\",\"domainTable\":\"drug_exposure\",\"domainConceptId\":\"drug_concept_id\",\"domainStartDate\":\"drug_exposure_start_date\",\"domainEndDate\":\"drug_exposure_start_date\"},\"addDescendantsToExclude\":true,\"includedCovariateConceptIds\":[1,2,3],\"excludedCovariateConceptIds\":[1,2,3],\"addDescendantsToInclude\":true,\"includedCovariateIds\":[1]}]}";
 		// String settings = convertSettingsPrespecToDetails(getDefaultPrespecAnalyses());
 		// System.out.println(createSql(settings, false, "#temp_cohort", "row_id", -1, "cdm_synpuf"));
-//		System.out.println(createSql(getDefaultPrespecAnalyses(), true, "#temp_cohort", "row_id", -1, "cdm_synpuf"));
+		// System.out.println(createSql(getDefaultPrespecAnalyses(), true, "#temp_cohort", "row_id", -1, "cdm_synpuf"));
 		// System.out.println(createSql(getDefaultPrespecTemporalAnalyses(), false, "#temp_cohort", "row_id", -1, "cdm_synpuf"));
 	}
 
 	/**
-	 * Initialize the FeatureExtraction engine, preloading the necessary content. 
-	 * @param packageFolder Need to specify for R package, else set to null to load content from the JAR file.
+	 * Initialize the FeatureExtraction engine, preloading the necessary content.
+	 * 
+	 * @param packageFolder
+	 *            Need to specify for R package, else set to null to load content from the JAR file.
 	 */
 	public static void init(String packageFolder) {
 		if (nameToPrespecAnalysis != null)
@@ -438,7 +440,7 @@ public class FeatureExtraction {
 		jsonWriter.key("sqlConstruction");
 		jsonWriter.value(createConstructionSql(jsonObject, idSetToName, temporal, aggregated, cohortTable, rowIdField, cohortDefinitionId, cdmDatabaseSchema));
 
-		String sqlQueryFeatures = createQuerySql(jsonObject, aggregated, temporal);
+		String sqlQueryFeatures = createQuerySql(jsonObject, cohortTable, cohortDefinitionId, aggregated, temporal);
 		if (sqlQueryFeatures != null) {
 			jsonWriter.key("sqlQueryFeatures");
 			jsonWriter.value(sqlQueryFeatures);
@@ -459,7 +461,8 @@ public class FeatureExtraction {
 		if (temporal) {
 			jsonWriter.value("SELECT analysis_id, analysis_name, domain_id, is_binary, missing_means_zero FROM #analysis_ref ORDER BY analysis_id");
 		} else {
-			jsonWriter.value("SELECT analysis_id, analysis_name, domain_id, start_day, end_day, is_binary, missing_means_zero FROM #analysis_ref ORDER BY analysis_id");
+			jsonWriter.value(
+					"SELECT analysis_id, analysis_name, domain_id, start_day, end_day, is_binary, missing_means_zero FROM #analysis_ref ORDER BY analysis_id");
 		}
 
 		jsonWriter.key("sqlCleanup");
@@ -493,10 +496,11 @@ public class FeatureExtraction {
 		return sql.toString();
 	}
 
-	private static String createQuerySql(JSONObject jsonObject, boolean aggregated, boolean temporal) {
+	private static String createQuerySql(JSONObject jsonObject, String cohortTable, int cohortDefinitionId, boolean aggregated, boolean temporal) {
 		StringBuilder fields = new StringBuilder();
 		if (aggregated) {
-			fields.append("covariate_id, sum_value");
+			fields.append(
+					"covariate_id, sum_value, sum_value / (1.0 * (SELECT COUNT(*) FROM @cohort_table {@cohort_definition_id != -1} ? {WHERE cohort_definition_id = @cohort_definition_id})) AS average_value");
 		} else {
 			fields.append("row_id, covariate_id, covariate_value");
 		}
@@ -519,7 +523,8 @@ public class FeatureExtraction {
 		if (!hasFeature)
 			return null;
 		sql.append("\n) all_covariates;");
-		return sql.toString();
+		return SqlRender.renderSql(sql.toString(), new String[] { "cohort_table", "cohort_definition_id" },
+				new String[] { cohortTable, Integer.toString(cohortDefinitionId) });
 	}
 
 	private static String createQueryContinuousFeaturesSql(JSONObject jsonObject, boolean temporal) {
