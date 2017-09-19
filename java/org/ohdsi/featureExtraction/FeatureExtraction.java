@@ -496,7 +496,7 @@ public class FeatureExtraction {
 	private static String createQuerySql(JSONObject jsonObject, boolean aggregated, boolean temporal) {
 		StringBuilder fields = new StringBuilder();
 		if (aggregated) {
-			fields.append("covariate_id, sum_value, average_value");
+			fields.append("covariate_id, sum_value");
 		} else {
 			fields.append("row_id, covariate_id, covariate_value");
 		}

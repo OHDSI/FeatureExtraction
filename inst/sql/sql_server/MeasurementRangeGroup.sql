@@ -5,8 +5,7 @@ SELECT
     time_id,
 }	
 {@aggregated} ? {
-	COUNT(*) AS sum_value,
-	COUNT(*) / (1.0 * (SELECT COUNT(*) FROM @cohort_table {@cohort_definition_id != -1} ? {WHERE cohort_definition_id = @cohort_definition_id})) AS average_value
+	COUNT(*) AS sum_value
 } : {
 	row_id,
 	1 AS covariate_value 
