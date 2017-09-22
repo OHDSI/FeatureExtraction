@@ -127,6 +127,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
                      oracleTempSchema = oracleTempSchema,
                      cdmDatabaseSchema = cdmDatabaseSchema,
                      cohortTable = cohortDatabaseSchemaTable,
+                     cohortId = cohortId,
                      rowIdField = rowIdField,
                      covariateSettings = covariateSettings[[i]],
                      aggregated = aggregated)
