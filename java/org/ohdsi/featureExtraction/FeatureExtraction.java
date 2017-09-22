@@ -560,8 +560,8 @@ public class FeatureExtraction {
 		// Add descendants to ID sets if needed:
 		for (Map.Entry<IdSet, String> entry : idSetToName.entrySet()) {
 			if (entry.getKey().addDescendants) {
-				String line = SqlRender.renderSql(ADD_DESCENDANTS_SQL, new String[] { "source_temp", "target_temp" },
-						new String[] { entry.getValue() + "_a", entry.getValue() });
+				String line = SqlRender.renderSql(ADD_DESCENDANTS_SQL, new String[] { "source_temp", "target_temp", "cdm_database_schema" },
+						new String[] { entry.getValue() + "_a", entry.getValue(), cdmDatabaseSchema });
 				sql.append(line);
 			}
 		}
