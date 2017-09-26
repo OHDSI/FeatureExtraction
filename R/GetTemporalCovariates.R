@@ -97,6 +97,13 @@ getDbTemporalCovariateData <- function(connection,
                                                    cdm_database_schema = cdmDatabaseSchema,
                                                    cohort_temp_table = cohortTempTable,
                                                    row_id_field = rowIdField,
+                                                   use_covariate_demographics_age = covariateSettings$useCovariateDemographicsAge,
+                                                   use_covariate_demographics_gender = covariateSettings$useCovariateDemographicsGender,
+                                                   use_covariate_demographics_race = covariateSettings$useCovariateDemographicsRace,
+                                                   use_covariate_demographics_ethnicity = covariateSettings$useCovariateDemographicsEthnicity,
+                                                   use_covariate_demographics_year = covariateSettings$useCovariateDemographicsYear,
+                                                   use_covariate_demographics_month = covariateSettings$useCovariateDemographicsMonth,
+                                                   use_covariate_condition_era_start = covariateSettings$useCovariateConditionEraStart,
                                                    use_covariate_condition_era_start = covariateSettings$useCovariateConditionEraStart,
                                                    use_covariate_condition_era_present = covariateSettings$useCovariateConditionEraPresent,
                                                    use_covariate_condition_group = covariateSettings$useCovariateConditionGroup,
@@ -162,6 +169,23 @@ getDbTemporalCovariateData <- function(connection,
 #' creates an object specifying how covariates should be contructed from data in the CDM model.
 #'
 #' 
+#' @param useCovariateDemographics                  A boolean value (TRUE/FALSE) to determine if
+#'                                                  demographic covariates (age,
+#'                                                  gender, race, ethnicity, year of index date, month
+#'                                                  of index date) will be created and included in
+#'                                                  future models.
+#' @param useCovariateDemographicsGender            A boolean value (TRUE/FALSE) to determine if gender
+#'                                                  should be included in the model.
+#' @param useCovariateDemographicsRace              A boolean value (TRUE/FALSE) to determine if race
+#'                                                  should be included in the model.
+#' @param useCovariateDemographicsEthnicity         A boolean value (TRUE/FALSE) to determine if
+#'                                                  ethnicity should be included in the model.
+#' @param useCovariateDemographicsAge               A boolean value (TRUE/FALSE) to determine if age (based on startday of timeid)
+#'                                                  should be included in the model.
+#' @param useCovariateDemographicsYear              A boolean value (TRUE/FALSE) to determine if
+#'                                                  calendar year (based on startday of timeid) should be included in the model.
+#' @param useCovariateDemographicsMonth             A boolean value (TRUE/FALSE) to determine if
+#'                                                  calendar month (based on startday of timeid)should be included in the model.
 #' @param useCovariateConditionEraStart             Extract start of condition era?
 #' @param useCovariateConditionPresent              Extract active condition era?
 #' @param useCovariateConditionGroup                Extract the condition group
@@ -195,7 +219,14 @@ getDbTemporalCovariateData <- function(connection,
 #' An object of type \code{defaultCovariateSettings}, to be used in other functions.
 #'
 #' @export
-createTemporalCovariateSettings <- function(useCovariateConditionEraStart = FALSE,
+createTemporalCovariateSettings <- function(useCovariateDemographics = FALSE,
+                                            useCovariateDemographicsGender = FALSE,
+                                            useCovariateDemographicsRace = FALSE,
+                                            useCovariateDemographicsEthnicity = FALSE,
+                                            useCovariateDemographicsAge = FALSE,
+                                            useCovariateDemographicsYear = FALSE,
+                                            useCovariateDemographicsMonth = FALSE,
+                                            useCovariateConditionEraStart = FALSE,
                                             useCovariateConditionEraPresent = FALSE,
                                             useCovariateConditionGroup = FALSE,
                                             useCovariateConditionGroupMeddra = FALSE,

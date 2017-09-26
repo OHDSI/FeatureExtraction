@@ -22,6 +22,13 @@ limitations under the License.
 {DEFAULT @cohort_temp_table = '#cohort_person'}
 {DEFAULT @row_id_field = 'person_id'}
 {DEFAULT @concept_class_id = 'concept_class_id'} 
+{DEFAULT @use_covariate_demographics = TRUE} 
+{DEFAULT @use_covariate_demographics_age = TRUE} 
+{DEFAULT @use_covariate_demographics_gender = TRUE} 
+{DEFAULT @use_covariate_demographics_race = TRUE} 
+{DEFAULT @use_covariate_demographics_ethnicity = TRUE} 
+{DEFAULT @use_covariate_demographics_year = TRUE} 
+{DEFAULT @use_covariate_demographics_month = TRUE} 
 {DEFAULT @use_covariate_condition_era_start = FALSE} 
 {DEFAULT @use_covariate_condition_era_present = TRUE} 
 {DEFAULT @use_covariate_drug_era_start = FALSE} 
@@ -65,6 +72,234 @@ CREATE TABLE #dummy (
 	time_id INT,
 	covariate_value INT
 	);
+
+/**************************
+***************************
+DEMOGRAPHICS
+***************************
+**************************/
+{@use_covariate_demographics} ? {
+
+{@use_covariate_demographics_gender} ? {
+--gender
+SELECT cp1.@row_id_field AS row_id,
+	gender_concept_id AS covariate_id,
+	tp1.time_id AS time_id,
+	1 AS covariate_value
+INTO #cov_gender
+FROM @cohort_temp_table cp1
+INNER JOIN @cdm_database_schema.person p1
+	ON cp1.subject_id = p1.person_id
+CROSS JOIN #time_period tp1
+WHERE p1.gender_concept_id IN (
+		SELECT concept_id
+		FROM @cdm_database_schema.concept
+		WHERE LOWER(@concept_class_id) = 'gender'
+		);
+
+
+INSERT INTO #cov_ref (
+  covariate_id,
+	covariate_name,
+	analysis_id,
+	concept_id
+	)
+SELECT p1.covariate_id,
+	'Gender = ' +
+    CASE WHEN v1.concept_name IS NOT NULL
+			THEN v1.concept_name
+		ELSE 'Unknown invalid concept'
+		END AS covariate_name,
+	2 AS analysis_id,
+	p1.covariate_id AS concept_id
+FROM (SELECT distinct covariate_id FROM #cov_gender) p1
+LEFT JOIN (
+	SELECT concept_id,
+		concept_name
+	FROM @cdm_database_schema.concept
+	WHERE LOWER(@concept_class_id) = 'gender'
+	) v1
+	ON p1.covariate_id = v1.concept_id;
+
+}
+
+
+{@use_covariate_demographics_race} ? {
+--race
+SELECT cp1.@row_id_field AS row_id,
+	race_concept_id AS covariate_id,
+	tp1.time_id AS time_id,
+	1 AS covariate_value
+  INTO #cov_race
+FROM @cohort_temp_table cp1
+INNER JOIN @cdm_database_schema.person p1
+	ON cp1.subject_id = p1.person_id
+CROSS JOIN #time_period tp1
+WHERE p1.race_concept_id IN (
+		SELECT concept_id
+		FROM @cdm_database_schema.concept
+		WHERE LOWER(@concept_class_id) = 'race'
+		);
+
+
+INSERT INTO #cov_ref (
+  covariate_id,
+  covariate_name,
+	analysis_id,
+	concept_id
+	)
+SELECT p1.covariate_id,
+	'Race = ' + CASE WHEN v1.concept_name IS NOT NULL
+  		THEN v1.concept_name
+		ELSE 'Unknown invalid concept'
+		END  AS covariate_name,
+	3 AS analysis_id,
+	p1.covariate_id AS concept_id
+FROM (SELECT distinct covariate_id FROM #cov_race) p1
+LEFT JOIN (
+	SELECT concept_id,
+		concept_name
+	FROM @cdm_database_schema.concept
+	WHERE LOWER(@concept_class_id) = 'race'
+	) v1
+	ON p1.covariate_id = v1.concept_id;
+
+
+}
+
+{@use_covariate_demographics_ethnicity} ? {
+--ethnicity
+SELECT cp1.@row_id_field AS row_id,
+	ethnicity_concept_id AS covariate_id,
+	tp1.time_id AS time_id,
+	1 AS covariate_value
+  INTO #cov_ethnicity
+FROM @cohort_temp_table cp1
+INNER JOIN @cdm_database_schema.person p1
+	ON cp1.subject_id = p1.person_id
+CROSS JOIN #time_period tp1
+WHERE p1.ethnicity_concept_id IN (
+		SELECT concept_id
+		FROM @cdm_database_schema.concept
+		WHERE LOWER(@concept_class_id) = 'ethnicity'
+		);
+
+
+
+INSERT INTO #cov_ref (
+  covariate_id,
+  covariate_name,
+  analysis_id,
+	concept_id
+	)
+SELECT p1.covariate_id,
+	'Ethnicity = ' + CASE WHEN v1.concept_name IS NOT NULL
+  		THEN v1.concept_name
+		ELSE 'Unknown invalid concept'
+		END  AS covariate_name,
+	4 AS analysis_id,
+	p1.covariate_id AS concept_id
+FROM (SELECT distinct covariate_id FROM #cov_ethnicity) p1
+LEFT JOIN (
+	SELECT concept_id,
+		concept_name
+	FROM @cdm_database_schema.concept
+	WHERE LOWER(@concept_class_id) = 'ethnicity'
+	) v1
+	ON p1.covariate_id = v1.concept_id;
+
+
+}
+
+
+{@use_covariate_demographics_age} ? {
+--age (not group)
+SELECT cp1.@row_id_field AS row_id,
+	YEAR( DATEADD(DAY,start_day,cp1.cohort_start_date)) - p1.YEAR_OF_BIRTH AS covariate_id,
+	tp1.time_id AS time_id,
+	1 AS covariate_value
+    INTO #cov_age
+FROM @cohort_temp_table cp1
+CROSS JOIN #time_period tp1
+INNER JOIN @cdm_database_schema.person p1
+	ON cp1.subject_id = p1.person_id
+WHERE (YEAR(cp1.cohort_start_date) - p1.YEAR_OF_BIRTH) >= 0
+	AND (YEAR(cp1.cohort_start_date) - p1.YEAR_OF_BIRTH) < 100;
+
+INSERT INTO #cov_ref (
+  covariate_id,
+	covariate_name,
+	analysis_id,
+	concept_id
+	)
+SELECT p1.covariate_id,
+	'Age: ' + CAST(covariate_id AS VARCHAR) AS covariate_name,
+	5 AS analysis_id,
+	0 AS concept_id
+FROM (select distinct covariate_id FROM #cov_age) p1
+;
+
+
+
+}
+
+
+{@use_covariate_demographics_year} ? {
+--index year
+SELECT cp1.@row_id_field AS row_id,
+	YEAR( DATEADD(DAY,start_day,cp1.cohort_start_date)) AS covariate_id,
+	tp1.time_id AS time_id,
+	1 AS covariate_value
+    INTO #cov_year
+FROM @cohort_temp_table cp1
+CROSS JOIN #time_period tp1;
+
+
+INSERT INTO #cov_ref (
+  covariate_id,
+  covariate_name,
+	analysis_id,
+	concept_id
+	)
+SELECT p1.covariate_id,
+	'Index year: ' + CAST(covariate_id AS VARCHAR)  AS covariate_name,
+	6 AS analysis_id,
+	0 AS concept_id
+FROM (select distinct covariate_id FROM #cov_year) p1
+;
+
+}
+
+
+{@use_covariate_demographics_month} ? {
+
+--index month
+
+SELECT cp1.@row_id_field AS row_id,
+	MONTH( DATEADD(DAY,start_day,cp1.cohort_start_date)) + 40 AS covariate_id,
+	tp1.time_id AS time_id,
+	1 AS covariate_value
+    INTO #cov_month
+FROM @cohort_temp_table cp1
+CROSS JOIN #time_period tp1;
+
+
+INSERT INTO #cov_ref (
+  covariate_id,
+  covariate_name,
+  analysis_id,
+	concept_id
+	)
+SELECT p1.covariate_id,
+	'Index month: ' + CAST(covariate_id-40 AS VARCHAR)  AS covariate_name,
+	7 AS analysis_id,
+	0 AS concept_id
+FROM (select distinct covariate_id FROM #cov_month) p1
+;
+
+}
+
+}
 
 /**************************
 ***************************
@@ -1028,6 +1263,57 @@ FROM
 
 SELECT row_id, covariate_id, time_id, covariate_value FROM #dummy
 
+{@use_covariate_demographics} ? {
+
+{@use_covariate_demographics_gender} ? {
+UNION
+
+SELECT row_id, covariate_id, time_id, covariate_value
+FROM #cov_gender
+
+}
+
+{@use_covariate_demographics_race} ? {
+UNION
+
+SELECT row_id, covariate_id, time_id, covariate_value
+FROM #cov_race
+
+}
+
+{@use_covariate_demographics_ethnicity} ? {
+UNION
+
+SELECT row_id, covariate_id, time_id, covariate_value
+FROM #cov_ethnicity
+
+}
+
+{@use_covariate_demographics_age} ? {
+UNION
+
+SELECT row_id, covariate_id, time_id, covariate_value
+FROM #cov_age
+
+}
+
+{@use_covariate_demographics_year} ? {
+UNION
+
+SELECT row_id, covariate_id, time_id, covariate_value
+FROM #cov_year
+
+}
+
+{@use_covariate_demographics_month} ? {
+UNION
+
+SELECT row_id, covariate_id, time_id, covariate_value
+FROM #cov_month
+
+}
+}
+
 {@use_covariate_condition_era_start} ? {
 UNION
 
@@ -1163,6 +1449,18 @@ ORDER BY row_id,time_id;
 Cleanup: delete all temp tables
 ***********************************************
 **********************************************/
+IF OBJECT_ID('tempdb..#cov_gender', 'U') IS NOT NULL
+  DROP TABLE #cov_gender;
+IF OBJECT_ID('tempdb..#cov_race', 'U') IS NOT NULL
+  DROP TABLE #cov_race;
+IF OBJECT_ID('tempdb..#cov_ethnicity', 'U') IS NOT NULL
+  DROP TABLE #cov_ethnicity;
+IF OBJECT_ID('tempdb..#cov_age', 'U') IS NOT NULL
+  DROP TABLE #cov_age;
+IF OBJECT_ID('tempdb..#cov_year', 'U') IS NOT NULL
+  DROP TABLE #cov_year;
+IF OBJECT_ID('tempdb..#cov_month', 'U') IS NOT NULL
+  DROP TABLE #cov_month;
 IF OBJECT_ID('tempdb..#cov_co_start', 'U') IS NOT NULL
   DROP TABLE #cov_co_start;
 IF OBJECT_ID('tempdb..#cov_co_pres', 'U') IS NOT NULL
