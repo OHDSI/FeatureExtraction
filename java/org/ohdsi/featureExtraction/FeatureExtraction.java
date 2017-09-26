@@ -455,14 +455,14 @@ public class FeatureExtraction {
 		}
 
 		jsonWriter.key("sqlQueryFeatureRef");
-		jsonWriter.value("SELECT covariate_id, covariate_name, analysis_id, concept_id  FROM #cov_ref ORDER BY covariate_id");
+		jsonWriter.value("SELECT covariate_id, covariate_name, analysis_id, concept_id  FROM #cov_ref");
 
 		jsonWriter.key("sqlQueryAnalysisRef");
 		if (temporal) {
-			jsonWriter.value("SELECT analysis_id, analysis_name, domain_id, is_binary, missing_means_zero FROM #analysis_ref ORDER BY analysis_id");
+			jsonWriter.value("SELECT analysis_id, analysis_name, domain_id, is_binary, missing_means_zero FROM #analysis_ref");
 		} else {
 			jsonWriter.value(
-					"SELECT analysis_id, analysis_name, domain_id, start_day, end_day, is_binary, missing_means_zero FROM #analysis_ref ORDER BY analysis_id");
+					"SELECT analysis_id, analysis_name, domain_id, start_day, end_day, is_binary, missing_means_zero FROM #analysis_ref");
 		}
 
 		jsonWriter.key("sqlCleanup");
