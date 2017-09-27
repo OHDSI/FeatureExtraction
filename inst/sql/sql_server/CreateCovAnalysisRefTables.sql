@@ -2,7 +2,7 @@ IF OBJECT_ID('tempdb..#cov_ref', 'U') IS NOT NULL
 	DROP TABLE #cov_ref;
 	
 IF OBJECT_ID('tempdb..#analysis_ref', 'U') IS NOT NULL
-	DROP TABLE #cov_ref;
+	DROP TABLE #analysis_ref;
 
 CREATE TABLE #cov_ref (
 	covariate_id BIGINT,

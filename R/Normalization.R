@@ -60,7 +60,6 @@ tidyCovariateData <- function(covariateData,
                               removeRedundancy = TRUE) {
   
   covariates <- covariateData$covariates
-  deleteCovariateIds <- c()
   if (nrow(covariates) != 0) {
     maxs <- byMaxFf(covariates$covariateValue, covariates$covariateId)
     
@@ -81,6 +80,7 @@ tidyCovariateData <- function(covariateData,
     if (removeRedundancy) {
       writeLines("Removing redundant covariates")
       start <- Sys.time()
+      deleteCovariateIds <- c()
       binaryCovariateIds <- maxs$bins[maxs$maxs == 1]
       
       # First, find all single covariates that appear in every row with the same value
@@ -100,13 +100,14 @@ tidyCovariateData <- function(covariateData,
       deleteCovariateIds <- c(deleteCovariateIds, valueCounts$bins[!duplicated(valueCounts$analysisId)])
       
       if (length(deleteCovariateIds) != 0) {
-        covariateData$covariates <- covariates[!ffbase::`%in%`(covariates$covariateId, deleteCovariateIds), ]
+        covariates <- covariates[!ffbase::`%in%`(covariates$covariateId, deleteCovariateIds), ]
       }
       covariateData$metaData$deletedCovariateIds <- deleteCovariateIds
       delta <- Sys.time() - start
       writeLines(paste("Removing redundant covariates took", signif(delta, 3), attr(delta, "units")))
     }
   }
+  covariateData$covariates <- covariates
   covariateData$covariateRef <- ff::clone.ffdf(covariateData$covariateRef)
   return(covariateData)
 }
