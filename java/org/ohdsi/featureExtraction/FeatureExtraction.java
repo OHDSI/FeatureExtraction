@@ -719,11 +719,11 @@ public class FeatureExtraction {
 		public boolean		addDescendants	= false;
 		
 		public IdSet(JSONObject analysis, String field, boolean addDescendants) {
-			JSONArray array = analysis.optJSONArray(field);
-			if (array == null) {
+			JSONArray ids = analysis.optJSONArray(field);
+			if (ids == null) {
 				Long id = analysis.optLong(field);
 				if (!id.equals(0l))
-					ids.add(id);
+					this.ids.add(id);
 			} else {
 				for (Object id : ids)
 					if (id instanceof Long)
