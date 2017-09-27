@@ -82,7 +82,7 @@ public class FeatureExtraction {
 		// System.out.println(getDefaultPrespecTemporalAnalyses());
 		// System.out.println(convertSettingsPrespecToDetails(getDefaultPrespecTemporalAnalyses()));
 		// System.out.println(convertSettingsPrespecToDetails(getDefaultPrespecAnalyses()));
-		String settings = "{\"temporal\":false,\"analyses\":[{\"analysisId\":301,\"sqlFileName\":\"DomainConcept.sql\",\"parameters\":{\"analysisId\":301,\"startDay\":-365,\"endDay\":0,\"inpatient\":\"\",\"domainTable\":\"drug_exposure\",\"domainConceptId\":\"drug_concept_id\",\"domainStartDate\":\"drug_exposure_start_date\",\"domainEndDate\":\"drug_exposure_start_date\"},\"addDescendantsToExclude\":true,\"includedCovariateConceptIds\":[1,2,21600537410],\"excludedCovariateConceptIds\":[1,2,3],\"addDescendantsToInclude\":true,\"includedCovariateIds\":[12301]}]}";
+		String settings = "{\"temporal\":false,\"analyses\":[{\"analysisId\":301,\"sqlFileName\":\"DomainConcept.sql\",\"parameters\":{\"analysisId\":301,\"startDay\":-365,\"endDay\":0,\"inpatient\":\"\",\"domainTable\":\"drug_exposure\",\"domainConceptId\":\"drug_concept_id\",\"domainStartDate\":\"drug_exposure_start_date\",\"domainEndDate\":\"drug_exposure_start_date\"},\"addDescendantsToExclude\":true,\"includedCovariateConceptIds\":[1,2,21600537410],\"excludedCovariateConceptIds\":{},\"addDescendantsToInclude\":true,\"includedCovariateIds\":12301}]}";
 		// String settings = convertSettingsPrespecToDetails(getDefaultPrespecAnalyses());
 		System.out.println(createSql(settings, false, "#temp_cohort", "row_id", -1, "cdm_synpuf"));
 		// System.out.println(createSql(getDefaultPrespecAnalyses(), true, "#temp_cohort", "row_id", -1, "cdm_synpuf"));
@@ -629,7 +629,7 @@ public class FeatureExtraction {
 	}
 	
 	private static boolean filtered(JSONObject analysis) {
-		IdSet includedCovariateIds = new IdSet(analysis.getJSONArray(INCLUDED_COVARIATE_IDS), false);
+		IdSet includedCovariateIds = new IdSet(analysis, INCLUDED_COVARIATE_IDS, false);
 		if (includedCovariateIds.ids.size() == 0)
 			return false;
 		else {
@@ -648,7 +648,7 @@ public class FeatureExtraction {
 		IdSet idSet;
 		while (analysesIterator.hasNext()) {
 			JSONObject analysis = (JSONObject) analysesIterator.next();
-			idSet = new IdSet(analysis.getJSONArray(INCLUDED_COVARIATE_CONCEPT_IDS), analysis.getBoolean(ADD_DESCENDANTS_TO_INCLUDE));
+			idSet = new IdSet(analysis, INCLUDED_COVARIATE_CONCEPT_IDS, analysis.getBoolean(ADD_DESCENDANTS_TO_INCLUDE));
 			if (idSet.isEmpty()) {
 				analysis.put("incConcepts", "");
 			} else {
@@ -659,7 +659,7 @@ public class FeatureExtraction {
 				}
 				analysis.put("incConcepts", name);
 			}
-			idSet = new IdSet(analysis.getJSONArray(EXCLUDED_COVARIATE_CONCEPT_IDS), analysis.getBoolean(ADD_DESCENDANTS_TO_EXCLUDE));
+			idSet = new IdSet(analysis, EXCLUDED_COVARIATE_CONCEPT_IDS, analysis.getBoolean(ADD_DESCENDANTS_TO_EXCLUDE));
 			if (idSet.isEmpty()) {
 				analysis.put("excConcepts", "");
 			} else {
@@ -670,7 +670,7 @@ public class FeatureExtraction {
 				}
 				analysis.put("excConcepts", name);
 			}
-			idSet = new IdSet(analysis.getJSONArray(INCLUDED_COVARIATE_IDS), false);
+			idSet = new IdSet(analysis, INCLUDED_COVARIATE_IDS, false);
 			if (idSet.isEmpty()) {
 				analysis.put("incCovs", "");
 			} else {
@@ -718,12 +718,19 @@ public class FeatureExtraction {
 		public Set<Long>	ids				= new HashSet<Long>();
 		public boolean		addDescendants	= false;
 		
-		public IdSet(JSONArray ids, boolean addDescendants) {
-			for (Object id : ids)
-				if (id instanceof Long)
-					this.ids.add((Long) id);
-				else
-					this.ids.add(new Long((Integer) id));
+		public IdSet(JSONObject analysis, String field, boolean addDescendants) {
+			JSONArray array = analysis.optJSONArray(field);
+			if (array == null) {
+				Long id = analysis.optLong(field);
+				if (!id.equals(0l))
+					ids.add(id);
+			} else {
+				for (Object id : ids)
+					if (id instanceof Long)
+						this.ids.add((Long) id);
+					else
+						this.ids.add(new Long((Integer) id));
+			}
 			this.addDescendants = addDescendants;
 		}
 		
