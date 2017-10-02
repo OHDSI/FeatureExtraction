@@ -50,19 +50,45 @@ bySumFf <- function(values, bins) {
 #' Normalize covariate values by dividing by the max and/or remove redundant covariates.
 #'
 #' @param covariateData     An object as generated using the \code{\link{getDbCovariateData}}
-#'                          function.
+#'                          function. If provided, the \code{covariates}, \code{covariateRef}, and 
+#'                          \code{populationSize} arguments will be ignored.
+#' @param covariates        An ffdf object with the covariate values in spare format. Will be 
+#'                          ignored if \code{covariateData} is provided.
+#' @param covariateRef      An ffdf object with the covariate definitions. Will be 
+#'                          ignored if \code{covariateData} is provided. Only needed when 
+#'                          \code{removeRedundancy = TRUE}.
+#' @param populationSize    An integer specifying the total number of unique cohort entries (rowIds). Will be 
+#'                          ignored if \code{covariateData} is provided. Only needed when 
+#'                          \code{removeRedundancy = TRUE}.
 #' @param normalize         Normalize the coviariates? (dividing by the max)
 #' @param removeRedundancy  Should redundant covariates be removed?
 #'
 #' @export
 tidyCovariateData <- function(covariateData, 
+                              covariates,
+                              covariateRef,
+                              populationSize,
                               normalize = TRUE,
                               removeRedundancy = TRUE) {
-  
-  covariates <- covariateData$covariates
+  if (missing(covariateData) && missing(covariates)) {
+    stop("Either covariateData or covariates needs to be provided") 
+  }
+  if (missing(covariateData) && removeRedundancy && (missing(covariateRef) | missing(populationSize))) {
+    stop("If removeRedundancy = TRUE, either covariateData or both covariateRef and populationSize need to be specified")
+  }
+  if (!missing(covariateData) && !is(covariateData, "covariateData")) {
+    stop("Argument covariateData is not of type covariateData")
+  }
+  if (missing(covariateData)) { 
+    covariateData <- list(metaData = list(populationSize = populationSize))
+  } else {
+    covariates <- covariateData$covariates
+    if (removeRedundancy) {
+      covariateRef <- covariateData$covariateRef
+    }
+  }
   if (nrow(covariates) != 0) {
     maxs <- byMaxFf(covariates$covariateValue, covariates$covariateId)
-    
     if (normalize) {
       writeLines("Normalizing covariates")
       start <- Sys.time()
@@ -90,7 +116,7 @@ tidyCovariateData <- function(covariateData,
       
       # Next, find groups of covariates that together cover everyone:
       valueCounts <- valueCounts[!(valueCounts$bins %in% deleteCovariateIds), ]
-      valueCounts <- merge(valueCounts, covariateData$covariateRef[, c("covariateId", "analysisId")], by.x = "bins", by.y = "covariateId")
+      valueCounts <- merge(valueCounts, covariateRef[, c("covariateId", "analysisId")], by.x = "bins", by.y = "covariateId")
       countsPerAnalysis <- aggregate(sums ~ analysisId, data = valueCounts, sum)
       analysisIds <- countsPerAnalysis$analysisId[countsPerAnalysis$sums == covariateData$metaData$populationSize]
       # TODO: maybe check if sum was not accidentally achieved by duplicates (unlikely)

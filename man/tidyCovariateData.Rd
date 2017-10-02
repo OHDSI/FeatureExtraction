@@ -4,11 +4,24 @@
 \alias{tidyCovariateData}
 \title{Tidy covariate data}
 \usage{
-tidyCovariateData(covariateData, normalize = TRUE, removeRedundancy = TRUE)
+tidyCovariateData(covariateData, covariates, covariateRef, populationSize,
+  normalize = TRUE, removeRedundancy = TRUE)
 }
 \arguments{
 \item{covariateData}{An object as generated using the \code{\link{getDbCovariateData}}
-function.}
+function. If provided, the \code{covariates}, \code{covariateRef}, and 
+\code{populationSize} arguments will be ignored.}
+
+\item{covariates}{An ffdf object with the covariate values in spare format. Will be 
+ignored if \code{covariateData} is provided.}
+
+\item{covariateRef}{An ffdf object with the covariate definitions. Will be 
+ignored if \code{covariateData} is provided. Only needed when 
+\code{removeRedundancy = TRUE}.}
+
+\item{populationSize}{An integer specifying the total number of unique cohort entries (rowIds). Will be 
+ignored if \code{covariateData} is provided. Only needed when 
+\code{removeRedundancy = TRUE}.}
 
 \item{normalize}{Normalize the coviariates? (dividing by the max)}
 
