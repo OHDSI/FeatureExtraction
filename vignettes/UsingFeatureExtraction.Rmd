@@ -1,0 +1,220 @@
+---
+title: "Using FeatureExtraction"
+author: "Martijn J. Schuemie"
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    number_sections: yes
+    toc: yes
+  html_document:
+    number_sections: yes
+    toc: yes
+vignette: >
+  %\VignetteIndexEntry{Using FeatureExtraction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r echo=FALSE,message=FALSE,warning=FALSE,eval=TRUE}
+library(FeatureExtraction)
+```
+
+# Introduction
+
+The `FeatureExtraction` package can be used to create features for a cohort, using the information stored in the Common Data Model. A cohort is defined a set of persons who satisfy one or more inclusion criteria for a duration of time. Features can for example be diagnoses observed prior to entering the cohort. Some people might also refer to such features as 'baseline characteristics', or to features in general as 'covariates', and we will use those terms interchangeably throughout this vignette.
+
+This vignette describes how features can be contructed using the default covariate definitions embeded in the package. Although these definitions allow quite some customization through predefined parameters, it could be someone needs more customization. In this case, the reader is referred to the other vignettes included in this package that deal with constructing completely custom covariates.
+
+This vignette will first describe how to specify which features to construct. In many situations, for example when using `FeatureExtraction` as part of another package such as `CohortMethod` or `PatientLevelPrediction`, that is all one needs to know about the `FeatureExtraction` package, as the actual calling of the package is done by the other package. However, it is also possible to use this package on its own, for example to create a descriptive characterization of a cohort to include in a paper.
+
+# Covariate settings
+
+Users can specify which covariates to construct in three ways:
+
+1. Choose the default set of covariates.
+2. Choose from a set of prespecified analyses.
+3. Create a set of custom analyses.
+
+An **analysis** is a process that creates one or more similar covariates. For example, one analysis might create a binary covariate for each condition observed in the condition_occurrence table in the year prior to cohort start, and another analysis might create a single covariate representing the Charlson comorbidity index.
+
+Note that it is always possible to specify a set of concept IDs that can or can't be used to construct features. When choosing the default set of the prespecified analysis this can only be done across all analysis. When creating custom analyses this can be specified per analysis.
+
+For **advanced users**: It is also possible to specify a set of covariate IDs that need to be constructed. A covariate ID identifies a specific covariate, for example the Charlson comorbidity index, or the occurrence of a specific condition concept in a specific time window. A covariate ID is therefore not to be confused with a concept ID. The typical scenario where one might want to specify covariate IDs to construct is when someone already constructed covariates in one population, found a subset of covariates to be of interest, and would like to have only those covariates constructed in another population.
+
+## Using the default set of covariates
+
+Using the default set of covariates is straightforward:
+
+```{r}
+settings <- createDefaultCovariateSettings()
+```
+
+This will create a wide array of features, ranging from demographics, through conditions and drugs, to sevaral risk scores. 
+
+Note that we could specify a set of concepts that should not be used to create covariates, for example:
+
+```{r}
+settings <- createDefaultCovariateSettings(excludedCovariateConceptIds = 1124300, 
+                                           addDescendantsToExclude = TRUE)
+```
+
+This will create the default set of covariates, except those derived from concept 1124300 (the ingredient diclofenac) and any of its descendants (ie. all drugs containing the ingredient diclofenac).
+
+## Using prespecified analyses
+
+The function `createCovariateSettings` allow the user to choose from a large set of predefined covariates. Type `?createCovariateSettings` to get an overview of the available options. For example:
+
+```{r}
+settings <- createCovariateSettings(useDemographicsGender = TRUE,
+                                    useDemographicsAgeGroup = TRUE,
+                                    useConditionOccurrenceAnyTimePrior = TRUE)
+```
+This will create binary covariates for gender, age (in 5 year age groups), and each concept observed in the `condition_occurrence` table any time prior to (and including) the cohort start date.
+
+Many of the prespecified analyses refer to a short, medium, or long term time window. By default, these windows are specified as:
+
+- Long term: 365 days prior up to and including the cohort start date.
+- Short term: 180 days prior up to and including the cohort start date.
+- Medium term: 30 days prior up to and including the cohort start date.
+
+However, the user can change these values. For example:
+
+```{r}
+settings <- createCovariateSettings(useConditionEraLongTerm = TRUE,
+                                    useConditionEraShortTerm = TRUE,
+                                    useDrugEraLongTerm = TRUE,
+                                    useDrugEraShortTerm = TRUE,
+                                    longTermStartDays = -180,
+                                    shortTermStartDays = -14,
+                                    endDays = -1)
+```
+
+This redefines the long term window as 180 days prior up to (but not including) the cohort start date, and redefines the short term window as 14 days prior up to (but not including) the cohort start date.
+
+Again, we can also specify which concept IDs should or should not be used to construct covariates:
+```{r}
+settings <- createCovariateSettings(useConditionEraLongTerm = TRUE,
+                                    useConditionEraShortTerm = TRUE,
+                                    useDrugEraLongTerm = TRUE,
+                                    useDrugEraShortTerm = TRUE,
+                                    longTermStartDays = -180,
+                                    shortTermStartDays = -14,
+                                    endDays = -1,
+                                    excludedCovariateConceptIds = 1124300, 
+                                    addDescendantsToExclude = TRUE)
+```
+
+## Creating a set of custom covariates
+
+This option should only be used by **advanced users**. It requires one to understand that at the implementation level, an analysis is a combination of a piece of highly parameterized SQL together with a specification of the parameter values. The best way to understand the available options is to take a prespecified analysis as starting point, and convert it to a detailed setting object:
+
+```{r}
+settings <- createCovariateSettings(useConditionEraLongTerm = TRUE)
+settings2 <- convertPrespecSettingsToDetailedSettings(settings)
+settings2$analyses[[1]]
+```
+
+One can create a detailed analysis settings object from scratch, and use it to create a detailed settings object:
+
+```{r}
+analysisDetails <- createAnalysisDetails(analysisId = 1,
+                                         sqlFileName = "DemographicsGender.sql",
+                                         parameters = list(analysisId = 1,
+                                                           analysisName = "Gender",
+                                                           domainId = "Demographics"),
+                                         includedCovariateConceptIds = c(),
+                                         addDescendantsToInclude = FALSE,
+                                         excludedCovariateConceptIds = c(),
+                                         addDescendantsToExclude = FALSE,
+                                         includedCovariateIds = c())
+
+settings <- createDetailedCovariateSettings(list(analysisDetails))
+```
+
+# Constructing covariates for a cohort of interest
+
+Here we will walk through an example, creating covariates for two cohorts of interest: new users of diclofenac and new users of celecoxib.
+
+## Configuring the connection to the server
+
+We need to tell R how to connect to the server where the data are. `CohortMethod` uses the `DatabaseConnector` package, which provides the `createConnectionDetails` function. Type `?createConnectionDetails` for the specific settings required for the various database management systems (DBMS). For example, one might connect to a PostgreSQL database using this code:
+
+```{r tidy=FALSE,eval=FALSE}
+connectionDetails <- createConnectionDetails(dbms = "postgresql", 
+                                             server = "localhost/ohdsi", 
+                                             user = "joe", 
+                                             password = "supersecret")
+
+cdmDatabaseSchema <- "my_cdm_data"
+resultsDatabaseSchema <- "my_results"
+```
+
+The last three lines define the `cdmDatabaseSchema` and `resultSchema` variables,as well as the CDM version. We'll use these later to tell R where the data in CDM format live, where we want to write intermediate and result tables, and what version CDM is used. Note that for Microsoft SQL Server, databaseschemas need to specify both the database and the schema, so for example `cdmDatabaseSchema <- "my_cdm_data.dbo"`.
+
+
+## Creating a cohort of interest
+
+FeatureExtraction requires the cohorts to be instantiated in the `cohort` table in the Common Data Model, or in a table that has the same structure as the `cohort` table. We could create cohorts using a cohort definition tool, but here we'll just use some simple SQL to find the first drug era per person. Note that because we will be creating covariates based on data before cohort start, we are requiring 365 days of observation before the first exposure. FeatureExtraction will not check if a subject is observed during the specified time windows.
+
+```sql
+/***********************************
+File cohortsOfInterest.sql
+***********************************/
+
+IF OBJECT_ID('@resultsDatabaseSchema.cohortsOfInterest', 'U') IS NOT NULL
+  DROP TABLE @resultsDatabaseSchema.cohortsOfInterest;
+
+SELECT first_use.*
+INTO @resultsDatabaseSchema.cohortsOfInterest
+FROM (
+  SELECT drug_concept_id AS cohort_definition_id,
+  	MIN(drug_era_start_date) AS cohort_start_date,
+  	MIN(drug_era_end_date) AS cohort_end_date,
+  	person_id 
+  FROM @cdmDatabaseSchema.drug_era
+  WHERE drug_concept_id = 1118084-- celecoxib
+    OR drug_concept_id = 1124300 --diclofenac
+  GROUP BY drug_concept_id, 
+    person_id
+) first_use 
+INNER JOIN @cdmDatabaseSchema.observation_period
+  ON first_use.person_id = observation_period.person_id
+  AND cohort_start_date >= observation_period_start_date
+  AND cohort_end_date <= observation_period_end_date
+WHERE DATEDIFF(DAY, observation_period_start_date, cohort_start_date) >= 365;
+
+```
+
+This is parameterized SQL which can be used by the `SqlRender` package. We use parameterized SQL so we do not have to pre-specify the names of the CDM and result schemas. That way, if we want to run the SQL on a different schema, we only need to change the parameter values; we do not have to change the SQL code. By also making use of translation functionality in `SqlRender`, we can make sure the SQL code can be run in many different environments.
+
+```{r tidy=FALSE,eval=FALSE}
+library(SqlRender)
+sql <- readSql("cohortsOfInterest.sql")
+sql <- renderSql(sql,
+                 cdmDatabaseSchema = cdmDatabaseSchema, 
+                 resultsDatabaseSchema = resultsDatabaseSchema)$sql
+sql <- translateSql(sql, targetDialect = connectionDetails$dbms)$sql
+
+connection <- connect(connectionDetails)
+executeSql(connection, sql)
+```
+
+In this code, we first read the SQL from the file into memory. In the next line, we replace the two parameter names with the actual values. We then translate the SQL into the dialect appropriate for the DBMS we already specified in the `connectionDetails`. Next, we connect to the server, and submit the rendered and translated SQL.
+
+If all went well, we now have a table with the cohorts of interest. We can see how many events per type:
+
+```{r tidy=FALSE,eval=FALSE}
+sql <- paste("SELECT cohort_definition_id, COUNT(*) AS count",
+             "FROM @resultsDatabaseSchema.coxibVsNonselVsGiBleed",
+             "GROUP BY cohort_definition_id")
+sql <- renderSql(sql, resultsDatabaseSchema = resultsDatabaseSchema)$sql
+sql <- translateSql(sql, targetDialect = connectionDetails$dbms)$sql
+
+querySql(connection, sql)
+```
+```{r echo=FALSE,message=FALSE}
+data.frame(cohort_concept_id = c(1124300,1118084),count=c(240761,47293))
+```
+
+## Creating covariates for a cohort of interest
+

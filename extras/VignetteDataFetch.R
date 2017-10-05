@@ -20,57 +20,40 @@
 library(SqlRender)
 library(DatabaseConnector)
 library(FeatureExtraction)
-setwd("s:/temp")
-options(fftempdir = "s:/FFtemp")
+options(fftempdir = "c:/FFtemp")
 
-pw <- NULL
-dbms <- "sql server"
-user <- NULL
-server <- "RNDUSRDHIT07.jnj.com"
-cdmDatabaseSchema <- "cdm_truven_mdcd.dbo"
-resultsDatabaseSchema <- "scratch.dbo"
-port <- NULL
-
-dbms <- "postgresql"
-server <- "localhost/ohdsi"
-user <- "postgres"
-pw <- "F1r3starter"
-cdmDatabaseSchema <- "cdm4_sim"
-resultsDatabaseSchema <- "scratch"
-port <- NULL
-
-pw <- NULL
 dbms <- "pdw"
 user <- NULL
+pw <- NULL
 server <- "JRDUSAPSCTL01"
-cdmDatabaseSchema <- "cdm_truven_mdcd_v5.dbo"
+cdmDatabaseSchema <- "cdm_truven_mdcd_v569.dbo"
 resultsDatabaseSchema <- "scratch.dbo"
-oracleTempSchema <- NULL
 port <- 17001
 cdmVersion <- "5"
+extraSettings <- NULL
 
 connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = dbms,
                                                                 server = server,
                                                                 user = user,
                                                                 password = pw,
-                                                                port = port)
+                                                                port = port,
+                                                                extraSettings = extraSettings)
 connection <- DatabaseConnector::connect(connectionDetails)
 
-sql <- SqlRender::loadRenderTranslateSql("HospitalizationCohorts.sql",
-                                         packageName = "PatientLevelPrediction",
-                                         dbms = dbms,
-                                         cdmDatabaseSchema = cdmDatabaseSchema,
-                                         resultsDatabaseSchema = resultsDatabaseSchema,
-                                         post_time = 30,
-                                         pre_time = 365)
+sql <- loadRenderTranslateSql("cohortsOfInterest.sql",
+                              packageName = "FeatureExtraction",
+                              dbms = dbms,
+                              cdmDatabaseSchema = cdmDatabaseSchema,
+                              resultsDatabaseSchema = resultsDatabaseSchema)
 DatabaseConnector::executeSql(connection, sql)
 
 # Check number of subjects per cohort:
-sql <- "SELECT cohort_definition_id, COUNT(*) AS count FROM @resultsDatabaseSchema.rehospitalization GROUP BY cohort_definition_id"
+sql <- "SELECT cohort_definition_id, COUNT(*) AS count FROM @resultsDatabaseSchema.cohortsOfInterest GROUP BY cohort_definition_id"
 sql <- SqlRender::renderSql(sql, resultsDatabaseSchema = resultsDatabaseSchema)$sql
 sql <- SqlRender::translateSql(sql, targetDialect = connectionDetails$dbms)$sql
 DatabaseConnector::querySql(connection, sql)
-dbDisconnect(connection)
+
+DatabaseConnector::disconnect(connection)
 
 covariateSettings <- createCovariateSettings(useCovariateDemographics = TRUE,
                                              useCovariateDemographicsGender = TRUE,
