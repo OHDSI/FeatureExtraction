@@ -4,7 +4,24 @@
 \alias{createDefaultTemporalCovariateSettings}
 \title{Create default covariate settings}
 \usage{
-createDefaultTemporalCovariateSettings()
+createDefaultTemporalCovariateSettings(includedCovariateConceptIds = c(),
+  addDescendantsToInclude = FALSE, excludedCovariateConceptIds = c(),
+  addDescendantsToExclude = FALSE, includedCovariateIds = c())
+}
+\arguments{
+\item{includedCovariateConceptIds}{A list of concept IDs that should be used to construct
+covariates.}
+
+\item{addDescendantsToInclude}{Should descendant concept IDs be added to the list of concepts
+to include?}
+
+\item{excludedCovariateConceptIds}{A list of concept IDs that should NOT be used to construct
+covariates.}
+
+\item{addDescendantsToExclude}{Should descendant concept IDs be added to the list of concepts
+to exclude?}
+
+\item{includedCovariateIds}{A list of covariate IDs that should be restricted to.}
 }
 \value{
 An object of type \code{covariateSettings}, to be used in other functions.

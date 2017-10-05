@@ -882,30 +882,74 @@ convertPrespecSettingsToDetailedSettings <- function(covariateSettings) {
 
 #' Create default covariate settings
 #'
+#' @param includedCovariateConceptIds   A list of concept IDs that should be used to construct
+#'                                      covariates.
+#' @param addDescendantsToInclude       Should descendant concept IDs be added to the list of concepts
+#'                                      to include?
+#' @param excludedCovariateConceptIds   A list of concept IDs that should NOT be used to construct
+#'                                      covariates.
+#' @param addDescendantsToExclude       Should descendant concept IDs be added to the list of concepts
+#'                                      to exclude?
+#' @param includedCovariateIds          A list of covariate IDs that should be restricted to.
+#'
 #' @return
 #' An object of type \code{covariateSettings}, to be used in other functions.
 #'
 #' @export
-createDefaultCovariateSettings <- function() {
+createDefaultCovariateSettings <- function(includedCovariateConceptIds = c(),
+                                           addDescendantsToInclude = FALSE,
+                                           excludedCovariateConceptIds = c(),
+                                           addDescendantsToExclude = FALSE,
+                                           includedCovariateIds = c()) {
   rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$init(system.file("", package = "FeatureExtraction"))
   newJson <- rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$getDefaultPrespecAnalyses()
-  cvariateSettings <- .fromJson(newJson)
-  attr(cvariateSettings, "fun") <- "getDbDefaultCovariateData"
-  class(cvariateSettings) <- "covariateSettings"
-  return(cvariateSettings)
+  covariateSettings <- .fromJson(newJson)
+  formalNames <- names(formals(createDefaultCovariateSettings))
+  for (name in formalNames) {
+    value <- get(name)
+    if (is.null(value)) {
+      value <- vector()
+    }
+    covariateSettings[[name]] <- value
+  }
+  attr(covariateSettings, "fun") <- "getDbDefaultCovariateData"
+  class(covariateSettings) <- "covariateSettings"
+  return(covariateSettings)
 }
 
 #' Create default covariate settings
 #'
+#' @param includedCovariateConceptIds   A list of concept IDs that should be used to construct
+#'                                      covariates.
+#' @param addDescendantsToInclude       Should descendant concept IDs be added to the list of concepts
+#'                                      to include?
+#' @param excludedCovariateConceptIds   A list of concept IDs that should NOT be used to construct
+#'                                      covariates.
+#' @param addDescendantsToExclude       Should descendant concept IDs be added to the list of concepts
+#'                                      to exclude?
+#' @param includedCovariateIds          A list of covariate IDs that should be restricted to.
+#'
 #' @return
 #' An object of type \code{covariateSettings}, to be used in other functions.
 #'
 #' @export
-createDefaultTemporalCovariateSettings <- function() {
+createDefaultTemporalCovariateSettings <- function(includedCovariateConceptIds = c(),
+                                                   addDescendantsToInclude = FALSE,
+                                                   excludedCovariateConceptIds = c(),
+                                                   addDescendantsToExclude = FALSE,
+                                                   includedCovariateIds = c()) {
   rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$init(system.file("", package = "FeatureExtraction"))
   newJson <- rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$getDefaultTemporalPrespecAnalyses()
-  cvariateSettings <- .fromJson(newJson)
-  attr(cvariateSettings, "fun") <- "getDbDefaultCovariateData"
-  class(cvariateSettings) <- "covariateSettings"
-  return(cvariateSettings)
+  covariateSettings <- .fromJson(newJson)
+  formalNames <- names(formals(createDefaultTemporalCovariateSettings))
+  for (name in formalNames) {
+    value <- get(name)
+    if (is.null(value)) {
+      value <- vector()
+    }
+    covariateSettings[[name]] <- value
+  }
+  attr(covariateSettings, "fun") <- "getDbDefaultCovariateData"
+  class(covariateSettings) <- "covariateSettings"
+  return(covariateSettings)
 }
