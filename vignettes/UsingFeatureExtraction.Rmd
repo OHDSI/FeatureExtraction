@@ -131,6 +131,42 @@ analysisDetails <- createAnalysisDetails(analysisId = 1,
 settings <- createDetailedCovariateSettings(list(analysisDetails))
 ```
 
+## Temporal covariates
+
+Ordinarily, covariates are created for just a few time windows of interest, for example the short, medium, and long term windows described earlier. However, sometimes a more fine-grained temporal resolution is required, for example creating covariates for each day separately, in the 365 days prior to cohort start. We will refer to this type of covariates as *temporal covariates*. Temporal covariates share the same covariate ID across the time windows, and use a separate time ID to distinguish between time windows. There currently aren't many applications that are able to handle temporal covariats. For example, the `CohortMethod` package will break when provided with temporal covariatse. However, there are some machine learning algorithms in the `PatientLevelPrediction` package that require temporal covariates. 
+
+Again, we can just choose to use the default settings:
+
+```{r}
+settings <- createDefaultTemporalCovariateSettings()
+```
+
+Or, we can choose from a set of prespecified temporal covariates:
+
+```{r}
+settings <- createTemporalCovariateSettings(useConditionOccurrence = TRUE,
+                                            useMeasurementValue = TRUE)
+```
+
+In this case we've chosen to create binary covariates for each concept in the `condition_occurrence` table, and continuous covariates for each measurement - unit combination in the `measurement` table in the CDM. By default, temporal covariates are created for each day separately in the 365 days before (but not including) the cohort start date. Different time windows can also be specified, for example creating 7 day intervals instead:
+
+```{r}
+settings <- createTemporalCovariateSettings(useConditionOccurrence = TRUE,
+                                            useMeasurementValue = TRUE,
+                                            temporalStartDays = seq(-364, -7, by = 7),
+                                            temporalEndDays = seq(-358, -1, by = 7))
+```
+
+Each time window includes the specified start and end day.
+
+Similar to ordinary covariates, it is also possible to define custom analyses for more **advanced users**:
+
+```{r}
+
+
+```
+
+
 # Constructing covariates for a cohort of interest
 
 Here we will walk through an example, creating covariates for two cohorts of interest: new users of diclofenac and new users of celecoxib.
