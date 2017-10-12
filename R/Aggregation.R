@@ -31,6 +31,7 @@ aggregateCovariates <- function(covariateData) {
     stop("Data appears to already be aggregated")
   if (!is.null(covariateData$covariates$timeId))
     stop("Aggregation for temporal covariates is not yet implemented")
+  start <- Sys.time()
   result <- list(covariateRef = ff::clone.ffdf(covariateData$covariateRef),
                  analysisRef = ff::clone.ffdf(covariateData$analysisRef),
                  metaData = covariateData$metaData)
@@ -48,7 +49,7 @@ aggregateCovariates <- function(covariateData) {
         covariates <- bySumFf(binaryCovariates$covariateValue, binaryCovariates$covariateId) 
         colnames(covariates) <- c("covariateId", "sumValue")
         covariates$averageValue <- covariates$sumValue / populationSize
-        result$covariates <- covariates
+        result$covariates <- ff::as.ffdf(covariates)
       }
     }
   }
@@ -135,6 +136,8 @@ aggregateCovariates <- function(covariateData) {
   if (!is.null(result$covariatesContinuous) && nrow(result$covariatesContinuous) != 0) {
     result$covariatesContinuous <- ff::as.ffdf(result$covariatesContinuous)
   }
+  delta <- Sys.time() - start
+  writeLines(paste("Aggregating covariates took", signif(delta, 3), attr(delta, "units")))
   class(result) <- "covariateData"
   return(result)
 }

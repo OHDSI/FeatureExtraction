@@ -4,6 +4,7 @@ author: "Martijn J. Schuemie"
 date: "`r Sys.Date()`"
 output:
   pdf_document:
+    keep_tex: yes
     number_sections: yes
     toc: yes
   html_document:
@@ -11,19 +12,22 @@ output:
     toc: yes
 vignette: >
   %\VignetteIndexEntry{Using FeatureExtraction}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
 ---
 
 ```{r echo=FALSE,message=FALSE,warning=FALSE,eval=TRUE}
 library(FeatureExtraction)
+vignetteFolder <- "c:/temp/vignetteFeatureExtraction"
 ```
+\fontsize{10}{12}
+\selectfont
 
 # Introduction
 
 The `FeatureExtraction` package can be used to create features for a cohort, using the information stored in the Common Data Model. A cohort is defined a set of persons who satisfy one or more inclusion criteria for a duration of time. Features can for example be diagnoses observed prior to entering the cohort. Some people might also refer to such features as 'baseline characteristics', or to features in general as 'covariates', and we will use those terms interchangeably throughout this vignette.
 
-This vignette describes how features can be contructed using the default covariate definitions embeded in the package. Although these definitions allow quite some customization through predefined parameters, it could be someone needs more customization. In this case, the reader is referred to the other vignettes included in this package that deal with constructing completely custom covariates.
+This vignette describes how features can be contructed using the default covariate definitions embeded in the package. Although these definitions allow quite some customization through predefined parameters, it is possible that someone needs more customization. In this case, the reader is referred to the other vignettes included in this package that deal with constructing completely custom covariates.
 
 This vignette will first describe how to specify which features to construct. In many situations, for example when using `FeatureExtraction` as part of another package such as `CohortMethod` or `PatientLevelPrediction`, that is all one needs to know about the `FeatureExtraction` package, as the actual calling of the package is done by the other package. However, it is also possible to use this package on its own, for example to create a descriptive characterization of a cohort to include in a paper.
 
@@ -37,7 +41,7 @@ Users can specify which covariates to construct in three ways:
 
 An **analysis** is a process that creates one or more similar covariates. For example, one analysis might create a binary covariate for each condition observed in the condition_occurrence table in the year prior to cohort start, and another analysis might create a single covariate representing the Charlson comorbidity index.
 
-Note that it is always possible to specify a set of concept IDs that can or can't be used to construct features. When choosing the default set of the prespecified analysis this can only be done across all analysis. When creating custom analyses this can be specified per analysis.
+Note that it is always possible to specify a set of concept IDs that can or can't be used to construct features. When choosing the default set (option 1) or the prespecified analysis (option 2) this can only be done across all analysis. When creating custom analyses (option 3) this can be specified per analysis.
 
 For **advanced users**: It is also possible to specify a set of covariate IDs that need to be constructed. A covariate ID identifies a specific covariate, for example the Charlson comorbidity index, or the occurrence of a specific condition concept in a specific time window. A covariate ID is therefore not to be confused with a concept ID. The typical scenario where one might want to specify covariate IDs to construct is when someone already constructed covariates in one population, found a subset of covariates to be of interest, and would like to have only those covariates constructed in another population.
 
@@ -49,7 +53,7 @@ Using the default set of covariates is straightforward:
 settings <- createDefaultCovariateSettings()
 ```
 
-This will create a wide array of features, ranging from demographics, through conditions and drugs, to sevaral risk scores. 
+This will create a wide array of features, ranging from demographics, through conditions and drugs, to several risk scores. 
 
 Note that we could specify a set of concepts that should not be used to create covariates, for example:
 
@@ -71,7 +75,7 @@ settings <- createCovariateSettings(useDemographicsGender = TRUE,
 ```
 This will create binary covariates for gender, age (in 5 year age groups), and each concept observed in the `condition_occurrence` table any time prior to (and including) the cohort start date.
 
-Many of the prespecified analyses refer to a short, medium, or long term time window. By default, these windows are specified as:
+Many of the prespecified analyses refer to a short, medium, or long term time window. By default, these windows are defined as:
 
 - Long term: 365 days prior up to and including the cohort start date.
 - Short term: 180 days prior up to and including the cohort start date.
@@ -133,7 +137,7 @@ settings <- createDetailedCovariateSettings(list(analysisDetails))
 
 ## Temporal covariates
 
-Ordinarily, covariates are created for just a few time windows of interest, for example the short, medium, and long term windows described earlier. However, sometimes a more fine-grained temporal resolution is required, for example creating covariates for each day separately, in the 365 days prior to cohort start. We will refer to this type of covariates as *temporal covariates*. Temporal covariates share the same covariate ID across the time windows, and use a separate time ID to distinguish between time windows. There currently aren't many applications that are able to handle temporal covariats. For example, the `CohortMethod` package will break when provided with temporal covariatse. However, there are some machine learning algorithms in the `PatientLevelPrediction` package that require temporal covariates. 
+Ordinarily, covariates are created for just a few time windows of interest, for example the short, medium, and long term windows described earlier. However, sometimes a more fine-grained temporal resolution is required, for example creating covariates for each day separately, in the 365 days prior to cohort start. We will refer to this type of covariates as *temporal covariates*. Temporal covariates share the same covariate ID across the time windows, and use a separate time ID to distinguish between time windows. There currently aren't many applications that are able to handle temporal covariats. For example, the `CohortMethod` package will break when provided with temporal covariates. However, there are some machine learning algorithms in the `PatientLevelPrediction` package that require temporal covariates. 
 
 Again, we can just choose to use the default settings:
 
@@ -159,13 +163,22 @@ settings <- createTemporalCovariateSettings(useConditionOccurrence = TRUE,
 
 Each time window includes the specified start and end day.
 
-Similar to ordinary covariates, it is also possible to define custom analyses for more **advanced users**:
+Similar to ordinary covariates, **advanced users** can also define custom analyses:
 
 ```{r}
+analysisDetails <- createAnalysisDetails(analysisId = 1,
+                                         sqlFileName = "MeasurementValue.sql",
+                                         parameters = list(analysisId = 1,
+                                                           analysisName = "MeasurementValue",
+                                                           domainId = "Measurement"),
+                                         includedCovariateConceptIds = c(),
+                                         addDescendantsToInclude = FALSE,
+                                         excludedCovariateConceptIds = c(),
+                                         addDescendantsToExclude = FALSE,
+                                         includedCovariateIds = c())
 
-
+settings <-  createDetailedTemporalCovariateSettings(list(analysisDetails))
 ```
-
 
 # Constructing covariates for a cohort of interest
 
@@ -185,7 +198,7 @@ cdmDatabaseSchema <- "my_cdm_data"
 resultsDatabaseSchema <- "my_results"
 ```
 
-The last three lines define the `cdmDatabaseSchema` and `resultSchema` variables,as well as the CDM version. We'll use these later to tell R where the data in CDM format live, where we want to write intermediate and result tables, and what version CDM is used. Note that for Microsoft SQL Server, databaseschemas need to specify both the database and the schema, so for example `cdmDatabaseSchema <- "my_cdm_data.dbo"`.
+The last two lines define the `cdmDatabaseSchema` and `resultSchema` variables. We'll use these later to tell R where the data in CDM format live, and where we want to write intermediate and result tables. Note that for Microsoft SQL Server, databaseschemas need to specify both the database and the schema, so for example `cdmDatabaseSchema <- "my_cdm_data.dbo"`.
 
 
 ## Creating a cohort of interest
@@ -197,11 +210,11 @@ FeatureExtraction requires the cohorts to be instantiated in the `cohort` table 
 File cohortsOfInterest.sql
 ***********************************/
 
-IF OBJECT_ID('@resultsDatabaseSchema.cohortsOfInterest', 'U') IS NOT NULL
-  DROP TABLE @resultsDatabaseSchema.cohortsOfInterest;
+IF OBJECT_ID('@resultsDatabaseSchema.cohorts_of_interest', 'U') IS NOT NULL
+  DROP TABLE @resultsDatabaseSchema.cohorts_of_interest;
 
 SELECT first_use.*
-INTO @resultsDatabaseSchema.cohortsOfInterest
+INTO @resultsDatabaseSchema.cohorts_of_interest
 FROM (
   SELECT drug_concept_id AS cohort_definition_id,
   	MIN(drug_era_start_date) AS cohort_start_date,
@@ -218,7 +231,6 @@ INNER JOIN @cdmDatabaseSchema.observation_period
   AND cohort_start_date >= observation_period_start_date
   AND cohort_end_date <= observation_period_end_date
 WHERE DATEDIFF(DAY, observation_period_start_date, cohort_start_date) >= 365;
-
 ```
 
 This is parameterized SQL which can be used by the `SqlRender` package. We use parameterized SQL so we do not have to pre-specify the names of the CDM and result schemas. That way, if we want to run the SQL on a different schema, we only need to change the parameter values; we do not have to change the SQL code. By also making use of translation functionality in `SqlRender`, we can make sure the SQL code can be run in many different environments.
@@ -241,7 +253,7 @@ If all went well, we now have a table with the cohorts of interest. We can see h
 
 ```{r tidy=FALSE,eval=FALSE}
 sql <- paste("SELECT cohort_definition_id, COUNT(*) AS count",
-             "FROM @resultsDatabaseSchema.coxibVsNonselVsGiBleed",
+             "FROM @resultsDatabaseSchema.cohorts_of_interest",
              "GROUP BY cohort_definition_id")
 sql <- renderSql(sql, resultsDatabaseSchema = resultsDatabaseSchema)$sql
 sql <- translateSql(sql, targetDialect = connectionDetails$dbms)$sql
@@ -252,5 +264,201 @@ querySql(connection, sql)
 data.frame(cohort_concept_id = c(1124300,1118084),count=c(240761,47293))
 ```
 
-## Creating covariates for a cohort of interest
+## Creating per-person covariates for a cohort of interest
+
+We can create per-person covariates for one of the cohorts of interest, for example using the default settings:
+
+```{r eval=FALSE}
+covariateSettings <- createDefaultCovariateSettings()
+
+covariateData <- getDbCovariateData(connectionDetails = connectionDetails,
+                                    cdmDatabaseSchema = cdmDatabaseSchema,
+                                    cohortDatabaseSchema = resultsDatabaseSchema,
+                                    cohortTable = "cohorts_of_interest",
+                                    cohortId = 1118084,
+                                    rowIdField = "subject_id",
+                                    covariateSettings = covariateSettings)
+
+summary(covariateData)
+```
+```{r echo=FALSE,message=FALSE}
+if (file.exists(file.path(vignetteFolder, "covariatesPerPerson"))){
+  covariateData <- loadCovariateData(file.path(vignetteFolder, "covariatesPerPerson"))
+  summary(covariateData)
+}
+```
+
+### Per-person covariate output format
+
+The main component of the `covariateData` object is `covariates`:
+```{r eval=FALSE}
+covariateData$covariates
+```
+```{r echo=FALSE,message=FALSE}
+if (file.exists(file.path(vignetteFolder, "covariatesPerPerson"))){
+  cvs <- covariateData$covariates
+  cvs$rowId <- ff::ff(1:nrow(cvs))
+  cvs
+}
+```
+The columns are defines as follow:
+- `rowId` uniquely identifies a cohort entry. When calling `getDbCovariateData` we defined `rowIdField = "subject_id"`, so in this case the `rowId` is the same as the `subject_id` in the cohort table. In cases where a single subject can appear in the cohort more than once it is up to the user to create a field in the cohort table that uniquely identifies each cohort entry, and use that as `rowIdField`.
+- `covariateId` identifies the covariate, and definitions of covariates can be found in the `cohortData$covariateRef` object. 
+- `covariateValue` field provides the value.
+
+### Saving the data to file
+
+Creating covariates can take considerable computing time, and it is probably a good idea to save it for future sessions. Because `covariateData` objects use `ff`, we cannot use R's regular save function. Instead, we'll have to use the `saveCovariateData()` function:
+
+```{r eval=FALSE}
+saveCovariateData(covariateData, "covariates")
+```
+
+We can use the `loadCovariateData()` function to load the data in a future session.
+
+### Normalizing and removing redundancy
+
+One reason for generating per-person covariates may be to use them in some form of machine learning. In that case it may be necessary to tidy the data before proceeding. The `tidyCovariateData` function can perform two tasks:
+
+1. **Normalization**: scale all covariate values to a value between 0 and 1 (by dividing by the max value for each covariate).
+2. **Removal of redundancy**: If every person in the cohort has the same value for a covariate (e.g. a cohort that is restricted to women will have the same gender covariate value for all) that value is redundant. Redundant values may wreak havok with some machine learning algorithms, for example causing a simple regression to no longer have a single solution. Similarly, groups of covariates may be redundant (e.g. every person will belong to at least one age group, making one group redundant as it can be defined as the absence of the other groups).
+
+```{r eval=FALSE}
+tidyCovariates <- tidyCovariateData(covariateData,
+                                    normalize = TRUE,
+                                    removeRedundancy = TRUE)
+```
+
+If we want to know which redundant covariates were removed we can query the `metaData` object:
+```{r eval=FALSE}
+deletedCovariateIds <- tidyCovariates$metaData$deletedCovariateIds
+deletedCovariateIds
+```
+```{r echo=FALSE,message=FALSE}
+if (file.exists(file.path(vignetteFolder, "deletedCovariateIds.rds"))){
+  deletedCovariateIds <- readRDS(file.path(vignetteFolder, "deletedCovariateIds.rds"))
+  deletedCovariateIds
+}
+```
+
+If we want to know what these numbers mean, we can use the `covariateRef` object that is part of any `covariateData` object. Because `covariateRef`, like other parts of `covariateData`, uses the `ff` package, it is advised to load the `ffbase` package which allows `ff` objects to be used as data frames:
+
+```{r eval=FALSE}
+library(ffbase)
+covariateData$covariateRef[covariateData$covariateRef$covariateId %in% deletedCovariateIds, ]
+```
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+if (file.exists(file.path(vignetteFolder, "deletedCovariateIds.rds"))){
+  library(ffbase)
+   truncRight <- function(x, n) {
+    nc <- nchar(x)
+    x[nc > (n-3)] <- paste('...',substr(x[nc > (n-3)], nc[nc > (n-3)]-n+1, nc[nc > (n-3)]),sep="")
+    x
+   }
+   cr <- as.ram(covariateData$covariateRef[covariateData$covariateRef$covariateId %in% deletedCovariateIds, ])
+   cr$covariateName <- truncRight(as.character(cr$covariateName), 30)
+   cr
+}
+```
+
+## Creating aggregated covariates for a cohort of interest
+
+Often we do not need to have per-person covariates, but instead we are interested in aggregated statistics instead. For example, we may not need to know which persons are male, but would like to know what proportion of the cohort is male. We can aggregate per-person covariates:
+
+```{r eval=FALSE}
+covariateData2 <- aggregateCovariates(covariateData)
+```
+
+Of course, if all we wanted was aggregated statistics it would have been more efficient to aggregate them during creation:
+
+```{r eval=FALSE}
+covariateSettings <- createDefaultCovariateSettings()
+
+covariateData2 <- getDbCovariateData(connectionDetails = connectionDetails,
+                                     cdmDatabaseSchema = cdmDatabaseSchema,
+                                     cohortDatabaseSchema = resultsDatabaseSchema,
+                                     cohortTable = "cohorts_of_interest",
+                                     cohortId = 1118084,
+                                     covariateSettings = covariateSettings,
+                                     aggregated = TRUE)
+summary(covariateData2)
+```
+```{r echo=FALSE,message=FALSE}
+if (file.exists(file.path(vignetteFolder, "aggregatedCovariates"))){
+  covariateData2 <- loadCovariateData(file.path(vignetteFolder, "aggregatedCovariates"))
+  summary(covariateData2)
+}
+```
+Note that we specified `aggregated = TRUE`. Also, we are no longer required to define a `rowIdField` because we will no longer receive per-person data.
+
+### Aggregated covariate output format
+
+The two main components of the aggregated `covariateData` object are `covariates` and `covariatesContinuous`, for binary and continous covariates respectively:
+```{r}
+covariateData2$covariates
+```
+```{r}
+covariateData2$covariatesContinuous
+```
+The columns are defines as follows:
+
+- `covariateId` identifies the covariate, and definitions of covariates can be found in the `cohortData$covariateRef` object. 
+- `sumValue` is the sum of the covariate values. Because these are binary features, this is equivalent to the number of people that have the covariate with a value of 1.
+- `averageValue` is the average covariate value.  Because these are binary features, this is equivalent to the proportion of people that have the covariate with a value of 1.
+- `countValue` is the number of people that have a value (for continous variables).
+- `minValue`, `maxValue`, `averageValue`, `standardDeviation`, `medianValue`, `p10Value`, `p25Value`, `p75Value`, and `p90Value` all inform on the distribution of covariate values. Note that for some covariates (such as the Charlson comorbidity index) a value of 0 is interpreted as the value 0, while for other covariates (Such as blood pressure) 0 is interpreted as missing, and the distribution statistics are only computed over non-missing values. To learn which continuous covariates fall into which category one can consult the `missingMeansZero` field in the `covariateData$analysisRef` object.
+
+### Saving the data to file
+
+Creating covariates can take considerable computing time, and it is probably a good idea to save it for future sessions. Because `covariateData` objects use `ff`, we cannot use R's regular save function. Instead, we'll have to use the `saveCovariateData()` function:
+
+```{r eval=FALSE}
+saveCovariateData(covariateData2, "aggregatedCovariates")
+```
+
+We can use the `loadCovariateData()` function to load the data in a future session.
+
+## Creating a table 1
+
+One aim supported by the `FeatureExtraction` package is to create a table that can be include in a paper, providing some overall characteristics of the study population. Since this is typically the first table in a paper we refer to such a table as 'table 1'. A default table 1 is available in the `FeatureExtraction` package:
+```{r eval=FALSE}
+result <- createTable1(covariateData2)
+print(result, row.names = FALSE, right = FALSE)
+```
+\fontsize{6}{6}
+\selectfont
+```{r, set-options,comment=NA,echo=FALSE,message=FALSE}
+if (file.exists(file.path(vignetteFolder, "aggregatedCovariates"))){
+  options(width=200)
+  result <- createTable1(covariateData2)
+  print(result, row.names = FALSE, right = FALSE)
+}
+```
+\fontsize{10}{12}
+\selectfont
+
+Where applicable, these characteristics are drawn from analyses pertaining the 'long-term' windows, so concepts observed in the 365 days before up to and included the cohort start date.
+
+The `createTable1` function requires a simple specification of what variables to include in the table. The default specifications included in the package can be reviewed by calling the `getDefaultTable1Specifications` function. The specification reference analysis IDs and covariate IDs, and in the default specification these IDs refer to those in the default covariate settings. It is possible to create custom table 1 specifications and use those instead. 
+
+Here we based table 1 on a `covariateData` object containing all default covariates, even though only a small fraction were used in the table. If we only want to extract those covariates needed for the table, we can use the `createTable1CovariateSettings` function:
+
+```{r eval=FALSE}
+covariateSettings <- createTable1CovariateSettings()
+
+covariateData2b <- getDbCovariateData(connectionDetails = connectionDetails,
+                                      cdmDatabaseSchema = cdmDatabaseSchema,
+                                      cohortDatabaseSchema = resultsDatabaseSchema,
+                                      cohortTable = "cohorts_of_interest",
+                                      cohortId = 1118084,
+                                      covariateSettings = covariateSettings,
+                                      aggregated = TRUE)
+summary(covariateData2b)
+```
+```{r echo=FALSE,message=FALSE}
+if (file.exists(file.path(vignetteFolder, "table1Covariates"))){
+  covariateData2b <- loadCovariateData(file.path(vignetteFolder, "table1Covariates"))
+  summary(covariateData2b)
+}
+```
 

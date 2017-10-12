@@ -420,7 +420,7 @@ FROM (
 		cohort_start_date,
 		dcsi_category
 } : {
-	GROUP BY row_id,
+	GROUP BY cohort.@row_id_field,
 		dcsi_category
 }
 	) temp

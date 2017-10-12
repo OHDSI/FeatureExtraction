@@ -32,6 +32,11 @@ port <- 17001
 cdmVersion <- "5"
 extraSettings <- NULL
 
+vignetteFolder <- "c:/temp/vignetteFeatureExtraction"
+if (!file.exists(vignetteFolder))
+  dir.create(vignetteFolder)
+  
+
 connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = dbms,
                                                                 server = server,
                                                                 user = user,
@@ -48,76 +53,70 @@ sql <- loadRenderTranslateSql("cohortsOfInterest.sql",
 DatabaseConnector::executeSql(connection, sql)
 
 # Check number of subjects per cohort:
-sql <- "SELECT cohort_definition_id, COUNT(*) AS count FROM @resultsDatabaseSchema.cohortsOfInterest GROUP BY cohort_definition_id"
-sql <- SqlRender::renderSql(sql, resultsDatabaseSchema = resultsDatabaseSchema)$sql
-sql <- SqlRender::translateSql(sql, targetDialect = connectionDetails$dbms)$sql
+sql <- paste("SELECT cohort_definition_id, COUNT(*) AS count",
+             "FROM @resultsDatabaseSchema.cohorts_of_interest",
+             "GROUP BY cohort_definition_id")
+sql <- renderSql(sql, resultsDatabaseSchema = resultsDatabaseSchema)$sql
+sql <- translateSql(sql, targetDialect = connectionDetails$dbms)$sql
 DatabaseConnector::querySql(connection, sql)
 
 DatabaseConnector::disconnect(connection)
 
-covariateSettings <- createCovariateSettings(useCovariateDemographics = TRUE,
-                                             useCovariateDemographicsGender = TRUE,
-                                             useCovariateDemographicsRace = TRUE,
-                                             useCovariateDemographicsEthnicity = TRUE,
-                                             useCovariateDemographicsAge = TRUE,
-                                             useCovariateDemographicsYear = TRUE,
-                                             useCovariateDemographicsMonth = TRUE,
-                                             useCovariateConditionOccurrence = TRUE,
-                                             useCovariateConditionOccurrence365d = TRUE,
-                                             useCovariateConditionOccurrence30d = TRUE,
-                                             useCovariateConditionOccurrenceInpt180d = TRUE,
-                                             useCovariateConditionEra = TRUE,
-                                             useCovariateConditionEraEver = TRUE,
-                                             useCovariateConditionEraOverlap = TRUE,
-                                             useCovariateConditionGroup = TRUE,
-                                             useCovariateConditionGroupMeddra = TRUE,
-                                             useCovariateConditionGroupSnomed = TRUE,
-                                             useCovariateDrugExposure = TRUE,
-                                             useCovariateDrugExposure365d = TRUE,
-                                             useCovariateDrugExposure30d = TRUE,
-                                             useCovariateDrugEra = TRUE,
-                                             useCovariateDrugEra365d = TRUE,
-                                             useCovariateDrugEra30d = TRUE,
-                                             useCovariateDrugEraOverlap = TRUE,
-                                             useCovariateDrugEraEver = TRUE,
-                                             useCovariateDrugGroup = TRUE,
-                                             useCovariateProcedureOccurrence = TRUE,
-                                             useCovariateProcedureOccurrence365d = TRUE,
-                                             useCovariateProcedureOccurrence30d = TRUE,
-                                             useCovariateProcedureGroup = TRUE,
-                                             useCovariateObservation = TRUE,
-                                             useCovariateObservation365d = TRUE,
-                                             useCovariateObservation30d = TRUE,
-                                             useCovariateObservationCount365d = TRUE,
-                                             useCovariateMeasurement = TRUE,
-                                             useCovariateMeasurement365d = TRUE,
-                                             useCovariateMeasurement30d = TRUE,
-                                             useCovariateMeasurementCount365d = TRUE,
-                                             useCovariateMeasurementBelow = TRUE,
-                                             useCovariateMeasurementAbove = TRUE,
-                                             useCovariateConceptCounts = TRUE,
-                                             useCovariateRiskScores = TRUE,
-                                             useCovariateRiskScoresCharlson = TRUE,
-                                             useCovariateRiskScoresDCSI = TRUE,
-                                             useCovariateRiskScoresCHADS2 = TRUE,
-                                             useCovariateRiskScoresCHADS2VASc = TRUE,
-                                             useCovariateInteractionYear = FALSE,
-                                             useCovariateInteractionMonth = FALSE,
-                                             excludedCovariateConceptIds = c(),
-                                             includedCovariateConceptIds = c(),
-                                             deleteCovariatesSmallCount = 100)
+covariateSettings <- createDefaultCovariateSettings()
 
-covariates <- getDbCovariateData(connectionDetails = connectionDetails,
-                                 oracleTempSchema = oracleTempSchema,
-                                 cdmDatabaseSchema = cdmDatabaseSchema,
-                                 cdmVersion = cdmVersion,
-                                 cohortTable = "rehospitalization",
-                                 cohortDatabaseSchema = resultsDatabaseSchema,
-                                 cohortTableIsTemp = FALSE,
-                                 cohortIds = 1,
-                                 covariateSettings = covariateSettings)
+covariateData <- getDbCovariateData(connectionDetails = connectionDetails,
+                                    cdmDatabaseSchema = cdmDatabaseSchema,
+                                    cohortDatabaseSchema = resultsDatabaseSchema,
+                                    cohortTable = "cohorts_of_interest",
+                                    cohortId = 1118084,
+                                    rowIdField = "subject_id",
+                                    covariateSettings = covariateSettings)
+
+saveCovariateData(covariateData, file.path(vignetteFolder, "covariatesPerPerson"))
+# covariateData <- loadCovariateData(file.path(vignetteFolder, "covariatesPerPerson"))
+summary(covariateData)
+
+tidyCovariates <- tidyCovariateData(covariateData,
+                                    normalize = TRUE,
+                                    removeRedundancy = TRUE)
+deletedCovariateIds <- tidyCovariates$metaData$deletedCovariateIds
+saveRDS(deletedCovariateIds, file.path(vignetteFolder, "deletedCovariateIds.rds"))
+# deletedCovariateIds <- readRDS(file.path(vignetteFolder, "deletedCovariateIds.rds"))
+
+# aggCovariates <- aggregateCovariates(covariateData)
+
+covariateSettings <- createDefaultCovariateSettings()
+
+covariateData2 <- getDbCovariateData(connectionDetails = connectionDetails,
+                                    cdmDatabaseSchema = cdmDatabaseSchema,
+                                    cohortDatabaseSchema = resultsDatabaseSchema,
+                                    cohortTable = "cohorts_of_interest",
+                                    cohortId = 1118084,
+                                    covariateSettings = covariateSettings,
+                                    aggregated = TRUE)
 
 
+saveCovariateData(covariateData2, file.path(vignetteFolder, "aggregatedCovariates"))
+
+# covariateData2 <- loadCovariateData(file.path(vignetteFolder, "aggregatedCovariates"))
+
+result <- createTable1(covariateData2)
+
+covariateSettings <- createTable1CovariateSettings()
+
+covariateData2b <- getDbCovariateData(connectionDetails = connectionDetails,
+                                      cdmDatabaseSchema = cdmDatabaseSchema,
+                                      cohortDatabaseSchema = resultsDatabaseSchema,
+                                      cohortTable = "cohorts_of_interest",
+                                      cohortId = 1118084,
+                                      covariateSettings = covariateSettings,
+                                      aggregated = TRUE)
+
+saveCovariateData(covariateData2b, file.path(vignetteFolder, "table1Covariates"))
+
+# covariateData2b <- loadCovariateData(file.path(vignetteFolder, "table1Covariates"))
+
+result <- createTable1(covariateData2b)
 
 #### Datafetch for custom covariate builders #####
 
