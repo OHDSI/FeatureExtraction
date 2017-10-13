@@ -8,11 +8,11 @@ INTO #groups
 FROM @cdm_database_schema.concept_ancestor
 INNER JOIN @cdm_database_schema.concept
 	ON ancestor_concept_id = concept_id
-WHERE (vocabulary_id = 'ATC'
+WHERE ((vocabulary_id = 'ATC'
 		AND LEN(concept_code) IN (1, 3, 4, 5))
 	OR (standard_concept = 'S' 
 {@domain_table == 'drug_era'} ? {		AND concept_class_id = 'Ingredient'}
-		AND domain_id = 'Drug')	
+		AND domain_id = 'Drug'))
 	AND concept_id != 0
 {@excluded_concept_table != ''} ? {	AND descendant_concept_id NOT IN (SELECT id FROM @excluded_concept_table)}
 {@included_concept_table != ''} ? {	AND descendant_concept_id IN (SELECT id FROM @included_concept_table)}
