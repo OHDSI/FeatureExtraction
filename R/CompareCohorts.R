@@ -34,14 +34,16 @@ computeStandardizedDifference <- function(covariateData1, covariateData2) {
     names(covariates1)[2] <- "count1"
     covariates2 <- covariateData2$covariates[, c("covariateId", "sumValue")] 
     names(covariates2)[2] <- "count2"
+    n1 <- covariateData1$metaData$populationSize
+    n2 <- covariateData2$metaData$populationSize
     m <- merge(covariates1, covariates2, all = T)
     m$count1[is.na(m$count1)] <- 0
     m$count2[is.na(m$count2)] <- 0
-    m$mean1 <- m$count1 / covariateData1$metaData$populationSize
-    m$mean2 <- m$count2 / covariateData2$metaData$populationSize
-    m$sd1 <- sqrt(m$mean1 * (1 - m$mean1)) / covariateData1$metaData$populationSize
-    m$sd2 <- sqrt(m$mean2 * (1 - m$mean2)) / covariateData2$metaData$populationSize
-    m$sd <- sqrt((m$sd1 ^ 2 + m$sd2 ^ 2) / 2)
+    m$mean1 <- m$count1 / n1
+    m$mean2 <- m$count2 / n2
+    m$sd1 <- sqrt((n1*m$count1 + m$count1) / (n1^2))
+    m$sd2 <- sqrt((n2*m$count2 + m$count2) / (n2^2))
+    m$sd <- sqrt(m$sd1 ^ 2 + m$sd2 ^ 2)
     m$stdDiff <- (m$mean2 - m$mean1) / m$sd
     result <- rbind(result, m[, c("covariateId", "mean1", "sd1", "mean2", "sd2", "sd", "stdDiff")])
   }
@@ -57,14 +59,21 @@ computeStandardizedDifference <- function(covariateData1, covariateData2) {
     m$sd1[is.na(m$sd1)] <- 0
     m$mean2[is.na(m$mean2)] <- 0
     m$sd2[is.na(m$sd2)] <- 0
-    m$sd <- sqrt((m$sd1 ^ 2 + m$sd2 ^ 2) / 2)
+    m$sd <- sqrt(m$sd1 ^ 2 + m$sd2 ^ 2)
     m$stdDiff <- (m$mean2 - m$mean1) / m$sd
     result <- rbind(result, m[, c("covariateId", "mean1", "sd1", "mean2", "sd2", "sd", "stdDiff")])
   }
-  result$covariateName <- covariateData1$covariateRef$covariateName[match(ff::as.ram(covariateData1$covariateRef$covariateId), result$covariateId)]
-  idx <- is.na(result$covariateName)
-  if (any(idx)) {
-    result$covariateName[idx] <- covariateData1$covariateRef$covariateName[match(ff::as.ram(covariateData1$covariateRef$covariateId), result$covariateId[idx])]
+  idx <- match(result$covariateId, ff::as.ram(covariateData1$covariateRef$covariateId))
+  # names1 <- as.character(ff::as.ram(covariateData1$covariateRef$covariateName))
+  result$covariateName[!is.na(idx)] <- as.character(covariateData1$covariateRef$covariateName[idx[!is.na(idx)]])
+  # idx <- is.na(result$covariateName)
+  if (any(is.na(idx))) {
+    idx <- is.na(idx)
+    idx2 <- match(result$covariateId[idx], ff::as.ram(covariateData2$covariateRef$covariateId))
+    result$covariateName[idx] <- as.character(covariateData2$covariateRef$covariateName[idx2])
+    # names2 <- as.character(ff::as.ram(covariateData2$covariateRef$covariateName))
+    # result$covariateName[idx] <- names2[match(result$covariateId[idx], ff::as.ram(covariateData2$covariateRef$covariateId))]
   }
+  result <- result[order(-abs(result$stdDiff)), ]
   return(result)
 }

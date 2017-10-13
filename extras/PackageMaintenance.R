@@ -37,6 +37,12 @@ rmarkdown::render("vignettes/CreatingCovariatesUsingCohortAttributes.Rmd",
                                           toc = TRUE,
                                           number_sections = TRUE))
 
+rmarkdown::render("vignettes/UsingFeatureExtraction.Rmd",
+                  output_file = "../inst/doc/UsingFeatureExtraction.pdf",
+                  rmarkdown::pdf_document(latex_engine = "pdflatex",
+                                          toc = TRUE,
+                                          number_sections = TRUE))
+
 # Generate covariate settings function from template ----------------------
 prespecAnalyses <- read.csv("inst/csv/PrespecAnalyses.csv", stringsAsFactors = FALSE)
 otherParameters <- read.csv("inst/csv/OtherParameters.csv", stringsAsFactors = FALSE)

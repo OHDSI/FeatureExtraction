@@ -118,6 +118,49 @@ saveCovariateData(covariateData2b, file.path(vignetteFolder, "table1Covariates")
 
 result <- createTable1(covariateData2b)
 
+covariateSettings <- createTable1CovariateSettings(excludedCovariateConceptIds = c(1118084, 1124300),
+                                                   addDescendantsToExclude = TRUE)
+
+covDiclofenac <- getDbCovariateData(connectionDetails = connectionDetails,
+                                      cdmDatabaseSchema = cdmDatabaseSchema,
+                                      cohortDatabaseSchema = resultsDatabaseSchema,
+                                      cohortTable = "cohorts_of_interest",
+                                      cohortId = 1124300,
+                                      covariateSettings = covariateSettings,
+                                      aggregated = TRUE)
+
+saveCovariateData(covDiclofenac, file.path(vignetteFolder, "covDiclofenac"))
+
+covCelecoxib <- getDbCovariateData(connectionDetails = connectionDetails,
+                                    cdmDatabaseSchema = cdmDatabaseSchema,
+                                    cohortDatabaseSchema = resultsDatabaseSchema,
+                                    cohortTable = "cohorts_of_interest",
+                                    cohortId = 1118084,
+                                    covariateSettings = covariateSettings,
+                                    aggregated = TRUE)
+
+saveCovariateData(covCelecoxib, file.path(vignetteFolder, "covCelecoxib"))
+
+covCelecoxib <- loadCovariateData(file.path(vignetteFolder, "covCelecoxib"))
+covDiclofenac <- loadCovariateData(file.path(vignetteFolder, "covDiclofenac"))
+
+std <- computeStandardizedDifference(covCelecoxib, covDiclofenac)
+head(std)
+result <- createTable1(covCelecoxib, covDiclofenac)
+
+covariateData1 <- covCelecoxib 
+covariateData2 <- covDiclofenac 
+specifications = getDefaultTable1Specifications()
+output <- "two columns"
+
+# some counting ------------------------
+covariateData2 <- loadCovariateData(file.path(vignetteFolder, "aggregatedCovariates"))
+x <- ff::as.ram(covariateData2$covariates)
+total <- sum(x$sumValue)
+sum(x$sumValue[x$sumValue < 100]) / total
+x <- merge(x, ff::as.ram(covariateData2$covariateRef))
+x <- x[order(-x$sumValue), ]
+
 #### Datafetch for custom covariate builders #####
 
 createLooCovariateSettings <- function(useLengthOfObs = TRUE) {

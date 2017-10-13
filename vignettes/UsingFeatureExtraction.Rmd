@@ -16,7 +16,8 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
 ---
 
-```{r echo=FALSE,message=FALSE,warning=FALSE,eval=TRUE}
+```{r set-options,echo=FALSE,message=FALSE,warning=FALSE,eval=TRUE}
+options(width=200)
 library(FeatureExtraction)
 vignetteFolder <- "c:/temp/vignetteFeatureExtraction"
 ```
@@ -301,7 +302,8 @@ if (file.exists(file.path(vignetteFolder, "covariatesPerPerson"))){
   cvs
 }
 ```
-The columns are defines as follow:
+The columns are defines as follows:
+
 - `rowId` uniquely identifies a cohort entry. When calling `getDbCovariateData` we defined `rowIdField = "subject_id"`, so in this case the `rowId` is the same as the `subject_id` in the cohort table. In cases where a single subject can appear in the cohort more than once it is up to the user to create a field in the cohort table that uniquely identifies each cohort entry, and use that as `rowIdField`.
 - `covariateId` identifies the covariate, and definitions of covariates can be found in the `cohortData$covariateRef` object. 
 - `covariateValue` field provides the value.
@@ -408,28 +410,18 @@ The columns are defines as follows:
 - `countValue` is the number of people that have a value (for continous variables).
 - `minValue`, `maxValue`, `averageValue`, `standardDeviation`, `medianValue`, `p10Value`, `p25Value`, `p75Value`, and `p90Value` all inform on the distribution of covariate values. Note that for some covariates (such as the Charlson comorbidity index) a value of 0 is interpreted as the value 0, while for other covariates (Such as blood pressure) 0 is interpreted as missing, and the distribution statistics are only computed over non-missing values. To learn which continuous covariates fall into which category one can consult the `missingMeansZero` field in the `covariateData$analysisRef` object.
 
-### Saving the data to file
-
-Creating covariates can take considerable computing time, and it is probably a good idea to save it for future sessions. Because `covariateData` objects use `ff`, we cannot use R's regular save function. Instead, we'll have to use the `saveCovariateData()` function:
-
-```{r eval=FALSE}
-saveCovariateData(covariateData2, "aggregatedCovariates")
-```
-
-We can use the `loadCovariateData()` function to load the data in a future session.
 
 ## Creating a table 1
 
-One aim supported by the `FeatureExtraction` package is to create a table that can be include in a paper, providing some overall characteristics of the study population. Since this is typically the first table in a paper we refer to such a table as 'table 1'. A default table 1 is available in the `FeatureExtraction` package:
+One task supported by the `FeatureExtraction` package is creating a table of overall study population characteristics that can be include in a paper. Since this is typically the first table in a paper we refer to such a table as 'table 1'. A default table 1 is available in the `FeatureExtraction` package:
 ```{r eval=FALSE}
 result <- createTable1(covariateData2)
 print(result, row.names = FALSE, right = FALSE)
 ```
 \fontsize{6}{6}
 \selectfont
-```{r, set-options,comment=NA,echo=FALSE,message=FALSE}
+```{r comment=NA,echo=FALSE,message=FALSE}
 if (file.exists(file.path(vignetteFolder, "aggregatedCovariates"))){
-  options(width=200)
   result <- createTable1(covariateData2)
   print(result, row.names = FALSE, right = FALSE)
 }
@@ -439,9 +431,9 @@ if (file.exists(file.path(vignetteFolder, "aggregatedCovariates"))){
 
 Where applicable, these characteristics are drawn from analyses pertaining the 'long-term' windows, so concepts observed in the 365 days before up to and included the cohort start date.
 
-The `createTable1` function requires a simple specification of what variables to include in the table. The default specifications included in the package can be reviewed by calling the `getDefaultTable1Specifications` function. The specification reference analysis IDs and covariate IDs, and in the default specification these IDs refer to those in the default covariate settings. It is possible to create custom table 1 specifications and use those instead. 
+The `createTable1` function requires a simple specification of what variables to include in the table. The default specifications included in the package can be reviewed by calling the `getDefaultTable1Specifications` function. The specification reference analysis IDs and covariate IDs, and in the default specification these IDs refer to those in the default covariate settings. It is possible to create custom table 1 specifications and use those instead.
 
-Here we based table 1 on a `covariateData` object containing all default covariates, even though only a small fraction were used in the table. If we only want to extract those covariates needed for the table, we can use the `createTable1CovariateSettings` function:
+Here we based table 1 on a `covariateData` object containing all default covariates, even though only a small fraction of covariates are used in the table. If we only want to extract those covariates needed for the table, we can use the `createTable1CovariateSettings` function:
 
 ```{r eval=FALSE}
 covariateSettings <- createTable1CovariateSettings()
@@ -461,4 +453,75 @@ if (file.exists(file.path(vignetteFolder, "table1Covariates"))){
   summary(covariateData2b)
 }
 ```
+
+## Comparing two cohorts
+
+Another task supported by the `FeatureExtraction` package is comparing two cohorts of interest. Suppose we want to compare two cohorts only on the variables included in the default table 1:
+
+```{r eval=FALSE}
+settings <- createTable1CovariateSettings(excludedCovariateConceptIds = c(1118084, 1124300),
+                                          addDescendantsToExclude = TRUE)
+
+covCelecoxib <- getDbCovariateData(connectionDetails = connectionDetails,
+                                   cdmDatabaseSchema = cdmDatabaseSchema,
+                                   cohortDatabaseSchema = resultsDatabaseSchema,
+                                   cohortTable = "cohorts_of_interest",
+                                   cohortId = 1118084,
+                                   covariateSettings = settings,
+                                   aggregated = TRUE)
+
+covDiclofenac <- getDbCovariateData(connectionDetails = connectionDetails,
+                                    cdmDatabaseSchema = cdmDatabaseSchema,
+                                    cohortDatabaseSchema = resultsDatabaseSchema,
+                                    cohortTable = "cohorts_of_interest",
+                                    cohortId = 1124300,
+                                    covariateSettings = settings,
+                                    aggregated = TRUE)
+
+std <- computeStandardizedDifference(covCelecoxib, covDiclofenac)
+```
+
+In this example we have chosen to exclude any covariates derived from the two concepts that were used to define the two cohorts: celecoxib (1118084), and diclofenac (1124300). We compute the standardized difference between the remaining covariates.
+
+```{r eval=FALSE}
+head(std)
+```
+\fontsize{7}{8}
+\selectfont
+```{r echo=FALSE,message=FALSE}
+if (file.exists(file.path(vignetteFolder, "covDiclofenac"))){
+  covCelecoxib <- loadCovariateData(file.path(vignetteFolder, "covCelecoxib"))
+  covDiclofenac <- loadCovariateData(file.path(vignetteFolder, "covDiclofenac"))
+  std <- computeStandardizedDifference(covCelecoxib, covDiclofenac)
+  truncRight <- function(x, n) {
+    nc <- nchar(x)
+    x[nc > (n-3)] <- paste('...',substr(x[nc > (n-3)], nc[nc > (n-3)]-n+1, nc[nc > (n-3)]),sep="")
+    x
+   }
+   std$covariateName <- truncRight(as.character(std$covariateName), 30)
+   head(std)
+}
+```
+\fontsize{10}{12}
+\selectfont
+
+The `stdDiff` column contains the standardized difference. By default the data is ranked in descending order of the absolute value of the standardized difference, showing the covariate with the largest difference first.
+
+We can also show the comparison as a standard table 1:
+
+```{r eval=FALSE}
+result <- createTable1(covCelecoxib, covDiclofenac)
+print(result, row.names = FALSE, right = FALSE)
+```
+\fontsize{5}{5}
+\selectfont
+```{r comment=NA,echo=FALSE,message=FALSE}
+if (file.exists(file.path(vignetteFolder, "covDiclofenac"))){
+  result <- createTable1(covCelecoxib, covDiclofenac)
+  print(result, row.names = FALSE, right = FALSE)
+}
+```
+\fontsize{10}{12}
+\selectfont
+
 
