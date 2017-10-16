@@ -32,9 +32,9 @@ INSERT INTO #cov_ref (
 SELECT covariate_id,
 	CONCAT (
 		'age group: ',
-		CAST(5 * (covariate_id - @analysis_id) / 1000 AS VARCHAR),
+		RIGHT(CONCAT('00', CAST(5 * (covariate_id - @analysis_id) / 1000 AS VARCHAR)), 2),
 		'-',
-		CAST(1 + 5 * (covariate_id - @analysis_id) / 1000 AS VARCHAR)
+		RIGHT(CONCAT('00', CAST((5 * (covariate_id - @analysis_id) / 1000) + 4 AS VARCHAR)), 2)
 		) AS covariate_name,
 	@analysis_id AS analysis_id,
 	0 AS concept_id
