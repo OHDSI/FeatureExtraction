@@ -5,7 +5,7 @@
 \title{Tidy covariate data}
 \usage{
 tidyCovariateData(covariateData, covariates, covariateRef, populationSize,
-  normalize = TRUE, removeRedundancy = TRUE)
+  minFraction = 0, normalize = TRUE, removeRedundancy = TRUE)
 }
 \arguments{
 \item{covariateData}{An object as generated using the \code{\link{getDbCovariateData}}
@@ -22,6 +22,9 @@ ignored if \code{covariateData} is provided. Only needed when
 \item{populationSize}{An integer specifying the total number of unique cohort entries (rowIds). Will be 
 ignored if \code{covariateData} is provided. Only needed when 
 \code{removeRedundancy = TRUE}.}
+
+\item{minFraction}{Minimum fraction of the population that should have a non-zero value for a covariate
+for that covariate to be kept. Set to 0 to don't filter on frequency.}
 
 \item{normalize}{Normalize the coviariates? (dividing by the max)}
 

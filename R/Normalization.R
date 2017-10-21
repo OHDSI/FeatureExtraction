@@ -60,6 +60,8 @@ bySumFf <- function(values, bins) {
 #' @param populationSize    An integer specifying the total number of unique cohort entries (rowIds). Will be 
 #'                          ignored if \code{covariateData} is provided. Only needed when 
 #'                          \code{removeRedundancy = TRUE}.
+#' @param minFraction       Minimum fraction of the population that should have a non-zero value for a covariate
+#'                          for that covariate to be kept. Set to 0 to don't filter on frequency.
 #' @param normalize         Normalize the coviariates? (dividing by the max)
 #' @param removeRedundancy  Should redundant covariates be removed?
 #'
@@ -68,6 +70,7 @@ tidyCovariateData <- function(covariateData,
                               covariates,
                               covariateRef,
                               populationSize,
+                              minFraction = 0.001,
                               normalize = TRUE,
                               removeRedundancy = TRUE) {
   if (missing(covariateData) && missing(covariates)) {
@@ -87,8 +90,22 @@ tidyCovariateData <- function(covariateData,
       covariateRef <- covariateData$covariateRef
     }
   }
+  covariateData$metaData$deletedCovariateIds <- c()
   if (nrow(covariates) != 0) {
     maxs <- byMaxFf(covariates$covariateValue, covariates$covariateId)
+    if (minFraction != 0) {
+      writeLines("Removing infrequent covariates")
+      start <- Sys.time()
+      minCount <- floor(minFraction * covariateData$metaData$populationSize)
+      valueCounts <- bySumFf(ff::ff(1, length = nrow(covariates)), covariates$covariateId)
+      deleteCovariateIds <- valueCounts$bins[valueCounts$sums < minCount]
+      if (length(deleteCovariateIds) != 0) {
+        covariates <- covariates[!ffbase::`%in%`(covariates$covariateId, deleteCovariateIds), ]
+        covariateData$metaData$deletedCovariateIds <- deleteCovariateIds
+      }
+      delta <- Sys.time() - start
+      writeLines(paste("Removing infrequent covariates took", signif(delta, 3), attr(delta, "units")))
+    }
     if (normalize) {
       writeLines("Normalizing covariates")
       start <- Sys.time()
@@ -128,7 +145,7 @@ tidyCovariateData <- function(covariateData,
       if (length(deleteCovariateIds) != 0) {
         covariates <- covariates[!ffbase::`%in%`(covariates$covariateId, deleteCovariateIds), ]
       }
-      covariateData$metaData$deletedCovariateIds <- deleteCovariateIds
+      covariateData$metaData$deletedCovariateIds <- c(covariateData$metaData$deletedCovariateIds, deleteCovariateIds)
       delta <- Sys.time() - start
       writeLines(paste("Removing redundant covariates took", signif(delta, 3), attr(delta, "units")))
     }
