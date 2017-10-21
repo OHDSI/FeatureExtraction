@@ -5,7 +5,7 @@
 \title{Tidy covariate data}
 \usage{
 tidyCovariateData(covariateData, covariates, covariateRef, populationSize,
-  minFraction = 0, normalize = TRUE, removeRedundancy = TRUE)
+  minFraction = 0.001, normalize = TRUE, removeRedundancy = TRUE)
 }
 \arguments{
 \item{covariateData}{An object as generated using the \code{\link{getDbCovariateData}}
@@ -34,5 +34,6 @@ for that covariate to be kept. Set to 0 to don't filter on frequency.}
 Tidy covariate data
 }
 \details{
-Normalize covariate values by dividing by the max and/or remove redundant covariates.
+Normalize covariate values by dividing by the max and/or remove redundant covariates and/or
+remove infrequent covariates.
 }

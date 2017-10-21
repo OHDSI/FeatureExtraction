@@ -14,6 +14,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+#' Get the default table 1 specifications
+#' 
+#' @description 
+#' Loads the default specifications for a table 1, to be used with the \code{\link{createTable1}}
+#' function.
+#' 
+#' @return 
+#' A specifications objects.
+#' 
 #' @export
 getDefaultTable1Specifications <- function() {
   fileName <- system.file("csv", "Table1Specs.csv" , package = "FeatureExtraction")
@@ -21,6 +30,22 @@ getDefaultTable1Specifications <- function() {
   return(specifications)
 }
 
+#' Create a table 1
+#' 
+#' @description 
+#' Creates a formatted table of cohort characteristics, to be included in publications or 
+#' reports. Allows for creating a table describing a single cohort, or a table comparing two
+#' cohorts.
+#' 
+#' @param covariateData1    The covariate data of the cohort to be included in the table.
+#' @param covariateData2    The covariate data of the cohort to also be included, when comparing
+#'                          two cohorts. 
+#' @param specifications    Specifications of which covariates to display, and how.
+#' @param output            The output format for the table. Options are \code{output = "two columns"},
+#'                          \code{output = "one column"}, or \code{output = "list"}.
+#' @return 
+#' A data frame, or, when \code{output = "list"} a list of two data frames.
+#' 
 #' @export
 createTable1 <- function(covariateData1, 
                          covariateData2 = NULL, 
@@ -39,7 +64,7 @@ createTable1 <- function(covariateData1,
   if (comparison && is.null(covariateData2$covariatesContinuous) && is.null(covariateData2$covariates$averageValue)) {
     stop("Covariate2 data is not aggregated") 
   }
-
+  
   fixCase <- function(label) {
     idx <- (toupper(label) == label)
     if (any(idx)) {
@@ -109,7 +134,7 @@ createTable1 <- function(covariateData1,
     covariatesContinuous$maxValue2[is.na(covariatesContinuous$maxValue2)] <- "  "
     covariatesContinuous <- merge(covariatesContinuous, stdDiff[, c("covariateId", "stdDiff")])
     covariatesContinuous$stdDiff <- formatStdDiff(covariatesContinuous$stdDiff)
-
+    
     idx <- !ffbase::`%in%`(covariateData2$covariateRef$covariateId, covariateData1$covariateRef$covariateId)
     if (ffbase::any.ff(idx)) {
       covariateRef <- rbind(covariateRef, ff::as.ram(covariateData2$covariateRef[idx, ]))
@@ -282,7 +307,7 @@ createTable1 <- function(covariateData1,
     continuousTable$stdDiff <- NULL
     colnames(continuousTable) <- c("Characteristic" , "Value")
   }
-
+  
   if (output == "two columns") {
     if (nrow(binaryTable) > nrow(continuousTable)) {
       rowsPerColumn <- ceiling((nrow(binaryTable) + nrow(continuousTable) + 2) / 2)
@@ -298,9 +323,15 @@ createTable1 <- function(covariateData1,
       }
       result <- cbind(column1, column2)
     } else {
-      
+      stop("Don't know what to do when there are more rows in the table of continuous covariates than there are in hte table of binary covariates.")
     }
-    
+  } else if (output == "one column") {
+    ct <- continuousTable
+    colnames(ct) <- colnames(binaryTable)
+    result <- rbind(binaryTable[(rowsPerColumn+1):nrow(binaryTable), ],
+                    rep("", ncol(binaryTable)),
+                    colnames(continuousTable),
+                    ct)
   } else {
     result <- list(part1 = binaryTable,
                    part2 = continuousTable)
@@ -308,14 +339,39 @@ createTable1 <- function(covariateData1,
   return(result)
 }
 
+#' Create covariate settings for a table 1
+#' 
+#' @description 
+#' Creates a covariate settings object for generating only those covariates that will be 
+#' included in a table 1. This function works by filtering the \code{covariateSettings} object for 
+#' the covariates in the \code{specifications} object.
+#' 
+#' @param specifications      A specifications object for generating a table using the 
+#'                            \code{\link{createTable1}} function. 
+#' @param covariateSettings   The covariate settings object to use as the basis for the filtered
+#'                            covariate settings.
+#' @param includedCovariateConceptIds                   A list of concept IDs that should be used to
+#'                                                      construct covariates.
+#' @param addDescendantsToInclude                       Should descendant concept IDs be added to the
+#'                                                      list of concepts to include?
+#' @param excludedCovariateConceptIds                   A list of concept IDs that should NOT be used
+#'                                                      to construct covariates.
+#' @param addDescendantsToExclude                       Should descendant concept IDs be added to the
+#'                                                      list of concepts to exclude?
+#' @param includedCovariateIds                          A list of covariate IDs that should be
+#'                                                      restricted to.
+#' @return 
+#' A covariate settings object, for example to be used when calling the \code{\link{getDbCovariateData}}
+#' function.
+#' 
 #' @export
 createTable1CovariateSettings <- function(specifications = getDefaultTable1Specifications(),
+                                          covariateSettings = createDefaultCovariateSettings(), 
                                           includedCovariateConceptIds = c(),
                                           addDescendantsToInclude = FALSE,
                                           excludedCovariateConceptIds = c(),
                                           addDescendantsToExclude = FALSE,
                                           includedCovariateIds = c()) {
-  covariateSettings <- createDefaultCovariateSettings()  
   covariateSettings <- convertPrespecSettingsToDetailedSettings(covariateSettings)
   filterBySpecs <- function(analysis) {
     if (analysis$analysisId %in% specifications$analysisId) {

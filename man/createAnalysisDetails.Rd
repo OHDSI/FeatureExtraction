@@ -13,6 +13,9 @@ createAnalysisDetails(analysisId, sqlFileName, parameters,
 \item{analysisId}{An integer between 0 and 999 that uniquely identifies this
 analysis.}
 
+\item{sqlFileName}{The name of the paramterized SQL file embedded in the
+\code{featureExtraction} package.}
+
 \item{parameters}{The list of parameter values used to render the template SQL.}
 
 \item{includedCovariateConceptIds}{A list of concept IDs that should be used to construct
@@ -28,9 +31,6 @@ covariates.}
 to exclude?}
 
 \item{includedCovariateIds}{A list of covariate IDs that should be restricted to.}
-
-\item{sqFileName}{The name of the paramterized SQL file embedded in the
-\code{featureExtraction} package.}
 }
 \value{
 An object of type \code{analysisDetail}, to be used in

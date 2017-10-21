@@ -14,6 +14,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+#' Compute standardized difference of mean for all covariates.
+#' 
+#' @description 
+#' Computes the standardized difference for all covariates between two cohorts. The standardized
+#' difference is defined as the difference between the mean divided by the overall standard deviation.
+#' 
+#' @param covariateData1  The covariate data of the first cohort. Needs to be in aggregated format.
+#' @param covariateData2  The covariate data of the second cohort. Needs to be in aggregated format.
+#' 
+#' @return 
+#' A data frame with means and standard deviations per cohort as well as the standardized 
+#' difference of mean.
+#' 
 #' @export
 computeStandardizedDifference <- function(covariateData1, covariateData2) {
   if (!is(covariateData1, "covariateData")) {
@@ -64,15 +77,11 @@ computeStandardizedDifference <- function(covariateData1, covariateData2) {
     result <- rbind(result, m[, c("covariateId", "mean1", "sd1", "mean2", "sd2", "sd", "stdDiff")])
   }
   idx <- match(result$covariateId, ff::as.ram(covariateData1$covariateRef$covariateId))
-  # names1 <- as.character(ff::as.ram(covariateData1$covariateRef$covariateName))
   result$covariateName[!is.na(idx)] <- as.character(covariateData1$covariateRef$covariateName[idx[!is.na(idx)]])
-  # idx <- is.na(result$covariateName)
   if (any(is.na(idx))) {
     idx <- is.na(idx)
     idx2 <- match(result$covariateId[idx], ff::as.ram(covariateData2$covariateRef$covariateId))
     result$covariateName[idx] <- as.character(covariateData2$covariateRef$covariateName[idx2])
-    # names2 <- as.character(ff::as.ram(covariateData2$covariateRef$covariateName))
-    # result$covariateName[idx] <- names2[match(result$covariateId[idx], ff::as.ram(covariateData2$covariateRef$covariateId))]
   }
   result <- result[order(-abs(result$stdDiff)), ]
   return(result)

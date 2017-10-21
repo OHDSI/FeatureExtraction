@@ -32,15 +32,17 @@
 getDbCohortAttrCovariatesData <- function(connection,
                                           oracleTempSchema = NULL,
                                           cdmDatabaseSchema,
-                                          cdmVersion = "4",
-                                          cohortTempTable = "cohort_person",
+                                          cdmVersion = "5",
+                                          cohortTable = "#cohort_person",
+                                          cohortId = -1,
                                           rowIdField = "subject_id",
-                                          covariateSettings) {
+                                          covariateSettings,
+                                          aggregated = FALSE) {
+  if (aggregated) {
+    stop("Aggregation not implemented for covariates from cohort attributes.")
+  }
   start <- Sys.time()
   writeLines("Constructing covariates from cohort attributes table")
-  if (substr(cohortTempTable, 1, 1) != "#") {
-    cohortTempTable <- paste("#", cohortTempTable, sep = "")
-  }
 
   if (is.null(covariateSettings$includeAttrIds) || length(covariateSettings$includeAttrIds) == 0) {
     hasIncludeAttrIds <- FALSE
@@ -63,7 +65,7 @@ getDbCohortAttrCovariatesData <- function(connection,
                                                    oracleTempSchema = oracleTempSchema,
                                                    attr_database_schema = covariateSettings$attrDatabaseSchema,
                                                    cdm_version = cdmVersion,
-                                                   cohort_temp_table = cohortTempTable,
+                                                   cohort_temp_table = cohortTable,
                                                    row_id_field = rowIdField,
                                                    cohort_attribute_table = covariateSettings$cohortAttrTable,
                                                    has_include_attr_ids = hasIncludeAttrIds)
@@ -83,7 +85,7 @@ getDbCohortAttrCovariatesData <- function(connection,
   colnames(covariateRef) <- SqlRender::snakeCaseToCamelCase(colnames(covariateRef))
 
   sql <- "SELECT COUNT_BIG(*) FROM @cohort_temp_table"
-  sql <- SqlRender::renderSql(sql, cohort_temp_table = cohortTempTable)$sql
+  sql <- SqlRender::renderSql(sql, cohort_temp_table = cohortTable)$sql
   sql <- SqlRender::translateSql(sql = sql,
                                  targetDialect = attr(connection, "dbms"),
                                  oracleTempSchema = oracleTempSchema)$sql

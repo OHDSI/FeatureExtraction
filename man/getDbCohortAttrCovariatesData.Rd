@@ -5,8 +5,9 @@
 \title{Getcovariate information from the database through the cohort_attribute table}
 \usage{
 getDbCohortAttrCovariatesData(connection, oracleTempSchema = NULL,
-  cdmDatabaseSchema, cdmVersion = "4", cohortTempTable = "cohort_person",
-  rowIdField = "subject_id", covariateSettings)
+  cdmDatabaseSchema, cdmVersion = "5", cohortTable = "#cohort_person",
+  cohortId = -1, rowIdField = "subject_id", covariateSettings,
+  aggregated = FALSE)
 }
 \arguments{
 \item{connection}{A connection to the server containing the schema as created using the
@@ -19,10 +20,14 @@ Requires read permissions to this database. On SQL Server, this should
 specifiy both the database and the schema, so for example
 'cdm_instance.dbo'.}
 
-\item{cdmVersion}{Define the OMOP CDM version used: currently support "4" and "5".}
+\item{cohortTable}{Name of the table holding the cohort for which we want to construct
+covariates. If it is a temp table, the name should have a hash prefix,
+e.g. '#temp_table'. If it is a non-temp table, it should include the
+database schema, e.g. 'cdm_database.cohort'.}
 
-\item{cohortTempTable}{Name of the temp table holding the cohort for which we want to construct
-covaraites}
+\item{cohortId}{For which cohort ID should covariates be constructed? If set to -1,
+covariates will be constructed for all cohorts in the specified cohort
+table.}
 
 \item{rowIdField}{The name of the field in the cohort temp table that is to be used as the
 row_id field in the output table. This can be especially usefull if there
@@ -30,6 +35,9 @@ is more than one period per person.}
 
 \item{covariateSettings}{An object of type \code{covariateSettings} as created using the
 \code{\link{createCohortAttrCovariateSettings}} function.}
+
+\item{aggregated}{Should aggregate statistics be computed instead of covariates per
+cohort entry?}
 }
 \value{
 Returns an object of type \code{covariateData}, containing information on the baseline covariates.

@@ -805,7 +805,7 @@ createDetailedTemporalCovariateSettings <- function(analyses = list(),
 #'
 #' @param analysisId                    An integer between 0 and 999 that uniquely identifies this
 #'                                      analysis.
-#' @param sqFileName                    The name of the paramterized SQL file embedded in the
+#' @param sqlFileName                    The name of the paramterized SQL file embedded in the
 #'                                      \code{featureExtraction} package.
 #' @param parameters                    The list of parameter values used to render the template SQL.
 #' @param includedCovariateConceptIds   A list of concept IDs that should be used to construct
@@ -881,6 +881,10 @@ convertPrespecSettingsToDetailedSettings <- function(covariateSettings) {
 }
 
 #' Create default covariate settings
+#' 
+#' @description 
+#' Returns a covariate settings object containing all the prespecified analyses considered to be
+#' the default set.
 #'
 #' @param includedCovariateConceptIds   A list of concept IDs that should be used to construct
 #'                                      covariates.
@@ -918,6 +922,10 @@ createDefaultCovariateSettings <- function(includedCovariateConceptIds = c(),
 }
 
 #' Create default covariate settings
+#' 
+#' @description 
+#' Returns a covariate settings object containing all the prespecified temporal analyses considered
+#' to be the default set.
 #'
 #' @param includedCovariateConceptIds   A list of concept IDs that should be used to construct
 #'                                      covariates.

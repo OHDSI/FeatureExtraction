@@ -14,6 +14,7 @@ Depends:
     R (>= 3.2.2),
     DatabaseConnector (>= 2.0.0),
 Imports:
+    methods,
     bit,
     ff,
     ffbase (>= 0.12.1),

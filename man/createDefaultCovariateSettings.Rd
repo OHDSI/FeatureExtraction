@@ -27,5 +27,6 @@ to exclude?}
 An object of type \code{covariateSettings}, to be used in other functions.
 }
 \description{
-Create default covariate settings
+Returns a covariate settings object containing all the prespecified analyses considered to be
+the default set.
 }

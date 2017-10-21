@@ -47,7 +47,8 @@ bySumFf <- function(values, bins) {
 #' Tidy covariate data
 #'
 #' @details
-#' Normalize covariate values by dividing by the max and/or remove redundant covariates.
+#' Normalize covariate values by dividing by the max and/or remove redundant covariates and/or
+#' remove infrequent covariates.
 #'
 #' @param covariateData     An object as generated using the \code{\link{getDbCovariateData}}
 #'                          function. If provided, the \code{covariates}, \code{covariateRef}, and 
@@ -154,5 +155,3 @@ tidyCovariateData <- function(covariateData,
   covariateData$covariateRef <- ff::clone.ffdf(covariateData$covariateRef)
   return(covariateData)
 }
-
-

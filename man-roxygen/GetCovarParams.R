@@ -12,12 +12,18 @@
 #'                            Requires read permissions to this database. On SQL Server, this should
 #'                            specifiy both the database and the schema, so for example
 #'                            'cdm_instance.dbo'.
-#' @param cdmVersion          Define the OMOP CDM version used: currently support "4" and "5".
-#' @param cohortTempTable     Name of the temp table holding the cohort for which we want to construct
-#'                            covaraites
+#' @param cohortTable         Name of the table holding the cohort for which we want to construct
+#'                            covariates. If it is a temp table, the name should have a hash prefix,
+#'                            e.g. '#temp_table'. If it is a non-temp table, it should include the
+#'                            database schema, e.g. 'cdm_database.cohort'.
+#' @param cohortId            For which cohort ID should covariates be constructed? If set to -1,
+#'                            covariates will be constructed for all cohorts in the specified cohort
+#'                            table.
 #' @param rowIdField          The name of the field in the cohort temp table that is to be used as the
 #'                            row_id field in the output table. This can be especially usefull if there
 #'                            is more than one period per person.
+#' @param aggregated          Should aggregate statistics be computed instead of covariates per
+#'                            cohort entry? 
 #'
 #' @return
 #' Returns an object of type \code{covariateData}, containing information on the baseline covariates.
