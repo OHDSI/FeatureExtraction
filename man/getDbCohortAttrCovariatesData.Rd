@@ -5,9 +5,8 @@
 \title{Getcovariate information from the database through the cohort_attribute table}
 \usage{
 getDbCohortAttrCovariatesData(connection, oracleTempSchema = NULL,
-  cdmDatabaseSchema, cdmVersion = "5", cohortTable = "#cohort_person",
-  cohortId = -1, rowIdField = "subject_id", covariateSettings,
-  aggregated = FALSE)
+  cdmDatabaseSchema, cohortTable = "#cohort_person", cohortId = -1,
+  rowIdField = "subject_id", covariateSettings, aggregated = FALSE)
 }
 \arguments{
 \item{connection}{A connection to the server containing the schema as created using the

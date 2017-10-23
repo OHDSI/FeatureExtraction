@@ -63,8 +63,7 @@ getDbCohortAttrCovariatesData <- function(connection,
                                                    dbms = attr(connection, "dbms"),
                                                    oracleTempSchema = oracleTempSchema,
                                                    attr_database_schema = covariateSettings$attrDatabaseSchema,
-                                                   cdm_version = cdmVersion,
-                                                   cohort_temp_table = cohortTable,
+                                                   cohort_table = cohortTable,
                                                    row_id_field = rowIdField,
                                                    cohort_attribute_table = covariateSettings$cohortAttrTable,
                                                    has_include_attr_ids = hasIncludeAttrIds)
@@ -81,6 +80,8 @@ getDbCohortAttrCovariatesData <- function(connection,
                                              oracleTempSchema = oracleTempSchema)$sql
   covariateRef <- DatabaseConnector::querySql.ffdf(connection, covariateRefSql)
   colnames(covariateRef) <- SqlRender::snakeCaseToCamelCase(colnames(covariateRef))
+  covariateRef$analysisId <- ff::ff(0, length = nrow(covariateRef))
+  covariateRef$conceptId <- ff::ff(0, length = nrow(covariateRef))
   
   delta <- Sys.time() - start
   writeLines(paste("Loading took", signif(delta, 3), attr(delta, "units")))

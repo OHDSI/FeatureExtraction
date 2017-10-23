@@ -84,7 +84,6 @@ deletedCovariateIds <- tidyCovariates$metaData$deletedRedundantCovariateIds
 saveRDS(deletedCovariateIds, file.path(vignetteFolder, "deletedRedundantCovariateIds.rds"))
 deletedCovariateIds <- tidyCovariates$metaData$deletedInfrequentCovariateIds
 saveRDS(deletedCovariateIds, file.path(vignetteFolder, "deletedInfrequentCovariateIds.rds"))
-# deletedCovariateIds <- readRDS(file.path(vignetteFolder, "deletedCovariateIds.rds"))
 
 # aggCovariates <- aggregateCovariates(covariateData)
 
@@ -302,34 +301,17 @@ covariateSettings <- createHdpsCovariateSettings(useCovariateCohortIdIs1 = FALSE
 library(SqlRender)
 library(DatabaseConnector)
 library(FeatureExtraction)
-setwd("s:/temp")
-options(fftempdir = "s:/FFtemp")
+options(fftempdir = "c:/FFtemp")
 
-pw <- NULL
-dbms <- "sql server"
-user <- NULL
-server <- "RNDUSRDHIT07.jnj.com"
-cdmDatabaseSchema <- "cdm_truven_mdcd.dbo"
-resultsDatabaseSchema <- "scratch.dbo"
-port <- NULL
-
-dbms <- "postgresql"
-server <- "localhost/ohdsi"
-user <- "postgres"
-pw <- "F1r3starter"
-cdmDatabaseSchema <- "cdm4_sim"
-resultsDatabaseSchema <- "scratch"
-port <- NULL
-
-pw <- NULL
 dbms <- "pdw"
 user <- NULL
+pw <- NULL
 server <- "JRDUSAPSCTL01"
-cdmDatabaseSchema <- "cdm_truven_mdcd_v5.dbo"
+cdmDatabaseSchema <- "cdm_truven_mdcd_v569.dbo"
 cohortDatabaseSchema <- "scratch.dbo"
-oracleTempSchema <- NULL
 port <- 17001
 cdmVersion <- "5"
+extraSettings <- NULL
 
 connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = dbms,
                                                                 server = server,
@@ -350,7 +332,7 @@ DatabaseConnector::executeSql(connection, sql)
 
 # Build cohort attributes:
 sql <- SqlRender::loadRenderTranslateSql("LengthOfObsCohortAttr.sql",
-                                         packageName = "PatientLevelPrediction",
+                                         packageName = "FeatureExtraction",
                                          dbms = dbms,
                                          cdm_database_schema = cdmDatabaseSchema,
                                          cohort_database_schema = cohortDatabaseSchema,
@@ -379,23 +361,18 @@ summary(covariates)
 
 
 
-sql <- "DROP TABLE @cohort_database_schema.rehospitalization"
-sql <- SqlRender::renderSql(sql, cohort_database_schema = cohortDatabaseSchema)$sql
-sql <- SqlRender::translateSql(sql, targetDialect = attr(connection, "dbms"))$sql
 
 
 
 
 
 
-
-covariateSettings <- createCovariateSettings(useCovariateDemographics = TRUE,
-                                             useCovariateDemographicsGender = TRUE,
-                                             useCovariateDemographicsRace = TRUE,
-                                             useCovariateDemographicsEthnicity = TRUE,
-                                             useCovariateDemographicsAge = TRUE,
-                                             useCovariateDemographicsYear = TRUE,
-                                             useCovariateDemographicsMonth = TRUE)
+covariateSettings <- createCovariateSettings(useDemographicsGender = TRUE,
+                                             useDemographicsAgeGroup = TRUE,
+                                             useDemographicsRace = TRUE,
+                                             useDemographicsEthnicity = TRUE,
+                                             useDemographicsIndexYear = TRUE,
+                                             useDemographicsIndexMonth = TRUE)
 looCovSet <- createCohortAttrCovariateSettings(attrDatabaseSchema = cohortDatabaseSchema,
                                                cohortAttrTable = "loo_cohort_attribute",
                                                attrDefinitionTable = "loo_attribute_definition",
@@ -404,8 +381,15 @@ covariateSettingsList <- list(covariateSettings, looCovSet)
 
 covariates <- getDbCovariateData(connectionDetails = connectionDetails,
                                  cdmDatabaseSchema = cdmDatabaseSchema,
-                                 cohortDatabaseSchema = cohortDatabaseSchema,
+                                 cohortDatabaseSchema = resultsDatabaseSchema,
                                  cohortTable = "rehospitalization",
-                                 cohortIds = 1,
+                                 cohortId = 1,
                                  covariateSettings = covariateSettingsList,
                                  cdmVersion = cdmVersion)
+
+
+sql <- "DROP TABLE @cohort_database_schema.rehospitalization"
+sql <- SqlRender::renderSql(sql, cohort_database_schema = cohortDatabaseSchema)$sql
+sql <- SqlRender::translateSql(sql, targetDialect = attr(connection, "dbms"))$sql
+DatabaseConnector::executeSql(connection, sql)
+DatabaseConnector::disconnect(connection)

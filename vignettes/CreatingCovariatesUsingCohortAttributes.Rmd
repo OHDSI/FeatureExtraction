@@ -126,7 +126,7 @@ We can then use these settings to fetch the `covariates` object:
 ```{r eval=FALSE}
 covariates <- getDbCovariateData(connectionDetails = connectionDetails,
                                  cdmDatabaseSchema = cdmDatabaseSchema,
-                                 cohortDatabaseSchema = resultsDatabaseSchema,
+                                 cohortDatabaseSchema = cohortDatabaseSchema,
                                  cohortTable = "rehospitalization",
                                  cohortId = 1,
                                  covariateSettings = looCovSet)
@@ -135,13 +135,12 @@ covariates <- getDbCovariateData(connectionDetails = connectionDetails,
 In this case we will have only one covariate for our predictive model, the length of observation. In most cases, we will want our custom covariates in addition to the default covariates. We can do this by creating a list of covariate settings:
 
 ```{r eval=FALSE}
-covariateSettings <- createCovariateSettings(useCovariateDemographics = TRUE,
-                                             useCovariateDemographicsGender = TRUE,
-                                             useCovariateDemographicsRace = TRUE,
-                                             useCovariateDemographicsEthnicity = TRUE,
-                                             useCovariateDemographicsAge = TRUE,
-                                             useCovariateDemographicsYear = TRUE,
-                                             useCovariateDemographicsMonth = TRUE)
+covariateSettings <- createCovariateSettings(useDemographicsGender = TRUE,
+                                             useDemographicsAgeGroup = TRUE,
+                                             useDemographicsRace = TRUE,
+                                             useDemographicsEthnicity = TRUE,
+                                             useDemographicsIndexYear = TRUE,
+                                             useDemographicsIndexMonth = TRUE)
 looCovSet <- createCohortAttrCovariateSettings(attrDatabaseSchema = cohortDatabaseSchema,
                                                cohortAttrTable = "loo_cohort_attr",
                                                attrDefinitionTable = "loo_attr_def",
@@ -152,7 +151,7 @@ covariates <- getDbCovariateData(connectionDetails = connectionDetails,
                                  cdmDatabaseSchema = cdmDatabaseSchema,
                                  cohortDatabaseSchema = resultsDatabaseSchema,
                                  cohortTable = "rehospitalization",
-                                 cohortIds = 1,
+                                 cohortId = 1,
                                  covariateSettings = covariateSettingsList,
                                  cdmVersion = cdmVersion)
 ```
