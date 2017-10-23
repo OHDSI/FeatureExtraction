@@ -128,9 +128,8 @@ covariates <- getDbCovariateData(connectionDetails = connectionDetails,
                                  cdmDatabaseSchema = cdmDatabaseSchema,
                                  cohortDatabaseSchema = resultsDatabaseSchema,
                                  cohortTable = "rehospitalization",
-                                 cohortIds = 1,
-                                 covariateSettings = looCovSet,
-                                 cdmVersion = cdmVersion)
+                                 cohortId = 1,
+                                 covariateSettings = looCovSet)
 ```
 
 In this case we will have only one covariate for our predictive model, the length of observation. In most cases, we will want our custom covariates in addition to the default covariates. We can do this by creating a list of covariate settings:

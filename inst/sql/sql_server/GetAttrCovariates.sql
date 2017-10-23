@@ -18,8 +18,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ************************************************************************/
 
-{DEFAULT @attr_database_schema = 'CDM4_SIM.dbo' } 
-{DEFAULT @cdm_version == '4'}
+{DEFAULT @attr_database_schema = 'CDM_SIM.dbo' } 
 {DEFAULT @cohort_table = '#cohort_person'}
 {DEFAULT @cohort_id = -1}
 {DEFAULT @row_id_field = 'person_id'}
@@ -32,21 +31,13 @@ SELECT cohort.@row_id_field AS row_id,
 FROM @attr_database_schema.@cohort_attribute_table cohort_attribute
 INNER JOIN @cohort_table cohort
 ON cohort_attribute.subject_id = cohort.subject_id
-{@cdm_version == '4'} ? {
-AND cohort_attribute.cohort_concept_id = cohort.cohort_concept_id
-} : {
 AND cohort_attribute.cohort_definition_id = cohort.cohort_definition_id
-}
 AND cohort_attribute.subject_id = cohort.subject_id
 {@has_include_attr_ids} ? {
 INNER JOIN #included_attr included_attr
 ON included_attr.attribute_definition_id = cohort_attribute.attribute_definition_id
 }
 {@cohort_id != -1} ? {
-{@cdm_version == '4'} ? {
-WHERE cohort.cohort_concept_id = @cohort_id
-} : {
 WHERE cohort.cohort_definition_id = @cohort_id
-} 
 }
 ;

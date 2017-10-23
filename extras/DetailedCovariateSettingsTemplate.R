@@ -69,7 +69,7 @@ createDetailedTemporalCovariateSettings <- function(analyses = list(),
 #' function is for advanced users only.
 #'
 #' @param analysisId   An integer between 0 and 999 that uniquely identifies this analysis.
-#' @param sqFileName   The name of the paramterized SQL file embedded in the \code{featureExtraction} package.
+#' @param sqlFileName   The name of the paramterized SQL file embedded in the \code{featureExtraction} package.
 #' @param parameters   The list of parameter values used to render the template SQL.
 %roxygenCommon%
 #'

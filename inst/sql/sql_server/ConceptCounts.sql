@@ -68,7 +68,7 @@ FROM (
 		subject_id,
 		cohort_start_date
 } : {
-		row_id
+		cohort.@row_id_field
 }	
 	) raw_data;
 

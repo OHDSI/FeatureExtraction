@@ -32,7 +32,6 @@
 getDbCohortAttrCovariatesData <- function(connection,
                                           oracleTempSchema = NULL,
                                           cdmDatabaseSchema,
-                                          cdmVersion = "5",
                                           cohortTable = "#cohort_person",
                                           cohortId = -1,
                                           rowIdField = "subject_id",
@@ -43,7 +42,7 @@ getDbCohortAttrCovariatesData <- function(connection,
   }
   start <- Sys.time()
   writeLines("Constructing covariates from cohort attributes table")
-
+  
   if (is.null(covariateSettings$includeAttrIds) || length(covariateSettings$includeAttrIds) == 0) {
     hasIncludeAttrIds <- FALSE
   } else {
@@ -58,7 +57,7 @@ getDbCohortAttrCovariatesData <- function(connection,
                                    tempTable = TRUE,
                                    oracleTempSchema = oracleTempSchema)
   }
-
+  
   renderedSql <- SqlRender::loadRenderTranslateSql("GetAttrCovariates.sql",
                                                    packageName = "FeatureExtraction",
                                                    dbms = attr(connection, "dbms"),
@@ -69,9 +68,10 @@ getDbCohortAttrCovariatesData <- function(connection,
                                                    row_id_field = rowIdField,
                                                    cohort_attribute_table = covariateSettings$cohortAttrTable,
                                                    has_include_attr_ids = hasIncludeAttrIds)
-
+  
   covariates <- DatabaseConnector::querySql.ffdf(connection, renderedSql)
-
+  colnames(covariates) <- SqlRender::snakeCaseToCamelCase(colnames(covariates))
+  
   covariateRefSql <- "SELECT attribute_definition_id AS covariate_id, attribute_name AS covariate_name FROM @attr_database_schema.@attr_definition_table ORDER BY attribute_definition_id"
   covariateRefSql <- SqlRender::renderSql(covariateRefSql,
                                           attr_database_schema = covariateSettings$attrDatabaseSchema,
@@ -80,42 +80,14 @@ getDbCohortAttrCovariatesData <- function(connection,
                                              targetDialect = attr(connection, "dbms"),
                                              oracleTempSchema = oracleTempSchema)$sql
   covariateRef <- DatabaseConnector::querySql.ffdf(connection, covariateRefSql)
-
-  colnames(covariates) <- SqlRender::snakeCaseToCamelCase(colnames(covariates))
   colnames(covariateRef) <- SqlRender::snakeCaseToCamelCase(colnames(covariateRef))
-
-  sql <- "SELECT COUNT_BIG(*) FROM @cohort_temp_table"
-  sql <- SqlRender::renderSql(sql, cohort_temp_table = cohortTable)$sql
-  sql <- SqlRender::translateSql(sql = sql,
-                                 targetDialect = attr(connection, "dbms"),
-                                 oracleTempSchema = oracleTempSchema)$sql
-  populationSize <- DatabaseConnector::querySql(connection, sql)[1, 1]
-
+  
   delta <- Sys.time() - start
   writeLines(paste("Loading took", signif(delta, 3), attr(delta, "units")))
-
-  # Remove redundant covariates
-  writeLines("Removing redundant covariates")
-  deletedCovariateIds <- c()
-  if (nrow(covariates) != 0) {
-    # First delete all single covariates that appear in every row with the same value
-    valueCounts <- bySumFf(ff::ff(1, length = nrow(covariates)), covariates$covariateId)
-    nonSparseIds <- valueCounts$bins[valueCounts$sums == populationSize]
-    for (covariateId in nonSparseIds) {
-      selection <- covariates$covariateId == covariateId
-      idx <- ffbase::ffwhich(selection, selection == TRUE)
-      values <- ffbase::unique.ff(covariates$covariateValue[idx])
-      if (length(values) == 1) {
-        idx <- ffbase::ffwhich(selection, selection == FALSE)
-        covariates <- covariates[idx, ]
-        deletedCovariateIds <- c(deletedCovariateIds, covariateId)
-      }
-    }
-  }
-  metaData <- list(sql = renderedSql,
-                   call = match.call(),
-                   deletedCovariateIds = deletedCovariateIds)
-  result <- list(covariates = covariates, covariateRef = covariateRef, metaData = metaData)
+  
+  result <- list(covariates = covariates, 
+                 covariateRef = covariateRef, 
+                 metaData = list())
   class(result) <- "covariateData"
   return(result)
 }
@@ -129,12 +101,11 @@ getDbCohortAttrCovariatesData <- function(connection,
 #' \item{attribute_definition_id}{A unique identifier of type integer.} \item{attribute_name}{A short
 #' description of the attribute.} } The cohort attributes themselves should be stored in a table with
 #' the same format as the cohort_attribute table in the Common Data Model. It should at least have
-#' these columns: \describe{ \item{cohort_definition_id}{A key to link to the cohort table. On CDM v4,
-#' this field should be called \code{cohort_concept_id}.} \item{subject_id}{A key to link to the
+#' these columns: \describe{ \item{cohort_definition_id}{A key to link to the cohort table.} \item{subject_id}{A key to link to the
 #' cohort table.} \item{cohort_start_date}{A key to link to the cohort table.}
 #' \item{attribute_definition_id}{An foreign key linking to the attribute definition table.}
 #' \item{value_as_number}{A real number.} }
-#'
+#' 
 #' @param attrDatabaseSchema    The database schema where the attribute definition and cohort attribute
 #'                              table can be found.
 #' @param attrDefinitionTable   The name of the attribute definition table.
@@ -160,7 +131,7 @@ createCohortAttrCovariateSettings <- function(attrDatabaseSchema,
     if (name %in% names(covariateSettings))
       covariateSettings[[name]] <- values[[name]]
   }
-
+  
   attr(covariateSettings, "fun") <- "getDbCohortAttrCovariatesData"
   class(covariateSettings) <- "covariateSettings"
   return(covariateSettings)

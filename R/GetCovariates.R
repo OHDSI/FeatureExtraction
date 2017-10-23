@@ -106,6 +106,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
     covariateData <- list(covariates = data.frame(),
                           covariateRef = data.frame(),
                           metaData = list())
+    class(covariateData) <- "covariateData"
     warning("Population is empty. No covariates were constructed")
   } else {
     if (class(covariateSettings) == "covariateSettings") {

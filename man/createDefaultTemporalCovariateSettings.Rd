@@ -27,6 +27,5 @@ to exclude?}
 An object of type \code{covariateSettings}, to be used in other functions.
 }
 \description{
-Returns a covariate settings object containing all the prespecified temporal analyses considered
-to be the default set.
+Create default covariate settings
 }

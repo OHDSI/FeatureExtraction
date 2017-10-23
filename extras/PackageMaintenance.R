@@ -89,10 +89,12 @@ arguments <- rbind(arguments, otherParameters[otherParameters$type == "temporal"
 arguments <- rbind(arguments, otherParameters[otherParameters$type == "common", c("name", "defaultValue", "description", "example")])
 arguments$defaultValue <- gsub("^\\[", "c(", arguments$defaultValue)
 arguments$defaultValue <- gsub("\\]$", ")", arguments$defaultValue)
+arguments$defaultValue <- gsub("^c\\(-365,.*,-1\\)$", "-365:-1", arguments$defaultValue)
 arguments$defaultValue[arguments$defaultValue == "false"] <- "FALSE"
 arguments$defaultValue[arguments$defaultValue == "true"] <- "TRUE"
 arguments$example <- gsub("^\\[", "c(", arguments$example)
 arguments$example <- gsub("\\]$", ")", arguments$example)
+arguments$example <- gsub("^c\\(-365,.*,-1\\)$", "-365:-1", arguments$example)
 arguments$example[arguments$example == "false"] <- "FALSE"
 arguments$example[arguments$example == "true"] <- "TRUE"
 roxygen <- paste(paste("#' @param", arguments$name, arguments$description), collapse = "\n")
@@ -113,6 +115,7 @@ OhdsiRTools::formatRFile("R/DefaultTemporalCovariateSettings.R")
 arguments <- read.csv("inst/csv/OtherParameters.csv", stringsAsFactors = FALSE)
 arguments$defaultValue <- gsub("^\\[", "c(", arguments$defaultValue)
 arguments$defaultValue <- gsub("\\]$", ")", arguments$defaultValue)
+arguments$defaultValue <- gsub("^c\\(-365,.*,-1\\)$", "-365:-1", arguments$defaultValue)
 arguments$defaultValue[arguments$defaultValue == "false"] <- "FALSE"
 arguments$defaultValue[arguments$defaultValue == "true"] <- "TRUE"
 argumentsTemporal <- arguments[arguments$type == "temporal", ]

@@ -95,7 +95,7 @@ FROM (
 	INNER JOIN #time_period time_period
 		ON @domain_start_date <= DATEADD(DAY, time_period.end_day, cohort.cohort_start_date)
 		AND @domain_end_date >= DATEADD(DAY, time_period.start_day, cohort.cohort_start_date)
-	WHERE drug_concept_id != 0
+	WHERE @domain_concept_id != 0
 } : {
 	WHERE @domain_start_date <= DATEADD(DAY, @end_day, cohort.cohort_start_date)
 {@start_day != 'anyTimePrior'} ? {				AND @domain_end_date >= DATEADD(DAY, @start_day, cohort.cohort_start_date)}

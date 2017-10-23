@@ -38,12 +38,12 @@ FROM (
 		ROW_NUMBER() OVER (PARTITION BY subject_id, cohort_start_date, measurement_concept_id ORDER BY measurement_date DESC) AS rn,
 }
 } : {
-		row_id,
+		cohort.@row_id_field AS row_id,
 {@temporal} ? {
 		time_id,
-		ROW_NUMBER() OVER (PARTITION BY row_id, measurement_concept_id, time_id ORDER BY measurement_date DESC) AS rn,
+		ROW_NUMBER() OVER (PARTITION BY cohort.@row_id_field, measurement_concept_id, time_id ORDER BY measurement_date DESC) AS rn,
 } : {
-		ROW_NUMBER() OVER (PARTITION BY row_id, measurement_concept_id ORDER BY measurement_date DESC) AS rn,
+		ROW_NUMBER() OVER (PARTITION BY cohort.@row_id_field, measurement_concept_id ORDER BY measurement_date DESC) AS rn,
 }
 }
 		measurement_concept_id,
