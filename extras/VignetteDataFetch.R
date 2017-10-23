@@ -78,9 +78,12 @@ summary(covariateData)
 
 tidyCovariates <- tidyCovariateData(covariateData,
                                     normalize = TRUE,
-                                    removeRedundancy = TRUE)
-deletedCovariateIds <- tidyCovariates$metaData$deletedCovariateIds
-saveRDS(deletedCovariateIds, file.path(vignetteFolder, "deletedCovariateIds.rds"))
+                                    removeRedundancy = TRUE,
+                                    minFraction = 0.001)
+deletedCovariateIds <- tidyCovariates$metaData$deletedRedundantCovariateIds
+saveRDS(deletedCovariateIds, file.path(vignetteFolder, "deletedRedundantCovariateIds.rds"))
+deletedCovariateIds <- tidyCovariates$metaData$deletedInfrequentCovariateIds
+saveRDS(deletedCovariateIds, file.path(vignetteFolder, "deletedInfrequentCovariateIds.rds"))
 # deletedCovariateIds <- readRDS(file.path(vignetteFolder, "deletedCovariateIds.rds"))
 
 # aggCovariates <- aggregateCovariates(covariateData)

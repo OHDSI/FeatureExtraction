@@ -7,6 +7,7 @@ output:
     keep_tex: yes
     number_sections: yes
     toc: yes
+    toc_depth: 4
   html_document:
     number_sections: yes
     toc: yes
@@ -318,28 +319,43 @@ saveCovariateData(covariateData, "covariates")
 
 We can use the `loadCovariateData()` function to load the data in a future session.
 
-### Normalizing and removing redundancy
+### Removing infrequent covariates, normalizing, and removing redundancy
 
-One reason for generating per-person covariates may be to use them in some form of machine learning. In that case it may be necessary to tidy the data before proceeding. The `tidyCovariateData` function can perform two tasks:
+One reason for generating per-person covariates may be to use them in some form of machine learning. In that case it may be necessary to tidy the data before proceeding. The `tidyCovariateData` function can perform three tasks:
 
-1. **Normalization**: scale all covariate values to a value between 0 and 1 (by dividing by the max value for each covariate).
-2. **Removal of redundancy**: If every person in the cohort has the same value for a covariate (e.g. a cohort that is restricted to women will have the same gender covariate value for all) that value is redundant. Redundant values may wreak havok with some machine learning algorithms, for example causing a simple regression to no longer have a single solution. Similarly, groups of covariates may be redundant (e.g. every person will belong to at least one age group, making one group redundant as it can be defined as the absence of the other groups).
+1. **Remove infrequent covariates**: Oftentimes the majority of features have non-zero values for only one or a few subjects in the cohort. These features are unlikely to end up in any fitted model, but can increase the computational burden, and removing them could be good idea. By default, covariates appearing in less than .1% of the subjects are removed.
+2. **Normalization**: scale all covariate values to a value between 0 and 1 (by dividing by the max value for each covariate).
+3. **Removal of redundancy**: If every person in the cohort has the same value for a covariate (e.g. a cohort that is restricted to women will have the same gender covariate value for all) that value is redundant. Redundant values may wreak havok with some machine learning algorithms, for example causing a simple regression to no longer have a single solution. Similarly, groups of covariates may be redundant (e.g. every person will belong to at least one age group, making one group redundant as it can be defined as the absence of the other groups).
+
 
 ```{r eval=FALSE}
 tidyCovariates <- tidyCovariateData(covariateData,
+                                    minFraction = 0.001,
                                     normalize = TRUE,
                                     removeRedundancy = TRUE)
 ```
 
-If we want to know which redundant covariates were removed we can query the `metaData` object:
+If we want to know how many infrequent covariates were removed we can query the `metaData` object:
 ```{r eval=FALSE}
-deletedCovariateIds <- tidyCovariates$metaData$deletedCovariateIds
-deletedCovariateIds
+deletedCovariateIds <- tidyCovariates$metaData$deletedInfrequentCovariateIds
+head(deletedCovariateIds)
 ```
 ```{r echo=FALSE,message=FALSE}
-if (file.exists(file.path(vignetteFolder, "deletedCovariateIds.rds"))){
-  deletedCovariateIds <- readRDS(file.path(vignetteFolder, "deletedCovariateIds.rds"))
-  deletedCovariateIds
+if (file.exists(file.path(vignetteFolder, "deletedInfrequentCovariateIds.rds"))){
+  deletedCovariateIds <- readRDS(file.path(vignetteFolder, "deletedInfrequentCovariateIds.rds"))
+  head(deletedCovariateIds)
+}
+```
+
+Similarly, if we want to know which redundant covariates were removed we can also query the `metaData` object:
+```{r eval=FALSE}
+deletedCovariateIds <- tidyCovariates$metaData$deletedRedundantCovariateIds
+head(deletedCovariateIds)
+```
+```{r echo=FALSE,message=FALSE}
+if (file.exists(file.path(vignetteFolder, "deletedRedundantCovariateIds.rds"))){
+  deletedCovariateIds <- readRDS(file.path(vignetteFolder, "deletedRedundantCovariateIds.rds"))
+  head(deletedCovariateIds)
 }
 ```
 
@@ -350,7 +366,7 @@ library(ffbase)
 covariateData$covariateRef[covariateData$covariateRef$covariateId %in% deletedCovariateIds, ]
 ```
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
-if (file.exists(file.path(vignetteFolder, "deletedCovariateIds.rds"))){
+if (file.exists(file.path(vignetteFolder, "deletedRedundantCovariateIds.rds"))){
   library(ffbase)
    truncRight <- function(x, n) {
     nc <- nchar(x)
@@ -454,7 +470,7 @@ if (file.exists(file.path(vignetteFolder, "table1Covariates"))){
 }
 ```
 
-## Comparing two cohorts
+# Comparing two cohorts
 
 Another task supported by the `FeatureExtraction` package is comparing two cohorts of interest. Suppose we want to compare two cohorts only on the variables included in the default table 1:
 
@@ -523,5 +539,3 @@ if (file.exists(file.path(vignetteFolder, "covDiclofenac"))){
 ```
 \fontsize{10}{12}
 \selectfont
-
-

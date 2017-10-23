@@ -91,7 +91,6 @@ tidyCovariateData <- function(covariateData,
       covariateRef <- covariateData$covariateRef
     }
   }
-  covariateData$metaData$deletedCovariateIds <- c()
   if (nrow(covariates) != 0) {
     maxs <- byMaxFf(covariates$covariateValue, covariates$covariateId)
     if (minFraction != 0) {
@@ -102,7 +101,7 @@ tidyCovariateData <- function(covariateData,
       deleteCovariateIds <- valueCounts$bins[valueCounts$sums < minCount]
       if (length(deleteCovariateIds) != 0) {
         covariates <- covariates[!ffbase::`%in%`(covariates$covariateId, deleteCovariateIds), ]
-        covariateData$metaData$deletedCovariateIds <- deleteCovariateIds
+        covariateData$metaData$deletedInfrequentCovariateIds <- deleteCovariateIds
       }
       delta <- Sys.time() - start
       writeLines(paste("Removing infrequent covariates took", signif(delta, 3), attr(delta, "units")))
@@ -146,7 +145,7 @@ tidyCovariateData <- function(covariateData,
       if (length(deleteCovariateIds) != 0) {
         covariates <- covariates[!ffbase::`%in%`(covariates$covariateId, deleteCovariateIds), ]
       }
-      covariateData$metaData$deletedCovariateIds <- c(covariateData$metaData$deletedCovariateIds, deleteCovariateIds)
+      covariateData$metaData$deletedRedundantCovariateIds <- deleteCovariateIds
       delta <- Sys.time() - start
       writeLines(paste("Removing redundant covariates took", signif(delta, 3), attr(delta, "units")))
     }
