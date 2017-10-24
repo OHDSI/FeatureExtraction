@@ -77,19 +77,16 @@ SELECT covariate_id,
 	@analysis_id AS analysis_id,
 	concept_id
 FROM (
-	SELECT DISTINCT covariate_id
+	SELECT DISTINCT covariate_id,
+	   CASE 
+			WHEN FLOOR(covariate_id / 1000.0) - (FLOOR(covariate_id / 10000.0) * 10) = 1 THEN 'below normal range'
+			WHEN FLOOR(covariate_id / 1000.0) - (FLOOR(covariate_id / 10000.0) * 10) = 2 THEN 'within normal range'
+			WHEN FLOOR(covariate_id / 1000.0) - (FLOOR(covariate_id / 10000.0) * 10) = 3 THEN 'above normal range'
+	  END AS range_name
 	FROM @covariate_table
 	) t1
 INNER JOIN @cdm_database_schema.concept
-	ON concept_id = FLOOR(covariate_id / 10000.0)
-INNER JOIN (
-	SELECT 1 AS range_group, CAST('below normal range' AS VARCHAR(50)) AS range_name
-	UNION ALL
-	SELECT 2 AS range_group, CAST('within normal range' AS VARCHAR(50)) AS range_name
-	UNION ALL
-	SELECT 3 AS range_group, CAST('above normal range' AS VARCHAR(50)) AS range_name
-) group_names
-ON group_names.range_group = FLOOR(covariate_id / 1000.0) - (FLOOR(covariate_id / 10000.0) * 10);
+	ON concept_id = FLOOR(covariate_id / 10000.0);
 	
 INSERT INTO #analysis_ref (
 	analysis_id,

@@ -3,7 +3,7 @@ IF OBJECT_ID('tempdb..#covariate_ids', 'U') IS NOT NULL
 
 SELECT DISTINCT measurement_concept_id,
   unit_concept_id,
-  (measurement_concept_id * 1000000) + ((unit_concept_id % 1000) * 1000) + @analysis_id AS covariate_id
+  (measurement_concept_id * 1000000) + ((unit_concept_id - (FLOOR(unit_concept_id / 1000) * 1000)) * 1000) + @analysis_id AS covariate_id
 INTO #covariate_ids
 FROM @cdm_database_schema.measurement
 WHERE value_as_number IS NOT NULL; 
