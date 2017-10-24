@@ -389,7 +389,7 @@ INTO #raw_data
 } : {
 SELECT 1000 + @analysis_id AS covariate_id,
 {@temporal} ? {
-    NULL AS time_id,
+    CAST(NULL AS INT) AS time_id,
 }	
 	row_id,
 	SUM(max_score) AS covariate_value
@@ -460,7 +460,7 @@ GROUP BY s.score;
 
 SELECT 1000 + @analysis_id AS covariate_id,
 {@temporal} ? {
-    NULL AS time_id,
+    CAST(NULL AS INT) AS time_id,
 }
 	o.count_value,
 	o.min_value,
@@ -547,7 +547,7 @@ SELECT @analysis_id AS analysis_id,
 	'@analysis_name' AS analysis_name,
 	'@domain_id' AS domain_id,
 {!@temporal} ? {
-	NULL AS start_day,
+	CAST(NULL AS INT) AS start_day,
 	@end_day AS end_day,
 }
 	'N' AS is_binary,

@@ -1,7 +1,7 @@
 -- Feature construction
 SELECT MONTH(cohort_start_date) * 1000 + @analysis_id AS covariate_id,
 {@temporal} ? {
-    NULL AS time_id,
+    CAST(NULL AS INT) AS time_id,
 }	
 {@aggregated} ? {
 	COUNT(*) AS sum_value
@@ -53,8 +53,8 @@ SELECT @analysis_id AS analysis_id,
 	'@analysis_name' AS analysis_name,
 	'@domain_id' AS domain_id,
 {!@temporal} ? {
-	NULL AS start_day,
-	NULL AS end_day,
+	CAST(NULL AS INT) AS start_day,
+	CAST(NULL AS INT) AS end_day,
 }
 	'Y' AS is_binary,
-	NULL AS missing_means_zero;
+	CAST(NULL AS VARCHAR(1)) AS missing_means_zero;

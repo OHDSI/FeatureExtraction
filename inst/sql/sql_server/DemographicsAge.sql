@@ -19,7 +19,7 @@ INTO #raw_data
 } : {
 SELECT 1000 + @analysis_id AS covariate_id,
 {@temporal} ? {
-    NULL AS time_id,
+    CAST(NULL AS INT) AS time_id,
 }	
 	row_id,
 	age AS covariate_value
@@ -68,7 +68,7 @@ GROUP BY s.age;
 
 SELECT 1000 + @analysis_id AS covariate_id,
 {@temporal} ? {
-    NULL AS time_id,
+    CAST(NULL AS INT) AS time_id,
 }
 	o.count_value,
 	o.min_value,
@@ -151,8 +151,8 @@ SELECT @analysis_id AS analysis_id,
 	'@analysis_name' AS analysis_name,
 	'@domain_id' AS domain_id,
 {!@temporal} ? {
-	NULL AS start_day,
-	NULL AS end_day,
+	CAST(NULL AS INT) AS start_day,
+	CAST(NULL AS INT) AS end_day,
 }
 	'N' AS is_binary,
 	'Y' AS missing_means_zero;	
