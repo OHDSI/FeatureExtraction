@@ -158,11 +158,11 @@ SELECT @analysis_id AS analysis_id,
 	'@domain_id' AS domain_id,
 {!@temporal} ? {
 {@start_day == 'anyTimePrior'} ? {
-	NULL AS start_day,
+	CAST(NULL AS INT) AS start_day,
 } : {
 	@start_day AS start_day,
 }
 	@end_day AS end_day,
 }
 	'Y' AS is_binary,
-	NULL AS missing_means_zero;	
+	CAST(NULL AS VARCHAR(1)) AS missing_means_zero;	
