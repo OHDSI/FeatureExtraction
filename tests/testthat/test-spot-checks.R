@@ -119,34 +119,34 @@ runSpotChecks <- function(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSch
   expect_equal(results, results2)
 }
 
-test_that("Run spot-checks at per-person level", {
-  # Postgresql
-  writeLines("Run spot-checks at per-person level on PostgreSQL")
-  connectionDetails <- createConnectionDetails(dbms = "postgresql",
-                                               user = Sys.getenv("CDM5_POSTGRESQL_USER"),
-                                               password = URLdecode(Sys.getenv("CDM5_POSTGRESQL_PASSWORD")),
-                                               server = Sys.getenv("CDM5_POSTGRESQL_SERVER"))
-  cdmDatabaseSchema <- Sys.getenv("CDM5_POSTGRESQL_CDM_SCHEMA")
-  ohdsiDatabaseSchema <- Sys.getenv("CDM5_POSTGRESQL_OHDSI_SCHEMA")
-  runSpotChecks(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
-
-  # SQL Server
-  writeLines("Run spot-checks at per-person level on SQL Server")
-  connectionDetails <- createConnectionDetails(dbms = "sql server",
-                                               user = Sys.getenv("CDM5_SQL_SERVER_USER"),
-                                               password = URLdecode(Sys.getenv("CDM5_SQL_SERVER_PASSWORD")),
-                                               server = Sys.getenv("CDM5_SQL_SERVER_SERVER"))
-  cdmDatabaseSchema <- Sys.getenv("CDM5_SQL_SERVER_CDM_SCHEMA")
-  ohdsiDatabaseSchema <- Sys.getenv("CDM5_SQL_SERVER_OHDSI_SCHEMA")
-  runSpotChecks(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+test_that(paste("Run spot-checks at per-person level on ", getOption("dbms")), {
+  if (getOption("dbms") == "postgresql") {
+    connectionDetails <- createConnectionDetails(dbms = "postgresql",
+                                                 user = Sys.getenv("CDM5_POSTGRESQL_USER"),
+                                                 password = URLdecode(Sys.getenv("CDM5_POSTGRESQL_PASSWORD")),
+                                                 server = Sys.getenv("CDM5_POSTGRESQL_SERVER"))
+    cdmDatabaseSchema <- Sys.getenv("CDM5_POSTGRESQL_CDM_SCHEMA")
+    ohdsiDatabaseSchema <- Sys.getenv("CDM5_POSTGRESQL_OHDSI_SCHEMA")
+    runSpotChecks(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+  }
   
-  # Oracle
-  writeLines("Run spot-checks at per-person level on Oracle")
-  connectionDetails <- createConnectionDetails(dbms = "oracle",
-                                               user = Sys.getenv("CDM5_ORACLE_USER"),
-                                               password = URLdecode(Sys.getenv("CDM5_ORACLE_PASSWORD")),
-                                               server = Sys.getenv("CDM5_ORACLE_SERVER"))
-  cdmDatabaseSchema <- Sys.getenv("CDM5_ORACLE_CDM_SCHEMA")
-  ohdsiDatabaseSchema <- Sys.getenv("CDM5_ORACLE_OHDSI_SCHEMA")
-  runSpotChecks(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+  if (getOption("dbms") == "sql server") {
+    connectionDetails <- createConnectionDetails(dbms = "sql server",
+                                                 user = Sys.getenv("CDM5_SQL_SERVER_USER"),
+                                                 password = URLdecode(Sys.getenv("CDM5_SQL_SERVER_PASSWORD")),
+                                                 server = Sys.getenv("CDM5_SQL_SERVER_SERVER"))
+    cdmDatabaseSchema <- Sys.getenv("CDM5_SQL_SERVER_CDM_SCHEMA")
+    ohdsiDatabaseSchema <- Sys.getenv("CDM5_SQL_SERVER_OHDSI_SCHEMA")
+    runSpotChecks(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+  }
+  
+  if (getOption("dbms") == "oracle") {
+    connectionDetails <- createConnectionDetails(dbms = "oracle",
+                                                 user = Sys.getenv("CDM5_ORACLE_USER"),
+                                                 password = URLdecode(Sys.getenv("CDM5_ORACLE_PASSWORD")),
+                                                 server = Sys.getenv("CDM5_ORACLE_SERVER"))
+    cdmDatabaseSchema <- Sys.getenv("CDM5_ORACLE_CDM_SCHEMA")
+    ohdsiDatabaseSchema <- Sys.getenv("CDM5_ORACLE_OHDSI_SCHEMA")
+    runSpotChecks(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+  }
 })

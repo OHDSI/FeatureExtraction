@@ -5,8 +5,8 @@
 \title{Get HDPS covariate information from the database}
 \usage{
 getDbHdpsCovariateData(connection, oracleTempSchema = NULL, cdmDatabaseSchema,
-  cdmVersion = "4", cohortTable = "cohort_person", cohortId = -1,
-  rowIdField = "subject_id", covariateSettings)
+  cohortTable = "cohort_person", cohortId = -1, rowIdField = "subject_id",
+  covariateSettings, aggregated = FALSE)
 }
 \arguments{
 \item{connection}{A connection to the server containing the schema as created using the

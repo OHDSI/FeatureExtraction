@@ -31,14 +31,17 @@
 getDbHdpsCovariateData <- function(connection,
                                    oracleTempSchema = NULL,
                                    cdmDatabaseSchema,
-                                   cdmVersion = "4",
                                    cohortTable = "cohort_person",
                                    cohortId = -1,
                                    rowIdField = "subject_id",
-                                   covariateSettings) {
+                                   covariateSettings,
+                                   aggregated = FALSE) {
   if (cohortId != -1)
     stop("Haven't implemented restricting to cohort ID yet.")
+  if (aggregated)
+    stop("Aggregation not implemented yet")
   writeLines("Constructing HDPS covariates")
+  cdmVersion <- "5"
   cdmDatabase <- strsplit(cdmDatabaseSchema, "\\.")[[1]][1]
 
   if (cdmVersion == "4") {
