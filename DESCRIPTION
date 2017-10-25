@@ -22,7 +22,7 @@ Imports:
     Rcpp (>= 0.11.2),
     rJava,
     jsonlite,
-    SqlRender (>= 1.1.3),
+    SqlRender (>= 1.4.5),
 Suggests:
     testthat,
     knitr,
