@@ -33,6 +33,7 @@ getDbHdpsCovariateData <- function(connection,
                                    cdmDatabaseSchema,
                                    cohortTable = "cohort_person",
                                    cohortId = -1,
+                                   cdmVersion = "5",
                                    rowIdField = "subject_id",
                                    covariateSettings,
                                    aggregated = FALSE) {
@@ -40,6 +41,8 @@ getDbHdpsCovariateData <- function(connection,
     stop("Haven't implemented restricting to cohort ID yet.")
   if (aggregated)
     stop("Aggregation not implemented yet")
+  if (cdmVersion == "4") 
+    stop("Common Data Model version 4 is not supported") 
   writeLines("Constructing HDPS covariates")
   cdmVersion <- "5"
   cdmDatabase <- strsplit(cdmDatabaseSchema, "\\.")[[1]][1]

@@ -19,6 +19,8 @@
 #' @param cohortId            For which cohort ID should covariates be constructed? If set to -1,
 #'                            covariates will be constructed for all cohorts in the specified cohort
 #'                            table.
+#' @param cdmVersion          The version of the Common Data Model used. Currently only 
+#'                            \code{cdmVersion = "5"} is supported.
 #' @param rowIdField          The name of the field in the cohort temp table that is to be used as the
 #'                            row_id field in the output table. This can be especially usefull if there
 #'                            is more than one period per person.

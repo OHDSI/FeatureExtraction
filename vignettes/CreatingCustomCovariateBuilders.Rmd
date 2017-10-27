@@ -67,11 +67,14 @@ The covariate construction function has to accept the following arguments:
 * `oracleTempSchema`: A schema where temp tables can be created in Oracle.
 * `cdmDatabaseSchema`: The name of the database schema that contains the OMOP CDM instance.  On SQL  Server, this will specifiy both the database and the schema, so for example 'cdm_instance.dbo'.
 * `cdmVersion`: Defines the OMOP CDM version used: currently supports "4" and "5".
-* `cohortTempTable`: Name of the temp table holding the cohort for which we want to construct covariates.
+* `cohortTable`: Name of the table holding the cohort for which we want to construct covariates. This is a fully specified name, so either the name of a temp table (e.g. '#cohort_table'), or a permanent table including its database schema (e.g. 'cdm_schema.dbo.cohort').
+* `cohortId`: The cohort definition ID of the cohort. If set to -1, use all entries in the cohort table.
+* `cdmVersion`: The version of the Common Data Model.
 * `rowIdField`:  The name of the field in the cohort temp table that is to be used as the row_id field in the output table. This can be especially usefull if there is more than one period per person.
 * `covariateSettings`: The object created in your covariate settings function.
+* `aggregated`: Should covariates be constructed per-person, or aggregated across the cohort?
 
-The function can expect that a temp table exists with the name specified in the `cohortTempTable` argument. This table will identify the persons and the index dates for which we want to construct the covariates, and will have the following fields: `subject_id`, `cohort_start_date`, and `cohort_concept_id` (CDM v4) or `cohort_definition_id` (CDM v5). Because sometimes there can be more than one index date (i.e. `cohort_start_date`) per person, an additional field can be included with a unique identifier for each `subject_id` - `cohort_start_date` combination. The name of this field will be specified in the `rowIdField` argument
+The function can expect that a  table exists with the name specified in the `cohortTable` argument. This table will identify the persons and the index dates for which we want to construct the covariates, and will have the following fields: `subject_id`, `cohort_start_date`, and `cohort_definition_id`. Because sometimes there can be more than one index date (i.e. `cohort_start_date`) per person, an additional field can be included with a unique identifier for each `subject_id` - `cohort_start_date` combination. The name of this field will be specified in the `rowIdField` argument
 
 ## Function outputs
 
@@ -79,6 +82,7 @@ The function must return an object of type `covariateData`, which is a list with
 
 * `covariates`: An `ffdf` object listing the covariates per row ID. This is done using a sparse representation; covariates with a value of 0 are omitted to save space. The covariates object must have three columns: `rowId`, `covariateId`, and `covariateValue`. 
 * `covariateRef`: An `ffdf` object describing the covariates that have been extracted. This should have the following columns: `covariateId`, `covariateName`, `analysisId`, `conceptId`.
+* `analysisRef`: An `ffdf` object describing the analyses performed by the function. This should have the following columns: `analysisId`, `analysisName`, `domainIdsta`, `startDay`, `endDay`, `isBinary`, `missingMeansZero`.
 * `metaData`: A list of objects with information on how the `covariateData` object was constructed.
 
 ## Example function
@@ -87,30 +91,32 @@ The function must return an object of type `covariateData`, which is a list with
 getDbLooCovariateData <- function(connection,
                                   oracleTempSchema = NULL,
                                   cdmDatabaseSchema,
-                                  cdmVersion = "4",
-                                  cohortTempTable = "cohort_person",
+                                  cohortTable = "#cohort_person",
+                                  cohortId = -1,
+                                  cdmVersion = "5",
                                   rowIdField = "subject_id",
-                                  covariateSettings) {
+                                  covariateSettings,
+                                  aggregated = FALSE) {
+  writeLines("Constructing length of observation covariates")
   if (covariateSettings$useLengthOfObs == FALSE) {
     return(NULL)
   }
-  
-  # Temp table names must start with a '#' in SQL Server, our source dialect:
-  if (substr(cohortTempTable, 1, 1) != "#") {
-    cohortTempTable <- paste("#", cohortTempTable, sep = "")
-  }
+  if (aggregated)
+    stop("Aggregation not supported")
   
   # Some SQL to construct the covariate:
-  sql <- paste("SELECT @row_id_field AS row_id, 1 AS covariate_id,", 
-               "DATEDIFF(DAY, cohort_start_date, observation_period_start_date)",
+  sql <- paste("SELECT @row_id_field AS row_id, 1 AS covariate_id,",
+               "DATEDIFF(DAY, observation_period_start_date, cohort_start_date)",
                "AS covariate_value",
-               "FROM @cohort_temp_table c",
+               "FROM @cohort_table c",
                "INNER JOIN @cdm_database_schema.observation_period op",
                "ON op.person_id = c.subject_id",
                "WHERE cohort_start_date >= observation_period_start_date",
-               "AND cohort_start_date <= observation_period_end_date")
-  sql <- SqlRender::renderSql(sql, 
-                              cohort_temp_table = cohortTempTable,
+               "AND cohort_start_date <= observation_period_end_date",
+               "{@cohort_id != -1} ? {AND cohort_definition_id = @cohort_id}")
+  sql <- SqlRender::renderSql(sql,
+                              cohort_table = cohortTable,
+                              cohort_id = cohortId,
                               row_id_field = rowIdField,
                               cdm_database_schema = cdmDatabaseSchema)$sql
   sql <- SqlRender::translateSql(sql, targetDialect = attr(connection, "dbms"))$sql
@@ -122,22 +128,34 @@ getDbLooCovariateData <- function(connection,
   colnames(covariates) <- SqlRender::snakeCaseToCamelCase(colnames(covariates))
   
   # Construct covariate reference:
-  covariateRef <- data.frame(covariateId = 1, 
+  covariateRef <- data.frame(covariateId = 1,
                              covariateName = "Length of observation",
-                             analysisId = 1, 
+                             analysisId = 1,
                              conceptId = 0)
   covariateRef <- ff::as.ffdf(covariateRef)
   
+  # Construct analysis reference:
+  analysisRef <- data.frame(analysisId = 1,
+                            analysisName = "Length of observation",
+                            domainId = "Demographics",
+                            startDay = 0,
+                            endDay = 0,
+                            isBinary = "N",
+                            missingMeansZero = "Y")
+  analysisRef <- ff::as.ffdf(analysisRef)
+  
+  # Construct analysis reference:
   metaData <- list(sql = sql, call = match.call())
   result <- list(covariates = covariates, 
                  covariateRef = covariateRef, 
+                 analysisRef = analysisRef,
                  metaData = metaData)
   class(result) <- "covariateData"
   return(result)
 }
 ```
 
-In this example function, we construct a single covariate called 'Length of observation', which is the number of days between the `observation_period_start_date` and the index date. We use parameterized SQL and the `SqlRender` package to generate the appropriate SQL statement for the database to which we are connected. Using the `DatabaseConnector` package, the result are immediately stored in an `ffdf` object. We also create the covariate reference object, which has only one row specifying our one covariate. We then wrap up the `covariate` and `covariateRef` objects in a single result object, together with some meta-data.
+In this example function, we construct a single covariate called 'Length of observation', which is the number of days between the `observation_period_start_date` and the index date. We use parameterized SQL and the `SqlRender` package to generate the appropriate SQL statement for the database to which we are connected. Using the `DatabaseConnector` package, the result are immediately stored in an `ffdf` object. We also create the covariate reference and analysis reference objects, which have one row each, specifying our one covariate and one analysis. We then wrap up the `covariate`, `covariateRef`, and `analysisRef` objects in a single result object, together with some meta-data.
 
 # Using the custom covariate builder
 
@@ -150,22 +168,21 @@ covariates <- getDbCovariateData(connectionDetails = connectionDetails,
                                  cdmDatabaseSchema = cdmDatabaseSchema,
                                  cohortDatabaseSchema = resultsDatabaseSchema,
                                  cohortTable = "rehospitalization",
-                                 cohortIds = 1,
-                                 covariateSettings = looCovSet,
-                                 cdmVersion = cdmVersion)
+                                 cohortId = 1,
+                                 covariateSettings = looCovSet)
 ```
 
 
 In this case we will have only one covariate for our predictive model, the length of observation. In most cases, we will want our custom covariates in addition to the default covariates. We can do this by creating a list of covariate settings:
 
 ```{r eval=FALSE}
-covariateSettings <- createCovariateSettings(useCovariateDemographics = TRUE,
-                                             useCovariateDemographicsGender = TRUE,
-                                             useCovariateDemographicsRace = TRUE,
-                                             useCovariateDemographicsEthnicity = TRUE,
-                                             useCovariateDemographicsAge = TRUE,
-                                             useCovariateDemographicsYear = TRUE,
-                                             useCovariateDemographicsMonth = TRUE)
+covariateSettings <- createCovariateSettings(useDemographicsGender = TRUE,
+                                             useDemographicsAgeGroup = TRUE,
+                                             useDemographicsRace = TRUE,
+                                             useDemographicsEthnicity = TRUE,
+                                             useDemographicsIndexYear = TRUE,
+                                             useDemographicsIndexMonth = TRUE)
+
 looCovSet <- createLooCovariateSettings(useLengthOfObs = TRUE)
 
 covariateSettingsList <- list(covariateSettings, looCovSet)
@@ -174,11 +191,8 @@ covariates <- getDbCovariateData(connectionDetails = connectionDetails,
                                  cdmDatabaseSchema = cdmDatabaseSchema,
                                  cohortDatabaseSchema = resultsDatabaseSchema,
                                  cohortTable = "rehospitalization",
-                                 cohortIds = 1,
-                                 covariateSettings = covariateSettingsList,
-                                 cdmVersion = cdmVersion)
+                                 cohortId = 1,
+                                 covariateSettings = covariateSettingsList)
 ```
 
 In this example both demographic covariates and our length of observation covariate will be generated and can be used in our predictive model.
-
-

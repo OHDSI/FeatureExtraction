@@ -20,7 +20,7 @@ vignette: >
 ```{r set-options,echo=FALSE,message=FALSE,warning=FALSE,eval=TRUE}
 options(width=200)
 library(FeatureExtraction)
-vignetteFolder <- "c:/temp/vignetteFeatureExtraction"
+vignetteFolder <- "s:/temp/vignetteFeatureExtraction"
 ```
 \fontsize{10}{12}
 \selectfont
@@ -303,7 +303,7 @@ if (file.exists(file.path(vignetteFolder, "covariatesPerPerson"))){
   cvs
 }
 ```
-The columns are defines as follows:
+The columns are defined as follows:
 
 - `rowId` uniquely identifies a cohort entry. When calling `getDbCovariateData` we defined `rowIdField = "subject_id"`, so in this case the `rowId` is the same as the `subject_id` in the cohort table. In cases where a single subject can appear in the cohort more than once it is up to the user to create a field in the cohort table that uniquely identifies each cohort entry, and use that as `rowIdField`.
 - `covariateId` identifies the covariate, and definitions of covariates can be found in the `cohortData$covariateRef` object. 
@@ -311,7 +311,7 @@ The columns are defines as follows:
 
 ### Saving the data to file
 
-Creating covariates can take considerable computing time, and it is probably a good idea to save it for future sessions. Because `covariateData` objects use `ff`, we cannot use R's regular save function. Instead, we'll have to use the `saveCovariateData()` function:
+Creating covariates can take considerable computing time, and it is probably a good idea to save them for future sessions. Because `covariateData` objects use `ff`, we cannot use R's regular save function. Instead, we'll have to use the `saveCovariateData()` function:
 
 ```{r eval=FALSE}
 saveCovariateData(covariateData, "covariates")
@@ -323,9 +323,9 @@ We can use the `loadCovariateData()` function to load the data in a future sessi
 
 One reason for generating per-person covariates may be to use them in some form of machine learning. In that case it may be necessary to tidy the data before proceeding. The `tidyCovariateData` function can perform three tasks:
 
-1. **Remove infrequent covariates**: Oftentimes the majority of features have non-zero values for only one or a few subjects in the cohort. These features are unlikely to end up in any fitted model, but can increase the computational burden, and removing them could be good idea. By default, covariates appearing in less than .1% of the subjects are removed.
-2. **Normalization**: scale all covariate values to a value between 0 and 1 (by dividing by the max value for each covariate).
-3. **Removal of redundancy**: If every person in the cohort has the same value for a covariate (e.g. a cohort that is restricted to women will have the same gender covariate value for all) that value is redundant. Redundant values may wreak havok with some machine learning algorithms, for example causing a simple regression to no longer have a single solution. Similarly, groups of covariates may be redundant (e.g. every person will belong to at least one age group, making one group redundant as it can be defined as the absence of the other groups).
+1. **Remove infrequent covariates**: Oftentimes the majority of features have non-zero values for only one or a few subjects in the cohort. These features are unlikely to end up in any fitted model, but can increase the computational burden, so removing them could increase performance. By default, covariates appearing in less than .1% of the subjects are removed.
+2. **Normalization**: Scales all covariate values to a value between 0 and 1 (by dividing by the max value for each covariate).
+3. **Removal of redundancy**: If every person in the cohort has the same value for a covariate (e.g. a cohort that is restricted to women will have the same gender covariate value for all) that covariate is redundant. Redundant covariates may pose a problem for some machine learning algorithms, for example causing a simple regression to no longer have a single solution. Similarly, groups of covariates may be redundant (e.g. every person will belong to at least one age group, making one group redundant as it can be defined as the absence of the other groups).
 
 
 ```{r eval=FALSE}
@@ -412,17 +412,31 @@ Note that we specified `aggregated = TRUE`. Also, we are no longer required to d
 ### Aggregated covariate output format
 
 The two main components of the aggregated `covariateData` object are `covariates` and `covariatesContinuous`, for binary and continous covariates respectively:
-```{r}
+```{r eval=FALSE}
 covariateData2$covariates
 ```
-```{r}
+```{r echo=FALSE,message=FALSE}
+if (file.exists(file.path(vignetteFolder, "aggregatedCovariates"))){
+  covariateData2$covariates
+}
+```
+```{r eval=FALSE}
 covariateData2$covariatesContinuous
 ```
-The columns are defines as follows:
+```{r echo=FALSE,message=FALSE}
+if (file.exists(file.path(vignetteFolder, "aggregatedCovariates"))){
+  covariateData2$covariatesContinuous
+}
+```
+The columns of `covariates` are defined as follows:
 
 - `covariateId` identifies the covariate, and definitions of covariates can be found in the `cohortData$covariateRef` object. 
 - `sumValue` is the sum of the covariate values. Because these are binary features, this is equivalent to the number of people that have the covariate with a value of 1.
 - `averageValue` is the average covariate value.  Because these are binary features, this is equivalent to the proportion of people that have the covariate with a value of 1.
+
+The columns of `covariatesContinuous` are defined as follows:
+
+- `covariateId` identifies the covariate, and definitions of covariates can be found in the `cohortData$covariateRef` object. 
 - `countValue` is the number of people that have a value (for continous variables).
 - `minValue`, `maxValue`, `averageValue`, `standardDeviation`, `medianValue`, `p10Value`, `p25Value`, `p75Value`, and `p90Value` all inform on the distribution of covariate values. Note that for some covariates (such as the Charlson comorbidity index) a value of 0 is interpreted as the value 0, while for other covariates (Such as blood pressure) 0 is interpreted as missing, and the distribution statistics are only computed over non-missing values. To learn which continuous covariates fall into which category one can consult the `missingMeansZero` field in the `covariateData$analysisRef` object.
 

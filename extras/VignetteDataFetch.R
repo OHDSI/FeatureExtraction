@@ -20,7 +20,9 @@
 library(SqlRender)
 library(DatabaseConnector)
 library(FeatureExtraction)
-options(fftempdir = "c:/FFtemp")
+options(fftempdir = "s:/FFtemp")
+
+# Datafetch for main vignette ----------------------------------
 
 dbms <- "pdw"
 user <- NULL
@@ -32,7 +34,7 @@ port <- 17001
 cdmVersion <- "5"
 extraSettings <- NULL
 
-vignetteFolder <- "c:/temp/vignetteFeatureExtraction"
+vignetteFolder <- "s:/temp/vignetteFeatureExtraction"
 if (!file.exists(vignetteFolder))
   dir.create(vignetteFolder)
   
@@ -155,7 +157,6 @@ covariateData2 <- covDiclofenac
 specifications = getDefaultTable1Specifications()
 output <- "two columns"
 
-# some counting ------------------------
 covariateData2 <- loadCovariateData(file.path(vignetteFolder, "aggregatedCovariates"))
 x <- ff::as.ram(covariateData2$covariates)
 total <- sum(x$sumValue)
@@ -163,7 +164,7 @@ sum(x$sumValue[x$sumValue < 100]) / total
 x <- merge(x, ff::as.ram(covariateData2$covariateRef))
 x <- x[order(-x$sumValue), ]
 
-#### Datafetch for custom covariate builders #####
+# Tests for custom covariate builders ----------------------------
 
 createLooCovariateSettings <- function(useLengthOfObs = TRUE) {
   covariateSettings <- list(useLengthOfObs = useLengthOfObs)
@@ -176,132 +177,105 @@ createLooCovariateSettings <- function(useLengthOfObs = TRUE) {
 getDbLooCovariateData <- function(connection,
                                   oracleTempSchema = NULL,
                                   cdmDatabaseSchema,
-                                  cdmVersion = "4",
-                                  cohortTempTable = "cohort_person",
+                                  cohortTable = "#cohort_person",
+                                  cohortId = -1,
+                                  cdmVersion = "5",
                                   rowIdField = "subject_id",
-                                  covariateSettings) {
+                                  covariateSettings,
+                                  aggregated = FALSE) {
   writeLines("Constructing length of observation covariates")
   if (covariateSettings$useLengthOfObs == FALSE) {
     return(NULL)
   }
-
-  # Temp table names must start with a '#' in SQL Server, our source dialect:
-  if (substr(cohortTempTable, 1, 1) != "#") {
-    cohortTempTable <- paste("#", cohortTempTable, sep = "")
-  }
-
+  if (aggregated)
+    stop("Aggregation not supported")
+  
   # Some SQL to construct the covariate:
   sql <- paste("SELECT @row_id_field AS row_id, 1 AS covariate_id,",
-               "DATEDIFF(DAY, cohort_start_date, observation_period_start_date)",
+               "DATEDIFF(DAY, observation_period_start_date, cohort_start_date)",
                "AS covariate_value",
-               "FROM @cohort_temp_table c",
+               "FROM @cohort_table c",
                "INNER JOIN @cdm_database_schema.observation_period op",
                "ON op.person_id = c.subject_id",
                "WHERE cohort_start_date >= observation_period_start_date",
-               "AND cohort_start_date <= observation_period_end_date")
+               "AND cohort_start_date <= observation_period_end_date",
+               "{@cohort_id != -1} ? {AND cohort_definition_id = @cohort_id}")
   sql <- SqlRender::renderSql(sql,
-                              cohort_temp_table = cohortTempTable,
+                              cohort_table = cohortTable,
+                              cohort_id = cohortId,
                               row_id_field = rowIdField,
                               cdm_database_schema = cdmDatabaseSchema)$sql
   sql <- SqlRender::translateSql(sql, targetDialect = attr(connection, "dbms"))$sql
-
+  
   # Retrieve the covariate:
   covariates <- DatabaseConnector::querySql.ffdf(connection, sql)
-
+  
   # Convert colum names to camelCase:
   colnames(covariates) <- SqlRender::snakeCaseToCamelCase(colnames(covariates))
-
+  
   # Construct covariate reference:
   covariateRef <- data.frame(covariateId = 1,
                              covariateName = "Length of observation",
                              analysisId = 1,
                              conceptId = 0)
   covariateRef <- ff::as.ffdf(covariateRef)
-
+  
+  # Construct analysis reference:
+  analysisRef <- data.frame(analysisId = 1,
+                            analysisName = "Length of observation",
+                            domainId = "Demographics",
+                            startDay = 0,
+                            endDay = 0,
+                            isBinary = "N",
+                            missingMeansZero = "Y")
+  analysisRef <- ff::as.ffdf(analysisRef)
+  
+  # Construct analysis reference:
   metaData <- list(sql = sql, call = match.call())
-  result <- list(covariates = covariates, covariateRef = covariateRef, metaData = metaData)
+  result <- list(covariates = covariates, 
+                 covariateRef = covariateRef, 
+                 analysisRef = analysisRef,
+                 metaData = metaData)
   class(result) <- "covariateData"
   return(result)
 }
 
-looCovariateSettings <- createLooCovariateSettings(useLengthOfObs = TRUE)
+looCovSet <- createLooCovariateSettings(useLengthOfObs = TRUE)
 
-plpData <- getDbPlpData(connectionDetails = connectionDetails,
-                        cdmDatabaseSchema = cdmDatabaseSchema,
-                        cohortDatabaseSchema = resultsDatabaseSchema,
-                        cohortTable = "mschuemi_stroke",
-                        cohortIds = 1,
-                        useCohortEndDate = TRUE,
-                        windowPersistence = 0,
-                        covariateSettings = looCovariateSettings,
-                        outcomeDatabaseSchema = resultsDatabaseSchema,
-                        outcomeTable = "mschuemi_stroke",
-                        outcomeIds = 2,
-                        firstOutcomeOnly = TRUE,
-                        cdmVersion = cdmVersion)
+covariates <- getDbCovariateData(connectionDetails = connectionDetails,
+                                 cdmDatabaseSchema = cdmDatabaseSchema,
+                                 cohortDatabaseSchema = resultsDatabaseSchema,
+                                 cohortTable = "rehospitalization",
+                                 cohortId = 1,
+                                 covariateSettings = looCovSet)
 
-covariateSettings <- createCovariateSettings(useCovariateDemographics = TRUE,
-                                             useCovariateDemographicsGender = TRUE,
-                                             useCovariateDemographicsRace = TRUE,
-                                             useCovariateDemographicsEthnicity = TRUE,
-                                             useCovariateDemographicsAge = TRUE,
-                                             useCovariateDemographicsYear = TRUE,
-                                             useCovariateDemographicsMonth = TRUE)
-looCovariateSettings <- createLooCovariateSettings(useLengthOfObs = TRUE)
-covariateSettingsList <- list(covariateSettings, looCovariateSettings)
+covariateSettings <- createCovariateSettings(useDemographicsGender = TRUE,
+                                             useDemographicsAgeGroup = TRUE,
+                                             useDemographicsRace = TRUE,
+                                             useDemographicsEthnicity = TRUE,
+                                             useDemographicsIndexYear = TRUE,
+                                             useDemographicsIndexMonth = TRUE)
 
-plpData <- getDbPlpData(connectionDetails = connectionDetails,
-                        cdmDatabaseSchema = cdmDatabaseSchema,
-                        cohortDatabaseSchema = resultsDatabaseSchema,
-                        cohortTable = "mschuemi_stroke",
-                        cohortIds = 1,
-                        useCohortEndDate = TRUE,
-                        windowPersistence = 0,
-                        covariateSettings = covariateSettingsList,
-                        outcomeDatabaseSchema = resultsDatabaseSchema,
-                        outcomeTable = "mschuemi_stroke",
-                        outcomeIds = 2,
-                        firstOutcomeOnly = TRUE,
-                        cdmVersion = cdmVersion)
+looCovSet <- createLooCovariateSettings(useLengthOfObs = TRUE)
 
-covariateSettings <- createHdpsCovariateSettings(useCovariateCohortIdIs1 = FALSE,
-                                                 useCovariateDemographics = TRUE,
-                                                 useCovariateDemographicsGender = TRUE,
-                                                 useCovariateDemographicsRace = TRUE,
-                                                 useCovariateDemographicsEthnicity = TRUE,
-                                                 useCovariateDemographicsAge = TRUE,
-                                                 useCovariateDemographicsYear = TRUE,
-                                                 useCovariateDemographicsMonth = TRUE,
-                                                 useCovariateConditionOccurrence = TRUE,
-                                                 useCovariate3DigitIcd9Inpatient180d = TRUE,
-                                                 useCovariate3DigitIcd9Inpatient180dMedF = TRUE,
-                                                 useCovariate3DigitIcd9Inpatient180d75F = TRUE,
-                                                 useCovariate3DigitIcd9Ambulatory180d = TRUE,
-                                                 useCovariate3DigitIcd9Ambulatory180dMedF = TRUE,
-                                                 useCovariate3DigitIcd9Ambulatory180d75F = TRUE,
-                                                 useCovariateDrugExposure = TRUE,
-                                                 useCovariateIngredientExposure180d = TRUE,
-                                                 useCovariateIngredientExposure180dMedF = TRUE,
-                                                 useCovariateIngredientExposure180d75F = TRUE,
-                                                 useCovariateProcedureOccurrence = TRUE,
-                                                 useCovariateProcedureOccurrenceInpatient180d = TRUE,
-                                                 useCovariateProcedureOccurrenceInpatient180dMedF = TRUE,
-                                                 useCovariateProcedureOccurrenceInpatient180d75F = TRUE,
-                                                 useCovariateProcedureOccurrenceAmbulatory180d = TRUE,
-                                                 useCovariateProcedureOccurrenceAmbulatory180dMedF = TRUE,
-                                                 useCovariateProcedureOccurrenceAmbulatory180d75F = TRUE,
-                                                 excludedCovariateConceptIds = c(),
-                                                 includedCovariateConceptIds = c(),
-                                                 deleteCovariatesSmallCount = 100)
+covariateSettingsList <- list(covariateSettings, looCovSet)
+
+covariates <- getDbCovariateData(connectionDetails = connectionDetails,
+                                 cdmDatabaseSchema = cdmDatabaseSchema,
+                                 cohortDatabaseSchema = resultsDatabaseSchema,
+                                 cohortTable = "rehospitalization",
+                                 cohortId = 1,
+                                 covariateSettings = covariateSettingsList)
+covariates$analysisRef
 
 
 
-#### Datafetch for cohort attribute covariate builder #####
+# Tests for code in cohort attribute covariate builder -------------------------------
 
 library(SqlRender)
 library(DatabaseConnector)
 library(FeatureExtraction)
-options(fftempdir = "c:/FFtemp")
+options(fftempdir = "s:/FFtemp")
 
 dbms <- "pdw"
 user <- NULL
@@ -355,17 +329,8 @@ covariates <- getDbCovariateData(connectionDetails = connectionDetails,
                                  cohortDatabaseSchema = cohortDatabaseSchema,
                                  cohortTable = "rehospitalization",
                                  cohortId = 1,
-                                 covariateSettings = looCovSet,
-                                 cdmVersion = cdmVersion)
+                                 covariateSettings = looCovSet)
 summary(covariates)
-
-
-
-
-
-
-
-
 
 covariateSettings <- createCovariateSettings(useDemographicsGender = TRUE,
                                              useDemographicsAgeGroup = TRUE,
@@ -381,11 +346,10 @@ covariateSettingsList <- list(covariateSettings, looCovSet)
 
 covariates <- getDbCovariateData(connectionDetails = connectionDetails,
                                  cdmDatabaseSchema = cdmDatabaseSchema,
-                                 cohortDatabaseSchema = resultsDatabaseSchema,
+                                 cohortDatabaseSchema = cohortDatabaseSchema,
                                  cohortTable = "rehospitalization",
                                  cohortId = 1,
-                                 covariateSettings = covariateSettingsList,
-                                 cdmVersion = cdmVersion)
+                                 covariateSettings = covariateSettingsList)
 
 
 sql <- "DROP TABLE @cohort_database_schema.rehospitalization"

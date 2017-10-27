@@ -121,6 +121,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
                      cdmDatabaseSchema = cdmDatabaseSchema,
                      cohortTable = cohortDatabaseSchemaTable,
                      cohortId = cohortId,
+                     cdmVersion = cdmVersion,
                      rowIdField = rowIdField,
                      covariateSettings = covariateSettings[[i]],
                      aggregated = aggregated)
@@ -149,6 +150,8 @@ getDbCovariateData <- function(connectionDetails = NULL,
             }
             covariateData$covariateRef <- ffbase::ffdfappend(covariateData$covariateRef,
                                                              ff::as.ram(tempCovariateData$covariateRef))
+            covariateData$analysisRef <- ffbase::ffdfappend(covariateData$analysisRef,
+                                                             ff::as.ram(tempCovariateData$analysisRef))
             for (name in names(tempCovariateData$metaData)) {
               if (is.null(covariateData$metaData[name])) {
                 covariateData$metaData[[name]] <- tempCovariateData$metaData[[name]]

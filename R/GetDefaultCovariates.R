@@ -32,11 +32,15 @@ getDbDefaultCovariateData <- function(connection,
                                       cdmDatabaseSchema,
                                       cohortTable = "#cohort_person",
                                       cohortId = -1,
+                                      cdmVersion = "5",
                                       rowIdField = "subject_id",
                                       covariateSettings,
                                       aggregated = FALSE) {
   if (!is(covariateSettings, "covariateSettings")) {
     stop("Covariate settings object not of type covariateSettings") 
+  }
+  if (cdmVersion == "4") {
+    stop("Common Data Model version 4 is not supported") 
   }
   settings <- .toJson(covariateSettings)
   rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$init(system.file("", package = "FeatureExtraction"))

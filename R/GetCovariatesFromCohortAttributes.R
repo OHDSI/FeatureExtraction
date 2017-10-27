@@ -34,11 +34,15 @@ getDbCohortAttrCovariatesData <- function(connection,
                                           cdmDatabaseSchema,
                                           cohortTable = "#cohort_person",
                                           cohortId = -1,
+                                          cdmVersion = "5",
                                           rowIdField = "subject_id",
                                           covariateSettings,
                                           aggregated = FALSE) {
   if (aggregated) {
     stop("Aggregation not implemented for covariates from cohort attributes.")
+  }
+  if (cdmVersion == "4") {
+    stop("Common Data Model version 4 is not supported") 
   }
   start <- Sys.time()
   writeLines("Constructing covariates from cohort attributes table")

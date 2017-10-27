@@ -39,7 +39,7 @@ To construct custom covariates, the following steps must be taken:
 
 The `cohort_attribute` should specify the values of the covariates for every person-`cohort_start_date` combination in the cohort(s) of interest. It should at least have the following fields:
 
-* `cohort_definition_id`, A key to link to the cohort table. On CDM v4, this field should be called `cohort_concept_id`.
+* `cohort_definition_id`, A key to link to the cohort table. 
 * 'subject_id', A key to link to the cohort table.
 * 'cohort_start_date', A key to link to the cohort table.
 * 'attribute_definition_id', An foreign key linking to the attribute definition table.
@@ -141,10 +141,12 @@ covariateSettings <- createCovariateSettings(useDemographicsGender = TRUE,
                                              useDemographicsEthnicity = TRUE,
                                              useDemographicsIndexYear = TRUE,
                                              useDemographicsIndexMonth = TRUE)
+
 looCovSet <- createCohortAttrCovariateSettings(attrDatabaseSchema = cohortDatabaseSchema,
                                                cohortAttrTable = "loo_cohort_attr",
                                                attrDefinitionTable = "loo_attr_def",
                                                includeAttrIds = c())
+
 covariateSettingsList <- list(covariateSettings, looCovSet)
 
 covariates <- getDbCovariateData(connectionDetails = connectionDetails,
@@ -152,8 +154,7 @@ covariates <- getDbCovariateData(connectionDetails = connectionDetails,
                                  cohortDatabaseSchema = resultsDatabaseSchema,
                                  cohortTable = "rehospitalization",
                                  cohortId = 1,
-                                 covariateSettings = covariateSettingsList,
-                                 cdmVersion = cdmVersion)
+                                 covariateSettings = covariateSettingsList)
 ```
 
 In this example both demographic covariates and our length of observation covariate will be generated and can be used in our predictive model.

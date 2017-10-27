@@ -10,6 +10,7 @@ Author: Martijn J. Schuemie [aut, cre],
 Maintainer: Martijn J. Schuemie <schuemie@ohdsi.org>
 Description: An R package for generating features (covariates) for a cohort using data in the Common Data Model.
 License: Apache License 2.0
+VignetteBuilder: knitr
 Depends:
     R (>= 3.2.2),
     DatabaseConnector (>= 2.0.2),

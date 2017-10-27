@@ -6,7 +6,8 @@
 \usage{
 getDbCohortAttrCovariatesData(connection, oracleTempSchema = NULL,
   cdmDatabaseSchema, cohortTable = "#cohort_person", cohortId = -1,
-  rowIdField = "subject_id", covariateSettings, aggregated = FALSE)
+  cdmVersion = "5", rowIdField = "subject_id", covariateSettings,
+  aggregated = FALSE)
 }
 \arguments{
 \item{connection}{A connection to the server containing the schema as created using the
@@ -27,6 +28,9 @@ database schema, e.g. 'cdm_database.cohort'.}
 \item{cohortId}{For which cohort ID should covariates be constructed? If set to -1,
 covariates will be constructed for all cohorts in the specified cohort
 table.}
+
+\item{cdmVersion}{The version of the Common Data Model used. Currently only 
+\code{cdmVersion = "5"} is supported.}
 
 \item{rowIdField}{The name of the field in the cohort temp table that is to be used as the
 row_id field in the output table. This can be especially usefull if there

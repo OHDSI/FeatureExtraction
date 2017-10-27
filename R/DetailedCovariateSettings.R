@@ -211,7 +211,7 @@ createDefaultTemporalCovariateSettings <- function(includedCovariateConceptIds =
                                                    addDescendantsToExclude = FALSE,
                                                    includedCovariateIds = c()) {
   rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$init(system.file("", package = "FeatureExtraction"))
-  newJson <- rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$getDefaultTemporalPrespecAnalyses()
+  newJson <- rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$getDefaultPrespecTemporalAnalyses()
   covariateSettings <- .fromJson(newJson)
   formalNames <- names(formals(createDefaultTemporalCovariateSettings))
   for (name in formalNames) {
