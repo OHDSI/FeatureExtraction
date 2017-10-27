@@ -34,8 +34,8 @@ NULL
 .onLoad <- function(libname, pkgname) {
 
   rJava::.jpackage(pkgname, lib.loc = libname)
-  
-    # Copied this from the ff package:
+
+  # Copied this from the ff package:
   if (is.null(getOption("ffmaxbytes"))) {
     # memory.limit is windows specific
     if (.Platform$OS.type == "windows") {

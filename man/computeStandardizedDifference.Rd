@@ -12,8 +12,8 @@ computeStandardizedDifference(covariateData1, covariateData2)
 \item{covariateData2}{The covariate data of the second cohort. Needs to be in aggregated format.}
 }
 \value{
-A data frame with means and standard deviations per cohort as well as the standardized 
-difference of mean.
+A data frame with means and standard deviations per cohort as well as the standardized difference
+of mean.
 }
 \description{
 Computes the standardized difference for all covariates between two cohorts. The standardized

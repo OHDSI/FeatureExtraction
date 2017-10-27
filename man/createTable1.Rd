@@ -10,8 +10,8 @@ createTable1(covariateData1, covariateData2 = NULL,
 \arguments{
 \item{covariateData1}{The covariate data of the cohort to be included in the table.}
 
-\item{covariateData2}{The covariate data of the cohort to also be included, when comparing
-two cohorts.}
+\item{covariateData2}{The covariate data of the cohort to also be included, when comparing two
+cohorts.}
 
 \item{specifications}{Specifications of which covariates to display, and how.}
 
@@ -22,7 +22,6 @@ two cohorts.}
 A data frame, or, when \code{output = "list"} a list of two data frames.
 }
 \description{
-Creates a formatted table of cohort characteristics, to be included in publications or 
-reports. Allows for creating a table describing a single cohort, or a table comparing two
-cohorts.
+Creates a formatted table of cohort characteristics, to be included in publications or reports.
+Allows for creating a table describing a single cohort, or a table comparing two cohorts.
 }

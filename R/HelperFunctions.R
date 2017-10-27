@@ -20,8 +20,9 @@
 #'                 covariate values.
 #' @param rowIds   A vector (or ff object) containing the rowIds to keep.
 #'
-#' @return Either an object of type \code{covariateData}, or an ffdf object containing
-#'                 covariate values. (depending on the type of the \code{object} argument.
+#' @return
+#' Either an object of type \code{covariateData}, or an ffdf object containing covariate values.
+#' (depending on the type of the \code{object} argument.
 #' @export
 filterByRowId <- function(object, rowIds) {
   if (!is(rowIds, "ff")) {

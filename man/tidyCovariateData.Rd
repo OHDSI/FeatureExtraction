@@ -9,22 +9,23 @@ tidyCovariateData(covariateData, covariates, covariateRef, populationSize,
 }
 \arguments{
 \item{covariateData}{An object as generated using the \code{\link{getDbCovariateData}}
-function. If provided, the \code{covariates}, \code{covariateRef}, and 
+function. If provided, the \code{covariates}, \code{covariateRef}, and
 \code{populationSize} arguments will be ignored.}
 
-\item{covariates}{An ffdf object with the covariate values in spare format. Will be 
-ignored if \code{covariateData} is provided.}
+\item{covariates}{An ffdf object with the covariate values in spare format. Will be ignored
+if \code{covariateData} is provided.}
 
-\item{covariateRef}{An ffdf object with the covariate definitions. Will be 
-ignored if \code{covariateData} is provided. Only needed when 
+\item{covariateRef}{An ffdf object with the covariate definitions. Will be ignored if
+\code{covariateData} is provided. Only needed when \code{removeRedundancy
+= TRUE}.}
+
+\item{populationSize}{An integer specifying the total number of unique cohort entries (rowIds).
+Will be ignored if \code{covariateData} is provided. Only needed when
 \code{removeRedundancy = TRUE}.}
 
-\item{populationSize}{An integer specifying the total number of unique cohort entries (rowIds). Will be 
-ignored if \code{covariateData} is provided. Only needed when 
-\code{removeRedundancy = TRUE}.}
-
-\item{minFraction}{Minimum fraction of the population that should have a non-zero value for a covariate
-for that covariate to be kept. Set to 0 to don't filter on frequency.}
+\item{minFraction}{Minimum fraction of the population that should have a non-zero value for a
+covariate for that covariate to be kept. Set to 0 to don't filter on
+frequency.}
 
 \item{normalize}{Normalize the coviariates? (dividing by the max)}
 
@@ -34,6 +35,6 @@ for that covariate to be kept. Set to 0 to don't filter on frequency.}
 Tidy covariate data
 }
 \details{
-Normalize covariate values by dividing by the max and/or remove redundant covariates and/or
-remove infrequent covariates.
+Normalize covariate values by dividing by the max and/or remove redundant covariates and/or remove
+infrequent covariates.
 }

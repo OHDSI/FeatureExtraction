@@ -47,27 +47,28 @@ bySumFf <- function(values, bins) {
 #' Tidy covariate data
 #'
 #' @details
-#' Normalize covariate values by dividing by the max and/or remove redundant covariates and/or
-#' remove infrequent covariates.
+#' Normalize covariate values by dividing by the max and/or remove redundant covariates and/or remove
+#' infrequent covariates.
 #'
-#' @param covariateData     An object as generated using the \code{\link{getDbCovariateData}}
-#'                          function. If provided, the \code{covariates}, \code{covariateRef}, and 
-#'                          \code{populationSize} arguments will be ignored.
-#' @param covariates        An ffdf object with the covariate values in spare format. Will be 
-#'                          ignored if \code{covariateData} is provided.
-#' @param covariateRef      An ffdf object with the covariate definitions. Will be 
-#'                          ignored if \code{covariateData} is provided. Only needed when 
-#'                          \code{removeRedundancy = TRUE}.
-#' @param populationSize    An integer specifying the total number of unique cohort entries (rowIds). Will be 
-#'                          ignored if \code{covariateData} is provided. Only needed when 
-#'                          \code{removeRedundancy = TRUE}.
-#' @param minFraction       Minimum fraction of the population that should have a non-zero value for a covariate
-#'                          for that covariate to be kept. Set to 0 to don't filter on frequency.
-#' @param normalize         Normalize the coviariates? (dividing by the max)
-#' @param removeRedundancy  Should redundant covariates be removed?
+#' @param covariateData      An object as generated using the \code{\link{getDbCovariateData}}
+#'                           function. If provided, the \code{covariates}, \code{covariateRef}, and
+#'                           \code{populationSize} arguments will be ignored.
+#' @param covariates         An ffdf object with the covariate values in spare format. Will be ignored
+#'                           if \code{covariateData} is provided.
+#' @param covariateRef       An ffdf object with the covariate definitions. Will be ignored if
+#'                           \code{covariateData} is provided. Only needed when \code{removeRedundancy
+#'                           = TRUE}.
+#' @param populationSize     An integer specifying the total number of unique cohort entries (rowIds).
+#'                           Will be ignored if \code{covariateData} is provided. Only needed when
+#'                           \code{removeRedundancy = TRUE}.
+#' @param minFraction        Minimum fraction of the population that should have a non-zero value for a
+#'                           covariate for that covariate to be kept. Set to 0 to don't filter on
+#'                           frequency.
+#' @param normalize          Normalize the coviariates? (dividing by the max)
+#' @param removeRedundancy   Should redundant covariates be removed?
 #'
 #' @export
-tidyCovariateData <- function(covariateData, 
+tidyCovariateData <- function(covariateData,
                               covariates,
                               covariateRef,
                               populationSize,
@@ -75,7 +76,7 @@ tidyCovariateData <- function(covariateData,
                               normalize = TRUE,
                               removeRedundancy = TRUE) {
   if (missing(covariateData) && missing(covariates)) {
-    stop("Either covariateData or covariates needs to be provided") 
+    stop("Either covariateData or covariates needs to be provided")
   }
   if (missing(covariateData) && removeRedundancy && (missing(covariateRef) | missing(populationSize))) {
     stop("If removeRedundancy = TRUE, either covariateData or both covariateRef and populationSize need to be specified")
@@ -83,7 +84,7 @@ tidyCovariateData <- function(covariateData,
   if (!missing(covariateData) && !is(covariateData, "covariateData")) {
     stop("Argument covariateData is not of type covariateData")
   }
-  if (missing(covariateData)) { 
+  if (missing(covariateData)) {
     covariateData <- list(metaData = list(populationSize = populationSize))
   } else {
     covariates <- covariateData$covariates
@@ -104,7 +105,9 @@ tidyCovariateData <- function(covariateData,
         covariateData$metaData$deletedInfrequentCovariateIds <- deleteCovariateIds
       }
       delta <- Sys.time() - start
-      writeLines(paste("Removing infrequent covariates took", signif(delta, 3), attr(delta, "units")))
+      writeLines(paste("Removing infrequent covariates took",
+                       signif(delta, 3),
+                       attr(delta, "units")))
     }
     if (normalize) {
       writeLines("Normalizing covariates")
@@ -125,29 +128,36 @@ tidyCovariateData <- function(covariateData,
       start <- Sys.time()
       deleteCovariateIds <- c()
       binaryCovariateIds <- maxs$bins[maxs$maxs == 1]
-      
+
       # First, find all single covariates that appear in every row with the same value
       valueCounts <- bySumFf(ff::ff(1, length = nrow(covariates)), covariates$covariateId)
       valueCounts <- valueCounts[valueCounts$bins %in% binaryCovariateIds, ]
       deleteCovariateIds <- valueCounts$bins[valueCounts$sums == covariateData$metaData$populationSize]
-      
+
       # Next, find groups of covariates that together cover everyone:
       valueCounts <- valueCounts[!(valueCounts$bins %in% deleteCovariateIds), ]
-      valueCounts <- merge(valueCounts, covariateRef[, c("covariateId", "analysisId")], by.x = "bins", by.y = "covariateId")
+      valueCounts <- merge(valueCounts,
+                           covariateRef[,
+                           c("covariateId", "analysisId")],
+                           by.x = "bins",
+                           by.y = "covariateId")
       countsPerAnalysis <- aggregate(sums ~ analysisId, data = valueCounts, sum)
       analysisIds <- countsPerAnalysis$analysisId[countsPerAnalysis$sums == covariateData$metaData$populationSize]
-      # TODO: maybe check if sum was not accidentally achieved by duplicates (unlikely)
-      # Find most prevalent covariateId per analysisId:
+      # TODO: maybe check if sum was not accidentally achieved by duplicates (unlikely) Find most prevalent
+      # covariateId per analysisId:
       valueCounts <- valueCounts[valueCounts$analysisId %in% analysisIds, ]
       valueCounts <- valueCounts[order(valueCounts$analysisId, -valueCounts$sums), ]
-      deleteCovariateIds <- c(deleteCovariateIds, valueCounts$bins[!duplicated(valueCounts$analysisId)])
-      
+      deleteCovariateIds <- c(deleteCovariateIds,
+                              valueCounts$bins[!duplicated(valueCounts$analysisId)])
+
       if (length(deleteCovariateIds) != 0) {
         covariates <- covariates[!ffbase::`%in%`(covariates$covariateId, deleteCovariateIds), ]
       }
       covariateData$metaData$deletedRedundantCovariateIds <- deleteCovariateIds
       delta <- Sys.time() - start
-      writeLines(paste("Removing redundant covariates took", signif(delta, 3), attr(delta, "units")))
+      writeLines(paste("Removing redundant covariates took",
+                       signif(delta, 3),
+                       attr(delta, "units")))
     }
   }
   covariateData$covariates <- covariates

@@ -31,8 +31,8 @@ in the Common Data Model. It should at least have these columns: \describe{
 \item{attribute_definition_id}{A unique identifier of type integer.} \item{attribute_name}{A short
 description of the attribute.} } The cohort attributes themselves should be stored in a table with
 the same format as the cohort_attribute table in the Common Data Model. It should at least have
-these columns: \describe{ \item{cohort_definition_id}{A key to link to the cohort table.} \item{subject_id}{A key to link to the
-cohort table.} \item{cohort_start_date}{A key to link to the cohort table.}
-\item{attribute_definition_id}{An foreign key linking to the attribute definition table.}
-\item{value_as_number}{A real number.} }
+these columns: \describe{ \item{cohort_definition_id}{A key to link to the cohort table.}
+\item{subject_id}{A key to link to the cohort table.} \item{cohort_start_date}{A key to link to the
+cohort table.} \item{attribute_definition_id}{An foreign key linking to the attribute definition
+table.} \item{value_as_number}{A real number.} }
 }

@@ -55,7 +55,7 @@
 #' @param covariateSettings      Either an object of type \code{covariateSettings} as created using one
 #'                               of the createCovariate functions, or a list of such objects.
 #' @param aggregated             Should aggregate statistics be computed instead of covariates per
-#'                               cohort entry? 
+#'                               cohort entry?
 #'
 #' @return
 #' Returns an object of type \code{covariateData}, containing information on the covariates.
@@ -95,7 +95,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
     cohortDatabaseSchemaTable <- paste(cohortDatabaseSchema, cohortTable, sep = ".")
   }
   sql <- "SELECT COUNT_BIG(*) FROM @cohort_database_schema_table {@cohort_id != -1} ? {WHERE cohort_definition_id = @cohort_id} "
-  sql <- SqlRender::renderSql(sql = sql, 
+  sql <- SqlRender::renderSql(sql = sql,
                               cohort_database_schema_table = cohortDatabaseSchemaTable,
                               cohort_id = cohortId)$sql
   sql <- SqlRender::translateSql(sql = sql,
@@ -103,9 +103,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
                                  oracleTempSchema = oracleTempSchema)$sql
   populationSize <- DatabaseConnector::querySql(connection, sql)[1, 1]
   if (populationSize == 0) {
-    covariateData <- list(covariates = data.frame(),
-                          covariateRef = data.frame(),
-                          metaData = list())
+    covariateData <- list(covariates = data.frame(), covariateRef = data.frame(), metaData = list())
     class(covariateData) <- "covariateData"
     warning("Population is empty. No covariates were constructed")
   } else {
@@ -151,7 +149,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
             covariateData$covariateRef <- ffbase::ffdfappend(covariateData$covariateRef,
                                                              ff::as.ram(tempCovariateData$covariateRef))
             covariateData$analysisRef <- ffbase::ffdfappend(covariateData$analysisRef,
-                                                             ff::as.ram(tempCovariateData$analysisRef))
+                                                            ff::as.ram(tempCovariateData$analysisRef))
             for (name in names(tempCovariateData$metaData)) {
               if (is.null(covariateData$metaData[name])) {
                 covariateData$metaData[[name]] <- tempCovariateData$metaData[[name]]
@@ -208,7 +206,7 @@ saveCovariateData <- function(covariateData, file) {
     open(covariateData$covariatesContinuous)
   } else if (!is.null(covariateData$covariates) && is.null(covariateData$covariatesContinuous)) {
     covariates <- covariateData$covariates
-    ffbase::save.ffdf(analysisRef, covariateRef, covariates, dir = file)   
+    ffbase::save.ffdf(analysisRef, covariateRef, covariates, dir = file)
     open(covariateData$covariates)
   } else if (is.null(covariateData$covariates) && !is.null(covariateData$covariatesContinuous)) {
     covariatesContinuous <- covariateData$covariatesContinuous

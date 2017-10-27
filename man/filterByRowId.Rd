@@ -13,8 +13,8 @@ covariate values.}
 \item{rowIds}{A vector (or ff object) containing the rowIds to keep.}
 }
 \value{
-Either an object of type \code{covariateData}, or an ffdf object containing
-                covariate values. (depending on the type of the \code{object} argument.
+Either an object of type \code{covariateData}, or an ffdf object containing covariate values.
+(depending on the type of the \code{object} argument.
 }
 \description{
 Filter covariates by row ID

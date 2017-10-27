@@ -17,7 +17,7 @@
 # limitations under the License.
 
 # Format and check code
-OhdsiRTools::formatRFolder()
+OhdsiRTools::formatRFolder("./R")
 OhdsiRTools::checkUsagePackage("FeatureExtraction")
 OhdsiRTools::updateCopyrightYearFolder()
 

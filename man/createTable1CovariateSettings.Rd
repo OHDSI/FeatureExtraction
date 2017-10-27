@@ -12,33 +12,32 @@
   includedCovariateIds = c())
 }
 \arguments{
-\item{specifications}{A specifications object for generating a table using the 
+\item{specifications}{A specifications object for generating a table using the
 \code{\link{createTable1}} function.}
 
-\item{covariateSettings}{The covariate settings object to use as the basis for the filtered
-covariate settings.}
+\item{covariateSettings}{The covariate settings object to use as the basis for the
+filtered covariate settings.}
 
-\item{includedCovariateConceptIds}{A list of concept IDs that should be used to
-construct covariates.}
+\item{includedCovariateConceptIds}{A list of concept IDs that should be used to construct
+covariates.}
 
-\item{addDescendantsToInclude}{Should descendant concept IDs be added to the
-list of concepts to include?}
+\item{addDescendantsToInclude}{Should descendant concept IDs be added to the list of concepts
+to include?}
 
-\item{excludedCovariateConceptIds}{A list of concept IDs that should NOT be used
-to construct covariates.}
+\item{excludedCovariateConceptIds}{A list of concept IDs that should NOT be used to construct
+covariates.}
 
-\item{addDescendantsToExclude}{Should descendant concept IDs be added to the
-list of concepts to exclude?}
+\item{addDescendantsToExclude}{Should descendant concept IDs be added to the list of concepts
+to exclude?}
 
-\item{includedCovariateIds}{A list of covariate IDs that should be
-restricted to.}
+\item{includedCovariateIds}{A list of covariate IDs that should be restricted to.}
 }
 \value{
-A covariate settings object, for example to be used when calling the \code{\link{getDbCovariateData}}
-function.
+A covariate settings object, for example to be used when calling the
+\code{\link{getDbCovariateData}} function.
 }
 \description{
-Creates a covariate settings object for generating only those covariates that will be 
-included in a table 1. This function works by filtering the \code{covariateSettings} object for 
-the covariates in the \code{specifications} object.
+Creates a covariate settings object for generating only those covariates that will be included in a
+table 1. This function works by filtering the \code{covariateSettings} object for the covariates in
+the \code{specifications} object.
 }
