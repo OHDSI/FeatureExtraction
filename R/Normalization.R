@@ -128,30 +128,31 @@ tidyCovariateData <- function(covariateData,
       start <- Sys.time()
       deleteCovariateIds <- c()
       binaryCovariateIds <- maxs$bins[maxs$maxs == 1]
-
-      # First, find all single covariates that appear in every row with the same value
-      valueCounts <- bySumFf(ff::ff(1, length = nrow(covariates)), covariates$covariateId)
-      valueCounts <- valueCounts[valueCounts$bins %in% binaryCovariateIds, ]
-      deleteCovariateIds <- valueCounts$bins[valueCounts$sums == covariateData$metaData$populationSize]
-
-      # Next, find groups of covariates that together cover everyone:
-      valueCounts <- valueCounts[!(valueCounts$bins %in% deleteCovariateIds), ]
-      valueCounts <- merge(valueCounts,
-                           covariateRef[,
-                           c("covariateId", "analysisId")],
-                           by.x = "bins",
-                           by.y = "covariateId")
-      countsPerAnalysis <- aggregate(sums ~ analysisId, data = valueCounts, sum)
-      analysisIds <- countsPerAnalysis$analysisId[countsPerAnalysis$sums == covariateData$metaData$populationSize]
-      # TODO: maybe check if sum was not accidentally achieved by duplicates (unlikely) Find most prevalent
-      # covariateId per analysisId:
-      valueCounts <- valueCounts[valueCounts$analysisId %in% analysisIds, ]
-      valueCounts <- valueCounts[order(valueCounts$analysisId, -valueCounts$sums), ]
-      deleteCovariateIds <- c(deleteCovariateIds,
-                              valueCounts$bins[!duplicated(valueCounts$analysisId)])
-
-      if (length(deleteCovariateIds) != 0) {
-        covariates <- covariates[!ffbase::`%in%`(covariates$covariateId, deleteCovariateIds), ]
+      if (length(binaryCovariateIds) != 0) {
+        # First, find all single covariates that appear in every row with the same value
+        valueCounts <- bySumFf(ff::ff(1, length = nrow(covariates)), covariates$covariateId)
+        valueCounts <- valueCounts[valueCounts$bins %in% binaryCovariateIds, ]
+        deleteCovariateIds <- valueCounts$bins[valueCounts$sums == covariateData$metaData$populationSize]
+        
+        # Next, find groups of covariates that together cover everyone:
+        valueCounts <- valueCounts[!(valueCounts$bins %in% deleteCovariateIds), ]
+        valueCounts <- merge(valueCounts,
+                             covariateRef[,
+                                          c("covariateId", "analysisId")],
+                             by.x = "bins",
+                             by.y = "covariateId")
+        countsPerAnalysis <- aggregate(sums ~ analysisId, data = valueCounts, sum)
+        analysisIds <- countsPerAnalysis$analysisId[countsPerAnalysis$sums == covariateData$metaData$populationSize]
+        # TODO: maybe check if sum was not accidentally achieved by duplicates (unlikely) Find most prevalent
+        # covariateId per analysisId:
+        valueCounts <- valueCounts[valueCounts$analysisId %in% analysisIds, ]
+        valueCounts <- valueCounts[order(valueCounts$analysisId, -valueCounts$sums), ]
+        deleteCovariateIds <- c(deleteCovariateIds,
+                                valueCounts$bins[!duplicated(valueCounts$analysisId)])
+        
+        if (length(deleteCovariateIds) != 0) {
+          covariates <- covariates[!ffbase::`%in%`(covariates$covariateId, deleteCovariateIds), ]
+        }
       }
       covariateData$metaData$deletedRedundantCovariateIds <- deleteCovariateIds
       delta <- Sys.time() - start
