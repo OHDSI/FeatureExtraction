@@ -14,7 +14,7 @@ INSERT INTO #dcsi_scoring (
 	,dcsi_concept_id
 	,dcsi_score
 	)
-SELECT 'Retinopathy' AS dcsi_category
+SELECT CAST('Retinopathy' AS VARCHAR(255)) AS dcsi_category
 	,source_code
 	,target_concept_id
 	,1 AS dcsi_score
@@ -44,7 +44,7 @@ INSERT INTO #dcsi_scoring (
 	,dcsi_concept_id
 	,dcsi_score
 	)
-SELECT 'Retinopathy' AS dcsi_category
+SELECT CAST('Retinopathy' AS VARCHAR(255)) AS dcsi_category
 	,source_code
 	,target_concept_id
 	,2 AS dcsi_score
@@ -71,7 +71,7 @@ INSERT INTO #dcsi_scoring (
 	,dcsi_concept_id
 	,dcsi_score
 	)
-SELECT 'Nephropathy' AS dcsi_category
+SELECT CAST('Nephropathy' AS VARCHAR(255)) AS dcsi_category
 	,source_code
 	,target_concept_id
 	,1 AS dcsi_score
@@ -104,7 +104,7 @@ INSERT INTO #dcsi_scoring (
 	,dcsi_concept_id
 	,dcsi_score
 	)
-SELECT 'Nephropathy' AS dcsi_category
+SELECT CAST('Nephropathy' AS VARCHAR(255)) AS dcsi_category
 	,source_code
 	,target_concept_id
 	,2 AS dcsi_score
@@ -133,7 +133,7 @@ INSERT INTO #dcsi_scoring (
 	,dcsi_concept_id
 	,dcsi_score
 	)
-SELECT 'Neuropathy' AS dcsi_category
+SELECT CAST('Neuropathy' AS VARCHAR(255)) AS dcsi_category
 	,source_code
 	,target_concept_id
 	,1 AS dcsi_score
@@ -187,7 +187,7 @@ INSERT INTO #dcsi_scoring (
 	,dcsi_concept_id
 	,dcsi_score
 	)
-SELECT 'Cerebrovascular' AS dcsi_category
+SELECT CAST('Cerebrovascular' AS VARCHAR(255)) AS dcsi_category
 	,source_code
 	,target_concept_id
 	,1 AS dcsi_score
@@ -209,7 +209,7 @@ INSERT INTO #dcsi_scoring (
 	,dcsi_concept_id
 	,dcsi_score
 	)
-SELECT 'Cerebrovascular' AS dcsi_category
+SELECT CAST('Cerebrovascular' AS VARCHAR(255)) AS dcsi_category
 	,source_code
 	,target_concept_id
 	,2 AS dcsi_score
@@ -240,7 +240,7 @@ INSERT INTO #dcsi_scoring (
 	,dcsi_concept_id
 	,dcsi_score
 	)
-SELECT 'Cardiovascular' AS dcsi_category
+SELECT CAST('Cardiovascular' AS VARCHAR(255)) AS dcsi_category
 	,source_code
 	,target_concept_id
 	,1 AS dcsi_score
@@ -266,7 +266,7 @@ INSERT INTO #dcsi_scoring (
 	,dcsi_concept_id
 	,dcsi_score
 	)
-SELECT 'Cardiovascular' AS dcsi_category
+SELECT CAST('Cardiovascular' AS VARCHAR(255)) AS dcsi_category
 	,source_code
 	,target_concept_id
 	,2 AS dcsi_score
@@ -299,7 +299,7 @@ INSERT INTO #dcsi_scoring (
 	,dcsi_concept_id
 	,dcsi_score
 	)
-SELECT 'Peripheral vascular disease' AS dcsi_category
+SELECT CAST('Peripheral vascular disease' AS VARCHAR(255)) AS dcsi_category
 	,source_code
 	,target_concept_id
 	,1 AS dcsi_score
@@ -325,7 +325,7 @@ INSERT INTO #dcsi_scoring (
 	,dcsi_concept_id
 	,dcsi_score
 	)
-SELECT 'Peripheral vascular disease' AS dcsi_category
+SELECT CAST('Peripheral vascular disease' AS VARCHAR(255)) AS dcsi_category
 	,source_code
 	,target_concept_id
 	,2 AS dcsi_score
@@ -350,7 +350,7 @@ INSERT INTO #dcsi_scoring (
 	,dcsi_concept_id
 	,dcsi_score
 	)
-SELECT 'Metabolic' AS dcsi_category
+SELECT CAST('Metabolic' AS VARCHAR(255)) AS dcsi_category
 	,source_code
 	,target_concept_id
 	,2 AS dcsi_score
@@ -524,7 +524,7 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT covariate_id,
-	'Diabetes Comorbidity Severity Index (DCSI)' AS covariate_name,
+	CAST('Diabetes Comorbidity Severity Index (DCSI)' AS VARCHAR(512)) AS covariate_name,
 	@analysis_id AS analysis_id,
 	0 AS concept_id
 FROM (
@@ -544,11 +544,11 @@ INSERT INTO #analysis_ref (
 	missing_means_zero
 	)
 SELECT @analysis_id AS analysis_id,
-	'@analysis_name' AS analysis_name,
-	'@domain_id' AS domain_id,
+	CAST('@analysis_name' AS VARCHAR(512)) AS analysis_name,
+	CAST('@domain_id' AS VARCHAR(20)) AS domain_id,
 {!@temporal} ? {
 	CAST(NULL AS INT) AS start_day,
 	@end_day AS end_day,
 }
-	'N' AS is_binary,
-	'Y' AS missing_means_zero;
+	CAST('N' AS VARCHAR(1)) AS is_binary,
+	CAST('Y' AS VARCHAR(1)) AS missing_means_zero;

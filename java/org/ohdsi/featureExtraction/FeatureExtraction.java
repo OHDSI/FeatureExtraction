@@ -617,9 +617,9 @@ public class FeatureExtraction {
 				keys[i] = "included_cov_table";
 				values[i] = analysis.getString("incCovs");
 				sql.append(SqlRender.renderSql(templateSql, keys, values));
-				if (templateSql.contains("'N' AS is_binary"))
+				if (templateSql.contains("CAST('N' AS VARCHAR(1)) AS is_binary"))
 					analysis.put("isBinary", false);
-				else if (sql.toString().contains("'Y' AS is_binary"))
+				else if (sql.toString().contains("CAST('Y' AS VARCHAR(1)) AS is_binary"))
 					analysis.put("isBinary", true);
 				else
 					throw new RuntimeException("Unable to determine if feature is binary or not: " + analysis.get(SQL_FILE_NAME));

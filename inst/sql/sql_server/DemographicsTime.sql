@@ -141,13 +141,13 @@ INSERT INTO #cov_ref (
 	)
 SELECT covariate_id,
 {@sub_type == 'priorObservation'} ? {
-	'observation time (days) prior to index' AS covariate_name,
+	CAST('observation time (days) prior to index' AS VARCHAR(512)) AS covariate_name,
 } 
 {@sub_type == 'postObservation'} ? {
-	'observation time (days) after index' AS covariate_name,
+	CAST('observation time (days) after index' AS VARCHAR(512)) AS covariate_name,
 } 
 {@sub_type == 'inCohort'} ? {
-	'time (days) between cohort start and end' AS covariate_name,
+	CAST('time (days) between cohort start and end' AS VARCHAR(512)) AS covariate_name,
 }
 	@analysis_id AS analysis_id,
 	0 AS concept_id
@@ -168,11 +168,11 @@ INSERT INTO #analysis_ref (
 	missing_means_zero
 	)
 SELECT @analysis_id AS analysis_id,
-	'@analysis_name' AS analysis_name,
-	'@domain_id' AS domain_id,
+	CAST('@analysis_name' AS VARCHAR(512)) AS analysis_name,
+	CAST('@domain_id' AS VARCHAR(20)) AS domain_id,
 {!@temporal} ? {
 	CAST(NULL AS INT) AS start_day,
 	CAST(NULL AS INT) AS end_day,
 }
-	'N' AS is_binary,
-	'Y' AS missing_means_zero;	
+	CAST('N' AS VARCHAR(1)) AS is_binary,
+	CAST('Y' AS VARCHAR(1)) AS missing_means_zero;
