@@ -622,7 +622,8 @@ public class FeatureExtraction {
 				else if (sql.toString().contains("CAST('Y' AS VARCHAR(1)) AS is_binary"))
 					analysis.put("isBinary", true);
 				else
-					throw new RuntimeException("Unable to determine if feature is binary or not: " + analysis.get(SQL_FILE_NAME));
+					throw new RuntimeException("Unable to determine if feature is binary or not: " +
+							"" + analysis.get(SQL_FILE_NAME) + " For SQL: " + templateSql);
 			}
 		}
 		return sql.toString();
