@@ -159,6 +159,18 @@ test_that(paste("Run all analysis at per-person level on ", getOption("dbms")), 
     covariateData <- runExtractionPerPerson(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
     expect_true(is(covariateData, "covariateData"))
   }
+
+  if (getOption("dbms") == "impala") {
+    connectionDetails <- createConnectionDetails(dbms = "impala",
+                                                 user = Sys.getenv("CDM5_IMPALA_USER"),
+                                                 password = URLdecode(Sys.getenv("CDM5_IMPALA_PASSWORD")),
+                                                 server = Sys.getenv("CDM5_IMPALA_SERVER"),
+                                                 pathToDriver = Sys.getenv("CDM5_IMPALA_PATH_TO_DRIVER"))
+    cdmDatabaseSchema <- Sys.getenv("CDM5_IMPALA_CDM_SCHEMA")
+    ohdsiDatabaseSchema <- Sys.getenv("CDM5_IMPALA_OHDSI_SCHEMA")
+    covariateData <- runExtractionPerPerson(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+    expect_true(is(covariateData, "covariateData"))
+  }
 })
 
 runExtractionAggregated <- function(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema) {
@@ -321,6 +333,18 @@ test_that(paste("Run all analysis at aggregated level on ", getOption("dbms")), 
     covariateData <- runExtractionPerPerson(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
     expect_true(is(covariateData, "covariateData"))
   }
+
+  if (getOption("dbms") == "impala") {
+    connectionDetails <- createConnectionDetails(dbms = "impala",
+                                                 user = Sys.getenv("CDM5_IMPALA_USER"),
+                                                 password = URLdecode(Sys.getenv("CDM5_IMPALA_PASSWORD")),
+                                                 server = Sys.getenv("CDM5_IMPALA_SERVER"),
+                                                 pathToDriver = Sys.getenv("CDM5_IMPALA_PATH_TO_DRIVER"))
+    cdmDatabaseSchema <- Sys.getenv("CDM5_IMPALA_CDM_SCHEMA")
+    ohdsiDatabaseSchema <- Sys.getenv("CDM5_IMPALA_OHDSI_SCHEMA")
+    covariateData <- runExtractionPerPerson(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+    expect_true(is(covariateData, "covariateData"))
+  }
 })
 
 runExtractionTemporalPerPerson <- function(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema) {
@@ -416,6 +440,18 @@ test_that(paste("Run all temporalanalysis at per-person level on ", getOption("d
                                                  server = Sys.getenv("CDM5_ORACLE_SERVER"))
     cdmDatabaseSchema <- Sys.getenv("CDM5_ORACLE_CDM_SCHEMA")
     ohdsiDatabaseSchema <- Sys.getenv("CDM5_ORACLE_OHDSI_SCHEMA")
+    covariateData <- runExtractionPerPerson(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+    expect_true(is(covariateData, "covariateData"))
+  }
+
+  if (getOption("dbms") == "impala") {
+    connectionDetails <- createConnectionDetails(dbms = "impala",
+                                                 user = Sys.getenv("CDM5_IMPALA_USER"),
+                                                 password = URLdecode(Sys.getenv("CDM5_IMPALA_PASSWORD")),
+                                                 server = Sys.getenv("CDM5_IMPALA_SERVER"),
+                                                 pathToDriver = Sys.getenv("CDM5_IMPALA_PATH_TO_DRIVER"))
+    cdmDatabaseSchema <- Sys.getenv("CDM5_IMPALA_CDM_SCHEMA")
+    ohdsiDatabaseSchema <- Sys.getenv("CDM5_IMPALA_OHDSI_SCHEMA")
     covariateData <- runExtractionPerPerson(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
     expect_true(is(covariateData, "covariateData"))
   }
@@ -515,6 +551,18 @@ test_that(paste("Run all temporalanalysis at aggregated level on ", getOption("d
                                                  server = Sys.getenv("CDM5_ORACLE_SERVER"))
     cdmDatabaseSchema <- Sys.getenv("CDM5_ORACLE_CDM_SCHEMA")
     ohdsiDatabaseSchema <- Sys.getenv("CDM5_ORACLE_OHDSI_SCHEMA")
+    covariateData <- runExtractionPerPerson(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+    expect_true(is(covariateData, "covariateData"))
+  }
+
+  if (getOption("dbms") == "impala") {
+    connectionDetails <- createConnectionDetails(dbms = "impala",
+                                                 user = Sys.getenv("CDM5_IMPALA_USER"),
+                                                 password = URLdecode(Sys.getenv("CDM5_IMPALA_PASSWORD")),
+                                                 server = Sys.getenv("CDM5_IMPALA_SERVER"),
+                                                 pathToDriver = Sys.getenv("CDM5_IMPALA_PATH_TO_DRIVER"))
+    cdmDatabaseSchema <- Sys.getenv("CDM5_IMPALA_CDM_SCHEMA")
+    ohdsiDatabaseSchema <- Sys.getenv("CDM5_IMPALA_OHDSI_SCHEMA")
     covariateData <- runExtractionPerPerson(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
     expect_true(is(covariateData, "covariateData"))
   }

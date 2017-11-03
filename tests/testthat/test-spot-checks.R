@@ -149,4 +149,16 @@ test_that(paste("Run spot-checks at per-person level on ", getOption("dbms")), {
     ohdsiDatabaseSchema <- Sys.getenv("CDM5_ORACLE_OHDSI_SCHEMA")
     runSpotChecks(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
   }
+
+
+  if (getOption("dbms") == "impala") {
+    connectionDetails <- createConnectionDetails(dbms = "impala",
+                                                 user = Sys.getenv("CDM5_IMPALA_USER"),
+                                                 password = URLdecode(Sys.getenv("CDM5_IMPALA_PASSWORD")),
+                                                 server = Sys.getenv("CDM5_IMPALA_SERVER"),
+                                                 pathToDriver = Sys.getenv("CDM5_IMPALA_PATH_TO_DRIVER"))
+    cdmDatabaseSchema <- Sys.getenv("CDM5_IMPALA_CDM_SCHEMA")
+    ohdsiDatabaseSchema <- Sys.getenv("CDM5_IMPALA_OHDSI_SCHEMA")
+    runSpotChecks(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+  }
 })
