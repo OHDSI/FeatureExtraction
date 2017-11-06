@@ -36,7 +36,7 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT covariate_id,
-	CONCAT('ethnicity = ', concept_name) AS covariate_name,
+	CAST(CONCAT('ethnicity = ', concept_name) AS VARCHAR(512)) AS covariate_name,
 	@analysis_id AS analysis_id,
 	concept_id
 FROM (
@@ -58,11 +58,11 @@ INSERT INTO #analysis_ref (
 	missing_means_zero
 	)
 SELECT @analysis_id AS analysis_id,
-	'@analysis_name' AS analysis_name,
-	'@domain_id' AS domain_id,
+	CAST('@analysis_name' AS VARCHAR(512)) AS analysis_name,
+	CAST('@domain_id' AS VARCHAR(20)) AS domain_id,
 {!@temporal} ? {
 	CAST(NULL AS INT) AS start_day,
 	CAST(NULL AS INT) AS end_day,
 }
-	'Y' AS is_binary,
+	CAST('Y' AS VARCHAR(1)) AS is_binary,
 	CAST(NULL AS VARCHAR(1)) AS missing_means_zero;

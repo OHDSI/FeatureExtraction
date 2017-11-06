@@ -66,12 +66,12 @@ INSERT INTO #cov_ref (
 	)
 SELECT covariate_id,
 {@temporal} ? {
-	CONCAT('measurement ', range_name, ': ', concept_name) AS covariate_name,
+	CAST(CONCAT('measurement ', range_name, ': ', concept_name) AS VARCHAR(512)) AS covariate_name,
 } : {
 {@start_day == 'anyTimePrior'} ? {
-	CONCAT('measurement ', range_name, ' during any time prior through @end_day days relative to index: ', concept_name) AS covariate_name,
+	CAST(CONCAT('measurement ', range_name, ' during any time prior through @end_day days relative to index: ', concept_name) AS VARCHAR(512)) AS covariate_name,
 } : {
-	CONCAT('measurement ', range_name, ' during day @start_day through @end_day days relative to index: ', concept_name) AS covariate_name,
+	CAST(CONCAT('measurement ', range_name, ' during day @start_day through @end_day days relative to index: ', concept_name) AS VARCHAR(512)) AS covariate_name,
 }
 }
 	@analysis_id AS analysis_id,
@@ -100,8 +100,8 @@ INSERT INTO #analysis_ref (
 	missing_means_zero
 	)
 SELECT @analysis_id AS analysis_id,
-	'@analysis_name' AS analysis_name,
-	'@domain_id' AS domain_id,
+	CAST('@analysis_name' AS VARCHAR(512)) AS analysis_name,
+	CAST('@domain_id' AS VARCHAR(20)) AS domain_id,
 {!@temporal} ? {
 {@start_day == 'anyTimePrior'} ? {
 	CAST(NULL AS INT) AS start_day,
@@ -110,6 +110,6 @@ SELECT @analysis_id AS analysis_id,
 }
 	@end_day AS end_day,
 }
-	'Y' AS is_binary,
+	CAST('Y' AS VARCHAR(1)) AS is_binary,
 	CAST(NULL AS VARCHAR(1)) AS missing_means_zero;
 

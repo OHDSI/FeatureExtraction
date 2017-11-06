@@ -190,25 +190,25 @@ INSERT INTO #cov_ref (
 	)
 SELECT temp.covariate_id,
 {@temporal} ? {
-	CASE WHEN unit_concept.concept_id = 0 THEN
+	CAST(CASE WHEN unit_concept.concept_id = 0 THEN
 		CONCAT('measurement value: ', measurement_concept.concept_name, ' (Unknown unit)')
 	ELSE 	
 		CONCAT('measurement value: ', measurement_concept.concept_name, ' (', unit_concept.concept_name, ')')
-	END AS covariate_name,
+	END AS VARCHAR(512)) AS covariate_name,
 } : {
 {@start_day == 'anyTimePrior'} ? {
-	CASE WHEN unit_concept.concept_id = 0 THEN
+	CAST(CASE WHEN unit_concept.concept_id = 0 THEN
 		CONCAT('measurement value during any time prior through @end_day days relative to index: ', measurement_concept.concept_name, ' (Unknown unit)')
 	ELSE 	
 		CONCAT('measurement value during any time prior through @end_day days relative to index: ', measurement_concept.concept_name, ' (', unit_concept.concept_name, ')')
-	END AS covariate_name,
+	END AS VARCHAR(512)) AS covariate_name,
 
 } : {
-	CASE WHEN unit_concept.concept_id = 0 THEN
+	CAST(CASE WHEN unit_concept.concept_id = 0 THEN
 		CONCAT('measurement value during day @start_day through @end_day days relative to index: ', measurement_concept.concept_name, ' (Unknown unit)')
 	ELSE 	
 		CONCAT('measurement value during day @start_day through @end_day days relative to index: ', measurement_concept.concept_name, ' (', unit_concept.concept_name, ')')
-	END AS covariate_name,
+	END AS VARCHAR(512)) AS covariate_name,
 }
 }
 	@analysis_id AS analysis_id,
@@ -236,14 +236,14 @@ INSERT INTO #analysis_ref (
 	missing_means_zero
 	)
 SELECT @analysis_id AS analysis_id,
-	'@analysis_name' AS analysis_name,
-	'@domain_id' AS domain_id,
+	CAST('@analysis_name' AS VARCHAR(512)) AS analysis_name,
+	CAST('@domain_id' AS VARCHAR(20)) AS domain_id,
 {!@temporal} ? {
 	CAST(NULL AS INT) AS start_day,
 	CAST(NULL AS INT) AS end_day,
 }
-	'N' AS is_binary,
-	'N' AS missing_means_zero;	
+	CAST('N' AS VARCHAR(1)) AS is_binary,
+	CAST('N' AS VARCHAR(1)) AS missing_means_zero;
 
 TRUNCATE TABLE #covariate_ids;
 DROP TABLE #covariate_ids;

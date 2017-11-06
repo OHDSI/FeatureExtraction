@@ -162,15 +162,15 @@ INSERT INTO #cov_ref (
 SELECT covariate_id,
 {@temporal} ? {
 {@sub_type == 'distinct'} ? {
-	'@domain_table distinct concept count' AS covariate_name,
+	CAST('@domain_table distinct concept count' AS VARCHAR(512)) AS covariate_name,
 } : {
-	'@domain_table concept count' AS covariate_name,
+	CAST('@domain_table concept count' AS VARCHAR(512)) AS covariate_name,
 }
 } : {
 {@sub_type == 'distinct'} ? {
-	'@domain_table distinct concept count during day @start_day through @end_day concept_count relative to index' AS covariate_name,
+	CAST('@domain_table distinct concept count during day @start_day through @end_day concept_count relative to index' AS VARCHAR(512)) AS covariate_name,
 } : {
-	'@domain_table concept count during day @start_day through @end_day concept_count relative to index' AS covariate_name,
+	CAST('@domain_table concept count during day @start_day through @end_day concept_count relative to index' AS VARCHAR(512)) AS covariate_name,
 }
 }
 	@analysis_id AS analysis_id,
@@ -192,11 +192,11 @@ INSERT INTO #analysis_ref (
 	missing_means_zero
 	)
 SELECT @analysis_id AS analysis_id,
-	'@analysis_name' AS analysis_name,
-	'@domain_id' AS domain_id,
+	CAST('@analysis_name' AS VARCHAR(512)) AS analysis_name,
+	CAST('@domain_id' AS VARCHAR(20)) AS domain_id,
 {!@temporal} ? {
 	CAST(NULL AS INT) AS start_day,
 	CAST(NULL AS INT) AS end_day,
 }
-	'N' AS is_binary,
-	'Y' AS missing_means_zero;	
+	CAST('N' AS VARCHAR(1)) AS is_binary,
+	CAST('Y' AS VARCHAR(1)) AS missing_means_zero;
