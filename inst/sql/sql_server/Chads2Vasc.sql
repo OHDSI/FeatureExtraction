@@ -19,58 +19,48 @@ CREATE TABLE #chads2vasc_scoring (
 INSERT INTO #chads2vasc_scoring (diag_category_id,diag_category_name,weight)
 VALUES (1,'Congestive heart failure',1);
 
-INSERT INTO #chads2vasc_concepts (diag_category_id,concept_id)
-SELECT 1, c.concept_id
+INSERT INTO #chads2vasc_concepts (
+	diag_category_id,
+	concept_id
+	)
+SELECT DISTINCT 1,
+	c.concept_id
 FROM (
-  select distinct I.concept_id FROM
-  (
-    select DISTINCT concept_id from @cdm_database_schema.CONCEPT where concept_id in (316139,314378,318773,321319) and invalid_reason is null
-    UNION
-    select c.concept_id
-    from @cdm_database_schema.CONCEPT c
-    join @cdm_database_schema.CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
-    and ca.ancestor_concept_id in (316139,314378)
-    and c.invalid_reason is null
-
-  ) I
-) C
-;
-
+	SELECT concept_id
+	FROM @cdm_database_schema.CONCEPT
+	WHERE concept_id IN (316139, 314378, 318773, 321319)
+		AND invalid_reason IS NULL
+	
+	UNION
+	
+	SELECT descendant_concept_id AS concept_id
+	FROM @cdm_database_schema.CONCEPT_ANCESTOR
+	WHERE ancestor_concept_id IN (316139, 314378)
+	) c;
+	
 -- H: Hypertension
 INSERT INTO #chads2vasc_scoring (diag_category_id,diag_category_name,weight)
 VALUES (2,'Hypertension',1);
 
-INSERT INTO #chads2vasc_concepts (diag_category_id,concept_id)
-SELECT 2, c.concept_id
-FROM
-(
-  select distinct I.concept_id FROM
-  (
-    select DISTINCT concept_id from @cdm_database_schema.CONCEPT where concept_id in (320128,442604,201313) and invalid_reason is null
-      UNION
+INSERT INTO #chads2vasc_concepts (
+	diag_category_id,
+	concept_id
+	)
+SELECT DISTINCT 2,
+	i.descendant_concept_id
+FROM (
+	SELECT descendant_concept_id
+	FROM @cdm_database_schema.concept_ancestor
+	WHERE ancestor_concept_id IN (320128, 442604, 201313)
+	) i
+LEFT JOIN (
+	SELECT descendant_concept_id
+	FROM @cdm_database_schema.concept_ancestor
+	WHERE ancestor_concept_id IN (197930)
+	) e
+	ON i.descendant_concept_id = e.descendant_concept_id
+WHERE e.descendant_concept_id IS NULL;
 
-    select c.concept_id
-    from @cdm_database_schema.CONCEPT c
-    join @cdm_database_schema.CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
-    and ca.ancestor_concept_id in (320128,442604,201313)
-    and c.invalid_reason is null
-
-  ) I
-  LEFT JOIN
-  (
-    select concept_id from @cdm_database_schema.CONCEPT where concept_id in (197930)and invalid_reason is null
-      UNION
-
-    select c.concept_id
-    from @cdm_database_schema.CONCEPT c
-    join @cdm_database_schema.CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
-    and ca.ancestor_concept_id in (197930)
-    and c.invalid_reason is null
-
-  ) E ON I.concept_id = E.concept_id
-  WHERE E.concept_id is null
-) C
-;
 
 -- A2: Age > 75
 INSERT INTO #chads2vasc_scoring (diag_category_id,diag_category_name,weight)
@@ -82,84 +72,57 @@ VALUES (3,'Age>75',2);
 INSERT INTO #chads2vasc_scoring (diag_category_id,diag_category_name,weight)
 VALUES (4,'Diabetes',1);
 
-INSERT INTO #chads2vasc_concepts (diag_category_id,concept_id)
-SELECT 4, c.concept_id
-FROM
-(
-  select distinct I.concept_id FROM
-  (
-    select DISTINCT concept_id from @cdm_database_schema.CONCEPT where concept_id in (201820,442793) and invalid_reason is null
-      UNION
-
-    select c.concept_id
-    from @cdm_database_schema.CONCEPT c
-    join @cdm_database_schema.CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
-    and ca.ancestor_concept_id in (201820,442793)
-    and c.invalid_reason is null
-
-  ) I
-  LEFT JOIN
-  (
-    select concept_id from @cdm_database_schema.CONCEPT where concept_id in (195771,376112,4174977,4058243,193323,376979)and invalid_reason is null
-    UNION
-
-    select c.concept_id
-    from @cdm_database_schema.CONCEPT c
-    join @cdm_database_schema.CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
-    and ca.ancestor_concept_id in (195771,376112,4174977,4058243,193323,376979)
-    and c.invalid_reason is null
-
-  ) E ON I.concept_id = E.concept_id
-  WHERE E.concept_id is null
-) C
-;
+INSERT INTO #chads2vasc_concepts (
+	diag_category_id,
+	concept_id
+	)
+SELECT DISTINCT 4,
+	i.descendant_concept_id
+FROM (
+	SELECT descendant_concept_id
+	FROM @cdm_database_schema.concept_ancestor
+	WHERE ancestor_concept_id IN (201820, 442793)
+	) i
+LEFT JOIN (
+	SELECT descendant_concept_id
+	FROM @cdm_database_schema.concept_ancestor
+	WHERE ancestor_concept_id IN (195771, 376112, 4174977, 4058243, 193323, 376979)
+	) e
+	ON i.descendant_concept_id = e.descendant_concept_id
+WHERE e.descendant_concept_id IS NULL;
 
 -- S2: Stroke
 INSERT INTO #chads2vasc_scoring (diag_category_id,diag_category_name,weight)
 VALUES (5,'Stroke',2);
 
-INSERT INTO #chads2vasc_concepts (diag_category_id,concept_id)
-SELECT 5, c.concept_id
-FROM
-(
-  select distinct I.concept_id FROM
-  (
-    select DISTINCT concept_id from @cdm_database_schema.CONCEPT where concept_id in (4043731,4110192,375557,4108356,373503,434656,433505,376714,312337) and invalid_reason is null
-      UNION
-
-    select c.concept_id
-    from @cdm_database_schema.CONCEPT c
-    join @cdm_database_schema.CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
-    and ca.ancestor_concept_id in (4043731,4110192,375557,4108356,373503,434656,433505,376714,312337)
-    and c.invalid_reason is null
-
-  ) I
-) C
-;
+INSERT INTO #chads2vasc_concepts (
+	diag_category_id,
+	concept_id
+	)
+SELECT DISTINCT 5,
+	descendant_concept_id
+FROM @cdm_database_schema.concept_ancestor
+WHERE ancestor_concept_id IN (4043731, 4110192, 375557, 4108356, 373503, 434656, 433505, 376714, 312337);
 
 -- V: Vascular disease (e.g. peripheral artery disease, myocardial infarction, aortic plaque)
 INSERT INTO #chads2vasc_scoring (diag_category_id,diag_category_name,weight)
 VALUES (6,'Vascular Disease', 1);
 
 INSERT INTO #chads2vasc_concepts (diag_category_id,concept_id)
-SELECT 6, c.concept_id FROM
-(
-  select distinct I.concept_id
-  FROM
-  (
-    select DISTINCT concept_id from @cdm_database_schema.CONCEPT where concept_id in (312327,43020432,314962,312939,315288,317309,134380,196438,200138,194393,319047,40486130,317003,4313767,321596,317305,321886,314659,321887,437312,134057) and invalid_reason is null
-
-    UNION
-
-    select c.concept_id
-    from @cdm_database_schema.CONCEPT c
-    join @cdm_database_schema.CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
-    and ca.ancestor_concept_id in (312327,43020432,314962,312939,315288,317309,134380,196438,200138,194393,319047,40486130,317003,4313767,321596)
-    and c.invalid_reason is null
-
-  ) I
-) C
-;
+SELECT DISTINCT 6,
+	c.concept_id
+FROM (
+	SELECT concept_id
+	FROM @cdm_database_schema.CONCEPT
+	WHERE concept_id IN (312327,43020432,314962,312939,315288,317309,134380,196438,200138,194393,319047,40486130,317003,4313767,321596,317305,321886,314659,321887,437312,134057)
+		AND invalid_reason IS NULL
+	
+	UNION
+	
+	SELECT descendant_concept_id AS concept_id
+	FROM @cdm_database_schema.CONCEPT_ANCESTOR
+	WHERE ancestor_concept_id IN (312327,43020432,314962,312939,315288,317309,134380,196438,200138,194393,319047,40486130,317003,4313767,321596)
+	) c;
 
 -- A: Age 65–74 years
 INSERT INTO #chads2vasc_scoring (diag_category_id,diag_category_name,weight)

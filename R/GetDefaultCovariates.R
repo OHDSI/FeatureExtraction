@@ -60,10 +60,12 @@ getDbDefaultCovariateData <- function(connection,
   }
 
   writeLines("Constructing features on server")
+  
   sql <- SqlRender::translateSql(sql = todo$sqlConstruction,
                                  targetDialect = attr(connection, "dbms"),
                                  oracleTempSchema = oracleTempSchema)$sql
-  DatabaseConnector::executeSql(connection, sql)
+  profile <- (!is.null(getOption("dbProfile")) && getOption("dbProfile") == TRUE)
+  DatabaseConnector::executeSql(connection, sql, profile = profile)
 
   writeLines("Fetching data from server")
   start <- Sys.time()

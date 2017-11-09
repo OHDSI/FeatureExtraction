@@ -2,167 +2,140 @@ IF OBJECT_ID('tempdb..#dcsi_scoring', 'U') IS NOT NULL
 	DROP TABLE #dcsi_scoring;
 
 CREATE TABLE #dcsi_scoring (
-	dcsi_category VARCHAR(255)
-	,dcsi_icd9_code VARCHAR(255)
-	,dcsi_concept_id INT
-	,dcsi_score INT
+	dcsi_category VARCHAR(255),
+	dcsi_icd9_code VARCHAR(255),
+	dcsi_concept_id INT,
+	dcsi_score INT
 	);
-
 INSERT INTO #dcsi_scoring (
-	dcsi_category
-	,dcsi_icd9_code
-	,dcsi_concept_id
-	,dcsi_score
+	dcsi_category,
+	dcsi_icd9_code,
+	dcsi_concept_id,
+	dcsi_score
 	)
-SELECT CAST('Retinopathy' AS VARCHAR(255)) AS dcsi_category
-	,source_code
-	,target_concept_id
-	,1 AS dcsi_score
+SELECT CAST('Retinopathy' AS VARCHAR(255)) AS dcsi_category,
+	source_code,
+	target_concept_id,
+	1 AS dcsi_score
 FROM (
-	SELECT source.concept_code AS source_code
-		,target.concept_id AS target_concept_id
+	SELECT source.concept_code AS source_code,
+		target.concept_id AS target_concept_id
 	FROM @cdm_database_schema.concept_relationship
-	INNER JOIN @cdm_database_schema.concept source ON source.concept_id = concept_relationship.concept_id_1
-	INNER JOIN @cdm_database_schema.concept target ON target.concept_id = concept_relationship.concept_id_2
-	WHERE LOWER(source.vocabulary_id) = 'icd9cm'
-		AND LOWER(target.vocabulary_id) = 'snomed'
-		AND LOWER(relationship_id) = 'maps to'
+	INNER JOIN @cdm_database_schema.concept source
+		ON source.concept_id = concept_relationship.concept_id_1
+	INNER JOIN @cdm_database_schema.concept target
+		ON target.concept_id = concept_relationship.concept_id_2
+	WHERE source.vocabulary_id = 'ICD9CM'
+		AND target.vocabulary_id = 'SNOMED'
+		AND relationship_id = 'Maps to'
 	) source_to_concept_map
 WHERE source_code LIKE '250.5%'
-	OR source_code IN (
-		'362.01'
-		,'362.1'
-		,'362.83'
-		,'362.53'
-		,'362.81'
-		,'362.82'
-		);
+	OR source_code IN ('362.01', '362.1', '362.83', '362.53', '362.81', '362.82');
 
 INSERT INTO #dcsi_scoring (
-	dcsi_category
-	,dcsi_icd9_code
-	,dcsi_concept_id
-	,dcsi_score
+	dcsi_category,
+	dcsi_icd9_code,
+	dcsi_concept_id,
+	dcsi_score
 	)
-SELECT CAST('Retinopathy' AS VARCHAR(255)) AS dcsi_category
-	,source_code
-	,target_concept_id
-	,2 AS dcsi_score
+SELECT CAST('Retinopathy' AS VARCHAR(255)) AS dcsi_category,
+	source_code,
+	target_concept_id,
+	2 AS dcsi_score
 FROM (
-	SELECT source.concept_code AS source_code
-		,target.concept_id AS target_concept_id
+	SELECT source.concept_code AS source_code,
+		target.concept_id AS target_concept_id
 	FROM @cdm_database_schema.concept_relationship
-	INNER JOIN @cdm_database_schema.concept source ON source.concept_id = concept_relationship.concept_id_1
-	INNER JOIN @cdm_database_schema.concept target ON target.concept_id = concept_relationship.concept_id_2
-	WHERE LOWER(source.vocabulary_id) = 'icd9cm'
-		AND LOWER(target.vocabulary_id) = 'snomed'
-		AND LOWER(relationship_id) = 'maps to'
+	INNER JOIN @cdm_database_schema.concept source
+		ON source.concept_id = concept_relationship.concept_id_1
+	INNER JOIN @cdm_database_schema.concept target
+		ON target.concept_id = concept_relationship.concept_id_2
+	WHERE source.vocabulary_id = 'ICD9CM'
+		AND target.vocabulary_id = 'SNOMED'
+		AND relationship_id = 'Maps to'
 	) source_to_concept_map
 WHERE source_code LIKE '361%'
 	OR source_code LIKE '369%'
-	OR source_code IN (
-		'362.02'
-		,'379.23'
-		);
+	OR source_code IN ('362.02', '379.23');
 
 INSERT INTO #dcsi_scoring (
-	dcsi_category
-	,dcsi_icd9_code
-	,dcsi_concept_id
-	,dcsi_score
+	dcsi_category,
+	dcsi_icd9_code,
+	dcsi_concept_id,
+	dcsi_score
 	)
-SELECT CAST('Nephropathy' AS VARCHAR(255)) AS dcsi_category
-	,source_code
-	,target_concept_id
-	,1 AS dcsi_score
+SELECT CAST('Nephropathy' AS VARCHAR(255)) AS dcsi_category,
+	source_code,
+	target_concept_id,
+	1 AS dcsi_score
 FROM (
-	SELECT source.concept_code AS source_code
-		,target.concept_id AS target_concept_id
+	SELECT source.concept_code AS source_code,
+		target.concept_id AS target_concept_id
 	FROM @cdm_database_schema.concept_relationship
-	INNER JOIN @cdm_database_schema.concept source ON source.concept_id = concept_relationship.concept_id_1
-	INNER JOIN @cdm_database_schema.concept target ON target.concept_id = concept_relationship.concept_id_2
-	WHERE LOWER(source.vocabulary_id) = 'icd9cm'
-		AND LOWER(target.vocabulary_id) = 'snomed'
-		AND LOWER(relationship_id) = 'maps to'
+	INNER JOIN @cdm_database_schema.concept source
+		ON source.concept_id = concept_relationship.concept_id_1
+	INNER JOIN @cdm_database_schema.concept target
+		ON target.concept_id = concept_relationship.concept_id_2
+	WHERE source.vocabulary_id = 'ICD9CM'
+		AND target.vocabulary_id = 'SNOMED'
+		AND relationship_id = 'Maps to'
 	) source_to_concept_map
-WHERE source_code IN (
-		'250.4'
-		,'580'
-		,'581'
-		,'581.81'
-		,'582'
-		,'583'
-		)
+WHERE source_code IN ('250.4', '580', '581', '581.81', '582', '583')
 	OR source_code LIKE '580%'
 	OR source_code LIKE '581%'
 	OR source_code LIKE '582%'
 	OR source_code LIKE '583%';
 
 INSERT INTO #dcsi_scoring (
-	dcsi_category
-	,dcsi_icd9_code
-	,dcsi_concept_id
-	,dcsi_score
+	dcsi_category,
+	dcsi_icd9_code,
+	dcsi_concept_id,
+	dcsi_score
 	)
-SELECT CAST('Nephropathy' AS VARCHAR(255)) AS dcsi_category
-	,source_code
-	,target_concept_id
-	,2 AS dcsi_score
+SELECT CAST('Nephropathy' AS VARCHAR(255)) AS dcsi_category,
+	source_code,
+	target_concept_id,
+	2 AS dcsi_score
 FROM (
-	SELECT source.concept_code AS source_code
-		,target.concept_id AS target_concept_id
+	SELECT source.concept_code AS source_code,
+		target.concept_id AS target_concept_id
 	FROM @cdm_database_schema.concept_relationship
-	INNER JOIN @cdm_database_schema.concept source ON source.concept_id = concept_relationship.concept_id_1
-	INNER JOIN @cdm_database_schema.concept target ON target.concept_id = concept_relationship.concept_id_2
-	WHERE LOWER(source.vocabulary_id) = 'icd9cm'
-		AND LOWER(target.vocabulary_id) = 'snomed'
-		AND LOWER(relationship_id) = 'maps to'
+	INNER JOIN @cdm_database_schema.concept source
+		ON source.concept_id = concept_relationship.concept_id_1
+	INNER JOIN @cdm_database_schema.concept target
+		ON target.concept_id = concept_relationship.concept_id_2
+	WHERE source.vocabulary_id = 'ICD9CM'
+		AND target.vocabulary_id = 'SNOMED'
+		AND relationship_id = 'Maps to'
 	) source_to_concept_map
-WHERE source_code IN (
-		'585'
-		,'586'
-		,'593.9'
-		)
+WHERE source_code IN ('585', '586', '593.9')
 	OR source_code LIKE '585%'
 	OR source_code LIKE '586%'
 	OR source_code LIKE '593.9%';
 
 INSERT INTO #dcsi_scoring (
-	dcsi_category
-	,dcsi_icd9_code
-	,dcsi_concept_id
-	,dcsi_score
+	dcsi_category,
+	dcsi_icd9_code,
+	dcsi_concept_id,
+	dcsi_score
 	)
-SELECT CAST('Neuropathy' AS VARCHAR(255)) AS dcsi_category
-	,source_code
-	,target_concept_id
-	,1 AS dcsi_score
+SELECT CAST('Neuropathy' AS VARCHAR(255)) AS dcsi_category,
+	source_code,
+	target_concept_id,
+	1 AS dcsi_score
 FROM (
-	SELECT source.concept_code AS source_code
-		,target.concept_id AS target_concept_id
+	SELECT source.concept_code AS source_code,
+		target.concept_id AS target_concept_id
 	FROM @cdm_database_schema.concept_relationship
-	INNER JOIN @cdm_database_schema.concept source ON source.concept_id = concept_relationship.concept_id_1
-	INNER JOIN @cdm_database_schema.concept target ON target.concept_id = concept_relationship.concept_id_2
-	WHERE LOWER(source.vocabulary_id) = 'icd9cm'
-		AND LOWER(target.vocabulary_id) = 'snomed'
-		AND LOWER(relationship_id) = 'maps to'
+	INNER JOIN @cdm_database_schema.concept source
+		ON source.concept_id = concept_relationship.concept_id_1
+	INNER JOIN @cdm_database_schema.concept target
+		ON target.concept_id = concept_relationship.concept_id_2
+	WHERE source.vocabulary_id = 'ICD9CM'
+		AND target.vocabulary_id = 'SNOMED'
+		AND relationship_id = 'Maps to'
 	) source_to_concept_map
-WHERE source_code IN (
-		'356.9'
-		,'250.6'
-		,'358.1'
-		,'951.0'
-		,'951.1'
-		,'951.3'
-		,'713.5'
-		,'357.2'
-		,'596.54'
-		,'337.0'
-		,'337.1'
-		,'564.5'
-		,'536.3'
-		,'458.0'
-		)
+WHERE source_code IN ('356.9', '250.6', '358.1', '951.0', '951.1', '951.3', '713.5', '357.2', '596.54', '337.0', '337.1', '564.5', '536.3', '458.0')
 	OR (
 		source_code >= '354.0'
 		AND source_code <= '355.99'
@@ -182,77 +155,78 @@ WHERE source_code IN (
 	OR source_code LIKE '458.0%';
 
 INSERT INTO #dcsi_scoring (
-	dcsi_category
-	,dcsi_icd9_code
-	,dcsi_concept_id
-	,dcsi_score
+	dcsi_category,
+	dcsi_icd9_code,
+	dcsi_concept_id,
+	dcsi_score
 	)
-SELECT CAST('Cerebrovascular' AS VARCHAR(255)) AS dcsi_category
-	,source_code
-	,target_concept_id
-	,1 AS dcsi_score
+SELECT CAST('Cerebrovascular' AS VARCHAR(255)) AS dcsi_category,
+	source_code,
+	target_concept_id,
+	1 AS dcsi_score
 FROM (
-	SELECT source.concept_code AS source_code
-		,target.concept_id AS target_concept_id
+	SELECT source.concept_code AS source_code,
+		target.concept_id AS target_concept_id
 	FROM @cdm_database_schema.concept_relationship
-	INNER JOIN @cdm_database_schema.concept source ON source.concept_id = concept_relationship.concept_id_1
-	INNER JOIN @cdm_database_schema.concept target ON target.concept_id = concept_relationship.concept_id_2
-	WHERE LOWER(source.vocabulary_id) = 'icd9cm'
-		AND LOWER(target.vocabulary_id) = 'snomed'
-		AND LOWER(relationship_id) = 'maps to'
+	INNER JOIN @cdm_database_schema.concept source
+		ON source.concept_id = concept_relationship.concept_id_1
+	INNER JOIN @cdm_database_schema.concept target
+		ON target.concept_id = concept_relationship.concept_id_2
+	WHERE source.vocabulary_id = 'ICD9CM'
+		AND target.vocabulary_id = 'SNOMED'
+		AND relationship_id = 'Maps to'
 	) source_to_concept_map
 WHERE source_code LIKE '435%';
 
 INSERT INTO #dcsi_scoring (
-	dcsi_category
-	,dcsi_icd9_code
-	,dcsi_concept_id
-	,dcsi_score
+	dcsi_category,
+	dcsi_icd9_code,
+	dcsi_concept_id,
+	dcsi_score
 	)
-SELECT CAST('Cerebrovascular' AS VARCHAR(255)) AS dcsi_category
-	,source_code
-	,target_concept_id
-	,2 AS dcsi_score
+SELECT CAST('Cerebrovascular' AS VARCHAR(255)) AS dcsi_category,
+	source_code,
+	target_concept_id,
+	2 AS dcsi_score
 FROM (
-	SELECT source.concept_code AS source_code
-		,target.concept_id AS target_concept_id
+	SELECT source.concept_code AS source_code,
+		target.concept_id AS target_concept_id
 	FROM @cdm_database_schema.concept_relationship
-	INNER JOIN @cdm_database_schema.concept source ON source.concept_id = concept_relationship.concept_id_1
-	INNER JOIN @cdm_database_schema.concept target ON target.concept_id = concept_relationship.concept_id_2
-	WHERE LOWER(source.vocabulary_id) = 'icd9cm'
-		AND LOWER(target.vocabulary_id) = 'snomed'
-		AND LOWER(relationship_id) = 'maps to'
+	INNER JOIN @cdm_database_schema.concept source
+		ON source.concept_id = concept_relationship.concept_id_1
+	INNER JOIN @cdm_database_schema.concept target
+		ON target.concept_id = concept_relationship.concept_id_2
+	WHERE source.vocabulary_id = 'ICD9CM'
+		AND target.vocabulary_id = 'SNOMED'
+		AND relationship_id = 'Maps to'
 	) source_to_concept_map
-WHERE source_code IN (
-		'431'
-		,'433'
-		,'434'
-		,'436'
-		)
+WHERE source_code IN ('431', '433', '434', '436')
 	OR source_code LIKE '431%'
 	OR source_code LIKE '433%'
 	OR source_code LIKE '434%'
 	OR source_code LIKE '436%';
 
 INSERT INTO #dcsi_scoring (
-	dcsi_category
-	,dcsi_icd9_code
-	,dcsi_concept_id
-	,dcsi_score
+	dcsi_category,
+	dcsi_icd9_code,
+	dcsi_concept_id,
+	dcsi_score
 	)
-SELECT CAST('Cardiovascular' AS VARCHAR(255)) AS dcsi_category
-	,source_code
-	,target_concept_id
-	,1 AS dcsi_score
+SELECT CAST('Cardiovascular' AS VARCHAR(255)) AS dcsi_category,
+	source_code,
+	target_concept_id,
+	1 AS dcsi_score
 FROM (
-	SELECT source.concept_code AS source_code
-		,target.concept_id AS target_concept_id
+	SELECT source.concept_code AS source_code,
+		target.concept_id AS target_concept_id
 	FROM @cdm_database_schema.concept_relationship
-	INNER JOIN @cdm_database_schema.concept source ON source.concept_id = concept_relationship.concept_id_1
-	INNER JOIN @cdm_database_schema.concept target ON target.concept_id = concept_relationship.concept_id_2
-	WHERE LOWER(source.vocabulary_id) = 'icd9cm'
-		AND LOWER(target.vocabulary_id) = 'snomed'
-		AND LOWER(relationship_id) = 'maps to'
+	INNER JOIN @cdm_database_schema.concept source
+		ON source.concept_id = concept_relationship.concept_id_1
+	INNER JOIN @cdm_database_schema.concept target
+		ON target.concept_id = concept_relationship.concept_id_2
+	WHERE source.vocabulary_id = 'ICD9CM'
+		AND target.vocabulary_id = 'SNOMED'
+		AND relationship_id = 'Maps to'
 	) source_to_concept_map
 WHERE source_code LIKE '440%'
 	OR source_code LIKE '411%'
@@ -261,24 +235,26 @@ WHERE source_code LIKE '440%'
 	OR source_code LIKE '429.2%';
 
 INSERT INTO #dcsi_scoring (
-	dcsi_category
-	,dcsi_icd9_code
-	,dcsi_concept_id
-	,dcsi_score
+	dcsi_category,
+	dcsi_icd9_code,
+	dcsi_concept_id,
+	dcsi_score
 	)
-SELECT CAST('Cardiovascular' AS VARCHAR(255)) AS dcsi_category
-	,source_code
-	,target_concept_id
-	,2 AS dcsi_score
+SELECT CAST('Cardiovascular' AS VARCHAR(255)) AS dcsi_category,
+	source_code,
+	target_concept_id,
+	2 AS dcsi_score
 FROM (
-	SELECT source.concept_code AS source_code
-		,target.concept_id AS target_concept_id
+	SELECT source.concept_code AS source_code,
+		target.concept_id AS target_concept_id
 	FROM @cdm_database_schema.concept_relationship
-	INNER JOIN @cdm_database_schema.concept source ON source.concept_id = concept_relationship.concept_id_1
-	INNER JOIN @cdm_database_schema.concept target ON target.concept_id = concept_relationship.concept_id_2
-	WHERE LOWER(source.vocabulary_id) = 'icd9cm'
-		AND LOWER(target.vocabulary_id) = 'snomed'
-		AND LOWER(relationship_id) = 'maps to'
+	INNER JOIN @cdm_database_schema.concept source
+		ON source.concept_id = concept_relationship.concept_id_1
+	INNER JOIN @cdm_database_schema.concept target
+		ON target.concept_id = concept_relationship.concept_id_2
+	WHERE source.vocabulary_id = 'ICD9CM'
+		AND target.vocabulary_id = 'SNOMED'
+		AND relationship_id = 'Maps to'
 	) source_to_concept_map
 WHERE source_code LIKE '410%'
 	OR source_code LIKE '427.1%'
@@ -288,30 +264,29 @@ WHERE source_code LIKE '410%'
 	OR source_code LIKE '412%'
 	OR source_code LIKE '428%'
 	OR source_code LIKE '441%'
-	OR source_code IN (
-		'440.23'
-		,'440.24'
-		);
+	OR source_code IN ('440.23', '440.24');
 
 INSERT INTO #dcsi_scoring (
-	dcsi_category
-	,dcsi_icd9_code
-	,dcsi_concept_id
-	,dcsi_score
+	dcsi_category,
+	dcsi_icd9_code,
+	dcsi_concept_id,
+	dcsi_score
 	)
-SELECT CAST('Peripheral vascular disease' AS VARCHAR(255)) AS dcsi_category
-	,source_code
-	,target_concept_id
-	,1 AS dcsi_score
+SELECT CAST('Peripheral vascular disease' AS VARCHAR(255)) AS dcsi_category,
+	source_code,
+	target_concept_id,
+	1 AS dcsi_score
 FROM (
-	SELECT source.concept_code AS source_code
-		,target.concept_id AS target_concept_id
+	SELECT source.concept_code AS source_code,
+		target.concept_id AS target_concept_id
 	FROM @cdm_database_schema.concept_relationship
-	INNER JOIN @cdm_database_schema.concept source ON source.concept_id = concept_relationship.concept_id_1
-	INNER JOIN @cdm_database_schema.concept target ON target.concept_id = concept_relationship.concept_id_2
-	WHERE LOWER(source.vocabulary_id) = 'icd9cm'
-		AND LOWER(target.vocabulary_id) = 'snomed'
-		AND LOWER(relationship_id) = 'maps to'
+	INNER JOIN @cdm_database_schema.concept source
+		ON source.concept_id = concept_relationship.concept_id_1
+	INNER JOIN @cdm_database_schema.concept target
+		ON target.concept_id = concept_relationship.concept_id_2
+	WHERE source.vocabulary_id = 'ICD9CM'
+		AND target.vocabulary_id = 'SNOMED'
+		AND relationship_id = 'Maps to'
 	) source_to_concept_map
 WHERE source_code LIKE '250.7%'
 	OR source_code LIKE '442.3%'
@@ -320,24 +295,26 @@ WHERE source_code LIKE '250.7%'
 	OR source_code IN ('443.81');
 
 INSERT INTO #dcsi_scoring (
-	dcsi_category
-	,dcsi_icd9_code
-	,dcsi_concept_id
-	,dcsi_score
+	dcsi_category,
+	dcsi_icd9_code,
+	dcsi_concept_id,
+	dcsi_score
 	)
-SELECT CAST('Peripheral vascular disease' AS VARCHAR(255)) AS dcsi_category
-	,source_code
-	,target_concept_id
-	,2 AS dcsi_score
+SELECT CAST('Peripheral vascular disease' AS VARCHAR(255)) AS dcsi_category,
+	source_code,
+	target_concept_id,
+	2 AS dcsi_score
 FROM (
-	SELECT source.concept_code AS source_code
-		,target.concept_id AS target_concept_id
+	SELECT source.concept_code AS source_code,
+		target.concept_id AS target_concept_id
 	FROM @cdm_database_schema.concept_relationship
-	INNER JOIN @cdm_database_schema.concept source ON source.concept_id = concept_relationship.concept_id_1
-	INNER JOIN @cdm_database_schema.concept target ON target.concept_id = concept_relationship.concept_id_2
-	WHERE LOWER(source.vocabulary_id) = 'icd9cm'
-		AND LOWER(target.vocabulary_id) = 'snomed'
-		AND LOWER(relationship_id) = 'maps to'
+	INNER JOIN @cdm_database_schema.concept source
+		ON source.concept_id = concept_relationship.concept_id_1
+	INNER JOIN @cdm_database_schema.concept target
+		ON target.concept_id = concept_relationship.concept_id_2
+	WHERE source.vocabulary_id = 'ICD9CM'
+		AND target.vocabulary_id = 'SNOMED'
+		AND relationship_id = 'Maps to'
 	) source_to_concept_map
 WHERE source_code LIKE '785.4%'
 	OR source_code LIKE '707.1%'
@@ -345,24 +322,26 @@ WHERE source_code LIKE '785.4%'
 	OR source_code IN ('444.22');
 
 INSERT INTO #dcsi_scoring (
-	dcsi_category
-	,dcsi_icd9_code
-	,dcsi_concept_id
-	,dcsi_score
+	dcsi_category,
+	dcsi_icd9_code,
+	dcsi_concept_id,
+	dcsi_score
 	)
-SELECT CAST('Metabolic' AS VARCHAR(255)) AS dcsi_category
-	,source_code
-	,target_concept_id
-	,2 AS dcsi_score
+SELECT CAST('Metabolic' AS VARCHAR(255)) AS dcsi_category,
+	source_code,
+	target_concept_id,
+	2 AS dcsi_score
 FROM (
-	SELECT source.concept_code AS source_code
-		,target.concept_id AS target_concept_id
+	SELECT source.concept_code AS source_code,
+		target.concept_id AS target_concept_id
 	FROM @cdm_database_schema.concept_relationship
-	INNER JOIN @cdm_database_schema.concept source ON source.concept_id = concept_relationship.concept_id_1
-	INNER JOIN @cdm_database_schema.concept target ON target.concept_id = concept_relationship.concept_id_2
-	WHERE LOWER(source.vocabulary_id) = 'icd9cm'
-		AND LOWER(target.vocabulary_id) = 'snomed'
-		AND LOWER(relationship_id) = 'maps to'
+	INNER JOIN @cdm_database_schema.concept source
+		ON source.concept_id = concept_relationship.concept_id_1
+	INNER JOIN @cdm_database_schema.concept target
+		ON target.concept_id = concept_relationship.concept_id_2
+	WHERE source.vocabulary_id = 'ICD9CM'
+		AND target.vocabulary_id = 'SNOMED'
+		AND relationship_id = 'Maps to'
 	) source_to_concept_map
 WHERE source_code LIKE '250.1%'
 	OR source_code LIKE '250.2%'
