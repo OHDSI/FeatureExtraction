@@ -1,6 +1,5 @@
 IF OBJECT_ID('tempdb..#chads2_concepts', 'U') IS NOT NULL
   DROP TABLE #chads2_concepts;
-
 CREATE TABLE #chads2_concepts (
 	diag_category_id INT,
 	concept_id INT
@@ -16,50 +15,88 @@ CREATE TABLE #chads2_scoring (
 	);
 
 --Congestive heart failure
-INSERT INTO #chads2_scoring (diag_category_id,diag_category_name,weight)
-VALUES (1,'Congestive heart failure',1);
+INSERT INTO #chads2_scoring (
+	diag_category_id,
+	diag_category_name,
+	weight
+	)
+VALUES (
+	1,
+	'Congestive heart failure',
+	1
+	);
 
-INSERT INTO #chads2_concepts (diag_category_id,concept_id)
-SELECT 1, descendant_concept_id
+INSERT INTO #chads2_concepts (
+	diag_category_id,
+	concept_id
+	)
+SELECT 1,
+	descendant_concept_id
 FROM @cdm_database_schema.concept_ancestor
-WHERE ancestor_concept_id in (316139)
-;
+WHERE ancestor_concept_id IN (316139);
 
 --Hypertension
-INSERT INTO #chads2_scoring (diag_category_id,diag_category_name,weight)
-VALUES (2,'Hypertension',1);
+INSERT INTO #chads2_scoring (
+	diag_category_id,
+	diag_category_name,
+	weight
+	)
+VALUES (
+	2,
+	'Hypertension',
+	1
+	);
 
-INSERT INTO #chads2_concepts (diag_category_id,concept_id)
-SELECT 2, descendant_concept_id
+INSERT INTO #chads2_concepts (
+	diag_category_id,
+	concept_id
+	)
+SELECT 2,
+	descendant_concept_id
 FROM @cdm_database_schema.concept_ancestor
-WHERE ancestor_concept_id in (316866)
-;
-
---Age > 75
-INSERT INTO #chads2_scoring (diag_category_id,diag_category_name,weight)
-VALUES (3,'Age>75',1);
-
---no codes
+WHERE ancestor_concept_id IN (316866);
 
 --Diabetes
-INSERT INTO #chads2_scoring (diag_category_id,diag_category_name,weight)
-VALUES (4,'Diabetes',1);
+INSERT INTO #chads2_scoring (
+	diag_category_id,
+	diag_category_name,
+	weight
+	)
+VALUES (
+	4,
+	'Diabetes',
+	1
+	);
 
-INSERT INTO #chads2_concepts (diag_category_id,concept_id)
-SELECT 4, descendant_concept_id
+INSERT INTO #chads2_concepts (
+	diag_category_id,
+	concept_id
+	)
+SELECT 4,
+	descendant_concept_id
 FROM @cdm_database_schema.concept_ancestor
-WHERE ancestor_concept_id in (201820)
-;
+WHERE ancestor_concept_id IN (201820);
 
 --Stroke
-INSERT INTO #chads2_scoring (diag_category_id,diag_category_name,weight)
-VALUES (5,'Stroke',2);
+INSERT INTO #chads2_scoring (
+	diag_category_id,
+	diag_category_name,
+	weight
+	)
+VALUES (
+	5,
+	'Stroke',
+	2
+	);
 
-INSERT INTO #chads2_concepts (diag_category_id,concept_id)
-SELECT 5, descendant_concept_id
+INSERT INTO #chads2_concepts (
+	diag_category_id,
+	concept_id
+	)
+SELECT 5,
+	descendant_concept_id
 FROM @cdm_database_schema.concept_ancestor
-WHERE ancestor_concept_id in (381591, 434056)
-;
+WHERE ancestor_concept_id IN (381591, 434056);
 
 -- Feature construction
 {@aggregated} ? {
@@ -98,7 +135,7 @@ FROM (
 		cohort.@row_id_field AS row_id
 }			
 	FROM @cohort_table cohort
-	INNER JOIN @cdm_database_schema.condition_era condition_era
+	INNER JOIN @cdm_database_schema.condition_era
 		ON cohort.subject_id = condition_era.person_id
 	INNER JOIN #chads2_concepts chads2_concepts
 		ON condition_era.condition_concept_id = chads2_concepts.concept_id
@@ -110,6 +147,21 @@ FROM (
 	WHERE condition_era_start_date <= DATEADD(DAY, @end_day, cohort.cohort_start_date)
 }
 {@cohort_definition_id != -1} ? {		AND cohort.cohort_definition_id = @cohort_definition_id}
+
+	UNION
+	
+	SELECT 3 AS diag_category_id,
+		CASE WHEN (YEAR(cohort_start_date) - year_of_birth) >= 75 THEN 1 ELSE 0 END AS weight,
+{@aggregated} ? {
+		cohort.subject_id,
+		cohort.cohort_start_date
+} : {
+		cohort.@row_id_field AS row_id
+}	  
+	FROM @cohort_table cohort
+	INNER JOIN @cdm_database_schema.person
+		ON cohort.subject_id = person.person_id
+{@cohort_definition_id != -1} ? {	WHERE cohort.cohort_definition_id = @cohort_definition_id}		
 	) temp
 {@aggregated} ? {
 GROUP BY subject_id,

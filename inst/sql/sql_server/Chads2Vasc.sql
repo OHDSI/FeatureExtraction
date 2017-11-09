@@ -61,13 +61,6 @@ LEFT JOIN (
 	ON i.descendant_concept_id = e.descendant_concept_id
 WHERE e.descendant_concept_id IS NULL;
 
-
--- A2: Age > 75
-INSERT INTO #chads2vasc_scoring (diag_category_id,diag_category_name,weight)
-VALUES (3,'Age>75',2);
-
---no codes
-
 -- D: Diabetes
 INSERT INTO #chads2vasc_scoring (diag_category_id,diag_category_name,weight)
 VALUES (4,'Diabetes',1);
@@ -124,14 +117,6 @@ FROM (
 	WHERE ancestor_concept_id IN (312327,43020432,314962,312939,315288,317309,134380,196438,200138,194393,319047,40486130,317003,4313767,321596)
 	) c;
 
--- A: Age 65–74 years
-INSERT INTO #chads2vasc_scoring (diag_category_id,diag_category_name,weight)
-VALUES (7,'Age 65-74 Years', 1);
-
--- Sc: Sex category (i.e. female sex)
-INSERT INTO #chads2vasc_scoring (diag_category_id,diag_category_name,weight)
-VALUES (8,'Sex Category', 1);
-
 -- Feature construction
 {@aggregated} ? {
 IF OBJECT_ID('tempdb..#raw_data', 'U') IS NOT NULL
@@ -181,6 +166,24 @@ FROM (
 	WHERE condition_era_start_date <= DATEADD(DAY, @end_day, cohort.cohort_start_date)
 }
 {@cohort_definition_id != -1} ? {		AND cohort.cohort_definition_id = @cohort_definition_id}
+
+	UNION
+	
+	SELECT 3 AS diag_category_id,
+		CASE WHEN (YEAR(cohort_start_date) - year_of_birth) >= 75 THEN 2 
+		     WHEN (YEAR(cohort_start_date) - year_of_birth) >= 65 THEN 1 
+			 ELSE 0 END + CASE WHEN	gender_concept_id = 8532 THEN 1 ELSE 0 END AS weight,
+{@aggregated} ? {
+		cohort.subject_id,
+		cohort.cohort_start_date
+} : {
+		cohort.@row_id_field AS row_id
+}	  
+	FROM @cohort_table cohort
+	INNER JOIN @cdm_database_schema.person
+		ON cohort.subject_id = person.person_id
+{@cohort_definition_id != -1} ? {	WHERE cohort.cohort_definition_id = @cohort_definition_id}
+
 	) temp
 {@aggregated} ? {
 GROUP BY subject_id,
