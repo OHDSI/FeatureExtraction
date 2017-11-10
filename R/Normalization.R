@@ -136,6 +136,7 @@ tidyCovariateData <- function(covariateData,
         
         # Next, find groups of covariates that together cover everyone:
         valueCounts <- valueCounts[!(valueCounts$bins %in% deleteCovariateIds), ]
+        row.names(covariateRef) <- NULL # Prevents error in merge when duplicate row names exist
         valueCounts <- merge(valueCounts,
                              covariateRef[,
                                           c("covariateId", "analysisId")],
