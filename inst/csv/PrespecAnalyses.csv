@@ -9,6 +9,7 @@ analysisId,analysisName,sqlFileName,startDay,endDay,subType,domainId,domainTable
 8,DemographicsPriorObservationTime,DemographicsTime.sql,,,priorObservation,Demographics,,,,,FALSE,Number of days of observation time preceding the index date.
 9,DemographicsPostObservationTime,DemographicsTime.sql,,,postObservation,Demographics,,,,,FALSE,Number of days of observation time preceding the index date.
 10,DemographicsTimeInCohort,DemographicsTime.sql,,,inCohort,Demographics,,,,,FALSE,Number of days of observation time preceding the index date.
+11,DemographicsIndexYearMonth,DemographicsYearMonth.sql,,,,Demographics,,,,,FALSE,Calendar month of the index date.
 101,ConditionOccurrenceAnyTimePrior,DomainConcept.sql,anyTimePrior,endDays,all,Condition,condition_occurrence,condition_concept_id,condition_start_date,condition_start_date,FALSE,One covariate per condition in the condition_occurrence table starting any time prior to index.
 102,ConditionOccurrenceLongTerm,DomainConcept.sql,longTermStartDays,endDays,all,Condition,condition_occurrence,condition_concept_id,condition_start_date,condition_start_date,FALSE,One covariate per condition in the condition_occurrence table starting in the long term window.
 103,ConditionOccurrenceMediumTerm,DomainConcept.sql,mediumTermStartDays,endDays,all,Condition,condition_occurrence,condition_concept_id,condition_start_date,condition_start_date,FALSE,One covariate per condition in the condition_occurrence table starting in the medium term window.
