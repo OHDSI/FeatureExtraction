@@ -1,5 +1,5 @@
 -- Feature construction
-SELECT ((((YEAR(cohort_start_date)*100)+MONTH(cohort_start_date))*100) + 1) * 1000 + @analysis_id AS covariate_id,
+SELECT YEAR(cohort_start_date)*100000 + MONTH(cohort_start_date)*1000 + @analysis_id AS covariate_id,
 {@temporal} ? {
     CAST(NULL AS INT) AS time_id,
 }
@@ -13,12 +13,12 @@ INTO @covariate_table
 FROM @cohort_table cohort
 INNER JOIN @cdm_database_schema.person
 	ON cohort.subject_id = person.person_id
-{@included_cov_table != ''} ? {WHERE ((((YEAR(cohort_start_date)*100)+MONTH(cohort_start_date))*100) + 1) * 1000 + @analysis_id IN (SELECT id FROM @included_cov_table)}
+{@included_cov_table != ''} ? {WHERE YEAR(cohort_start_date)*100000 + MONTH(cohort_start_date)*1000 + @analysis_id IN (SELECT id FROM @included_cov_table)}
 {@cohort_definition_id != -1} ? {
 	{@included_cov_table != ''} ? {		AND} :{WHERE} cohort.cohort_definition_id = @cohort_definition_id
 }
 {@aggregated} ? {
-GROUP BY ((((YEAR(cohort_start_date)*100)+MONTH(cohort_start_date))*100) + 1)
+GROUP BY YEAR(cohort_start_date)*100000 + MONTH(cohort_start_date)*1000 + @analysis_id
 }
 ;
 
@@ -30,7 +30,7 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT covariate_id,
-	CAST(CONCAT ('index calendar month: ', CAST((covariate_id - @analysis_id) / 1000 AS VARCHAR) AS VARCHAR(512)) AS covariate_name,
+	CAST(CONCAT('index year and month: ', CAST((covariate_id - @analysis_id) / 1000 AS VARCHAR)) AS VARCHAR(512)) AS covariate_name,
 	@analysis_id AS analysis_id,
 	0 AS concept_id
 FROM (

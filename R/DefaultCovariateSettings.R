@@ -30,12 +30,14 @@
 #' @param useDemographicsEthnicity                      Ethnicity of the subject. (analysis ID 5)
 #' @param useDemographicsIndexYear                      Year of the index date. (analysis ID 6)
 #' @param useDemographicsIndexMonth                     Month of the index date. (analysis ID 7)
-#' @param useDemographicsPriorObservationTime           Number of days of observation time preceding
-#'                                                      the index date. (analysis ID 8)
-#' @param useDemographicsPostObservationTime            Number of days of observation time preceding
-#'                                                      the index date. (analysis ID 9)
-#' @param useDemographicsTimeInCohort                   Number of days of observation time preceding
-#'                                                      the index date. (analysis ID 10)
+#' @param useDemographicsPriorObservationTime           Number of continuous days of observation time
+#'                                                      preceding the index date. (analysis ID 8)
+#' @param useDemographicsPostObservationTime            Number of continuous days of observation time
+#'                                                      preceding the index date. (analysis ID 9)
+#' @param useDemographicsTimeInCohort                   Number of days of observation time during
+#'                                                      cohort period. (analysis ID 10)
+#' @param useDemographicsIndexYearMonth                 Both calendar year and month of the index date
+#'                                                      in a single variable. (analysis ID 11)
 #' @param useConditionOccurrenceAnyTimePrior            One covariate per condition in the
 #'                                                      condition_occurrence table starting any time
 #'                                                      prior to index. (analysis ID 101)
@@ -265,32 +267,32 @@
 #'                                                      observed in the medium term window. (analysis
 #'                                                      ID 906)
 #' @param useDistinctConditionCountShortTerm            The number of distinct condition concepts
-#'                                                      observed in the medium term window. (analysis
-#'                                                      ID 907)
+#'                                                      observed in the short term window. (analysis ID
+#'                                                      907)
 #' @param useDistinctIngredientCountLongTerm            The number of distinct ingredients observed in
 #'                                                      the long term window. (analysis ID 908)
 #' @param useDistinctIngredientCountMediumTerm          The number of distinct ingredients observed in
 #'                                                      the medium term window. (analysis ID 909)
 #' @param useDistinctIngredientCountShortTerm           The number of distinct ingredients observed in
-#'                                                      the medium term window. (analysis ID 910)
+#'                                                      the short term window. (analysis ID 910)
 #' @param useDistinctProcedureCountLongTerm             The number of distinct procedures observed in
 #'                                                      the long term window. (analysis ID 911)
 #' @param useDistinctProcedureCountMediumTerm           The number of distinct procedures observed in
 #'                                                      the medium term window. (analysis ID 912)
 #' @param useDistinctProcedureCountShortTerm            The number of distinct procedures observed in
-#'                                                      the medium term window. (analysis ID 913)
+#'                                                      the short term window. (analysis ID 913)
 #' @param useDistinctMeasurementCountLongTerm           The number of distinct measurements observed in
 #'                                                      the long term window. (analysis ID 914)
 #' @param useDistinctMeasurementCountMediumTerm         The number of distinct measurements observed in
 #'                                                      the medium term window. (analysis ID 915)
 #' @param useDistinctMeasurementCountShortTerm          The number of distinct measurements observed in
-#'                                                      the medium term window. (analysis ID 916)
+#'                                                      the short term window. (analysis ID 916)
 #' @param useVisitCountLongTerm                         The number of visits observed in the long term
 #'                                                      window. (analysis ID 917)
 #' @param useVisitCountMediumTerm                       The number of visits observed in the medium
 #'                                                      term window. (analysis ID 918)
-#' @param useVisitCountShortTerm                        The number of visits observed in the medium
-#'                                                      term window. (analysis ID 919)
+#' @param useVisitCountShortTerm                        The number of visits observed in the short term
+#'                                                      window. (analysis ID 919)
 #' @param longTermStartDays                             What is the start day (relative to the index
 #'                                                      date) of the long-term window?
 #' @param mediumTermStartDays                           What is the start day (relative to the index
@@ -324,6 +326,7 @@
 #'                                     useDemographicsPriorObservationTime = FALSE,
 #'                                     useDemographicsPostObservationTime = FALSE,
 #'                                     useDemographicsTimeInCohort = FALSE,
+#'                                     useDemographicsIndexYearMonth = FALSE,
 #'                                     useConditionOccurrenceAnyTimePrior = FALSE,
 #'                                     useConditionOccurrenceLongTerm = FALSE,
 #'                                     useConditionOccurrenceMediumTerm = FALSE,
@@ -432,6 +435,7 @@ createCovariateSettings <- function(useDemographicsGender = FALSE,
                                     useDemographicsPriorObservationTime = FALSE,
                                     useDemographicsPostObservationTime = FALSE,
                                     useDemographicsTimeInCohort = FALSE,
+                                    useDemographicsIndexYearMonth = FALSE,
                                     useConditionOccurrenceAnyTimePrior = FALSE,
                                     useConditionOccurrenceLongTerm = FALSE,
                                     useConditionOccurrenceMediumTerm = FALSE,

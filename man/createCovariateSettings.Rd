@@ -11,6 +11,7 @@ createCovariateSettings(useDemographicsGender = FALSE,
   useDemographicsPriorObservationTime = FALSE,
   useDemographicsPostObservationTime = FALSE,
   useDemographicsTimeInCohort = FALSE,
+  useDemographicsIndexYearMonth = FALSE,
   useConditionOccurrenceAnyTimePrior = FALSE,
   useConditionOccurrenceLongTerm = FALSE,
   useConditionOccurrenceMediumTerm = FALSE,
@@ -98,14 +99,17 @@ age groups) (analysis ID 3)}
 
 \item{useDemographicsIndexMonth}{Month of the index date. (analysis ID 7)}
 
-\item{useDemographicsPriorObservationTime}{Number of days of observation time preceding
-the index date. (analysis ID 8)}
+\item{useDemographicsPriorObservationTime}{Number of continuous days of observation time
+preceding the index date. (analysis ID 8)}
 
-\item{useDemographicsPostObservationTime}{Number of days of observation time preceding
-the index date. (analysis ID 9)}
+\item{useDemographicsPostObservationTime}{Number of continuous days of observation time
+preceding the index date. (analysis ID 9)}
 
-\item{useDemographicsTimeInCohort}{Number of days of observation time preceding
-the index date. (analysis ID 10)}
+\item{useDemographicsTimeInCohort}{Number of days of observation time during
+cohort period. (analysis ID 10)}
+
+\item{useDemographicsIndexYearMonth}{Both calendar year and month of the index date
+in a single variable. (analysis ID 11)}
 
 \item{useConditionOccurrenceAnyTimePrior}{One covariate per condition in the
 condition_occurrence table starting any time
@@ -410,8 +414,8 @@ observed in the medium term window. (analysis
 ID 906)}
 
 \item{useDistinctConditionCountShortTerm}{The number of distinct condition concepts
-observed in the medium term window. (analysis
-ID 907)}
+observed in the short term window. (analysis ID
+907)}
 
 \item{useDistinctIngredientCountLongTerm}{The number of distinct ingredients observed in
 the long term window. (analysis ID 908)}
@@ -420,7 +424,7 @@ the long term window. (analysis ID 908)}
 the medium term window. (analysis ID 909)}
 
 \item{useDistinctIngredientCountShortTerm}{The number of distinct ingredients observed in
-the medium term window. (analysis ID 910)}
+the short term window. (analysis ID 910)}
 
 \item{useDistinctProcedureCountLongTerm}{The number of distinct procedures observed in
 the long term window. (analysis ID 911)}
@@ -429,7 +433,7 @@ the long term window. (analysis ID 911)}
 the medium term window. (analysis ID 912)}
 
 \item{useDistinctProcedureCountShortTerm}{The number of distinct procedures observed in
-the medium term window. (analysis ID 913)}
+the short term window. (analysis ID 913)}
 
 \item{useDistinctMeasurementCountLongTerm}{The number of distinct measurements observed in
 the long term window. (analysis ID 914)}
@@ -438,7 +442,7 @@ the long term window. (analysis ID 914)}
 the medium term window. (analysis ID 915)}
 
 \item{useDistinctMeasurementCountShortTerm}{The number of distinct measurements observed in
-the medium term window. (analysis ID 916)}
+the short term window. (analysis ID 916)}
 
 \item{useVisitCountLongTerm}{The number of visits observed in the long term
 window. (analysis ID 917)}
@@ -446,8 +450,8 @@ window. (analysis ID 917)}
 \item{useVisitCountMediumTerm}{The number of visits observed in the medium
 term window. (analysis ID 918)}
 
-\item{useVisitCountShortTerm}{The number of visits observed in the medium
-term window. (analysis ID 919)}
+\item{useVisitCountShortTerm}{The number of visits observed in the short term
+window. (analysis ID 919)}
 
 \item{longTermStartDays}{What is the start day (relative to the index
 date) of the long-term window?}
@@ -496,6 +500,7 @@ settings <- createCovariateSettings(useDemographicsGender = TRUE,
                                     useDemographicsPriorObservationTime = FALSE,
                                     useDemographicsPostObservationTime = FALSE,
                                     useDemographicsTimeInCohort = FALSE,
+                                    useDemographicsIndexYearMonth = FALSE,
                                     useConditionOccurrenceAnyTimePrior = FALSE,
                                     useConditionOccurrenceLongTerm = FALSE,
                                     useConditionOccurrenceMediumTerm = FALSE,

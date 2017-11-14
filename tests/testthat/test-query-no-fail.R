@@ -19,6 +19,7 @@ runExtractionPerPerson <- function(connectionDetails, cdmDatabaseSchema, ohdsiDa
                                       useDemographicsPriorObservationTime = TRUE,
                                       useDemographicsPostObservationTime = FALSE,
                                       useDemographicsTimeInCohort = FALSE,
+                                      useDemographicsIndexYearMonth = TRUE,
                                       useConditionOccurrenceAnyTimePrior = FALSE,
                                       useConditionOccurrenceLongTerm = FALSE,
                                       useConditionOccurrenceMediumTerm = FALSE,
@@ -115,6 +116,7 @@ runExtractionPerPerson <- function(connectionDetails, cdmDatabaseSchema, ohdsiDa
                                       excludedCovariateConceptIds = c(),
                                       addDescendantsToExclude = FALSE,
                                       includedCovariateIds = c())
+
   suppressWarnings(covariateData <- getDbCovariateData(connectionDetails = connectionDetails,
                                                        cdmDatabaseSchema = cdmDatabaseSchema,
                                                        oracleTempSchema = ohdsiDatabaseSchema,
@@ -192,6 +194,7 @@ runExtractionAggregated <- function(connectionDetails, cdmDatabaseSchema, ohdsiD
                                       useDemographicsPriorObservationTime = TRUE,
                                       useDemographicsPostObservationTime = FALSE,
                                       useDemographicsTimeInCohort = FALSE,
+                                      useDemographicsIndexYearMonth = TRUE,
                                       useConditionOccurrenceAnyTimePrior = FALSE,
                                       useConditionOccurrenceLongTerm = FALSE,
                                       useConditionOccurrenceMediumTerm = FALSE,
