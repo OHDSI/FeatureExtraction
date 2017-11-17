@@ -27,10 +27,10 @@ options(fftempdir = "s:/FFtemp")
 dbms <- "pdw"
 user <- NULL
 pw <- NULL
-server <- "JRDUSAPSCTL01"
+server <- Sys.getenv("PDW_SERVER")
+port <- Sys.getenv("PDW_PORT")
 cdmDatabaseSchema <- "cdm_truven_mdcd_v569.dbo"
 resultsDatabaseSchema <- "scratch.dbo"
-port <- 17001
 cdmVersion <- "5"
 extraSettings <- NULL
 
@@ -280,10 +280,10 @@ options(fftempdir = "s:/FFtemp")
 dbms <- "pdw"
 user <- NULL
 pw <- NULL
-server <- "JRDUSAPSCTL01"
+server <- Sys.getenv("PDW_SERVER")
+port <- Sys.getenv("PDW_PORT")
 cdmDatabaseSchema <- "cdm_truven_mdcd_v569.dbo"
 cohortDatabaseSchema <- "scratch.dbo"
-port <- 17001
 cdmVersion <- "5"
 extraSettings <- NULL
 

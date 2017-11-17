@@ -32,14 +32,14 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT covariate_id,
-	CAST(CONCAT('gender = ', concept_name) AS VARCHAR(512)) AS covariate_name,
+	CAST(CONCAT('gender = ', CASE WHEN concept_name IS NULL THEN 'Unknown concept' ELSE concept_name END) AS VARCHAR(512)) AS covariate_name,
 	@analysis_id AS analysis_id,
-	concept_id
+	 CAST((covariate_id - @analysis_id) / 1000 AS INT) AS concept_id
 FROM (
 	SELECT DISTINCT covariate_id
 	FROM @covariate_table
 	) t1
-INNER JOIN @cdm_database_schema.concept
+LEFT JOIN @cdm_database_schema.concept
 	ON concept_id = CAST((covariate_id - @analysis_id) / 1000 AS INT);
 	
 INSERT INTO #analysis_ref (

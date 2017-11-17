@@ -66,16 +66,16 @@ INSERT INTO #cov_ref (
 	)
 SELECT covariate_id,
 {@temporal} ? {
-	CAST(CONCAT('measurement ', range_name, ': ', concept_name) AS VARCHAR(512)) AS covariate_name,
+	CAST(CONCAT('measurement ', range_name, ': ', CASE WHEN concept_name IS NULL THEN 'Unknown concept' ELSE concept_name END) AS VARCHAR(512)) AS covariate_name,
 } : {
 {@start_day == 'anyTimePrior'} ? {
-	CAST(CONCAT('measurement ', range_name, ' during any time prior through @end_day days relative to index: ', concept_name) AS VARCHAR(512)) AS covariate_name,
+	CAST(CONCAT('measurement ', range_name, ' during any time prior through @end_day days relative to index: ', CASE WHEN concept_name IS NULL THEN 'Unknown concept' ELSE concept_name END) AS VARCHAR(512)) AS covariate_name,
 } : {
-	CAST(CONCAT('measurement ', range_name, ' during day @start_day through @end_day days relative to index: ', concept_name) AS VARCHAR(512)) AS covariate_name,
+	CAST(CONCAT('measurement ', range_name, ' during day @start_day through @end_day days relative to index: ', CASE WHEN concept_name IS NULL THEN 'Unknown concept' ELSE concept_name END) AS VARCHAR(512)) AS covariate_name,
 }
 }
 	@analysis_id AS analysis_id,
-	concept_id
+	FLOOR(covariate_id / 10000.0) AS concept_id
 FROM (
 	SELECT DISTINCT covariate_id,
 	   CASE 
@@ -85,7 +85,7 @@ FROM (
 	  END AS range_name
 	FROM @covariate_table
 	) t1
-INNER JOIN @cdm_database_schema.concept
+LEFT JOIN @cdm_database_schema.concept
 	ON concept_id = FLOOR(covariate_id / 10000.0);
 	
 INSERT INTO #analysis_ref (

@@ -6,8 +6,8 @@ setwd("s:/temp/pgProfile/")
 dbms <- "pdw"
 user <- NULL
 pw <- NULL
-server <- "JRDUSAPSCTL01"
-port <- 17001
+server <- Sys.getenv("PDW_SERVER")
+port <- Sys.getenv("PDW_PORT")
 connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = dbms,
                                                                 server = server,
                                                                 user = user,

@@ -190,10 +190,10 @@ INSERT INTO #cov_ref (
 	)
 SELECT temp.covariate_id,
 {@temporal} ? {
-	CAST(CASE WHEN unit_concept.concept_id = 0 THEN
-		CONCAT('measurement value: ', measurement_concept.concept_name, ' (Unknown unit)')
+	CAST(CASE WHEN unit_concept.concept_id IS NULL OR unit_concept.concept_id = 0 THEN
+		CONCAT('measurement value: ', CASE WHEN measurement_concept.concept_name IS NULL THEN 'Unknown concept' ELSE measurement_concept.concept_name END, ' (Unknown unit)')
 	ELSE 	
-		CONCAT('measurement value: ', measurement_concept.concept_name, ' (', unit_concept.concept_name, ')')
+		CONCAT('measurement value: ',  CASE WHEN measurement_concept.concept_name IS NULL THEN 'Unknown concept' ELSE measurement_concept.concept_name END, ' (', unit_concept.concept_name, ')')
 	END AS VARCHAR(512)) AS covariate_name,
 } : {
 {@start_day == 'anyTimePrior'} ? {
@@ -219,9 +219,9 @@ FROM (
 	) temp
 INNER JOIN #covariate_ids covariate_ids
 	ON covariate_ids.covariate_id = temp.covariate_id
-INNER JOIN @cdm_database_schema.concept measurement_concept
+LEFT JOIN @cdm_database_schema.concept measurement_concept
 	ON covariate_ids.measurement_concept_id = measurement_concept.concept_id
-INNER JOIN @cdm_database_schema.concept unit_concept
+LEFT JOIN @cdm_database_schema.concept unit_concept
 	ON covariate_ids.unit_concept_id = unit_concept.concept_id;
 	
 INSERT INTO #analysis_ref (
