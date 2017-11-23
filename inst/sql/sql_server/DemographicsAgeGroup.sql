@@ -1,5 +1,5 @@
 -- Feature construction
-SELECT FLOOR((YEAR(cohort_start_date) - year_of_birth) / 5) * 1000 + @analysis_id AS covariate_id,
+SELECT CAST(FLOOR((YEAR(cohort_start_date) - year_of_birth) / 5) * 1000 + @analysis_id AS BIGINT) AS covariate_id,
 {@temporal} ? {
     CAST(NULL AS INT) AS time_id,
 }	

@@ -366,7 +366,7 @@ SELECT subject_id,
 	SUM(max_score) AS score
 INTO #raw_data
 } : {
-SELECT 1000 + @analysis_id AS covariate_id,
+SELECT CAST(1000 + @analysis_id AS BIGINT) AS covariate_id,
 {@temporal} ? {
     CAST(NULL AS INT) AS time_id,
 }	
@@ -437,7 +437,7 @@ INNER JOIN #prep_stats p
 	ON p.rn <= s.rn
 GROUP BY s.score;
 
-SELECT 1000 + @analysis_id AS covariate_id,
+SELECT CAST(1000 + @analysis_id AS BIGINT) AS covariate_id,
 {@temporal} ? {
     CAST(NULL AS INT) AS time_id,
 }

@@ -1,5 +1,5 @@
 -- Feature construction
-SELECT MONTH(cohort_start_date) * 1000 + @analysis_id AS covariate_id,
+SELECT CAST(MONTH(cohort_start_date) * 1000 + @analysis_id AS BIGINT) AS covariate_id,
 {@temporal} ? {
     CAST(NULL AS INT) AS time_id,
 }	
