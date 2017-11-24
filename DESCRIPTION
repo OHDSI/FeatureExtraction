@@ -1,8 +1,8 @@
 Package: FeatureExtraction
 Type: Package
 Title: Generating Features for a Cohort
-Version: 2.0.1
-Date: 2017-11-17
+Version: 2.0.2
+Date: 2017-11-24
 Author: Martijn J. Schuemie [aut, cre],
     Marc A. Suchard [aut],
     Patrick B. Ryan [aut],
