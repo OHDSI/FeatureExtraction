@@ -1,6 +1,6 @@
 library(FeatureExtraction)
-options(fftempdir = "s:/FFtemp")
-setwd("s:/temp/pgProfile/")
+options(fftempdir = "c:/FFtemp")
+# setwd("s:/temp/pgProfile/")
 
 # Pdw ---------------------------------------------------------------------
 dbms <- "pdw"
@@ -174,6 +174,7 @@ settings <- createCovariateSettings(useDemographicsGender = TRUE,
                                     addDescendantsToExclude = FALSE,
                                     includedCovariateIds = c(1234))
 
+
 # covariateSettings <- convertPrespecSettingsToDetailedSettings(covariateSettings)
 covs <- getDbCovariateData(connectionDetails = connectionDetails,
                            oracleTempSchema = oracleTempSchema,
@@ -212,6 +213,29 @@ covariates2 <- covariates1[covariates1$countValue > 3,]
 testthat::expect_equal(covariates1, covariates2, tolerance = 0.01)
 head(covariates1)
 head(covariates2)
+
+# Storing data on server -----------------------------------------------------------------------
+settings <- createCovariateSettings(useDemographicsGender = TRUE,
+                                    useDemographicsAgeGroup = TRUE)
+conn <- DatabaseConnector::connect(connectionDetails)
+getDbDefaultCovariateData(connection = conn,
+                          oracleTempSchema = oracleTempSchema,
+                          cdmDatabaseSchema = cdmDatabaseSchema,
+                          cohortTable = paste(cohortDatabaseSchema, cohortTable, sep = "."),
+                          cohortId = -1,
+                          rowIdField = "row_id",
+                          covariateSettings = settings,
+                          targetCovariateTable = "#my_covs",
+                          targetCovariateRefTable = "#my_cov_ref",
+                          targetAnalysisRefTable = "#my_analysis_ref",
+                          aggregated = FALSE)
+querySql(conn, "SELECT TOP 100 * FROM #my_covs")
+querySql(conn, "SELECT TOP 100 * FROM #my_cov_ref")
+querySql(conn, "SELECT TOP 100 * FROM #my_analysis_ref")
+
+DatabaseConnector::disconnect(conn)
+
+
 
 covariateSettings <- createDefaultCovariateSettings()
 
