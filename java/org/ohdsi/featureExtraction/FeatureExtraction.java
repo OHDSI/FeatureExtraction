@@ -499,7 +499,7 @@ public class FeatureExtraction {
 		StringBuilder fields = new StringBuilder();
 		if (aggregated) {
 			fields.append(
-					"covariate_id, sum_value, sum_value / (1.0 * (SELECT COUNT(*) FROM @cohort_table {@cohort_definition_id != -1} ? {WHERE cohort_definition_id = @cohort_definition_id})) AS average_value");
+					"covariate_id, sum_value, CAST(sum_value / t1.count_value AS FLOAT) AS average_value");
 		} else {
 			fields.append("row_id, covariate_id, covariate_value");
 		}
@@ -515,13 +515,13 @@ public class FeatureExtraction {
 			if (analysis.has("covariateTable") && (!aggregated || analysis.getBoolean("isBinary"))) {
 				if (hasFeature)
 					sql.append(" UNION ALL\n");
-				sql.append("SELECT " + fields.toString() + " FROM " + analysis.getString("covariateTable"));
+				sql.append("SELECT " + fields.toString() + " FROM " + analysis.getString("covariateTable") + ", t1");
 				hasFeature = true;
 			}
 		}
 		if (!hasFeature)
 			return null;
-		sql.append("\n) all_covariates;");
+		sql.append("\n) all_covariates, t1;");
 		return SqlRender.renderSql(sql.toString(), new String[] { "cohort_table", "cohort_definition_id" },
 				new String[] { cohortTable, Integer.toString(cohortDefinitionId) });
 	}

@@ -73,15 +73,18 @@ FROM (
 	) raw_data;
 
 {@aggregated} ? {
-SELECT CASE WHEN COUNT(*) = (SELECT COUNT(*) FROM @cohort_table {@cohort_definition_id != -1} ? {WHERE cohort_definition_id = @cohort_definition_id}) THEN MIN(concept_count) ELSE 0 END AS min_value,
-	MAX(concept_count) AS max_value,
-	SUM(CAST(concept_count AS BIGINT)) / (1.0 * (SELECT COUNT(*) FROM @cohort_table {@cohort_definition_id != -1} ? {WHERE cohort_definition_id = @cohort_definition_id})) AS average_value,
-	CASE WHEN COUNT(*) = 1 THEN 0 ELSE SQRT((1.0 * COUNT(*)*SUM(CAST(concept_count AS BIGINT) * CAST(concept_count AS BIGINT)) - 1.0 * SUM(CAST(concept_count AS BIGINT))*SUM(CAST(concept_count AS BIGINT))) / (1.0 * COUNT(*)*(1.0 * COUNT(*) - 1))) END AS standard_deviation,
-	COUNT(*) AS count_value,
-	(SELECT COUNT(*) FROM @cohort_table {@cohort_definition_id != -1} ? {WHERE cohort_definition_id = @cohort_definition_id}) - COUNT(*) AS count_no_value,
-	(SELECT COUNT(*) FROM @cohort_table {@cohort_definition_id != -1} ? {WHERE cohort_definition_id = @cohort_definition_id}) AS population_size
+WITH t1 AS (SELECT COUNT(*) AS cnt FROM @cohort_table {@cohort_definition_id != -1} ? {WHERE cohort_definition_id = @cohort_definition_id}),
+t2 AS (SELECT COUNT(*) AS cnt, MIN(concept_count) AS min_concept_count, MAX(concept_count) AS max_concept_count, SUM(CAST(concept_count AS BIGINT)) AS sum_concept_count,
+SUM(CAST(concept_count AS BIGINT)*CAST(concept_count AS BIGINT)) AS squred_concept_count FROM #raw_data)
+SELECT CASE WHEN t2.cnt = t1.cnt THEN t2.min_concept_count ELSE 0 END AS min_value,
+	t2.max_concept_count AS max_value,
+	t2.sum_concept_count / (1.0 * t1.cnt) AS average_value,
+	CASE WHEN t2.cnt = 1 THEN 0 ELSE SQRT((1.0 * t2.cnt*t2.squared_concept_count - 1.0 * t2.sum_concept_count*t2.sum_concept_count) / (1.0 * t2.cnt*(1.0 * t2.cnt - 1))) END AS standard_deviation,
+	t2.cnt AS count_value,
+	t1.cnt - t2.cnt AS count_no_value,
+	t1.cnt AS population_size
 INTO #overall_stats
-FROM #raw_data;
+FROM #raw_data, t1, t2;
 
 SELECT concept_count,
 	COUNT(*) AS total,

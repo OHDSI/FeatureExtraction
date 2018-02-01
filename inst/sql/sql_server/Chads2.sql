@@ -172,15 +172,17 @@ GROUP BY row_id
 ;
 
 {@aggregated} ? {
-SELECT CASE WHEN COUNT(*) = (SELECT COUNT(*) FROM @cohort_table {@cohort_definition_id != -1} ? {WHERE cohort_definition_id = @cohort_definition_id}) THEN MIN(score) ELSE 0 END AS min_value,
-	MAX(score) AS max_value,
-	SUM(score) / (1.0 * (SELECT COUNT(*) FROM @cohort_table {@cohort_definition_id != -1} ? {WHERE cohort_definition_id = @cohort_definition_id})) AS average_value,
-	CASE WHEN COUNT(*) = 1 THEN 0 ELSE SQRT((1.0 * COUNT(*)*SUM(score * score) - 1.0 * SUM(score)*SUM(score)) / (1.0 * COUNT(*)*(1.0 * COUNT(*) - 1))) END AS standard_deviation,
-	COUNT(*) AS count_value,
-	(SELECT COUNT(*) FROM @cohort_table {@cohort_definition_id != -1} ? {WHERE cohort_definition_id = @cohort_definition_id}) - COUNT(*) AS count_no_value,
-	(SELECT COUNT(*) FROM @cohort_table {@cohort_definition_id != -1} ? {WHERE cohort_definition_id = @cohort_definition_id}) AS population_size
+WITH t1 AS (SELECT COUNT(*) AS cnt FROM @cohort_table {@cohort_definition_id != -1} ? {WHERE cohort_definition_id = @cohort_definition_id}),
+t2 AS (SELECT COUNT(*) AS cnt, MIN(score) AS min_score, MAX(score) AS max_score, SUM(score) AS sum_score, SUM(score*score) AS squared_score FROM #raw_data)
+SELECT CASE WHEN t2.cnt = t1.cnt THEN t2.min_score ELSE 0 END AS min_value,
+	t2.max_score AS max_value,
+	t2.sum_score / (1.0 * t1.cnt) AS average_value,
+	CASE WHEN t2.cnt = 1 THEN 0 ELSE SQRT((1.0 * t2.cnt*t2.squared_score - 1.0 * t2.sum_score*t2.sum_score) / (1.0 * t2.cnt*(1.0 * t2.cnt - 1))) END AS standard_deviation,
+	t2.cnt AS count_value,
+	t1.cnt - t2.cnt AS count_no_value,
+	t1.cnt AS population_size
 INTO #overall_stats
-FROM #raw_data;
+FROM #raw_data, t1, t2;
 
 SELECT score,
 	COUNT(*) AS total,
