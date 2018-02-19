@@ -75,7 +75,7 @@ SELECT covariate_id,
 }
 }
 	@analysis_id AS analysis_id,
-	FLOOR(covariate_id / 10000.0) AS concept_id
+	CAST(FLOOR(covariate_id / 10000.0) AS INT) AS concept_id
 FROM (
 	SELECT DISTINCT covariate_id,
 	   CASE 
