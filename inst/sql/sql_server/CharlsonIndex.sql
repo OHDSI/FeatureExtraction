@@ -431,10 +431,19 @@ GROUP BY row_id
 ;
 
 {@aggregated} ? {
-WITH t1 AS (SELECT COUNT(*) AS cnt FROM @cohort_table {@cohort_definition_id != -1} ? {WHERE cohort_definition_id = @cohort_definition_id}),
-	t2 AS (SELECT COUNT(*) AS cnt, MIN(score) AS min_score, MAX(score) AS max_score, SUM(score) AS sum_score,
-								SUM(score * score) as squared_score
-				 FROM #raw_data)
+WITH t1 AS (
+	SELECT COUNT(*) AS cnt 
+	FROM @cohort_table 
+{@cohort_definition_id != -1} ? {	WHERE cohort_definition_id = @cohort_definition_id}
+	),
+t2 AS (
+	SELECT COUNT(*) AS cnt, 
+		MIN(score) AS min_score, 
+		MAX(score) AS max_score, 
+		SUM(score) AS sum_score,
+		SUM(score * score) as squared_score
+	FROM #raw_data
+	)
 SELECT CASE WHEN t2.cnt = t1.cnt THEN t2.min_score ELSE 0 END AS min_value,
 	t2.max_score AS max_value,
 	t2.sum_score / (1.0 * t1.cnt) AS average_value,
@@ -443,7 +452,7 @@ SELECT CASE WHEN t2.cnt = t1.cnt THEN t2.min_score ELSE 0 END AS min_value,
 	t1.cnt - t2.cnt AS count_no_value,
 	t1.cnt AS population_size
 INTO #overall_stats
-FROM #raw_data, t1, t2;
+FROM t1, t2;
 
 SELECT score,
 	COUNT(*) AS total,

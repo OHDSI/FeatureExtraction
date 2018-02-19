@@ -41,17 +41,28 @@ FROM (
 	) raw_data;
 
 {@aggregated} ? {
-WITH t1 AS (SELECT COUNT(*) AS cnt FROM @cohort_table {@cohort_definition_id != -1} ? {WHERE cohort_definition_id = @cohort_definition_id}),
-	t2 AS (SELECT COUNT(*) AS cnt, MIN(age) AS min_age, MAX(age) AS max_age, SUM(CAST(age AS BIGINT)) AS sum_age, SUM(CAST(age AS BIGINT)*CAST(age AS BIGINT)) AS squred_age FROM #raw_data)
+WITH t1 AS (
+	SELECT COUNT(*) AS cnt 
+	FROM @cohort_table 
+{@cohort_definition_id != -1} ? {	WHERE cohort_definition_id = @cohort_definition_id}
+	),
+t2 AS (
+	SELECT COUNT(*) AS cnt, 
+		MIN(age) AS min_age, 
+		MAX(age) AS max_age, 
+		SUM(CAST(age AS BIGINT)) AS sum_age, 
+		SUM(CAST(age AS BIGINT) * CAST(age AS BIGINT)) AS squared_age 
+	FROM #raw_data
+	)
 SELECT CASE WHEN t2.cnt = t1.cnt THEN t2.min_age ELSE 0 END AS min_value,
 	t2.max_age AS max_value,
 	t2.sum_age / (1.0 * t1.cnt) AS average_value,
-	CASE WHEN t2.cnt = 1 THEN 0 ELSE SQRT((1.0 * t2.cnt*t2.squred_age - 1.0 * t2.sum_age*t2.sum_age) / (1.0 * t2.cnt*(1.0 * t2.cnt - 1))) END AS standard_deviation,
-	COUNT(*) AS count_value,
+	CASE WHEN t2.cnt = 1 THEN 0 ELSE SQRT((1.0 * t2.cnt*t2.squared_age - 1.0 * t2.sum_age*t2.sum_age) / (1.0 * t2.cnt*(1.0 * t2.cnt - 1))) END AS standard_deviation,
+	t2.cnt AS count_value,
 	t1.cnt - t2.cnt AS count_no_value,
 	t1.cnt AS population_size
 INTO #overall_stats
-FROM #raw_data, t1, t2;
+FROM t1, t2;
 
 SELECT age,
 	COUNT(*) AS total,

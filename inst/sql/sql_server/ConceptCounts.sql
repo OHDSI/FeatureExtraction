@@ -73,9 +73,19 @@ FROM (
 	) raw_data;
 
 {@aggregated} ? {
-WITH t1 AS (SELECT COUNT(*) AS cnt FROM @cohort_table {@cohort_definition_id != -1} ? {WHERE cohort_definition_id = @cohort_definition_id}),
-t2 AS (SELECT COUNT(*) AS cnt, MIN(concept_count) AS min_concept_count, MAX(concept_count) AS max_concept_count, SUM(CAST(concept_count AS BIGINT)) AS sum_concept_count,
-SUM(CAST(concept_count AS BIGINT)*CAST(concept_count AS BIGINT)) AS squared_concept_count FROM #raw_data)
+WITH t1 AS (
+	SELECT COUNT(*) AS cnt 
+	FROM @cohort_table 
+{@cohort_definition_id != -1} ? {	WHERE cohort_definition_id = @cohort_definition_id}
+	),
+t2 AS (
+	SELECT COUNT(*) AS cnt, 
+		MIN(concept_count) AS min_concept_count, 
+		MAX(concept_count) AS max_concept_count, 
+		SUM(CAST(concept_count AS BIGINT)) AS sum_concept_count,
+		SUM(CAST(concept_count AS BIGINT) * CAST(concept_count AS BIGINT)) AS squared_concept_count
+	FROM #raw_data
+	)
 SELECT CASE WHEN t2.cnt = t1.cnt THEN t2.min_concept_count ELSE 0 END AS min_value,
 	t2.max_concept_count AS max_value,
 	t2.sum_concept_count / (1.0 * t1.cnt) AS average_value,
@@ -84,7 +94,7 @@ SELECT CASE WHEN t2.cnt = t1.cnt THEN t2.min_concept_count ELSE 0 END AS min_val
 	t1.cnt - t2.cnt AS count_no_value,
 	t1.cnt AS population_size
 INTO #overall_stats
-FROM #raw_data, t1, t2;
+FROM t1, t2;
 
 SELECT concept_count,
 	COUNT(*) AS total,
