@@ -10,7 +10,8 @@ createTemporalCovariateSettings(useDemographicsGender = FALSE,
   useDemographicsIndexYear = FALSE, useDemographicsIndexMonth = FALSE,
   useDemographicsPriorObservationTime = FALSE,
   useDemographicsPostObservationTime = FALSE,
-  useDemographicsTimeInCohort = FALSE, useConditionOccurrence = FALSE,
+  useDemographicsTimeInCohort = FALSE,
+  useDemographicsIndexYearMonth = FALSE, useConditionOccurrence = FALSE,
   useConditionOccurrenceInpatient = FALSE, useConditionEraStart = FALSE,
   useConditionEraOverlap = FALSE, useConditionEraGroupStart = FALSE,
   useConditionEraGroupOverlap = FALSE, useDrugExposure = FALSE,
@@ -22,7 +23,8 @@ createTemporalCovariateSettings(useDemographicsGender = FALSE,
   useCharlsonIndex = FALSE, useDcsi = FALSE, useChads2 = FALSE,
   useChads2Vasc = FALSE, useDistinctConditionCount = FALSE,
   useDistinctIngredientCount = FALSE, useDistinctProcedureCount = FALSE,
-  useDistinctMeasurementCount = FALSE, useVisitCount = FALSE,
+  useDistinctMeasurementCount = FALSE, useDistinctObservationCount = FALSE,
+  useVisitCount = FALSE, useVisitConceptCount = FALSE,
   temporalStartDays = -365:-1, temporalEndDays = -365:-1,
   includedCovariateConceptIds = c(), addDescendantsToInclude = FALSE,
   excludedCovariateConceptIds = c(), addDescendantsToExclude = FALSE,
@@ -53,6 +55,8 @@ date. (analysis ID 9)}
 
 \item{useDemographicsTimeInCohort}{Number of days of observation time preceding the index
 date. (analysis ID 10)}
+
+\item{useDemographicsIndexYearMonth}{Calendar month of the index date. (analysis ID 11)}
 
 \item{useConditionOccurrence}{One covariate per condition in the condition_occurrence
 table starting in the time window. (analysis ID 101)}
@@ -140,8 +144,14 @@ window. (analysis ID 907)}
 \item{useDistinctMeasurementCount}{The number of distinct measurements observed in the
 time window. (analysis ID 908)}
 
-\item{useVisitCount}{The number of visits observed in the time window.
+\item{useDistinctObservationCount}{The number of distinct observations in the time window.
 (analysis ID 909)}
+
+\item{useVisitCount}{The number of visits observed in the time window.
+(analysis ID 910)}
+
+\item{useVisitConceptCount}{The number of visits observed in the time window,
+stratified by visit concept ID. (analysis ID 911)}
 
 \item{temporalStartDays}{A list of integers representing the start of a time
 period, relative to the index date. 0 indicates the
@@ -187,6 +197,7 @@ settings <- createTemporalCovariateSettings(useDemographicsGender = TRUE,
                                             useDemographicsPriorObservationTime = FALSE,
                                             useDemographicsPostObservationTime = FALSE,
                                             useDemographicsTimeInCohort = FALSE,
+                                            useDemographicsIndexYearMonth = FALSE,
                                             useConditionOccurrence = FALSE,
                                             useConditionOccurrenceInpatient = FALSE,
                                             useConditionEraStart = FALSE,
@@ -212,7 +223,9 @@ settings <- createTemporalCovariateSettings(useDemographicsGender = TRUE,
                                             useDistinctIngredientCount = FALSE,
                                             useDistinctProcedureCount = FALSE,
                                             useDistinctMeasurementCount = FALSE,
+                                            useDistinctObservationCount = FALSE,
                                             useVisitCount = FALSE,
+                                            useVisitConceptCount = FALSE,
                                             temporalStartDays = -365:-1,
                                             temporalEndDays = -365:-1,
                                             includedCovariateConceptIds = c(),

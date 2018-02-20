@@ -121,11 +121,10 @@ getDbDefaultCovariateData <- function(connection,
                                  targetDialect = attr(connection, "dbms"),
                                  oracleTempSchema = oracleTempSchema)$sql
   DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
-  if (length(todo$idSets) != 0) {
-    writeLines("Sending ID sets to server")
-    for (i in 1:length(todo$idSets)) {
+  if (length(todo$tempTables) != 0) {
+    for (i in 1:length(todo$tempTables)) {
       sql <- "TRUNCATE TABLE @table;\nDROP TABLE @table;\n"
-      sql <- SqlRender::renderSql(sql, table = names(todo$idSets)[i])$sql
+      sql <- SqlRender::renderSql(sql, table = names(todo$tempTables)[i])$sql
       sql <- SqlRender::translateSql(sql = sql,
                                      targetDialect = attr(connection, "dbms"),
                                      oracleTempSchema = oracleTempSchema)$sql

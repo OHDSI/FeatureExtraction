@@ -75,8 +75,13 @@ createCovariateSettings(useDemographicsGender = FALSE,
   useDistinctMeasurementCountLongTerm = FALSE,
   useDistinctMeasurementCountMediumTerm = FALSE,
   useDistinctMeasurementCountShortTerm = FALSE,
+  useDistinctObservationCountLongTerm = FALSE,
+  useDistinctObservationCountMediumTerm = FALSE,
+  useDistinctObservationCountShortTerm = FALSE,
   useVisitCountLongTerm = FALSE, useVisitCountMediumTerm = FALSE,
-  useVisitCountShortTerm = FALSE, longTermStartDays = -365,
+  useVisitCountShortTerm = FALSE, useVisitConceptCountLongTerm = FALSE,
+  useVisitConceptCountMediumTerm = FALSE,
+  useVisitConceptCountShortTerm = FALSE, longTermStartDays = -365,
   mediumTermStartDays = -180, shortTermStartDays = -30, endDays = 0,
   includedCovariateConceptIds = c(), addDescendantsToInclude = FALSE,
   excludedCovariateConceptIds = c(), addDescendantsToExclude = FALSE,
@@ -444,14 +449,35 @@ the medium term window. (analysis ID 915)}
 \item{useDistinctMeasurementCountShortTerm}{The number of distinct measurements observed in
 the short term window. (analysis ID 916)}
 
+\item{useDistinctObservationCountLongTerm}{The number of distinct observations observed in
+the long term window. (analysis ID 917)}
+
+\item{useDistinctObservationCountMediumTerm}{The number of distinct observations observed in
+the medium term window. (analysis ID 918)}
+
+\item{useDistinctObservationCountShortTerm}{The number of distinct observations observed in
+the short term window. (analysis ID 919)}
+
 \item{useVisitCountLongTerm}{The number of visits observed in the long term
-window. (analysis ID 917)}
+window. (analysis ID 920)}
 
 \item{useVisitCountMediumTerm}{The number of visits observed in the medium
-term window. (analysis ID 918)}
+term window. (analysis ID 921)}
 
 \item{useVisitCountShortTerm}{The number of visits observed in the short term
-window. (analysis ID 919)}
+window. (analysis ID 922)}
+
+\item{useVisitConceptCountLongTerm}{The number of visits observed in the long term
+window, stratified by visit concept ID.
+(analysis ID 923)}
+
+\item{useVisitConceptCountMediumTerm}{The number of visits observed in the medium
+term window, stratified by visit concept ID.
+(analysis ID 924)}
+
+\item{useVisitConceptCountShortTerm}{The number of visits observed in the short term
+window, stratified by visit concept ID.
+(analysis ID 925)}
 
 \item{longTermStartDays}{What is the start day (relative to the index
 date) of the long-term window?}
@@ -585,9 +611,15 @@ settings <- createCovariateSettings(useDemographicsGender = TRUE,
                                     useDistinctMeasurementCountLongTerm = FALSE,
                                     useDistinctMeasurementCountMediumTerm = FALSE,
                                     useDistinctMeasurementCountShortTerm = FALSE,
+                                    useDistinctObservationCountLongTerm = FALSE,
+                                    useDistinctObservationCountMediumTerm = FALSE,
+                                    useDistinctObservationCountShortTerm = FALSE,
                                     useVisitCountLongTerm = FALSE,
                                     useVisitCountMediumTerm = FALSE,
                                     useVisitCountShortTerm = FALSE,
+                                    useVisitConceptCountLongTerm = FALSE,
+                                    useVisitConceptCountMediumTerm = FALSE,
+                                    useVisitConceptCountShortTerm = FALSE,
                                     longTermStartDays = -365,
                                     mediumTermStartDays = -180,
                                     shortTermStartDays = -30,

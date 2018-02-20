@@ -35,4 +35,6 @@ analysisId,analysisName,sqlFileName,subType,domainId,domainTable,domainConceptId
 906,DistinctIngredientCount,ConceptCounts.sql,distinct,Drug,drug_era,drug_concept_id,drug_era_start_date,drug_era_end_date,FALSE,The number of distinct ingredients observed in the time window.
 907,DistinctProcedureCount,ConceptCounts.sql,distinct,Procedure,procedure_occurrence,procedure_concept_id,procedure_date,procedure_date,FALSE,The number of distinct procedures observed in the time window.
 908,DistinctMeasurementCount,ConceptCounts.sql,distinct,Measurement,measurement,measurement_concept_id,measurement_date,measurement_date,FALSE,The number of distinct measurements observed in the time window.
-909,VisitCount,ConceptCounts.sql,all,Visit,visit_occurrence,visit_concept_id,visit_start_date,visit_end_date,FALSE,The number of visits observed in the time window.
+909,DistinctObservationCount,ConceptCounts.sql,distinct,Observation,observation,observation_concept_id,observation_date,observation_date,FALSE,The number of distinct observations in the time window.
+910,VisitCount,ConceptCounts.sql,all,Visit,visit_occurrence,visit_concept_id,visit_start_date,visit_end_date,FALSE,The number of visits observed in the time window.
+911,VisitConceptCount,ConceptCounts.sql,stratified,Visit,visit_occurrence,visit_concept_id,visit_start_date,visit_end_date,FALSE,"The number of visits observed in the time window, stratified by visit concept ID."

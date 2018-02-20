@@ -287,12 +287,27 @@
 #'                                                      the medium term window. (analysis ID 915)
 #' @param useDistinctMeasurementCountShortTerm          The number of distinct measurements observed in
 #'                                                      the short term window. (analysis ID 916)
+#' @param useDistinctObservationCountLongTerm           The number of distinct observations observed in
+#'                                                      the long term window. (analysis ID 917)
+#' @param useDistinctObservationCountMediumTerm         The number of distinct observations observed in
+#'                                                      the medium term window. (analysis ID 918)
+#' @param useDistinctObservationCountShortTerm          The number of distinct observations observed in
+#'                                                      the short term window. (analysis ID 919)
 #' @param useVisitCountLongTerm                         The number of visits observed in the long term
-#'                                                      window. (analysis ID 917)
+#'                                                      window. (analysis ID 920)
 #' @param useVisitCountMediumTerm                       The number of visits observed in the medium
-#'                                                      term window. (analysis ID 918)
+#'                                                      term window. (analysis ID 921)
 #' @param useVisitCountShortTerm                        The number of visits observed in the short term
-#'                                                      window. (analysis ID 919)
+#'                                                      window. (analysis ID 922)
+#' @param useVisitConceptCountLongTerm                  The number of visits observed in the long term
+#'                                                      window, stratified by visit concept ID.
+#'                                                      (analysis ID 923)
+#' @param useVisitConceptCountMediumTerm                The number of visits observed in the medium
+#'                                                      term window, stratified by visit concept ID.
+#'                                                      (analysis ID 924)
+#' @param useVisitConceptCountShortTerm                 The number of visits observed in the short term
+#'                                                      window, stratified by visit concept ID.
+#'                                                      (analysis ID 925)
 #' @param longTermStartDays                             What is the start day (relative to the index
 #'                                                      date) of the long-term window?
 #' @param mediumTermStartDays                           What is the start day (relative to the index
@@ -411,9 +426,15 @@
 #'                                     useDistinctMeasurementCountLongTerm = FALSE,
 #'                                     useDistinctMeasurementCountMediumTerm = FALSE,
 #'                                     useDistinctMeasurementCountShortTerm = FALSE,
+#'                                     useDistinctObservationCountLongTerm = FALSE,
+#'                                     useDistinctObservationCountMediumTerm = FALSE,
+#'                                     useDistinctObservationCountShortTerm = FALSE,
 #'                                     useVisitCountLongTerm = FALSE,
 #'                                     useVisitCountMediumTerm = FALSE,
 #'                                     useVisitCountShortTerm = FALSE,
+#'                                     useVisitConceptCountLongTerm = FALSE,
+#'                                     useVisitConceptCountMediumTerm = FALSE,
+#'                                     useVisitConceptCountShortTerm = FALSE,
 #'                                     longTermStartDays = -365,
 #'                                     mediumTermStartDays = -180,
 #'                                     shortTermStartDays = -30,
@@ -520,9 +541,15 @@ createCovariateSettings <- function(useDemographicsGender = FALSE,
                                     useDistinctMeasurementCountLongTerm = FALSE,
                                     useDistinctMeasurementCountMediumTerm = FALSE,
                                     useDistinctMeasurementCountShortTerm = FALSE,
+                                    useDistinctObservationCountLongTerm = FALSE,
+                                    useDistinctObservationCountMediumTerm = FALSE,
+                                    useDistinctObservationCountShortTerm = FALSE,
                                     useVisitCountLongTerm = FALSE,
                                     useVisitCountMediumTerm = FALSE,
                                     useVisitCountShortTerm = FALSE,
+                                    useVisitConceptCountLongTerm = FALSE,
+                                    useVisitConceptCountMediumTerm = FALSE,
+                                    useVisitConceptCountShortTerm = FALSE,
                                     longTermStartDays = -365,
                                     mediumTermStartDays = -180,
                                     shortTermStartDays = -30,

@@ -36,6 +36,7 @@
 #'                                              date. (analysis ID 9)
 #' @param useDemographicsTimeInCohort           Number of days of observation time preceding the index
 #'                                              date. (analysis ID 10)
+#' @param useDemographicsIndexYearMonth         Calendar month of the index date. (analysis ID 11)
 #' @param useConditionOccurrence                One covariate per condition in the condition_occurrence
 #'                                              table starting in the time window. (analysis ID 101)
 #' @param useConditionOccurrenceInpatient       One covariate per condition observed in an inpatient
@@ -97,8 +98,12 @@
 #'                                              window. (analysis ID 907)
 #' @param useDistinctMeasurementCount           The number of distinct measurements observed in the
 #'                                              time window. (analysis ID 908)
-#' @param useVisitCount                         The number of visits observed in the time window.
+#' @param useDistinctObservationCount           The number of distinct observations in the time window.
 #'                                              (analysis ID 909)
+#' @param useVisitCount                         The number of visits observed in the time window.
+#'                                              (analysis ID 910)
+#' @param useVisitConceptCount                  The number of visits observed in the time window,
+#'                                              stratified by visit concept ID. (analysis ID 911)
 #' @param temporalStartDays                     A list of integers representing the start of a time
 #'                                              period, relative to the index date. 0 indicates the
 #'                                              index date, -1 indicates the day before the index date,
@@ -131,6 +136,7 @@
 #'                                             useDemographicsPriorObservationTime = FALSE,
 #'                                             useDemographicsPostObservationTime = FALSE,
 #'                                             useDemographicsTimeInCohort = FALSE,
+#'                                             useDemographicsIndexYearMonth = FALSE,
 #'                                             useConditionOccurrence = FALSE,
 #'                                             useConditionOccurrenceInpatient = FALSE,
 #'                                             useConditionEraStart = FALSE,
@@ -156,7 +162,9 @@
 #'                                             useDistinctIngredientCount = FALSE,
 #'                                             useDistinctProcedureCount = FALSE,
 #'                                             useDistinctMeasurementCount = FALSE,
+#'                                             useDistinctObservationCount = FALSE,
 #'                                             useVisitCount = FALSE,
+#'                                             useVisitConceptCount = FALSE,
 #'                                             temporalStartDays = -365:-1,
 #'                                             temporalEndDays = -365:-1,
 #'                                             includedCovariateConceptIds = c(),
@@ -176,6 +184,7 @@ createTemporalCovariateSettings <- function(useDemographicsGender = FALSE,
                                             useDemographicsPriorObservationTime = FALSE,
                                             useDemographicsPostObservationTime = FALSE,
                                             useDemographicsTimeInCohort = FALSE,
+                                            useDemographicsIndexYearMonth = FALSE,
                                             useConditionOccurrence = FALSE,
                                             useConditionOccurrenceInpatient = FALSE,
                                             useConditionEraStart = FALSE,
@@ -201,7 +210,9 @@ createTemporalCovariateSettings <- function(useDemographicsGender = FALSE,
                                             useDistinctIngredientCount = FALSE,
                                             useDistinctProcedureCount = FALSE,
                                             useDistinctMeasurementCount = FALSE,
+                                            useDistinctObservationCount = FALSE,
                                             useVisitCount = FALSE,
+                                            useVisitConceptCount = FALSE,
                                             temporalStartDays = -365:-1,
                                             temporalEndDays = -365:-1,
                                             includedCovariateConceptIds = c(),
