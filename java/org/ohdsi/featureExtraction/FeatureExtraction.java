@@ -485,6 +485,11 @@ public class FeatureExtraction {
 			if (analysis.has("covariateTable"))
 				tempTables.add(analysis.getString("covariateTable"));
 		}
+		Map<IdSet, String> idSetToName = extractUniqueIdSets(jsonObject);
+		for (Map.Entry<IdSet, String> entry : idSetToName.entrySet()) {
+			if (entry.getKey().addDescendants)
+				tempTables.add(entry.getValue());
+		}
 		tempTables.add("#cov_ref");
 		tempTables.add("#analysis_ref");
 		StringBuilder sql = new StringBuilder();
@@ -498,8 +503,8 @@ public class FeatureExtraction {
 	private static String createQuerySql(JSONObject jsonObject, String cohortTable, int cohortDefinitionId, boolean aggregated, boolean temporal) {
 		StringBuilder fields = new StringBuilder();
 		if (aggregated) {
-			fields.append(
-					"covariate_id, sum_value, CAST(sum_value / t1.count_value AS FLOAT) AS average_value");
+			fields.append( 
+					"covariate_id, sum_value, CAST(sum_value / (1.0 * total_count) AS FLOAT) AS average_value");
 		} else {
 			fields.append("row_id, covariate_id, covariate_value");
 		}
@@ -508,20 +513,23 @@ public class FeatureExtraction {
 		}
 		boolean hasFeature = false;
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT " + fields.toString() + "\nFROM (\n");
+		if (aggregated) {
+			sql.append("WITH t1 AS (SELECT COUNT(*) AS total_count FROM @cohort_table {@cohort_definition_id != -1} ? {WHERE cohort_definition_id = @cohort_definition_id})");
+		}
+		sql.append("SELECT *\nFROM (\n");
 		Iterator<Object> analysesIterator = jsonObject.getJSONArray(ANALYSES).iterator();
 		while (analysesIterator.hasNext()) {
 			JSONObject analysis = (JSONObject) analysesIterator.next();
 			if (analysis.has("covariateTable") && (!aggregated || analysis.getBoolean("isBinary"))) {
 				if (hasFeature)
 					sql.append(" UNION ALL\n");
-				sql.append("SELECT " + fields.toString() + " FROM " + analysis.getString("covariateTable") + ", t1");
+				sql.append("SELECT " + fields.toString() + " FROM " + analysis.getString("covariateTable") + (aggregated?", t1":""));
 				hasFeature = true;
 			}
 		}
 		if (!hasFeature)
 			return null;
-		sql.append("\n) all_covariates, t1;");
+		sql.append("\n) all_covariates;");
 		return SqlRender.renderSql(sql.toString(), new String[] { "cohort_table", "cohort_definition_id" },
 				new String[] { cohortTable, Integer.toString(cohortDefinitionId) });
 	}
