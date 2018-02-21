@@ -123,7 +123,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
                      rowIdField = rowIdField,
                      covariateSettings = covariateSettings[[i]],
                      aggregated = aggregated)
-        tempCovariateData <- do.call(fun, args)
+        tempCovariateData <- do.call(eval(parse(text = fun)), args)
         
         if (!is.null(tempCovariateData$covariates) || !is.null(tempCovariateData$covariatesContinuous)) {
           if (is.null(covariateData)) {
