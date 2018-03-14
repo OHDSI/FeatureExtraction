@@ -8,13 +8,10 @@ An R package for generating features (covariates) for a cohort using data in the
 Features
 ========
 - Takes a cohort as input.
-- Generates baseline features for that cohort
+- Generates baseline features for that cohort.
 - Default covariates include all drugs, diagnoses, procedures, as well as age, comorbidity indexes, etc.
-- Support for creating custom covariates
-
-Screenshots
-===========
-Todo
+- Support for creating custom covariates.
+- Generate paper-ready summary table of select population characteristics.
 
 Technology
 ==========
@@ -64,9 +61,9 @@ FeatureExtraction is being developed in R Studio.
 ### Development status
 
 [![Build Status](https://travis-ci.org/OHDSI/FeatureExtraction.svg?branch=master)](https://travis-ci.org/OHDSI/FeatureExtraction)
+[![codecov.io](https://codecov.io/github/OHDSI/FeatureExtraction/coverage.svg?branch=master)](https://codecov.io/github/OHDSI/FeatureExtraction?branch=master)
 
-
-Beta
+Ready for use
 
 # Acknowledgements
 - This project is supported in part through the National Science Foundation grant IIS 1251151.
