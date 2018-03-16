@@ -84,17 +84,24 @@ createTable1 <- function(covariateData1,
   formatStdDiff <- function(x) {
     return(format(round(x, 2), digits = 3, justify = "right"))
   }
-  
-  covariates <- ff::as.ram(covariateData1$covariates[, c("covariateId", "averageValue")])
-  colnames(covariates) <- c("covariateId", "value1")
-  covariates$value1 <- formatPercent(covariates$value1)
-  covariatesContinuous <- ff::as.ram(covariateData1$covariatesContinuous[, c("covariateId",
-                                                                             "averageValue",
-                                                                             "minValue",
-                                                                             "p25Value",
-                                                                             "medianValue",
-                                                                             "p75Value",
-                                                                             "maxValue")])
+  if (is.null(covariateData1$covariates)) {
+    covariates <- NULL
+  } else {
+    covariates <- as.data.frame(ff::as.ram(covariateData1$covariates[, c("covariateId", "averageValue")]))
+    colnames(covariates) <- c("covariateId", "value1")
+    covariates$value1 <- formatPercent(covariates$value1)
+  }
+  if (is.null(covariateData1$covariatesContinuous)) {
+    covariatesContinuous <- NULL
+  } else {
+    covariatesContinuous <- as.data.frame(ff::as.ram(covariateData1$covariatesContinuous[, c("covariateId",
+                                                                                             "averageValue",
+                                                                                             "minValue",
+                                                                                             "p25Value",
+                                                                                             "medianValue",
+                                                                                             "p75Value",
+                                                                                             "maxValue")]))
+  }
   colnames(covariatesContinuous) <- c("covariateId",
                                       "averageValue1",
                                       "minValue1",
@@ -255,8 +262,11 @@ createTable1 <- function(covariateData1,
             if (specifications$covariateIds[i] == "" || length(covariateIds) > 1) {
               continuousTable <- rbind(continuousTable,
                                        data.frame(Characteristic = specifications$label[i],
-                                                  value = ""))
-              for (j in 1:nrow(covariates)) {
+                                                  value1 = "",
+                                                  value2 = "",
+                                                  stdDiff = "",
+                                                  stringsAsFactors = FALSE))
+              for (j in 1:nrow(covariatesSubset)) {
                 continuousTable <- rbind(continuousTable,
                                          data.frame(Characteristic = paste0("  ", covariatesSubset$covariateName[j]),
                                                     value1 = "",
@@ -328,30 +338,34 @@ createTable1 <- function(covariateData1,
       }
     }
   }
-  # binaryTable$value1 <- as.character(binaryTable$value1) binaryTable$value1[binaryTable$value1 == '
-  # 0'] <- '<1'
   if (comparison) {
-    # binaryTable$value2 <- as.character(binaryTable$value2) binaryTable$value2[binaryTable$value2 == '
-    # 0'] <- '<1'
-    colnames(binaryTable) <- c("Characteristic",
-                               paste0("% (n = ",
-                                      format(covariateData1$metaData$populationSize, big.mark = ","),
-                                      ")"),
-                               paste0("% (n = ",
-                                      format(covariateData2$metaData$populationSize, big.mark = ","),
-                                      ")"),
-                               "Std.Diff")
-    colnames(continuousTable) <- c("Characteristic", "Value", "Value", "Std.Diff")
+    if (nrow(binaryTable) != 0) {
+      colnames(binaryTable) <- c("Characteristic",
+                                 paste0("% (n = ",
+                                        format(covariateData1$metaData$populationSize, big.mark = ","),
+                                        ")"),
+                                 paste0("% (n = ",
+                                        format(covariateData2$metaData$populationSize, big.mark = ","),
+                                        ")"),
+                                 "Std.Diff")
+    }
+    if (nrow(continuousTable) != 0) {
+      colnames(continuousTable) <- c("Characteristic", "Value", "Value", "Std.Diff")
+    }
   } else {
-    binaryTable$value2 <- NULL
-    binaryTable$stdDiff <- NULL
-    colnames(binaryTable) <- c("Characteristic",
-                               paste0("% (n = ",
-                                      format(covariateData1$metaData$populationSize, big.mark = ","),
-                                      ")"))
-    continuousTable$value2 <- NULL
-    continuousTable$stdDiff <- NULL
-    colnames(continuousTable) <- c("Characteristic", "Value")
+    if (nrow(binaryTable) != 0) {
+      binaryTable$value2 <- NULL
+      binaryTable$stdDiff <- NULL
+      colnames(binaryTable) <- c("Characteristic",
+                                 paste0("% (n = ",
+                                        format(covariateData1$metaData$populationSize, big.mark = ","),
+                                        ")"))
+    }
+    if (nrow(continuousTable) != 0) {
+      continuousTable$value2 <- NULL
+      continuousTable$stdDiff <- NULL
+      colnames(continuousTable) <- c("Characteristic", "Value")
+    }
   }
   
   if (output == "two columns") {
