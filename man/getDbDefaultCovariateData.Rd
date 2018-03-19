@@ -7,7 +7,8 @@
 getDbDefaultCovariateData(connection, oracleTempSchema = NULL,
   cdmDatabaseSchema, cohortTable = "#cohort_person", cohortId = -1,
   cdmVersion = "5", rowIdField = "subject_id", covariateSettings,
-  aggregated = FALSE)
+  targetDatabaseSchema, targetCovariateTable, targetCovariateRefTable,
+  targetAnalysisRefTable, aggregated = FALSE)
 }
 \arguments{
 \item{connection}{A connection to the server containing the schema as created using the
@@ -36,8 +37,20 @@ table.}
 row_id field in the output table. This can be especially usefull if there
 is more than one period per person.}
 
-\item{covariateSettings}{An object of type \code{defaultCovariateSettings} as created using the
-\code{\link{createCovariateSettings}} function.}
+\item{covariateSettings}{Either an object of type \code{covariateSettings} as created using one
+of the createCovariate functions, or a list of such objects.}
+
+\item{targetDatabaseSchema}{(Optional) The name of the database schema where the resulting covariates
+should be stored.}
+
+\item{targetCovariateTable}{(Optional) The name of the table where the resulting covariates will
+be stored. If not provided, results will be fetched to R. The table can be 
+a permanent table in the \code{targetDatabaseSchema} or a temp table. If 
+it is a temp table, do not specify \code{targetDatabaseSchema}.}
+
+\item{targetCovariateRefTable}{(Optional) The name of the table where the covariate reference will be stored.}
+
+\item{targetAnalysisRefTable}{(Optional) The name of the table where the analysis reference will be stored.}
 
 \item{aggregated}{Should aggregate statistics be computed instead of covariates per
 cohort entry?}
