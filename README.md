@@ -63,7 +63,7 @@ FeatureExtraction is being developed in R Studio.
 [![Build Status](https://travis-ci.org/OHDSI/FeatureExtraction.svg?branch=master)](https://travis-ci.org/OHDSI/FeatureExtraction)
 [![codecov.io](https://codecov.io/github/OHDSI/FeatureExtraction/coverage.svg?branch=master)](https://codecov.io/github/OHDSI/FeatureExtraction?branch=master)
 
-Ready for use.
+Ready for use
 
 # Acknowledgements
 - This project is supported in part through the National Science Foundation grant IIS 1251151.
