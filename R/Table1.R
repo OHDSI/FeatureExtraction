@@ -101,20 +101,20 @@ createTable1 <- function(covariateData1,
                                                                                              "medianValue",
                                                                                              "p75Value",
                                                                                              "maxValue")]))
+    colnames(covariatesContinuous) <- c("covariateId",
+                                        "averageValue1",
+                                        "minValue1",
+                                        "p25Value1",
+                                        "medianValue1",
+                                        "p75Value1",
+                                        "maxValue1")
+    covariatesContinuous$averageValue1 <- formatValue(covariatesContinuous$averageValue1)
+    covariatesContinuous$minValue1 <- formatValue(covariatesContinuous$minValue1)
+    covariatesContinuous$p25Value1 <- formatValue(covariatesContinuous$p25Value1)
+    covariatesContinuous$medianValue1 <- formatValue(covariatesContinuous$medianValue1)
+    covariatesContinuous$p75Value1 <- formatValue(covariatesContinuous$p75Value1)
+    covariatesContinuous$maxValue1 <- formatValue(covariatesContinuous$maxValue1)
   }
-  colnames(covariatesContinuous) <- c("covariateId",
-                                      "averageValue1",
-                                      "minValue1",
-                                      "p25Value1",
-                                      "medianValue1",
-                                      "p75Value1",
-                                      "maxValue1")
-  covariatesContinuous$averageValue1 <- formatValue(covariatesContinuous$averageValue1)
-  covariatesContinuous$minValue1 <- formatValue(covariatesContinuous$minValue1)
-  covariatesContinuous$p25Value1 <- formatValue(covariatesContinuous$p25Value1)
-  covariatesContinuous$medianValue1 <- formatValue(covariatesContinuous$medianValue1)
-  covariatesContinuous$p75Value1 <- formatValue(covariatesContinuous$p75Value1)
-  covariatesContinuous$maxValue1 <- formatValue(covariatesContinuous$maxValue1)
   
   covariateRef <- ff::as.ram(covariateData1$covariateRef)
   analysisRef <- ff::as.ram(covariateData1$analysisRef)
@@ -129,43 +129,43 @@ createTable1 <- function(covariateData1,
     covariates$value2[is.na(covariates$value2)] <- " 0"
     covariates <- merge(covariates, stdDiff[, c("covariateId", "stdDiff")])
     covariates$stdDiff <- formatStdDiff(covariates$stdDiff)
-    
-    tempCovariates <- ff::as.ram(covariateData2$covariatesContinuous[, c("covariateId",
-                                                                         "averageValue",
-                                                                         "minValue",
-                                                                         "p25Value",
-                                                                         "medianValue",
-                                                                         "p75Value",
-                                                                         "maxValue")])
-    colnames(tempCovariates) <- c("covariateId",
-                                  "averageValue2",
-                                  "minValue2",
-                                  "p25Value2",
-                                  "medianValue2",
-                                  "p75Value2",
-                                  "maxValue2")
-    tempCovariates$averageValue2 <- formatValue(tempCovariates$averageValue2)
-    tempCovariates$minValue2 <- formatValue(tempCovariates$minValue2)
-    tempCovariates$p25Value2 <- formatValue(tempCovariates$p25Value2)
-    tempCovariates$medianValue2 <- formatValue(tempCovariates$medianValue2)
-    tempCovariates$p75Value2 <- formatValue(tempCovariates$p75Value2)
-    tempCovariates$maxValue2 <- formatValue(tempCovariates$maxValue2)
-    covariatesContinuous <- merge(covariatesContinuous, tempCovariates, all = TRUE)
-    covariatesContinuous$averageValue1[is.na(covariatesContinuous$averageValue1)] <- "  "
-    covariatesContinuous$minValue1[is.na(covariatesContinuous$minValue1)] <- "  "
-    covariatesContinuous$p25Value1[is.na(covariatesContinuous$p25Value1)] <- "  "
-    covariatesContinuous$medianValue1[is.na(covariatesContinuous$medianValue1)] <- "  "
-    covariatesContinuous$p75Value1[is.na(covariatesContinuous$p75Value1)] <- "  "
-    covariatesContinuous$maxValue1[is.na(covariatesContinuous$maxValue1)] <- "  "
-    covariatesContinuous$averageValue2[is.na(covariatesContinuous$averageValue2)] <- "  "
-    covariatesContinuous$minValue2[is.na(covariatesContinuous$minValue2)] <- "  "
-    covariatesContinuous$p25Value2[is.na(covariatesContinuous$p25Value2)] <- "  "
-    covariatesContinuous$medianValue2[is.na(covariatesContinuous$medianValue2)] <- "  "
-    covariatesContinuous$p75Value2[is.na(covariatesContinuous$p75Value2)] <- "  "
-    covariatesContinuous$maxValue2[is.na(covariatesContinuous$maxValue2)] <- "  "
-    covariatesContinuous <- merge(covariatesContinuous, stdDiff[, c("covariateId", "stdDiff")])
-    covariatesContinuous$stdDiff <- formatStdDiff(covariatesContinuous$stdDiff)
-    
+    if (!is.null(covariatesContinuous)) {
+      tempCovariates <- ff::as.ram(covariateData2$covariatesContinuous[, c("covariateId",
+                                                                           "averageValue",
+                                                                           "minValue",
+                                                                           "p25Value",
+                                                                           "medianValue",
+                                                                           "p75Value",
+                                                                           "maxValue")])
+      colnames(tempCovariates) <- c("covariateId",
+                                    "averageValue2",
+                                    "minValue2",
+                                    "p25Value2",
+                                    "medianValue2",
+                                    "p75Value2",
+                                    "maxValue2")
+      tempCovariates$averageValue2 <- formatValue(tempCovariates$averageValue2)
+      tempCovariates$minValue2 <- formatValue(tempCovariates$minValue2)
+      tempCovariates$p25Value2 <- formatValue(tempCovariates$p25Value2)
+      tempCovariates$medianValue2 <- formatValue(tempCovariates$medianValue2)
+      tempCovariates$p75Value2 <- formatValue(tempCovariates$p75Value2)
+      tempCovariates$maxValue2 <- formatValue(tempCovariates$maxValue2)
+      covariatesContinuous <- merge(covariatesContinuous, tempCovariates, all = TRUE)
+      covariatesContinuous$averageValue1[is.na(covariatesContinuous$averageValue1)] <- "  "
+      covariatesContinuous$minValue1[is.na(covariatesContinuous$minValue1)] <- "  "
+      covariatesContinuous$p25Value1[is.na(covariatesContinuous$p25Value1)] <- "  "
+      covariatesContinuous$medianValue1[is.na(covariatesContinuous$medianValue1)] <- "  "
+      covariatesContinuous$p75Value1[is.na(covariatesContinuous$p75Value1)] <- "  "
+      covariatesContinuous$maxValue1[is.na(covariatesContinuous$maxValue1)] <- "  "
+      covariatesContinuous$averageValue2[is.na(covariatesContinuous$averageValue2)] <- "  "
+      covariatesContinuous$minValue2[is.na(covariatesContinuous$minValue2)] <- "  "
+      covariatesContinuous$p25Value2[is.na(covariatesContinuous$p25Value2)] <- "  "
+      covariatesContinuous$medianValue2[is.na(covariatesContinuous$medianValue2)] <- "  "
+      covariatesContinuous$p75Value2[is.na(covariatesContinuous$p75Value2)] <- "  "
+      covariatesContinuous$maxValue2[is.na(covariatesContinuous$maxValue2)] <- "  "
+      covariatesContinuous <- merge(covariatesContinuous, stdDiff[, c("covariateId", "stdDiff")])
+      covariatesContinuous$stdDiff <- formatStdDiff(covariatesContinuous$stdDiff)
+    }
     idx <- !ffbase::`%in%`(covariateData2$covariateRef$covariateId,
                            covariateData1$covariateRef$covariateId)
     if (ffbase::any.ff(idx)) {
@@ -370,15 +370,21 @@ createTable1 <- function(covariateData1,
   
   if (output == "two columns") {
     if (nrow(binaryTable) > nrow(continuousTable)) {
-      rowsPerColumn <- ceiling((nrow(binaryTable) + nrow(continuousTable) + 2)/2)
-      column1 <- binaryTable[1:rowsPerColumn, ]
-      ct <- continuousTable
-      colnames(ct) <- colnames(binaryTable)
-      column2 <- rbind(binaryTable[(rowsPerColumn + 1):nrow(binaryTable),
-                                   ],
-                       rep("", ncol(binaryTable)),
-                       colnames(continuousTable),
-                       ct)
+      if (nrow(continuousTable) > 0) {
+        rowsPerColumn <- ceiling((nrow(binaryTable) + nrow(continuousTable) + 2)/2)
+        column1 <- binaryTable[1:rowsPerColumn, ]
+        ct <- continuousTable
+        colnames(ct) <- colnames(binaryTable)
+        column2 <- rbind(binaryTable[(rowsPerColumn + 1):nrow(binaryTable),
+                                     ],
+                         rep("", ncol(binaryTable)),
+                         colnames(continuousTable),
+                         ct)
+      } else {
+        rowsPerColumn <- ceiling((nrow(binaryTable) + nrow(continuousTable))/2)
+        column1 <- binaryTable[1:rowsPerColumn, ]
+        column2 <- binaryTable[(rowsPerColumn + 1):nrow(binaryTable), ]
+      }
       if (nrow(column1) > nrow(column2)) {
         column2 <- rbind(column2, rep("", ncol(binaryTable)))
       }
