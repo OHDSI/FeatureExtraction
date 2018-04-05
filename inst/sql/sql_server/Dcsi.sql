@@ -14,7 +14,7 @@ INSERT INTO #dcsi_scoring (
 	dcsi_score
 	)
 SELECT CAST('Retinopathy' AS VARCHAR(255)) AS dcsi_category,
-	source_code,
+	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
 	1 AS dcsi_score
 FROM (
