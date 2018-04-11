@@ -67,9 +67,9 @@ DatabaseConnector::disconnect(conn)
 
 celecoxibDrugs <- 1118084
 # x <- c(252351201, 2514584502, 2615790602, 440424201, 2212134701, 433950202, 40163038301, 42902283302, 380411101, 19115253302, 141508101, 2109262501, 440870101, 40175400301, 2212420701, 253321102, 2616540601, 40490966204, 198249204, 19003087302, 77069102, 259848101, 1201620402, 19035388301, 444084201, 2617130602, 40223423301, 4184252201, 2212996701, 40234152302, 19125485301, 21602471403, 4060101801, 442313204, 439502101, 1326303402, 440920202, 19040158302, 2414379501, 2313884502, 4204187204, 2721698801, 739209301, 376225102, 42742566701, 43021157201, 314131101, 2005962502, 133298201, 4157607204)
-settings <- createCovariateSettings(useDemographicsGender = TRUE,
+settings <- createCovariateSettings(useDemographicsGender = FALSE,
                                     useDemographicsAge = FALSE,
-                                    useDemographicsAgeGroup = FALSE,
+                                    useDemographicsAgeGroup = TRUE,
                                     useDemographicsRace = FALSE,
                                     useDemographicsEthnicity = FALSE,
                                     useDemographicsIndexYear = FALSE,
@@ -145,7 +145,7 @@ settings <- createCovariateSettings(useDemographicsGender = TRUE,
                                     useObservationLongTerm = FALSE,
                                     useObservationMediumTerm = FALSE,
                                     useObservationShortTerm = FALSE,
-                                    useCharlsonIndex = FALSE,
+                                    useCharlsonIndex = TRUE,
                                     useDcsi = FALSE,
                                     useChads2 = FALSE,
                                     useChads2Vasc = FALSE,
@@ -172,7 +172,7 @@ settings <- createCovariateSettings(useDemographicsGender = TRUE,
                                     addDescendantsToInclude = FALSE,
                                     excludedCovariateConceptIds = c(),
                                     addDescendantsToExclude = FALSE,
-                                    includedCovariateIds = c(1234))
+                                    includedCovariateIds = c())
 
 
 # covariateSettings <- convertPrespecSettingsToDetailedSettings(covariateSettings)
@@ -187,7 +187,8 @@ covs <- getDbCovariateData(connectionDetails = connectionDetails,
                            covariateSettings = settings,
                            aggregated = TRUE)
 
-saveCovariateData(covs, "s:/temp/covsPp")
+saveCovariateData(covs, "c:/temp/covs2")
+
 saveCovariateData(covs, "s:/temp/covsAgg")
 covariateData <- loadCovariateData("c:/temp/covsPp")
 covs <- loadCovariateData("c:/temp/covsAgg")
@@ -330,7 +331,7 @@ saveCovariateData(covs, "s:/temp/covsTable1Medium")
 covariateData <- covs
 covariateData <- loadCovariateData("s:/temp/covsTable1Medium")
 
-tables <- createTable1(covariateData)
+tables <- createTable1(covs, covs, output = "one column")
 write.csv(tables$part1, "s:/temp/table1Part1.csv", row.names = FALSE)
 write.csv(tables$part2, "s:/temp/table1Part2.csv", row.names = FALSE)
 print(tables$part1)

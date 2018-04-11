@@ -120,23 +120,24 @@ createTable1 <- function(covariateData1,
   analysisRef <- ff::as.ram(covariateData1$analysisRef)
   if (comparison) {
     stdDiff <- computeStandardizedDifference(covariateData1, covariateData2)
-    
-    tempCovariates <- ff::as.ram(covariateData2$covariates[, c("covariateId", "averageValue")])
-    colnames(tempCovariates) <- c("covariateId", "value2")
-    tempCovariates$value2 <- formatPercent(tempCovariates$value2)
-    covariates <- merge(covariates, tempCovariates, all = TRUE)
-    covariates$value1[is.na(covariates$value1)] <- " 0"
-    covariates$value2[is.na(covariates$value2)] <- " 0"
-    covariates <- merge(covariates, stdDiff[, c("covariateId", "stdDiff")])
-    covariates$stdDiff <- formatStdDiff(covariates$stdDiff)
+    if (!is.null(covariateData1$covariates) && !is.null(covariateData2$covariates)) {
+      tempCovariates <- ff::as.ram(covariateData2$covariates[, c("covariateId", "averageValue")])
+      colnames(tempCovariates) <- c("covariateId", "value2")
+      tempCovariates$value2 <- formatPercent(tempCovariates$value2)
+      covariates <- merge(covariates, tempCovariates, all = TRUE)
+      covariates$value1[is.na(covariates$value1)] <- " 0"
+      covariates$value2[is.na(covariates$value2)] <- " 0"
+      covariates <- merge(covariates, stdDiff[, c("covariateId", "stdDiff")])
+      covariates$stdDiff <- formatStdDiff(covariates$stdDiff)
+    }
     if (!is.null(covariatesContinuous)) {
-      tempCovariates <- ff::as.ram(covariateData2$covariatesContinuous[, c("covariateId",
-                                                                           "averageValue",
-                                                                           "minValue",
-                                                                           "p25Value",
-                                                                           "medianValue",
-                                                                           "p75Value",
-                                                                           "maxValue")])
+      tempCovariates <- as.data.frame(ff::as.ram(covariateData2$covariatesContinuous[, c("covariateId",
+                                                                                         "averageValue",
+                                                                                         "minValue",
+                                                                                         "p25Value",
+                                                                                         "medianValue",
+                                                                                         "p75Value",
+                                                                                         "maxValue")]))
       colnames(tempCovariates) <- c("covariateId",
                                     "averageValue2",
                                     "minValue2",
@@ -390,13 +391,12 @@ createTable1 <- function(covariateData1,
       }
       result <- cbind(column1, column2)
     } else {
-      stop("Don't know what to do when there are more rows in the table of continuous covariates than there are in hte table of binary covariates.")
+      stop("Don't know what to do when there are more rows in the table of continuous covariates than there are in the table of binary covariates.")
     }
   } else if (output == "one column") {
     ct <- continuousTable
     colnames(ct) <- colnames(binaryTable)
-    result <- rbind(binaryTable[(rowsPerColumn + 1):nrow(binaryTable),
-                                ],
+    result <- rbind(binaryTable,
                     rep("", ncol(binaryTable)),
                     colnames(continuousTable),
                     ct)
