@@ -5,7 +5,8 @@
 \title{Create a table 1}
 \usage{
 createTable1(covariateData1, covariateData2 = NULL,
-  specifications = getDefaultTable1Specifications(), output = "two columns")
+  specifications = getDefaultTable1Specifications(), output = "two columns",
+  percentDigits = 1, stdDiffDigits = 2)
 }
 \arguments{
 \item{covariateData1}{The covariate data of the cohort to be included in the table.}
@@ -17,6 +18,10 @@ cohorts.}
 
 \item{output}{The output format for the table. Options are \code{output = "two columns"},
 \code{output = "one column"}, or \code{output = "list"}.}
+
+\item{percentDigits}{Number of digits to be used for percentages.}
+
+\item{stdDiffDigits}{Number of digits to be used for the standardized differences.}
 }
 \value{
 A data frame, or, when \code{output = "list"} a list of two data frames.
