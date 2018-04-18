@@ -42,6 +42,9 @@ getDefaultTable1Specifications <- function() {
 #' @param specifications   Specifications of which covariates to display, and how.
 #' @param output           The output format for the table. Options are \code{output = "two columns"},
 #'                         \code{output = "one column"}, or \code{output = "list"}.
+#' @param percentDigits    Number of digits to be used for percentages.
+#' @param stdDiffDigits    Number of digits to be used for the standardized differences.
+#' 
 #' @return
 #' A data frame, or, when \code{output = "list"} a list of two data frames.
 #'
@@ -49,7 +52,9 @@ getDefaultTable1Specifications <- function() {
 createTable1 <- function(covariateData1,
                          covariateData2 = NULL,
                          specifications = getDefaultTable1Specifications(),
-                         output = "two columns") {
+                         output = "two columns",
+                         percentDigits = 1,
+                         stdDiffDigits = 2) {
   comparison <- !is.null(covariateData2)
   if (!is(covariateData1, "covariateData")) {
     stop("covariateData1 is not of type 'covariateData'")
@@ -74,16 +79,23 @@ createTable1 <- function(covariateData1,
   }
   
   formatPercent <- function(x) {
-    return(format(x * 100, digits = 0))
+    result <- format(round(100*x, percentDigits), digits = percentDigits+1, justify = "right")
+    result <- gsub("NA", "", result)
+    result <- gsub(" ", " ", result)
+    return(result)
+  }
+  
+  formatStdDiff <- function(x) {
+    result <- format(round(x, stdDiffDigits), digits = stdDiffDigits+1, justify = "right")
+    result <- gsub("NA", "", result)
+    result <- gsub(" ", " ", result)
+    return(result)
   }
   
   formatValue <- function(x) {
     return(format(x, digits = 0, width = 2))
   }
   
-  formatStdDiff <- function(x) {
-    return(format(round(x, 2), digits = 3, justify = "right"))
-  }
   if (is.null(covariateData1$covariates)) {
     covariates <- NULL
   } else {
