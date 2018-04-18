@@ -14,7 +14,7 @@ INSERT INTO #dcsi_scoring (
 	dcsi_score
 	)
 SELECT CAST('Retinopathy' AS VARCHAR(255)) AS dcsi_category,
-	source_code,
+	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
 	1 AS dcsi_score
 FROM (
@@ -39,7 +39,7 @@ INSERT INTO #dcsi_scoring (
 	dcsi_score
 	)
 SELECT CAST('Retinopathy' AS VARCHAR(255)) AS dcsi_category,
-	source_code,
+	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
 	2 AS dcsi_score
 FROM (
@@ -65,7 +65,7 @@ INSERT INTO #dcsi_scoring (
 	dcsi_score
 	)
 SELECT CAST('Nephropathy' AS VARCHAR(255)) AS dcsi_category,
-	source_code,
+	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
 	1 AS dcsi_score
 FROM (
@@ -93,7 +93,7 @@ INSERT INTO #dcsi_scoring (
 	dcsi_score
 	)
 SELECT CAST('Nephropathy' AS VARCHAR(255)) AS dcsi_category,
-	source_code,
+	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
 	2 AS dcsi_score
 FROM (
@@ -120,7 +120,7 @@ INSERT INTO #dcsi_scoring (
 	dcsi_score
 	)
 SELECT CAST('Neuropathy' AS VARCHAR(255)) AS dcsi_category,
-	source_code,
+	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
 	1 AS dcsi_score
 FROM (
@@ -161,7 +161,7 @@ INSERT INTO #dcsi_scoring (
 	dcsi_score
 	)
 SELECT CAST('Cerebrovascular' AS VARCHAR(255)) AS dcsi_category,
-	source_code,
+	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
 	1 AS dcsi_score
 FROM (
@@ -185,7 +185,7 @@ INSERT INTO #dcsi_scoring (
 	dcsi_score
 	)
 SELECT CAST('Cerebrovascular' AS VARCHAR(255)) AS dcsi_category,
-	source_code,
+	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
 	2 AS dcsi_score
 FROM (
@@ -213,7 +213,7 @@ INSERT INTO #dcsi_scoring (
 	dcsi_score
 	)
 SELECT CAST('Cardiovascular' AS VARCHAR(255)) AS dcsi_category,
-	source_code,
+	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
 	1 AS dcsi_score
 FROM (
@@ -241,7 +241,7 @@ INSERT INTO #dcsi_scoring (
 	dcsi_score
 	)
 SELECT CAST('Cardiovascular' AS VARCHAR(255)) AS dcsi_category,
-	source_code,
+	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
 	2 AS dcsi_score
 FROM (
@@ -273,7 +273,7 @@ INSERT INTO #dcsi_scoring (
 	dcsi_score
 	)
 SELECT CAST('Peripheral vascular disease' AS VARCHAR(255)) AS dcsi_category,
-	source_code,
+	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
 	1 AS dcsi_score
 FROM (
@@ -301,7 +301,7 @@ INSERT INTO #dcsi_scoring (
 	dcsi_score
 	)
 SELECT CAST('Peripheral vascular disease' AS VARCHAR(255)) AS dcsi_category,
-	source_code,
+	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
 	2 AS dcsi_score
 FROM (
@@ -328,7 +328,7 @@ INSERT INTO #dcsi_scoring (
 	dcsi_score
 	)
 SELECT CAST('Metabolic' AS VARCHAR(255)) AS dcsi_category,
-	source_code,
+	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
 	2 AS dcsi_score
 FROM (
