@@ -68,8 +68,8 @@ t2 AS (
 	)
 SELECT CASE WHEN t2.cnt = t1.cnt THEN t2.min_days ELSE 0 END AS min_value,
 	t2.max_days AS max_value,
-	t2.sum_days / (1.0 * t1.cnt) AS average_value,
-	CASE WHEN t2.cnt = 1 THEN 0 ELSE SQRT((1.0 * t2.cnt*t2.squared_days - 1.0 * t2.sum_days*t2.sum_days) / (1.0 * t2.cnt*(1.0 * t2.cnt - 1))) END AS standard_deviation,
+	CAST(t2.sum_days / (1.0 * t1.cnt) AS FLOAT) AS average_value,
+	CAST(CASE WHEN t2.cnt = 1 THEN 0 ELSE SQRT((1.0 * t2.cnt*t2.squared_days - 1.0 * t2.sum_days*t2.sum_days) / (1.0 * t2.cnt*(1.0 * t2.cnt - 1))) END AS FLOAT) AS standard_deviation,
 	t2.cnt AS count_value,
 	t1.cnt - t2.cnt AS count_no_value,
 	t1.cnt AS population_size
@@ -98,8 +98,8 @@ SELECT CAST(1000 + @analysis_id AS BIGINT) AS covariate_id,
 	o.count_value,
 	o.min_value,
 	o.max_value,
-	o.average_value,
-	o.standard_deviation,
+	CAST(o.average_value AS FLOAT) average_value,
+	CAST(o.standard_deviation AS FLOAT) standard_deviation,
 	CASE 
 		WHEN .50 * o.population_size < count_no_value THEN 0
 		ELSE MIN(CASE WHEN p.accumulated + count_no_value >= .50 * o.population_size THEN days	END) 
