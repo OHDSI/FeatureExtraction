@@ -84,8 +84,8 @@ SELECT measurement_concept_id,
 }
 	MIN(value_as_number) AS min_value,
 	MAX(value_as_number) AS max_value,
-	AVG(value_as_number) AS average_value,
-	STDEV(value_as_number) AS standard_deviation,
+	CAST(AVG(value_as_number) AS FLOAT) AS average_value,
+	CAST(STDEV(value_as_number) AS FLOAT) AS standard_deviation,
 	COUNT(*) AS count_value
 INTO #overall_stats
 FROM #raw_data
@@ -137,8 +137,8 @@ SELECT covariate_id,
 	o.count_value,
 	o.min_value,
 	o.max_value,
-	o.average_value,
-	o.standard_deviation,
+	CAST(o.average_value AS FLOAT) average_value,
+	CAST(o.standard_deviation AS FLOAT) standard_deviation,
 	MIN(CASE WHEN p.accumulated >= .50 * o.count_value THEN value_as_number END) AS median_value,
 	MIN(CASE WHEN p.accumulated >= .10 * o.count_value THEN value_as_number END) AS p10_value,
 	MIN(CASE WHEN p.accumulated >= .25 * o.count_value THEN value_as_number END) AS p25_value,
