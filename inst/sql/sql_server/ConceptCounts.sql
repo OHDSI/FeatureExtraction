@@ -1,7 +1,7 @@
 -- Feature construction
 {@aggregated} ? {
-IF OBJECT_ID('tempdb..#raw_data', 'U') IS NOT NULL
-	DROP TABLE #raw_data;
+IF OBJECT_ID('tempdb..#concept_count_data', 'U') IS NOT NULL
+	DROP TABLE #concept_count_data;
 
 IF OBJECT_ID('tempdb..#overall_stats', 'U') IS NOT NULL
 	DROP TABLE #overall_stats;
@@ -21,7 +21,7 @@ SELECT subject_id,
 	covariate_id,
 }
 	concept_count
-INTO #raw_data
+INTO #concept_count_data
 } : {
 {@sub_type == 'stratified'} ? {
 SELECT covariate_id,
@@ -101,7 +101,7 @@ t2 AS (
 		MAX(concept_count) AS max_concept_count, 
 		SUM(CAST(concept_count AS BIGINT)) AS sum_concept_count,
 		SUM(CAST(concept_count AS BIGINT) * CAST(concept_count AS BIGINT)) AS squared_concept_count
-	FROM #raw_data
+	FROM #concept_count_data
 {@sub_type == 'stratified'} ? {
 	GROUP BY covariate_id
 } 
@@ -131,7 +131,7 @@ SELECT concept_count,
 	ROW_NUMBER() OVER (ORDER BY concept_count) AS rn
 }
 INTO #prep_stats
-FROM #raw_data
+FROM #concept_count_data
 GROUP BY concept_count
 {@sub_type == 'stratified'} ? {
 	,covariate_id
@@ -210,8 +210,8 @@ GROUP BY o.count_value,
 }
 	o.population_size;
 	
-TRUNCATE TABLE #raw_data;
-DROP TABLE #raw_data;
+TRUNCATE TABLE #concept_count_data;
+DROP TABLE #concept_count_data;
 
 TRUNCATE TABLE #overall_stats;
 DROP TABLE #overall_stats;
