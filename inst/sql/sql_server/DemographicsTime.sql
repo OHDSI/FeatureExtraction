@@ -1,7 +1,7 @@
 -- Feature construction
 {@aggregated} ? {
-IF OBJECT_ID('tempdb..#raw_data', 'U') IS NOT NULL
-	DROP TABLE #raw_data;
+IF OBJECT_ID('tempdb..#dem_time_data', 'U') IS NOT NULL
+	DROP TABLE #dem_time_data;
 
 IF OBJECT_ID('tempdb..#overall_stats', 'U') IS NOT NULL
 	DROP TABLE #overall_stats;
@@ -15,7 +15,7 @@ IF OBJECT_ID('tempdb..#prep_stats2', 'U') IS NOT NULL
 SELECT subject_id,
 	cohort_start_date,
 	days
-INTO #raw_data
+INTO #dem_time_data
 } : {
 SELECT CAST(1000 + @analysis_id AS BIGINT) AS covariate_id,
 {@temporal} ? {
@@ -64,7 +64,7 @@ t2 AS (
 		MAX(days) AS max_days, 
 		SUM(CAST(days AS BIGINT)) AS sum_days, 
 		SUM(CAST(days AS BIGINT) * CAST(days AS BIGINT)) AS squared_days 
-	FROM #raw_data
+	FROM #dem_time_data
 	)
 SELECT CASE WHEN t2.cnt = t1.cnt THEN t2.min_days ELSE 0 END AS min_value,
 	t2.max_days AS max_value,
@@ -80,7 +80,7 @@ SELECT days,
 	COUNT(*) AS total,
 	ROW_NUMBER() OVER (ORDER BY days) AS rn
 INTO #prep_stats
-FROM #raw_data
+FROM #dem_time_data
 GROUP BY days;
 	
 SELECT s.days,
@@ -132,8 +132,8 @@ GROUP BY o.count_value,
 	o.standard_deviation,
 	o.population_size;
 	
-TRUNCATE TABLE #raw_data;
-DROP TABLE #raw_data;
+TRUNCATE TABLE #dem_time_data;
+DROP TABLE #dem_time_data;
 
 TRUNCATE TABLE #overall_stats;
 DROP TABLE #overall_stats;
