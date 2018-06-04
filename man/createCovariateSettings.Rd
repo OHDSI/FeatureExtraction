@@ -16,10 +16,10 @@ createCovariateSettings(useDemographicsGender = FALSE,
   useConditionOccurrenceLongTerm = FALSE,
   useConditionOccurrenceMediumTerm = FALSE,
   useConditionOccurrenceShortTerm = FALSE,
-  useConditionOccurrenceInpatientAnyTimePrior = FALSE,
-  useConditionOccurrenceInpatientLongTerm = FALSE,
-  useConditionOccurrenceInpatientMediumTerm = FALSE,
-  useConditionOccurrenceInpatientShortTerm = FALSE,
+  useConditionOccurrencePrimaryInpatientAnyTimePrior = FALSE,
+  useConditionOccurrencePrimaryInpatientLongTerm = FALSE,
+  useConditionOccurrencePrimaryInpatientMediumTerm = FALSE,
+  useConditionOccurrencePrimaryInpatientShortTerm = FALSE,
   useConditionEraAnyTimePrior = FALSE, useConditionEraLongTerm = FALSE,
   useConditionEraMediumTerm = FALSE, useConditionEraShortTerm = FALSE,
   useConditionEraOverlapping = FALSE, useConditionEraStartLongTerm = FALSE,
@@ -93,415 +93,456 @@ createCovariateSettings(useDemographicsGender = FALSE,
 \item{useDemographicsAge}{Age of the subject on the index date (in
 years). (analysis ID 2)}
 
-\item{useDemographicsAgeGroup}{Age of the subject on the index date (in 5 year
-age groups) (analysis ID 3)}
+\item{useDemographicsAgeGroup}{Age of the subject on the index date (in
+5 year age groups) (analysis ID 3)}
 
 \item{useDemographicsRace}{Race of the subject. (analysis ID 4)}
 
-\item{useDemographicsEthnicity}{Ethnicity of the subject. (analysis ID 5)}
+\item{useDemographicsEthnicity}{Ethnicity of the subject. (analysis ID
+5)}
 
 \item{useDemographicsIndexYear}{Year of the index date. (analysis ID 6)}
 
 \item{useDemographicsIndexMonth}{Month of the index date. (analysis ID 7)}
 
-\item{useDemographicsPriorObservationTime}{Number of continuous days of observation time
-preceding the index date. (analysis ID 8)}
+\item{useDemographicsPriorObservationTime}{Number of continuous days of observation
+time preceding the index date. (analysis
+ID 8)}
 
-\item{useDemographicsPostObservationTime}{Number of continuous days of observation time
-preceding the index date. (analysis ID 9)}
+\item{useDemographicsPostObservationTime}{Number of continuous days of observation
+time preceding the index date. (analysis
+ID 9)}
 
-\item{useDemographicsTimeInCohort}{Number of days of observation time during
-cohort period. (analysis ID 10)}
+\item{useDemographicsTimeInCohort}{Number of days of observation time
+during cohort period. (analysis ID 10)}
 
-\item{useDemographicsIndexYearMonth}{Both calendar year and month of the index date
-in a single variable. (analysis ID 11)}
+\item{useDemographicsIndexYearMonth}{Both calendar year and month of the
+index date in a single variable.
+(analysis ID 11)}
 
 \item{useConditionOccurrenceAnyTimePrior}{One covariate per condition in the
-condition_occurrence table starting any time
-prior to index. (analysis ID 101)}
+condition_occurrence table starting any
+time prior to index. (analysis ID 101)}
 
 \item{useConditionOccurrenceLongTerm}{One covariate per condition in the
-condition_occurrence table starting in the long
-term window. (analysis ID 102)}
+condition_occurrence table starting in
+the long term window. (analysis ID 102)}
 
 \item{useConditionOccurrenceMediumTerm}{One covariate per condition in the
-condition_occurrence table starting in the
-medium term window. (analysis ID 103)}
+condition_occurrence table starting in
+the medium term window. (analysis ID
+103)}
 
 \item{useConditionOccurrenceShortTerm}{One covariate per condition in the
-condition_occurrence table starting in the
-short term window. (analysis ID 104)}
+condition_occurrence table starting in
+the short term window. (analysis ID 104)}
 
-\item{useConditionOccurrenceInpatientAnyTimePrior}{One covariate per condition observed in an
-inpatient setting in the condition_occurrence
+\item{useConditionOccurrencePrimaryInpatientAnyTimePrior}{One covariate per condition observed as
+a primary diagnosis in an inpatient
+setting in the condition_occurrence
 table starting any time prior to index.
 (analysis ID 105)}
 
-\item{useConditionOccurrenceInpatientLongTerm}{One covariate per condition observed in an
-inpatient setting in the condition_occurrence
+\item{useConditionOccurrencePrimaryInpatientLongTerm}{One covariate per condition observed as
+a primary diagnosis in an inpatient
+setting in the condition_occurrence
 table starting in the long term window.
 (analysis ID 106)}
 
-\item{useConditionOccurrenceInpatientMediumTerm}{One covariate per condition observed in an
-inpatient setting in the condition_occurrence
-table starting in the medium term window.
-(analysis ID 107)}
+\item{useConditionOccurrencePrimaryInpatientMediumTerm}{One covariate per condition observed as
+a primary diagnosis in an inpatient
+setting in the condition_occurrence
+table starting in the medium term
+window. (analysis ID 107)}
 
-\item{useConditionOccurrenceInpatientShortTerm}{One covariate per condition observed in an
-inpatient setting in the condition_occurrence
+\item{useConditionOccurrencePrimaryInpatientShortTerm}{One covariate per condition observed as
+a primary diagnosis in an inpatient
+setting in the condition_occurrence
 table starting in the short term window.
 (analysis ID 108)}
 
 \item{useConditionEraAnyTimePrior}{One covariate per condition in the
-condition_era table overlapping with any time
-prior to index. (analysis ID 201)}
+condition_era table overlapping with any
+time prior to index. (analysis ID 201)}
 
 \item{useConditionEraLongTerm}{One covariate per condition in the
-condition_era table overlapping with any part
-of the long term window. (analysis ID 202)}
+condition_era table overlapping with any
+part of the long term window. (analysis
+ID 202)}
 
 \item{useConditionEraMediumTerm}{One covariate per condition in the
-condition_era table overlapping with any part
-of the medium term window. (analysis ID 203)}
+condition_era table overlapping with any
+part of the medium term window.
+(analysis ID 203)}
 
 \item{useConditionEraShortTerm}{One covariate per condition in the
-condition_era table overlapping with any part
-of the short term window. (analysis ID 204)}
+condition_era table overlapping with any
+part of the short term window. (analysis
+ID 204)}
 
 \item{useConditionEraOverlapping}{One covariate per condition in the
-condition_era table overlapping with the end of
-the risk window. (analysis ID 205)}
+condition_era table overlapping with the
+end of the risk window. (analysis ID
+205)}
 
 \item{useConditionEraStartLongTerm}{One covariate per condition in the
-condition_era table starting in the long term
-window. (analysis ID 206)}
+condition_era table starting in the long
+term window. (analysis ID 206)}
 
 \item{useConditionEraStartMediumTerm}{One covariate per condition in the
-condition_era table starting in the medium term
-window. (analysis ID 207)}
+condition_era table starting in the
+medium term window. (analysis ID 207)}
 
 \item{useConditionEraStartShortTerm}{One covariate per condition in the
-condition_era table starting in the short term
-window. (analysis ID 208)}
+condition_era table starting in the
+short term window. (analysis ID 208)}
 
-\item{useConditionGroupEraAnyTimePrior}{One covariate per condition era rolled up to
-groups in the condition_era table overlapping
-with any time prior to index. (analysis ID 209)}
+\item{useConditionGroupEraAnyTimePrior}{One covariate per condition era rolled
+up to groups in the condition_era table
+overlapping with any time prior to
+index. (analysis ID 209)}
 
-\item{useConditionGroupEraLongTerm}{One covariate per condition era rolled up to
-groups in the condition_era table overlapping
-with any part of the long term window.
-(analysis ID 210)}
+\item{useConditionGroupEraLongTerm}{One covariate per condition era rolled
+up to groups in the condition_era table
+overlapping with any part of the long
+term window. (analysis ID 210)}
 
-\item{useConditionGroupEraMediumTerm}{One covariate per condition era rolled up to
-groups in the condition_era table overlapping
-with any part of the medium term window.
-(analysis ID 211)}
+\item{useConditionGroupEraMediumTerm}{One covariate per condition era rolled
+up to groups in the condition_era table
+overlapping with any part of the medium
+term window. (analysis ID 211)}
 
-\item{useConditionGroupEraShortTerm}{One covariate per condition era rolled up to
-groups in the condition_era table overlapping
-with any part of the short term window.
-(analysis ID 212)}
+\item{useConditionGroupEraShortTerm}{One covariate per condition era rolled
+up to groups in the condition_era table
+overlapping with any part of the short
+term window. (analysis ID 212)}
 
-\item{useConditionGroupEraOverlapping}{One covariate per condition era rolled up to
-groups in the condition_era table overlapping
-with the end of the risk window. (analysis ID
-213)}
+\item{useConditionGroupEraOverlapping}{One covariate per condition era rolled
+up to groups in the condition_era table
+overlapping with the end of the risk
+window. (analysis ID 213)}
 
-\item{useConditionGroupEraStartLongTerm}{One covariate per condition era rolled up to
-groups in the condition_era table starting in
-the long term window. (analysis ID 214)}
+\item{useConditionGroupEraStartLongTerm}{One covariate per condition era rolled
+up to groups in the condition_era table
+starting in the long term window.
+(analysis ID 214)}
 
-\item{useConditionGroupEraStartMediumTerm}{One covariate per condition era rolled up to
-groups in the condition_era table starting in
-the medium term window. (analysis ID 215)}
+\item{useConditionGroupEraStartMediumTerm}{One covariate per condition era rolled
+up to groups in the condition_era table
+starting in the medium term window.
+(analysis ID 215)}
 
-\item{useConditionGroupEraStartShortTerm}{One covariate per condition era rolled up to
-groups in the condition_era table starting in
-the short term window. (analysis ID 216)}
+\item{useConditionGroupEraStartShortTerm}{One covariate per condition era rolled
+up to groups in the condition_era table
+starting in the short term window.
+(analysis ID 216)}
 
-\item{useDrugExposureAnyTimePrior}{One covariate per drug in the drug_exposure
-table starting any time prior to index.
-(analysis ID 301)}
+\item{useDrugExposureAnyTimePrior}{One covariate per drug in the
+drug_exposure table starting any time
+prior to index. (analysis ID 301)}
 
-\item{useDrugExposureLongTerm}{One covariate per drug in the drug_exposure
+\item{useDrugExposureLongTerm}{One covariate per drug in the
+drug_exposure table starting in the long
+term window. (analysis ID 302)}
+
+\item{useDrugExposureMediumTerm}{One covariate per drug in the
+drug_exposure table starting in the
+medium term window. (analysis ID 303)}
+
+\item{useDrugExposureShortTerm}{One covariate per drug in the
+drug_exposure table starting in the
+short term window. (analysis ID 304)}
+
+\item{useDrugEraAnyTimePrior}{One covariate per drug in the drug_era
+table overlapping with any time prior to
+index. (analysis ID 401)}
+
+\item{useDrugEraLongTerm}{One covariate per drug in the drug_era
+table overlapping with any part of the
+long term window. (analysis ID 402)}
+
+\item{useDrugEraMediumTerm}{One covariate per drug in the drug_era
+table overlapping with any part of the
+medium term window. (analysis ID 403)}
+
+\item{useDrugEraShortTerm}{One covariate per drug in the drug_era
+table overlapping with any part of the
+short window. (analysis ID 404)}
+
+\item{useDrugEraOverlapping}{One covariate per drug in the drug_era
+table overlapping with the end of the
+risk window. (analysis ID 405)}
+
+\item{useDrugEraStartLongTerm}{One covariate per drug in the drug_era
 table starting in the long term window.
-(analysis ID 302)}
+(analysis ID 406)}
 
-\item{useDrugExposureMediumTerm}{One covariate per drug in the drug_exposure
-table starting in the medium term window.
-(analysis ID 303)}
+\item{useDrugEraStartMediumTerm}{One covariate per drug in the drug_era
+table starting in the medium term
+window. (analysis ID 407)}
 
-\item{useDrugExposureShortTerm}{One covariate per drug in the drug_exposure
-table starting in the short term window.
-(analysis ID 304)}
+\item{useDrugEraStartShortTerm}{One covariate per drug in the drug_era
+table starting in the long short window.
+(analysis ID 408)}
 
-\item{useDrugEraAnyTimePrior}{One covariate per drug in the drug_era table
-overlapping with any time prior to index.
-(analysis ID 401)}
+\item{useDrugGroupEraAnyTimePrior}{One covariate per drug rolled up to ATC
+groups in the drug_era table overlapping
+with any time prior to index. (analysis
+ID 409)}
 
-\item{useDrugEraLongTerm}{One covariate per drug in the drug_era table
-overlapping with any part of the long term
-window. (analysis ID 402)}
+\item{useDrugGroupEraLongTerm}{One covariate per drug rolled up to ATC
+groups in the drug_era table overlapping
+with any part of the long term window.
+(analysis ID 410)}
 
-\item{useDrugEraMediumTerm}{One covariate per drug in the drug_era table
-overlapping with any part of the medium term
-window. (analysis ID 403)}
+\item{useDrugGroupEraMediumTerm}{One covariate per drug rolled up to ATC
+groups in the drug_era table overlapping
+with any part of the medium term window.
+(analysis ID 411)}
 
-\item{useDrugEraShortTerm}{One covariate per drug in the drug_era table
-overlapping with any part of the short window.
-(analysis ID 404)}
+\item{useDrugGroupEraShortTerm}{One covariate per drug rolled up to ATC
+groups in the drug_era table overlapping
+with any part of the short term window.
+(analysis ID 412)}
 
-\item{useDrugEraOverlapping}{One covariate per drug in the drug_era table
-overlapping with the end of the risk window.
-(analysis ID 405)}
+\item{useDrugGroupEraOverlapping}{One covariate per drug rolled up to ATC
+groups in the drug_era table overlapping
+with the end of the risk window.
+(analysis ID 413)}
 
-\item{useDrugEraStartLongTerm}{One covariate per drug in the drug_era table
-starting in the long term window. (analysis ID
-406)}
+\item{useDrugGroupEraStartLongTerm}{One covariate per drug rolled up to ATC
+groups in the drug_era table starting in
+the long term window. (analysis ID 414)}
 
-\item{useDrugEraStartMediumTerm}{One covariate per drug in the drug_era table
-starting in the medium term window. (analysis
-ID 407)}
+\item{useDrugGroupEraStartMediumTerm}{One covariate per drug rolled up to ATC
+groups in the drug_era table starting in
+the medium term window. (analysis ID
+415)}
 
-\item{useDrugEraStartShortTerm}{One covariate per drug in the drug_era table
-starting in the long short window. (analysis ID
-408)}
-
-\item{useDrugGroupEraAnyTimePrior}{One covariate per drug rolled up to ATC groups
-in the drug_era table overlapping with any time
-prior to index. (analysis ID 409)}
-
-\item{useDrugGroupEraLongTerm}{One covariate per drug rolled up to ATC groups
-in the drug_era table overlapping with any part
-of the long term window. (analysis ID 410)}
-
-\item{useDrugGroupEraMediumTerm}{One covariate per drug rolled up to ATC groups
-in the drug_era table overlapping with any part
-of the medium term window. (analysis ID 411)}
-
-\item{useDrugGroupEraShortTerm}{One covariate per drug rolled up to ATC groups
-in the drug_era table overlapping with any part
-of the short term window. (analysis ID 412)}
-
-\item{useDrugGroupEraOverlapping}{One covariate per drug rolled up to ATC groups
-in the drug_era table overlapping with the end
-of the risk window. (analysis ID 413)}
-
-\item{useDrugGroupEraStartLongTerm}{One covariate per drug rolled up to ATC groups
-in the drug_era table starting in the long term
-window. (analysis ID 414)}
-
-\item{useDrugGroupEraStartMediumTerm}{One covariate per drug rolled up to ATC groups
-in the drug_era table starting in the medium
-term window. (analysis ID 415)}
-
-\item{useDrugGroupEraStartShortTerm}{One covariate per drug rolled up to ATC groups
-in the drug_era table starting in the short
-term window. (analysis ID 416)}
+\item{useDrugGroupEraStartShortTerm}{One covariate per drug rolled up to ATC
+groups in the drug_era table starting in
+the short term window. (analysis ID 416)}
 
 \item{useProcedureOccurrenceAnyTimePrior}{One covariate per procedure in the
-procedure_occurrence table any time prior to
-index. (analysis ID 501)}
+procedure_occurrence table any time
+prior to index. (analysis ID 501)}
 
 \item{useProcedureOccurrenceLongTerm}{One covariate per procedure in the
-procedure_occurrence table in the long term
-window. (analysis ID 502)}
+procedure_occurrence table in the long
+term window. (analysis ID 502)}
 
 \item{useProcedureOccurrenceMediumTerm}{One covariate per procedure in the
-procedure_occurrence table in the medium term
-window. (analysis ID 503)}
+procedure_occurrence table in the medium
+term window. (analysis ID 503)}
 
 \item{useProcedureOccurrenceShortTerm}{One covariate per procedure in the
-procedure_occurrence table in the short term
-window. (analysis ID 504)}
+procedure_occurrence table in the short
+term window. (analysis ID 504)}
 
-\item{useDeviceExposureAnyTimePrior}{One covariate per device in the device exposure
-table starting any time prior to index.
-(analysis ID 601)}
+\item{useDeviceExposureAnyTimePrior}{One covariate per device in the device
+exposure table starting any time prior
+to index. (analysis ID 601)}
 
-\item{useDeviceExposureLongTerm}{One covariate per device in the device exposure
-table starting in the long term window.
-(analysis ID 602)}
+\item{useDeviceExposureLongTerm}{One covariate per device in the device
+exposure table starting in the long term
+window. (analysis ID 602)}
 
-\item{useDeviceExposureMediumTerm}{One covariate per device in the device exposure
-table starting in the medium term window.
-(analysis ID 603)}
+\item{useDeviceExposureMediumTerm}{One covariate per device in the device
+exposure table starting in the medium
+term window. (analysis ID 603)}
 
-\item{useDeviceExposureShortTerm}{One covariate per device in the device exposure
-table starting in the short term window.
-(analysis ID 604)}
+\item{useDeviceExposureShortTerm}{One covariate per device in the device
+exposure table starting in the short
+term window. (analysis ID 604)}
 
 \item{useMeasurementAnyTimePrior}{One covariate per measurement in the
-measurement table any time prior to index.
-(analysis ID 701)}
+measurement table any time prior to
+index. (analysis ID 701)}
 
 \item{useMeasurementLongTerm}{One covariate per measurement in the
-measurement table in the long term window.
-(analysis ID 702)}
+measurement table in the long term
+window. (analysis ID 702)}
 
 \item{useMeasurementMediumTerm}{One covariate per measurement in the
-measurement table in the medium term window.
-(analysis ID 703)}
+measurement table in the medium term
+window. (analysis ID 703)}
 
 \item{useMeasurementShortTerm}{One covariate per measurement in the
-measurement table in the short term window.
-(analysis ID 704)}
+measurement table in the short term
+window. (analysis ID 704)}
 
 \item{useMeasurementValueAnyTimePrior}{One covariate containing the value per
-measurement-unit combination any time prior to
-index. (analysis ID 705)}
+measurement-unit combination any time
+prior to index. (analysis ID 705)}
 
 \item{useMeasurementValueLongTerm}{One covariate containing the value per
-measurement-unit combination in the long term
-window. (analysis ID 706)}
+measurement-unit combination in the long
+term window. (analysis ID 706)}
 
 \item{useMeasurementValueMediumTerm}{One covariate containing the value per
-measurement-unit combination in the medium term
-window. (analysis ID 707)}
+measurement-unit combination in the
+medium term window. (analysis ID 707)}
 
 \item{useMeasurementValueShortTerm}{One covariate containing the value per
-measurement-unit combination in the short term
-window. (analysis ID 708)}
+measurement-unit combination in the
+short term window. (analysis ID 708)}
 
-\item{useMeasurementRangeGroupAnyTimePrior}{Covariates indicating whether measurements are
-below, within, or above normal range any time
-prior to index. (analysis ID 709)}
+\item{useMeasurementRangeGroupAnyTimePrior}{Covariates indicating whether
+measurements are below, within, or above
+normal range any time prior to index.
+(analysis ID 709)}
 
-\item{useMeasurementRangeGroupLongTerm}{Covariates indicating whether measurements are
-below, within, or above normal range in the
-long term window. (analysis ID 710)}
+\item{useMeasurementRangeGroupLongTerm}{Covariates indicating whether
+measurements are below, within, or above
+normal range in the long term window.
+(analysis ID 710)}
 
-\item{useMeasurementRangeGroupMediumTerm}{Covariates indicating whether measurements are
-below, within, or above normal range in the
-medium term window. (analysis ID 711)}
+\item{useMeasurementRangeGroupMediumTerm}{Covariates indicating whether
+measurements are below, within, or above
+normal range in the medium term window.
+(analysis ID 711)}
 
-\item{useMeasurementRangeGroupShortTerm}{Covariates indicating whether measurements are
-below, within, or above normal range in the
-short term window. (analysis ID 712)}
+\item{useMeasurementRangeGroupShortTerm}{Covariates indicating whether
+measurements are below, within, or above
+normal range in the short term window.
+(analysis ID 712)}
 
 \item{useObservationAnyTimePrior}{One covariate per observation in the
-observation table any time prior to index.
-(analysis ID 801)}
+observation table any time prior to
+index. (analysis ID 801)}
 
 \item{useObservationLongTerm}{One covariate per observation in the
-observation table in the long term window.
-(analysis ID 802)}
+observation table in the long term
+window. (analysis ID 802)}
 
 \item{useObservationMediumTerm}{One covariate per observation in the
-observation table in the medium term window.
-(analysis ID 803)}
+observation table in the medium term
+window. (analysis ID 803)}
 
 \item{useObservationShortTerm}{One covariate per observation in the
-observation table in the short term window.
-(analysis ID 804)}
+observation table in the short term
+window. (analysis ID 804)}
 
 \item{useCharlsonIndex}{The Charlson comorbidity index (Romano
-adaptation) using all conditions prior to the
-window end. (analysis ID 901)}
+adaptation) using all conditions prior
+to the window end. (analysis ID 901)}
 
-\item{useDcsi}{The Diabetes Comorbidity Severity Index (DCSI)
-using all conditions prior to the window end.
-(analysis ID 902)}
+\item{useDcsi}{The Diabetes Comorbidity Severity Index
+(DCSI) using all conditions prior to the
+window end. (analysis ID 902)}
 
-\item{useChads2}{The CHADS2 score using all conditions prior to
-the window end. (analysis ID 903)}
+\item{useChads2}{The CHADS2 score using all conditions
+prior to the window end. (analysis ID
+903)}
 
-\item{useChads2Vasc}{The CHADS2VASc score using all conditions prior
-to the window end. (analysis ID 904)}
+\item{useChads2Vasc}{The CHADS2VASc score using all
+conditions prior to the window end.
+(analysis ID 904)}
 
-\item{useDistinctConditionCountLongTerm}{The number of distinct condition concepts
-observed in the long term window. (analysis ID
-905)}
+\item{useDistinctConditionCountLongTerm}{The number of distinct condition
+concepts observed in the long term
+window. (analysis ID 905)}
 
-\item{useDistinctConditionCountMediumTerm}{The number of distinct condition concepts
-observed in the medium term window. (analysis
-ID 906)}
+\item{useDistinctConditionCountMediumTerm}{The number of distinct condition
+concepts observed in the medium term
+window. (analysis ID 906)}
 
-\item{useDistinctConditionCountShortTerm}{The number of distinct condition concepts
-observed in the short term window. (analysis ID
-907)}
+\item{useDistinctConditionCountShortTerm}{The number of distinct condition
+concepts observed in the short term
+window. (analysis ID 907)}
 
-\item{useDistinctIngredientCountLongTerm}{The number of distinct ingredients observed in
-the long term window. (analysis ID 908)}
+\item{useDistinctIngredientCountLongTerm}{The number of distinct ingredients
+observed in the long term window.
+(analysis ID 908)}
 
-\item{useDistinctIngredientCountMediumTerm}{The number of distinct ingredients observed in
-the medium term window. (analysis ID 909)}
+\item{useDistinctIngredientCountMediumTerm}{The number of distinct ingredients
+observed in the medium term window.
+(analysis ID 909)}
 
-\item{useDistinctIngredientCountShortTerm}{The number of distinct ingredients observed in
-the short term window. (analysis ID 910)}
+\item{useDistinctIngredientCountShortTerm}{The number of distinct ingredients
+observed in the short term window.
+(analysis ID 910)}
 
-\item{useDistinctProcedureCountLongTerm}{The number of distinct procedures observed in
-the long term window. (analysis ID 911)}
+\item{useDistinctProcedureCountLongTerm}{The number of distinct procedures
+observed in the long term window.
+(analysis ID 911)}
 
-\item{useDistinctProcedureCountMediumTerm}{The number of distinct procedures observed in
-the medium term window. (analysis ID 912)}
+\item{useDistinctProcedureCountMediumTerm}{The number of distinct procedures
+observed in the medium term window.
+(analysis ID 912)}
 
-\item{useDistinctProcedureCountShortTerm}{The number of distinct procedures observed in
-the short term window. (analysis ID 913)}
+\item{useDistinctProcedureCountShortTerm}{The number of distinct procedures
+observed in the short term window.
+(analysis ID 913)}
 
-\item{useDistinctMeasurementCountLongTerm}{The number of distinct measurements observed in
-the long term window. (analysis ID 914)}
+\item{useDistinctMeasurementCountLongTerm}{The number of distinct measurements
+observed in the long term window.
+(analysis ID 914)}
 
-\item{useDistinctMeasurementCountMediumTerm}{The number of distinct measurements observed in
-the medium term window. (analysis ID 915)}
+\item{useDistinctMeasurementCountMediumTerm}{The number of distinct measurements
+observed in the medium term window.
+(analysis ID 915)}
 
-\item{useDistinctMeasurementCountShortTerm}{The number of distinct measurements observed in
-the short term window. (analysis ID 916)}
+\item{useDistinctMeasurementCountShortTerm}{The number of distinct measurements
+observed in the short term window.
+(analysis ID 916)}
 
-\item{useDistinctObservationCountLongTerm}{The number of distinct observations observed in
-the long term window. (analysis ID 917)}
+\item{useDistinctObservationCountLongTerm}{The number of distinct observations
+observed in the long term window.
+(analysis ID 917)}
 
-\item{useDistinctObservationCountMediumTerm}{The number of distinct observations observed in
-the medium term window. (analysis ID 918)}
+\item{useDistinctObservationCountMediumTerm}{The number of distinct observations
+observed in the medium term window.
+(analysis ID 918)}
 
-\item{useDistinctObservationCountShortTerm}{The number of distinct observations observed in
-the short term window. (analysis ID 919)}
+\item{useDistinctObservationCountShortTerm}{The number of distinct observations
+observed in the short term window.
+(analysis ID 919)}
 
-\item{useVisitCountLongTerm}{The number of visits observed in the long term
-window. (analysis ID 920)}
+\item{useVisitCountLongTerm}{The number of visits observed in the
+long term window. (analysis ID 920)}
 
-\item{useVisitCountMediumTerm}{The number of visits observed in the medium
-term window. (analysis ID 921)}
+\item{useVisitCountMediumTerm}{The number of visits observed in the
+medium term window. (analysis ID 921)}
 
-\item{useVisitCountShortTerm}{The number of visits observed in the short term
-window. (analysis ID 922)}
+\item{useVisitCountShortTerm}{The number of visits observed in the
+short term window. (analysis ID 922)}
 
-\item{useVisitConceptCountLongTerm}{The number of visits observed in the long term
-window, stratified by visit concept ID.
-(analysis ID 923)}
+\item{useVisitConceptCountLongTerm}{The number of visits observed in the
+long term window, stratified by visit
+concept ID. (analysis ID 923)}
 
-\item{useVisitConceptCountMediumTerm}{The number of visits observed in the medium
-term window, stratified by visit concept ID.
-(analysis ID 924)}
+\item{useVisitConceptCountMediumTerm}{The number of visits observed in the
+medium term window, stratified by visit
+concept ID. (analysis ID 924)}
 
-\item{useVisitConceptCountShortTerm}{The number of visits observed in the short term
-window, stratified by visit concept ID.
-(analysis ID 925)}
+\item{useVisitConceptCountShortTerm}{The number of visits observed in the
+short term window, stratified by visit
+concept ID. (analysis ID 925)}
 
-\item{longTermStartDays}{What is the start day (relative to the index
-date) of the long-term window?}
+\item{longTermStartDays}{What is the start day (relative to the
+index date) of the long-term window?}
 
-\item{mediumTermStartDays}{What is the start day (relative to the index
-date) of the medium-term window?}
+\item{mediumTermStartDays}{What is the start day (relative to the
+index date) of the medium-term window?}
 
-\item{shortTermStartDays}{What is the start day (relative to the index
-date) of the short-term window?}
+\item{shortTermStartDays}{What is the start day (relative to the
+index date) of the short-term window?}
 
-\item{endDays}{What is the end day (relative to the index
-date) of the window?}
+\item{endDays}{What is the end day (relative to the
+index date) of the window?}
 
-\item{includedCovariateConceptIds}{A list of concept IDs that should be used to
-construct covariates.}
+\item{includedCovariateConceptIds}{A list of concept IDs that should be
+used to construct covariates.}
 
-\item{addDescendantsToInclude}{Should descendant concept IDs be added to the
-list of concepts to include?}
+\item{addDescendantsToInclude}{Should descendant concept IDs be added
+to the list of concepts to include?}
 
-\item{excludedCovariateConceptIds}{A list of concept IDs that should NOT be used
-to construct covariates.}
+\item{excludedCovariateConceptIds}{A list of concept IDs that should NOT be
+used to construct covariates.}
 
-\item{addDescendantsToExclude}{Should descendant concept IDs be added to the
-list of concepts to exclude?}
+\item{addDescendantsToExclude}{Should descendant concept IDs be added
+to the list of concepts to exclude?}
 
 \item{includedCovariateIds}{A list of covariate IDs that should be
 restricted to.}
@@ -531,10 +572,10 @@ settings <- createCovariateSettings(useDemographicsGender = TRUE,
                                     useConditionOccurrenceLongTerm = FALSE,
                                     useConditionOccurrenceMediumTerm = FALSE,
                                     useConditionOccurrenceShortTerm = FALSE,
-                                    useConditionOccurrenceInpatientAnyTimePrior = FALSE,
-                                    useConditionOccurrenceInpatientLongTerm = FALSE,
-                                    useConditionOccurrenceInpatientMediumTerm = FALSE,
-                                    useConditionOccurrenceInpatientShortTerm = FALSE,
+                                    useConditionOccurrencePrimaryInpatientAnyTimePrior = FALSE,
+                                    useConditionOccurrencePrimaryInpatientLongTerm = FALSE,
+                                    useConditionOccurrencePrimaryInpatientMediumTerm = FALSE,
+                                    useConditionOccurrencePrimaryInpatientShortTerm = FALSE,
                                     useConditionEraAnyTimePrior = FALSE,
                                     useConditionEraLongTerm = FALSE,
                                     useConditionEraMediumTerm = FALSE,
