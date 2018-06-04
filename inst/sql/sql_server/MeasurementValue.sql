@@ -9,8 +9,8 @@ FROM @cdm_database_schema.measurement
 WHERE value_as_number IS NOT NULL; 
 
 -- Feature construction
-IF OBJECT_ID('tempdb..#raw_data', 'U') IS NOT NULL
-	DROP TABLE #raw_data;
+IF OBJECT_ID('tempdb..#meas_val_data', 'U') IS NOT NULL
+	DROP TABLE #meas_val_data;
 	
 SELECT 
 {@aggregated} ? {
@@ -25,7 +25,7 @@ SELECT
 	measurement_concept_id,
 	unit_concept_id,
 	value_as_number
-INTO #raw_data
+INTO #meas_val_data
 FROM (
 	SELECT 
 {@aggregated} ? {
@@ -88,7 +88,7 @@ SELECT measurement_concept_id,
 	CAST(STDEV(value_as_number) AS FLOAT) AS standard_deviation,
 	COUNT(*) AS count_value
 INTO #overall_stats
-FROM #raw_data
+FROM #meas_val_data
 GROUP BY measurement_concept_id,
 {@temporal} ? {
 	time_id,
@@ -104,7 +104,7 @@ SELECT measurement_concept_id,
 	COUNT(*) AS total,
 	ROW_NUMBER() OVER (PARTITION BY measurement_concept_id, unit_concept_id	ORDER BY value_as_number) AS rn
 INTO #prep_stats
-FROM #raw_data
+FROM #meas_val_data
 GROUP BY value_as_number,
 {@temporal} ? {
 	time_id,
@@ -173,7 +173,7 @@ SELECT covariate_id,
 	row_id,
 	value_as_number AS covariate_value 
 INTO @covariate_table
-FROM #raw_data raw_data
+FROM #meas_val_data raw_data
 INNER JOIN #covariate_ids covariate_ids
 	ON raw_data.measurement_concept_id = covariate_ids.measurement_concept_id
 		AND	raw_data.unit_concept_id = covariate_ids.unit_concept_id	

@@ -374,8 +374,8 @@ WHERE ancestor_concept_id IN (439727);
 
 -- Feature construction
 {@aggregated} ? {
-IF OBJECT_ID('tempdb..#raw_data', 'U') IS NOT NULL
-	DROP TABLE #raw_data;
+IF OBJECT_ID('tempdb..#charlson_data', 'U') IS NOT NULL
+	DROP TABLE #charlson_data;
 
 IF OBJECT_ID('tempdb..#overall_stats', 'U') IS NOT NULL
 	DROP TABLE #overall_stats;
@@ -389,7 +389,7 @@ IF OBJECT_ID('tempdb..#prep_stats2', 'U') IS NOT NULL
 SELECT subject_id,
 	cohort_start_date,
 	SUM(weight) AS score
-INTO #raw_data
+INTO #charlson_data
 } : {
 SELECT CAST(1000 + @analysis_id AS BIGINT) AS covariate_id,
 {@temporal} ? {
@@ -442,7 +442,7 @@ t2 AS (
 		MAX(score) AS max_score, 
 		SUM(score) AS sum_score,
 		SUM(score * score) as squared_score
-	FROM #raw_data
+	FROM #charlson_data
 	)
 SELECT CASE WHEN t2.cnt = t1.cnt THEN t2.min_score ELSE 0 END AS min_value,
 	t2.max_score AS max_value,
@@ -458,7 +458,7 @@ SELECT score,
 	COUNT(*) AS total,
 	ROW_NUMBER() OVER (ORDER BY score) AS rn
 INTO #prep_stats
-FROM #raw_data
+FROM #charlson_data
 GROUP BY score;
 	
 SELECT s.score,
@@ -510,8 +510,8 @@ GROUP BY o.count_value,
 	o.standard_deviation,
 	o.population_size;
 	
-TRUNCATE TABLE #raw_data;
-DROP TABLE #raw_data;
+TRUNCATE TABLE #charlson_data;
+DROP TABLE #charlson_data;
 
 TRUNCATE TABLE #overall_stats;
 DROP TABLE #overall_stats;
