@@ -36,5 +36,5 @@ Tidy covariate data
 }
 \details{
 Normalize covariate values by dividing by the max and/or remove redundant covariates and/or remove
-infrequent covariates.
+infrequent covariates. For temporal covariates, redundancy is evaluated per time ID.
 }
