@@ -35,7 +35,7 @@
 #'                                                             time preceding the index date. (analysis
 #'                                                             ID 8)
 #' @param useDemographicsPostObservationTime                   Number of continuous days of observation
-#'                                                             time preceding the index date. (analysis
+#'                                                             time following the index date. (analysis
 #'                                                             ID 9)
 #' @param useDemographicsTimeInCohort                          Number of days of observation time
 #'                                                             during cohort period. (analysis ID 10)
