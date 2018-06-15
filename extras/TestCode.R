@@ -215,6 +215,24 @@ testthat::expect_equal(covariates1, covariates2, tolerance = 0.01)
 head(covariates1)
 head(covariates2)
 
+# Temporal covariates -----------------------------------------------
+covariateSettings <- createTemporalCovariateSettings(useDemographicsGender = TRUE,
+                                                     useMeasurementValue = TRUE)
+covs <- getDbCovariateData(connectionDetails = connectionDetails,
+                           oracleTempSchema = oracleTempSchema,
+                           cdmDatabaseSchema = cdmDatabaseSchema,
+                           cohortDatabaseSchema = cohortDatabaseSchema,
+                           cohortTable = cohortTable,
+                           cohortId = 1,
+                           rowIdField = "row_id",
+                           cohortTableIsTemp = FALSE,
+                           covariateSettings = covariateSettings,
+                           aggregated = FALSE)
+saveCovariateData(covs, "c:/temp/tempCovs")
+covs <- loadCovariateData("c:/temp/tempCovs")
+tidyCovs <- tidyCovariateData(covs)
+
+
 # Storing data on server -----------------------------------------------------------------------
 settings <- createCovariateSettings(useDemographicsGender = TRUE,
                                     useDemographicsAgeGroup = TRUE)
