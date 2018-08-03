@@ -3,14 +3,14 @@
 IF OBJECT_ID('tempdb..#concept_count_data', 'U') IS NOT NULL
 	DROP TABLE #concept_count_data;
 
-IF OBJECT_ID('tempdb..#overall_stats', 'U') IS NOT NULL
-	DROP TABLE #overall_stats;
+IF OBJECT_ID('tempdb..#concept_count_stats', 'U') IS NOT NULL
+	DROP TABLE #concept_count_stats;
 
-IF OBJECT_ID('tempdb..#prep_stats', 'U') IS NOT NULL
-	DROP TABLE #prep_stats;
+IF OBJECT_ID('tempdb..#concept_count_prep', 'U') IS NOT NULL
+	DROP TABLE #concept_count_prep;
 
-IF OBJECT_ID('tempdb..#prep_stats2', 'U') IS NOT NULL
-	DROP TABLE #prep_stats2;
+IF OBJECT_ID('tempdb..#concept_count_prep2', 'U') IS NOT NULL
+	DROP TABLE #concept_count_prep2;
 
 SELECT subject_id,
 	cohort_start_date,
@@ -119,7 +119,7 @@ SELECT CASE WHEN t2.cnt = t1.cnt THEN t2.min_concept_count ELSE 0 END AS min_val
 	t2.cnt AS count_value,
 	t1.cnt - t2.cnt AS count_no_value,
 	t1.cnt AS population_size
-INTO #overall_stats
+INTO #concept_count_stats
 FROM t1, t2;
 
 SELECT concept_count,
@@ -130,7 +130,7 @@ SELECT concept_count,
 } : {
 	ROW_NUMBER() OVER (ORDER BY concept_count) AS rn
 }
-INTO #prep_stats
+INTO #concept_count_prep
 FROM #concept_count_data
 GROUP BY concept_count
 {@sub_type == 'stratified'} ? {
@@ -143,9 +143,9 @@ SELECT s.concept_count,
 	s.covariate_id,
 }
 	SUM(p.total) AS accumulated
-INTO #prep_stats2	
-FROM #prep_stats s
-INNER JOIN #prep_stats p
+INTO #concept_count_prep2	
+FROM #concept_count_prep s
+INNER JOIN #concept_count_prep p
 	ON p.rn <= s.rn
 {@sub_type == 'stratified'} ? {
 	AND p.covariate_id= s.covariate_id
@@ -190,13 +190,13 @@ SELECT CAST(1000 + @analysis_id AS BIGINT) AS covariate_id,
 		ELSE MIN(CASE WHEN p.accumulated + count_no_value >= .90 * o.population_size THEN concept_count	END) 
 		END AS p90_value		
 INTO @covariate_table
-FROM #prep_stats2 p
+FROM #concept_count_prep2 p
 {@sub_type == 'stratified'} ? {
-INNER JOIN #overall_stats o
+INNER JOIN #concept_count_stats o
 ON p.covariate_id = o.covariate_id
 {@included_cov_table != ''} ? {WHERE covariate_id IN (SELECT id FROM @included_cov_table)}
 } : {
-CROSS JOIN #overall_stats o
+CROSS JOIN #concept_count_stats o
 {@included_cov_table != ''} ? {WHERE 1000 + @analysis_id IN (SELECT id FROM @included_cov_table)}
 }
 GROUP BY o.count_value,
@@ -213,14 +213,14 @@ GROUP BY o.count_value,
 TRUNCATE TABLE #concept_count_data;
 DROP TABLE #concept_count_data;
 
-TRUNCATE TABLE #overall_stats;
-DROP TABLE #overall_stats;
+TRUNCATE TABLE #concept_count_stats;
+DROP TABLE #concept_count_stats;
 
-TRUNCATE TABLE #prep_stats;
-DROP TABLE #prep_stats;
+TRUNCATE TABLE #concept_count_prep;
+DROP TABLE #concept_count_prep;
 
-TRUNCATE TABLE #prep_stats2;
-DROP TABLE #prep_stats2;	
+TRUNCATE TABLE #concept_count_prep2;
+DROP TABLE #concept_count_prep2;	
 } 
 
 -- Reference construction
