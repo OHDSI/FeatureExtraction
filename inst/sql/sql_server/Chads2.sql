@@ -103,14 +103,14 @@ WHERE ancestor_concept_id IN (381591, 434056);
 IF OBJECT_ID('tempdb..#chads2_data', 'U') IS NOT NULL
 	DROP TABLE #chads2_data;
 
-IF OBJECT_ID('tempdb..#overall_stats', 'U') IS NOT NULL
-	DROP TABLE #overall_stats;
+IF OBJECT_ID('tempdb..#chads2_stats', 'U') IS NOT NULL
+	DROP TABLE #chads2_stats;
 
-IF OBJECT_ID('tempdb..#prep_stats', 'U') IS NOT NULL
-	DROP TABLE #prep_stats;
+IF OBJECT_ID('tempdb..#chads2_prep', 'U') IS NOT NULL
+	DROP TABLE #chads2_prep;
 
-IF OBJECT_ID('tempdb..#prep_stats2', 'U') IS NOT NULL
-	DROP TABLE #prep_stats2;
+IF OBJECT_ID('tempdb..#chads2_prep2', 'U') IS NOT NULL
+	DROP TABLE #chads2_prep2;
 
 SELECT subject_id,
 	cohort_start_date,
@@ -192,21 +192,21 @@ SELECT CASE WHEN t2.cnt = t1.cnt THEN t2.min_score ELSE 0 END AS min_value,
 	t2.cnt AS count_value,
 	t1.cnt - t2.cnt AS count_no_value,
 	t1.cnt AS population_size
-INTO #overall_stats
+INTO #chads2_stats
 FROM t1, t2;
 
 SELECT score,
 	COUNT(*) AS total,
 	ROW_NUMBER() OVER (ORDER BY score) AS rn
-INTO #prep_stats
+INTO #chads2_prep
 FROM #chads2_data
 GROUP BY score;
 	
 SELECT s.score,
 	SUM(p.total) AS accumulated
-INTO #prep_stats2	
-FROM #prep_stats s
-INNER JOIN #prep_stats p
+INTO #chads2_prep2	
+FROM #chads2_prep s
+INNER JOIN #chads2_prep p
 	ON p.rn <= s.rn
 GROUP BY s.score;
 
@@ -240,8 +240,8 @@ SELECT CAST(1000 + @analysis_id AS BIGINT) AS covariate_id,
 		ELSE MIN(CASE WHEN p.accumulated + count_no_value >= .90 * o.population_size THEN score	END) 
 		END AS p90_value		
 INTO @covariate_table
-FROM #prep_stats2 p
-CROSS JOIN #overall_stats o
+FROM #chads2_prep2 p
+CROSS JOIN #chads2_stats o
 {@included_cov_table != ''} ? {WHERE 1000 + @analysis_id IN (SELECT id FROM @included_cov_table)}
 GROUP BY o.count_value,
 	o.count_no_value,
@@ -254,14 +254,14 @@ GROUP BY o.count_value,
 TRUNCATE TABLE #chads2_data;
 DROP TABLE #chads2_data;
 
-TRUNCATE TABLE #overall_stats;
-DROP TABLE #overall_stats;
+TRUNCATE TABLE #chads2_stats;
+DROP TABLE #chads2_stats;
 
-TRUNCATE TABLE #prep_stats;
-DROP TABLE #prep_stats;
+TRUNCATE TABLE #chads2_prep;
+DROP TABLE #chads2_prep;
 
-TRUNCATE TABLE #prep_stats2;
-DROP TABLE #prep_stats2;	
+TRUNCATE TABLE #chads2_prep2;
+DROP TABLE #chads2_prep2;	
 } 
 
 TRUNCATE TABLE #chads2_concepts;
