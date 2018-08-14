@@ -135,6 +135,7 @@ runExtractionPerPerson <- function(connectionDetails, cdmDatabaseSchema, ohdsiDa
 }
 
 test_that(paste("Run all analysis at per-person level on ", getOption("dbms")), {
+  skip_if_not(getOption("test") == "perPerson")
   if (getOption("dbms") == "postgresql") {
     connectionDetails <- createConnectionDetails(dbms = "postgresql",
                                                  user = Sys.getenv("CDM5_POSTGRESQL_USER"),
@@ -317,6 +318,7 @@ runExtractionAggregated <- function(connectionDetails, cdmDatabaseSchema, ohdsiD
 }
 
 test_that(paste("Run all analysis at aggregated level on ", getOption("dbms")), {
+  skip_if_not(getOption("test") == "aggregated")
   if (getOption("dbms") == "postgresql") {
     connectionDetails <- createConnectionDetails(dbms = "postgresql",
                                                  user = Sys.getenv("CDM5_POSTGRESQL_USER"),
@@ -430,6 +432,7 @@ runExtractionTemporalPerPerson <- function(connectionDetails, cdmDatabaseSchema,
 }
 
 test_that(paste("Run all temporalanalysis at per-person level on ", getOption("dbms")), {
+  skip_if_not(getOption("test") == "temporalPerPerson")
   if (getOption("dbms") == "postgresql") {
     connectionDetails <- createConnectionDetails(dbms = "postgresql",
                                                  user = Sys.getenv("CDM5_POSTGRESQL_USER"),
@@ -544,6 +547,7 @@ runExtractionTemporalAggregated <- function(connectionDetails, cdmDatabaseSchema
 }
 
 test_that(paste("Run all temporalanalysis at aggregated level on ", getOption("dbms")), {
+  skip_if_not(getOption("test") == "temporalAggregated")
   if (getOption("dbms") == "postgresql") {
     connectionDetails <- createConnectionDetails(dbms = "postgresql",
                                                  user = Sys.getenv("CDM5_POSTGRESQL_USER"),

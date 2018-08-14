@@ -1,0 +1,5 @@
+library(testthat)
+library(FeatureExtraction)
+options(dbms = "sql server")
+options(test = "spotChecks")
+test_check("FeatureExtraction")

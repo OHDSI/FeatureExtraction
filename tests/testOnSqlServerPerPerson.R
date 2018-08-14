@@ -1,0 +1,5 @@
+library(testthat)
+library(FeatureExtraction)
+options(dbms = "sql server")
+options(test = "perPerson")
+test_check("FeatureExtraction")

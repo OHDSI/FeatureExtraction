@@ -169,6 +169,7 @@ runSpotChecks <- function(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSch
 }
 
 test_that(paste("Run spot-checks at per-person level on ", getOption("dbms")), {
+  skip_if_not(getOption("test") == "spotChecks")
   if (getOption("dbms") == "postgresql") {
     connectionDetails <- createConnectionDetails(dbms = "postgresql",
                                                  user = Sys.getenv("CDM5_POSTGRESQL_USER"),

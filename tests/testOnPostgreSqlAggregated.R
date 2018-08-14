@@ -1,0 +1,5 @@
+library(testthat)
+library(FeatureExtraction)
+options(dbms = "postgresql")
+options(test = "aggregated")
+test_check("FeatureExtraction")

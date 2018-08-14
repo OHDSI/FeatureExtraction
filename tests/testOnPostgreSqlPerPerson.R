@@ -1,4 +1,5 @@
 library(testthat)
 library(FeatureExtraction)
-options(dbms = "sql server")
+options(dbms = "postgresql")
+options(test = "perPerson")
 test_check("FeatureExtraction")
