@@ -352,14 +352,14 @@ WHERE source_code LIKE '250.1%'
 IF OBJECT_ID('tempdb..#dcsi_data', 'U') IS NOT NULL
 	DROP TABLE #dcsi_data;
 
-IF OBJECT_ID('tempdb..#overall_stats', 'U') IS NOT NULL
-	DROP TABLE #overall_stats;
+IF OBJECT_ID('tempdb..#dcsi_stats', 'U') IS NOT NULL
+	DROP TABLE #dcsi_stats;
 
-IF OBJECT_ID('tempdb..#prep_stats', 'U') IS NOT NULL
-	DROP TABLE #prep_stats;
+IF OBJECT_ID('tempdb..#dcsi_prep', 'U') IS NOT NULL
+	DROP TABLE #dcsi_prep;
 
-IF OBJECT_ID('tempdb..#prep_stats2', 'U') IS NOT NULL
-	DROP TABLE #prep_stats2;
+IF OBJECT_ID('tempdb..#dcsi_prep2', 'U') IS NOT NULL
+	DROP TABLE #dcsi_prep2;
 
 SELECT subject_id,
 	cohort_start_date,
@@ -432,21 +432,21 @@ SELECT CASE WHEN t2.cnt = t1.cnt THEN t2.min_score ELSE 0 END AS min_value,
 	t2.cnt AS count_value,
 	t1.cnt - t2.cnt AS count_no_value,
 	t1.cnt AS population_size
-INTO #overall_stats
+INTO #dcsi_stats
 FROM t1, t2;
 
 SELECT score,
 	COUNT(*) AS total,
 	ROW_NUMBER() OVER (ORDER BY score) AS rn
-INTO #prep_stats
+INTO #dcsi_prep
 FROM #dcsi_data
 GROUP BY score;
 	
 SELECT s.score,
 	SUM(p.total) AS accumulated
-INTO #prep_stats2	
-FROM #prep_stats s
-INNER JOIN #prep_stats p
+INTO #dcsi_prep2	
+FROM #dcsi_prep s
+INNER JOIN #dcsi_prep p
 	ON p.rn <= s.rn
 GROUP BY s.score;
 
@@ -480,8 +480,8 @@ SELECT CAST(1000 + @analysis_id AS BIGINT) AS covariate_id,
 		ELSE MIN(CASE WHEN p.accumulated + count_no_value >= .90 * o.population_size THEN score	END) 
 		END AS p90_value		
 INTO @covariate_table
-FROM #prep_stats2 p
-CROSS JOIN #overall_stats o
+FROM #dcsi_prep2 p
+CROSS JOIN #dcsi_stats o
 {@included_cov_table != ''} ? {WHERE 1000 + @analysis_id IN (SELECT id FROM @included_cov_table)}
 GROUP BY o.count_value,
 	o.count_no_value,
@@ -494,14 +494,14 @@ GROUP BY o.count_value,
 TRUNCATE TABLE #dcsi_data;
 DROP TABLE #dcsi_data;
 
-TRUNCATE TABLE #overall_stats;
-DROP TABLE #overall_stats;
+TRUNCATE TABLE #dcsi_stats;
+DROP TABLE #dcsi_stats;
 
-TRUNCATE TABLE #prep_stats;
-DROP TABLE #prep_stats;
+TRUNCATE TABLE #dcsi_prep;
+DROP TABLE #dcsi_prep;
 
-TRUNCATE TABLE #prep_stats2;
-DROP TABLE #prep_stats2;	
+TRUNCATE TABLE #dcsi_prep2;
+DROP TABLE #dcsi_prep2;	
 } 
 
 TRUNCATE TABLE #dcsi_scoring;

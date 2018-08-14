@@ -377,14 +377,14 @@ WHERE ancestor_concept_id IN (439727);
 IF OBJECT_ID('tempdb..#charlson_data', 'U') IS NOT NULL
 	DROP TABLE #charlson_data;
 
-IF OBJECT_ID('tempdb..#overall_stats', 'U') IS NOT NULL
-	DROP TABLE #overall_stats;
+IF OBJECT_ID('tempdb..#charlson_stats', 'U') IS NOT NULL
+	DROP TABLE #charlson_stats;
 
-IF OBJECT_ID('tempdb..#prep_stats', 'U') IS NOT NULL
-	DROP TABLE #prep_stats;
+IF OBJECT_ID('tempdb..#charlson_prep', 'U') IS NOT NULL
+	DROP TABLE #charlson_prep;
 
-IF OBJECT_ID('tempdb..#prep_stats2', 'U') IS NOT NULL
-	DROP TABLE #prep_stats2;
+IF OBJECT_ID('tempdb..#charlson_prep2', 'U') IS NOT NULL
+	DROP TABLE #charlson_prep2;
 
 SELECT subject_id,
 	cohort_start_date,
@@ -451,21 +451,21 @@ SELECT CASE WHEN t2.cnt = t1.cnt THEN t2.min_score ELSE 0 END AS min_value,
 	t2.cnt AS count_value,
 	t1.cnt - t2.cnt AS count_no_value,
 	t1.cnt AS population_size
-INTO #overall_stats
+INTO #charlson_stats
 FROM t1, t2;
 
 SELECT score,
 	COUNT(*) AS total,
 	ROW_NUMBER() OVER (ORDER BY score) AS rn
-INTO #prep_stats
+INTO #charlson_prep
 FROM #charlson_data
 GROUP BY score;
 	
 SELECT s.score,
 	SUM(p.total) AS accumulated
-INTO #prep_stats2	
-FROM #prep_stats s
-INNER JOIN #prep_stats p
+INTO #charlson_prep2	
+FROM #charlson_prep s
+INNER JOIN #charlson_prep p
 	ON p.rn <= s.rn
 GROUP BY s.score;
 
@@ -499,8 +499,8 @@ SELECT CAST(1000 + @analysis_id AS BIGINT) AS covariate_id,
 		ELSE MIN(CASE WHEN p.accumulated + count_no_value >= .90 * o.population_size THEN score	END) 
 		END AS p90_value		
 INTO @covariate_table
-FROM #prep_stats2 p
-CROSS JOIN #overall_stats o
+FROM #charlson_prep2 p
+CROSS JOIN #charlson_stats o
 {@included_cov_table != ''} ? {WHERE 1000 + @analysis_id IN (SELECT id FROM @included_cov_table)}
 GROUP BY o.count_value,
 	o.count_no_value,
@@ -513,14 +513,14 @@ GROUP BY o.count_value,
 TRUNCATE TABLE #charlson_data;
 DROP TABLE #charlson_data;
 
-TRUNCATE TABLE #overall_stats;
-DROP TABLE #overall_stats;
+TRUNCATE TABLE #charlson_stats;
+DROP TABLE #charlson_stats;
 
-TRUNCATE TABLE #prep_stats;
-DROP TABLE #prep_stats;
+TRUNCATE TABLE #charlson_prep;
+DROP TABLE #charlson_prep;
 
-TRUNCATE TABLE #prep_stats2;
-DROP TABLE #prep_stats2;	
+TRUNCATE TABLE #charlson_prep2;
+DROP TABLE #charlson_prep2;	
 } 
 
 TRUNCATE TABLE #charlson_concepts;
