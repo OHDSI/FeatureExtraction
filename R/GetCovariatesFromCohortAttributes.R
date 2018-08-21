@@ -87,10 +87,21 @@ getDbCohortAttrCovariatesData <- function(connection,
   covariateRef$analysisId <- ff::ff(0, length = nrow(covariateRef))
   covariateRef$conceptId <- ff::ff(0, length = nrow(covariateRef))
 
+  analysisRef <- data.frame(analysisId = as.numeric(-1),
+                            analysisName = "Covariates from cohort attributes",
+                            domainId = "Cohort",
+                            startDay = as.numeric(NA),
+                            endDay = as.numeric(NA),
+                            isBinary = "N",
+                            missingMeansZero = "N")
+  analysisRef <- ff::as.ffdf(analysisRef)
   delta <- Sys.time() - start
   writeLines(paste("Loading took", signif(delta, 3), attr(delta, "units")))
 
-  result <- list(covariates = covariates, covariateRef = covariateRef, metaData = list())
+  result <- list(covariates = covariates, 
+                 covariateRef = covariateRef, 
+                 analysisRef = analysisRef,
+                 metaData = list())
   class(result) <- "covariateData"
   return(result)
 }

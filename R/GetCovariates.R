@@ -143,10 +143,10 @@ getDbCovariateData <- function(connectionDetails = NULL,
             if (hasData(tempCovariateData$covariatesContinuous)) {
               covariateData$covariatesContinuous <- ffbase::ffdfappend(covariateData$covariatesContinuous,
                                                                        tempCovariateData$covariatesContinuous)
-            } 
-          } else if (hasData(tempCovariateData$covariates)) {
-            covariateData$covariatesContinuous <- tempCovariateData$covariatesContinuous
-          }
+            } else if (hasData(tempCovariateData$covariatesContinuous)) {
+              covariateData$covariatesContinuous <- tempCovariateData$covariatesContinuous
+            }
+          } 
           covariateData$covariateRef <- ffbase::ffdfappend(covariateData$covariateRef,
                                                            ff::as.ram(tempCovariateData$covariateRef))
           covariateData$analysisRef <- ffbase::ffdfappend(covariateData$analysisRef,
@@ -159,7 +159,6 @@ getDbCovariateData <- function(connectionDetails = NULL,
                                                      tempCovariateData$metaData[[name]])
             }
           }
-          
         }
       }
     }

@@ -5,10 +5,12 @@
 \title{Create HDPS covariate settings}
 \usage{
 createHdpsCovariateSettings(useCovariateCohortIdIs1 = FALSE,
-  useCovariateDemographics = TRUE, useCovariateDemographicsGender = TRUE,
+  useCovariateDemographics = TRUE,
+  useCovariateDemographicsGender = TRUE,
   useCovariateDemographicsRace = TRUE,
   useCovariateDemographicsEthnicity = TRUE,
-  useCovariateDemographicsAge = TRUE, useCovariateDemographicsYear = TRUE,
+  useCovariateDemographicsAge = TRUE,
+  useCovariateDemographicsYear = TRUE,
   useCovariateDemographicsMonth = TRUE,
   useCovariateConditionOccurrence = TRUE,
   useCovariate3DigitIcd9Inpatient180d = FALSE,

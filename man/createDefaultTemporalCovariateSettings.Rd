@@ -4,7 +4,8 @@
 \alias{createDefaultTemporalCovariateSettings}
 \title{Create default covariate settings}
 \usage{
-createDefaultTemporalCovariateSettings(includedCovariateConceptIds = c(),
+
+  createDefaultTemporalCovariateSettings(includedCovariateConceptIds = c(),
   addDescendantsToInclude = FALSE, excludedCovariateConceptIds = c(),
   addDescendantsToExclude = FALSE, includedCovariateIds = c())
 }
