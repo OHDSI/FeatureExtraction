@@ -43,6 +43,10 @@ rmarkdown::render("vignettes/UsingFeatureExtraction.Rmd",
                                           toc = TRUE,
                                           number_sections = TRUE))
 
+# Store JAR checksum --------------------------------------------------------------
+checksum <- rJava::J("org.ohdsi.featureExtraction.JarChecksum", "computeJarChecksum")
+write(checksum, file.path("inst", "csv", "jarChecksum.txt"))
+
 # Generate covariate settings function from template ----------------------
 prespecAnalyses <- read.csv("inst/csv/PrespecAnalyses.csv", stringsAsFactors = FALSE)
 otherParameters <- read.csv("inst/csv/OtherParameters.csv", stringsAsFactors = FALSE)
