@@ -1,5 +1,5 @@
 library(FeatureExtraction)
-options(fftempdir = "c:/FFtemp")
+options(fftempdir = "s:/FFtemp")
 # setwd("s:/temp/pgProfile/")
 
 # Pdw ---------------------------------------------------------------------
@@ -81,10 +81,6 @@ settings <- createCovariateSettings(useDemographicsGender = TRUE,
                                     useConditionOccurrenceLongTerm = FALSE,
                                     useConditionOccurrenceMediumTerm = FALSE,
                                     useConditionOccurrenceShortTerm = FALSE,
-                                    useConditionOccurrenceInpatientAnyTimePrior = FALSE,
-                                    useConditionOccurrenceInpatientLongTerm = FALSE,
-                                    useConditionOccurrenceInpatientMediumTerm = FALSE,
-                                    useConditionOccurrenceInpatientShortTerm = FALSE,
                                     useConditionEraAnyTimePrior = FALSE,
                                     useConditionEraLongTerm = FALSE,
                                     useConditionEraMediumTerm = FALSE,
@@ -144,7 +140,7 @@ settings <- createCovariateSettings(useDemographicsGender = TRUE,
                                     useObservationAnyTimePrior = FALSE,
                                     useObservationLongTerm = FALSE,
                                     useObservationMediumTerm = FALSE,
-                                    useObservationShortTerm = FALSE,
+                                    useObservationShortTerm = TRUE,
                                     useCharlsonIndex = TRUE,
                                     useDcsi = FALSE,
                                     useChads2 = FALSE,

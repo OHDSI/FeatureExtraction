@@ -1,0 +1,8 @@
+pandoc: 2.1.3
+pkgdown: 1.1.0
+pkgdown_sha: ~
+articles:
+  CreatingCovariatesUsingCohortAttributes: CreatingCovariatesUsingCohortAttributes.html
+  CreatingCustomCovariateBuilders: CreatingCustomCovariateBuilders.html
+  UsingFeatureExtraction: UsingFeatureExtraction.html
+

@@ -43,6 +43,8 @@ rmarkdown::render("vignettes/UsingFeatureExtraction.Rmd",
                                           toc = TRUE,
                                           number_sections = TRUE))
 
+pkgdown::build_site()
+
 # Store JAR checksum --------------------------------------------------------------
 checksum <- rJava::J("org.ohdsi.featureExtraction.JarChecksum", "computeJarChecksum")
 write(checksum, file.path("inst", "csv", "jarChecksum.txt"))

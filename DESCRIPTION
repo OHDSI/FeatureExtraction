@@ -3,14 +3,18 @@ Type: Package
 Title: Generating Features for a Cohort
 Version: 2.1.5
 Date: 2018-08-14
-Author: Martijn J. Schuemie [aut, cre],
-    Marc A. Suchard [aut],
-    Patrick B. Ryan [aut],
-    Jenna Reps [aut]
+Authors@R: c(
+    person("Martijn", "Schuemie", , "schuemie@ohdsi.org", role = c("aut", "cre")),
+    person("Marc", "Suchard", role = c("aut")),
+    person("Patrick", "Ryan", role = c("aut")),
+	person("Jenna", "Reps", role = c("aut"))
+    )
 Maintainer: Martijn J. Schuemie <schuemie@ohdsi.org>
 Description: An R package for generating features (covariates) for a cohort using data in the Common Data Model.
 License: Apache License 2.0
 VignetteBuilder: knitr
+URL: https://github.com/OHDSI/FeatureExtraction
+BugReports: https://github.com/OHDSI/FeatureExtraction/issues
 Depends:
     R (>= 3.2.2),
     DatabaseConnector (>= 2.0.2),
@@ -30,4 +34,4 @@ Suggests:
     rmarkdown
 LinkingTo: Rcpp
 NeedsCompilation: yes
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1

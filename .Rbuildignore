@@ -1,5 +1,6 @@
 pom.xml
 extras
+docs
 bin
 man-roxygen
 ^.*\.Rproj$
@@ -11,3 +12,4 @@ man-roxygen
 deploy.sh
 ^\.git
 compare_versions
+_pkgdown.yml
