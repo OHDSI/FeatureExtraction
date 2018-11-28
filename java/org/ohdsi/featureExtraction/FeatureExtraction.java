@@ -256,7 +256,14 @@ public class FeatureExtraction {
 		}
 		return nameToPrespecAnalysis;
 	}
-	
+
+	public static Map<String, PrespecAnalysis> getNameToPrespecAnalysis() {
+		if (nameToPrespecAnalysis == null) {
+			FeatureExtraction.init(null);
+		}
+		return nameToPrespecAnalysis;
+	}
+
 	/**
 	 * Creates a default settings object
 	 * 
@@ -722,7 +729,7 @@ public class FeatureExtraction {
 		return columns;
 	}
 	
-	private static class PrespecAnalysis {
+	public static class PrespecAnalysis {
 		public int					analysisId;
 		public String				analysisName;
 		public boolean				isDefault;
