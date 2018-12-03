@@ -2475,7 +2475,6 @@ FROM (
 	) source_to_concept_map
 WHERE source_code LIKE 'R50%';
 --completed until here
------17:09------
 -- Feature construction
 {@aggregated} ? {
 IF OBJECT_ID('tempdb..#hfrs_data', 'U') IS NOT NULL
