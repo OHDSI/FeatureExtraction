@@ -67,7 +67,8 @@ createCovariateSettings(useDemographicsGender = FALSE,
   useObservationAnyTimePrior = FALSE, useObservationLongTerm = FALSE,
   useObservationMediumTerm = FALSE, useObservationShortTerm = FALSE,
   useCharlsonIndex = FALSE, useDcsi = FALSE, useChads2 = FALSE,
-  useChads2Vasc = FALSE, useDistinctConditionCountLongTerm = FALSE,
+  useChads2Vasc = FALSE, useHfrs = FALSE,
+  useDistinctConditionCountLongTerm = FALSE,
   useDistinctConditionCountMediumTerm = FALSE,
   useDistinctConditionCountShortTerm = FALSE,
   useDistinctIngredientCountLongTerm = FALSE,
@@ -443,6 +444,10 @@ prior to the window end. (analysis ID
 conditions prior to the window end.
 (analysis ID 904)}
 
+\item{useHfrs}{The Hospital Frailty Risk Score score using all
+conditions prior to the window end.
+(analysis ID 926)}
+
 \item{useDistinctConditionCountLongTerm}{The number of distinct condition
 concepts observed in the long term
 window. (analysis ID 905)}
@@ -644,6 +649,7 @@ settings <- createCovariateSettings(useDemographicsGender = TRUE,
                                     useDcsi = TRUE,
                                     useChads2 = TRUE,
                                     useChads2Vasc = TRUE,
+                                    useHfrs = FALSE,
                                     useDistinctConditionCountLongTerm = FALSE,
                                     useDistinctConditionCountMediumTerm = FALSE,
                                     useDistinctConditionCountShortTerm = FALSE,
