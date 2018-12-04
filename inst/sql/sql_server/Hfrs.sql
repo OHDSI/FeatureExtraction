@@ -725,8 +725,14 @@ FROM (
 	) source_to_concept_map
 WHERE source_code LIKE 'S80%';
 --completed until here
-/*
-SELECT DISTINCT CAST('Cellulitis' AS VARCHAR(255)) AS hfrs_category,
+
+INSERT INTO #hfrs_scoring (
+	hfrs_category,
+	hfrs_icd10_code,
+	hfrs_concept_id,
+	hfrs_score
+	)
+SELECT CAST('Cellulitis' AS VARCHAR(255)) AS hfrs_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
 	2.0 AS hfrs_score
@@ -744,6 +750,12 @@ FROM (
 	) source_to_concept_map
 WHERE source_code LIKE 'L03%';
 
+INSERT INTO #hfrs_scoring (
+	hfrs_category,
+	hfrs_icd10_code,
+	hfrs_concept_id,
+	hfrs_score
+	)
 SELECT CAST('Blindness and low vision' AS VARCHAR(255)) AS hfrs_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -762,7 +774,12 @@ FROM (
 	) source_to_concept_map
 WHERE source_code LIKE 'H54%';
 
-
+INSERT INTO #hfrs_scoring (
+	hfrs_category,
+	hfrs_icd10_code,
+	hfrs_concept_id,
+	hfrs_score
+	)
 SELECT CAST('Deficiency of other B group vitamins' AS VARCHAR(255)) AS hfrs_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -781,6 +798,12 @@ FROM (
 	) source_to_concept_map
 WHERE source_code LIKE 'E53%';
 
+INSERT INTO #hfrs_scoring (
+	hfrs_category,
+	hfrs_icd10_code,
+	hfrs_concept_id,
+	hfrs_score
+	)
 SELECT CAST('Problems related to social environment' AS VARCHAR(255)) AS hfrs_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -799,6 +822,12 @@ FROM (
 	) source_to_concept_map
 WHERE source_code LIKE 'Z60%';
 
+INSERT INTO #hfrs_scoring (
+	hfrs_category,
+	hfrs_icd10_code,
+	hfrs_concept_id,
+	hfrs_score
+	)
 SELECT CAST('Parkinsons disease' AS VARCHAR(255)) AS hfrs_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -817,6 +846,12 @@ FROM (
 	) source_to_concept_map
 WHERE source_code LIKE 'G20%';
 
+INSERT INTO #hfrs_scoring (
+	hfrs_category,
+	hfrs_icd10_code,
+	hfrs_concept_id,
+	hfrs_score
+	)
 SELECT CAST('Syncope and collapse' AS VARCHAR(255)) AS hfrs_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -835,6 +870,12 @@ FROM (
 	) source_to_concept_map
 WHERE source_code LIKE 'R55%';
 
+INSERT INTO #hfrs_scoring (
+	hfrs_category,
+	hfrs_icd10_code,
+	hfrs_concept_id,
+	hfrs_score
+	)
 SELECT CAST('Fracture of rib sternum and thoracic spine' AS VARCHAR(255)) AS hfrs_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -853,6 +894,12 @@ FROM (
 	) source_to_concept_map
 WHERE source_code LIKE 'S22%';
 
+INSERT INTO #hfrs_scoring (
+	hfrs_category,
+	hfrs_icd10_code,
+	hfrs_concept_id,
+	hfrs_score
+	)
 SELECT CAST('Other functional intestinal disorders' AS VARCHAR(255)) AS hfrs_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -871,6 +918,12 @@ FROM (
 	) source_to_concept_map
 WHERE source_code LIKE 'K59%';
 
+INSERT INTO #hfrs_scoring (
+	hfrs_category,
+	hfrs_icd10_code,
+	hfrs_concept_id,
+	hfrs_score
+	)
 SELECT CAST('Acute renal failure' AS VARCHAR(255)) AS hfrs_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -889,6 +942,12 @@ FROM (
 	) source_to_concept_map
 WHERE source_code LIKE 'N17%';
 
+INSERT INTO #hfrs_scoring (
+	hfrs_category,
+	hfrs_icd10_code,
+	hfrs_concept_id,
+	hfrs_score
+	)
 SELECT CAST('Decubitus ulcer' AS VARCHAR(255)) AS hfrs_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -907,6 +966,12 @@ FROM (
 	) source_to_concept_map
 WHERE source_code LIKE 'L89%';
 
+INSERT INTO #hfrs_scoring (
+	hfrs_category,
+	hfrs_icd10_code,
+	hfrs_concept_id,
+	hfrs_score
+	)
 SELECT CAST('Carrier of infectious disease' AS VARCHAR(255)) AS hfrs_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -925,6 +990,12 @@ FROM (
 	) source_to_concept_map
 WHERE source_code LIKE 'Z22%';
 
+INSERT INTO #hfrs_scoring (
+	hfrs_category,
+	hfrs_icd10_code,
+	hfrs_concept_id,
+	hfrs_score
+	)
 SELECT CAST('Streptococcus and staphylococcus' AS VARCHAR(255)) AS hfrs_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -943,6 +1014,12 @@ FROM (
 	) source_to_concept_map
 WHERE source_code LIKE 'B95%';
 
+INSERT INTO #hfrs_scoring (
+	hfrs_category,
+	hfrs_icd10_code,
+	hfrs_concept_id,
+	hfrs_score
+	)
 SELECT CAST('Ulcer of lower limb' AS VARCHAR(255)) AS hfrs_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -961,6 +1038,12 @@ FROM (
 	) source_to_concept_map
 WHERE source_code LIKE 'L97%';
 
+INSERT INTO #hfrs_scoring (
+	hfrs_category,
+	hfrs_icd10_code,
+	hfrs_concept_id,
+	hfrs_score
+	)
 SELECT CAST('Other symptoms involving general sensations and perceptions' AS VARCHAR(255)) AS hfrs_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -979,6 +1062,12 @@ FROM (
 	) source_to_concept_map
 WHERE source_code LIKE 'R44%';
 
+INSERT INTO #hfrs_scoring (
+	hfrs_category,
+	hfrs_icd10_code,
+	hfrs_concept_id,
+	hfrs_score
+	)
 SELECT CAST('Duodenal ulcer' AS VARCHAR(255)) AS hfrs_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -997,6 +1086,12 @@ FROM (
 	) source_to_concept_map
 WHERE source_code LIKE 'K26%';
 
+INSERT INTO #hfrs_scoring (
+	hfrs_category,
+	hfrs_icd10_code,
+	hfrs_concept_id,
+	hfrs_score
+	)
 SELECT CAST('Hypotension' AS VARCHAR(255)) AS hfrs_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -1015,6 +1110,12 @@ FROM (
 	) source_to_concept_map
 WHERE source_code LIKE 'I95%';
 
+INSERT INTO #hfrs_scoring (
+	hfrs_category,
+	hfrs_icd10_code,
+	hfrs_concept_id,
+	hfrs_score
+	)
 SELECT CAST('Unspecified renal failure' AS VARCHAR(255)) AS hfrs_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -1033,6 +1134,12 @@ FROM (
 	) source_to_concept_map
 WHERE source_code LIKE 'N19%';
 
+INSERT INTO #hfrs_scoring (
+	hfrs_category,
+	hfrs_icd10_code,
+	hfrs_concept_id,
+	hfrs_score
+	)
 SELECT CAST('Other septicaemia' AS VARCHAR(255)) AS hfrs_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -1051,6 +1158,12 @@ FROM (
 	) source_to_concept_map
 WHERE source_code LIKE 'A41%';
 
+INSERT INTO #hfrs_scoring (
+	hfrs_category,
+	hfrs_icd10_code,
+	hfrs_concept_id,
+	hfrs_score
+	)
 SELECT CAST('Personal history of other diseases and conditions' AS VARCHAR(255)) AS hfrs_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -1069,6 +1182,12 @@ FROM (
 	) source_to_concept_map
 WHERE source_code LIKE 'Z87%';
 
+INSERT INTO #hfrs_scoring (
+	hfrs_category,
+	hfrs_icd10_code,
+	hfrs_concept_id,
+	hfrs_score
+	)
 SELECT CAST('Respiratory failure' AS VARCHAR(255)) AS hfrs_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -1087,6 +1206,12 @@ FROM (
 	) source_to_concept_map
 WHERE source_code LIKE 'J96%';
 
+INSERT INTO #hfrs_scoring (
+	hfrs_category,
+	hfrs_icd10_code,
+	hfrs_concept_id,
+	hfrs_score
+	)
 SELECT CAST('Exposure to unspecified factor' AS VARCHAR(255)) AS hfrs_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -1105,6 +1230,12 @@ FROM (
 	) source_to_concept_map
 WHERE source_code LIKE 'X59%';
 
+INSERT INTO #hfrs_scoring (
+	hfrs_category,
+	hfrs_icd10_code,
+	hfrs_concept_id,
+	hfrs_score
+	)
 SELECT CAST('Other arthrosis' AS VARCHAR(255)) AS hfrs_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -1123,6 +1254,12 @@ FROM (
 	) source_to_concept_map
 WHERE source_code LIKE 'M19%';
 
+INSERT INTO #hfrs_scoring (
+	hfrs_category,
+	hfrs_icd10_code,
+	hfrs_concept_id,
+	hfrs_score
+	)
 SELECT CAST('Epilepsy' AS VARCHAR(255)) AS hfrs_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -1141,6 +1278,12 @@ FROM (
 	) source_to_concept_map
 WHERE source_code LIKE 'G40%';
 
+INSERT INTO #hfrs_scoring (
+	hfrs_category,
+	hfrs_icd10_code,
+	hfrs_concept_id,
+	hfrs_score
+	)
 SELECT CAST('Osteoporosis without pathological fracture' AS VARCHAR(255)) AS hfrs_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -1159,6 +1302,12 @@ FROM (
 	) source_to_concept_map
 WHERE source_code LIKE 'M81%';
 
+INSERT INTO #hfrs_scoring (
+	hfrs_category,
+	hfrs_icd10_code,
+	hfrs_concept_id,
+	hfrs_score
+	)
 SELECT CAST('Fracture of femur' AS VARCHAR(255)) AS hfrs_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -1177,6 +1326,12 @@ FROM (
 	) source_to_concept_map
 WHERE source_code LIKE 'S72%';
 
+INSERT INTO #hfrs_scoring (
+	hfrs_category,
+	hfrs_icd10_code,
+	hfrs_concept_id,
+	hfrs_score
+	)
 SELECT CAST('Fracture of lumbar spine and pelvis' AS VARCHAR(255)) AS hfrs_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -1195,6 +1350,12 @@ FROM (
 	) source_to_concept_map
 WHERE source_code LIKE 'S32%';
 
+INSERT INTO #hfrs_scoring (
+	hfrs_category,
+	hfrs_icd10_code,
+	hfrs_concept_id,
+	hfrs_score
+	)
 SELECT CAST('Other disorders of pancreatic internal secretion' AS VARCHAR(255)) AS hfrs_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -1213,6 +1374,12 @@ FROM (
 	) source_to_concept_map
 WHERE source_code LIKE 'E16%';
 
+INSERT INTO #hfrs_scoring (
+	hfrs_category,
+	hfrs_icd10_code,
+	hfrs_concept_id,
+	hfrs_score
+	)
 SELECT CAST('Abnormal results of function studies' AS VARCHAR(255)) AS hfrs_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -1231,6 +1398,12 @@ FROM (
 	) source_to_concept_map
 WHERE source_code LIKE 'R94%';
 
+INSERT INTO #hfrs_scoring (
+	hfrs_category,
+	hfrs_icd10_code,
+	hfrs_concept_id,
+	hfrs_score
+	)
 SELECT CAST('Chronic renal failure' AS VARCHAR(255)) AS hfrs_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -1248,6 +1421,7 @@ FROM (
 		AND relationship_id = 'Maps to'
 	) source_to_concept_map
 WHERE source_code LIKE 'N18%';
+
 
 INSERT INTO #hfrs_scoring (
 	hfrs_category,
@@ -1393,7 +1567,7 @@ FROM (
 		AND relationship_id = 'Maps to'
 	) source_to_concept_map
 WHERE source_code LIKE 'Y95%';
-*/
+
 --completed from here
 INSERT INTO #hfrs_scoring (
 	hfrs_category,
