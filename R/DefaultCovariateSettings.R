@@ -289,9 +289,9 @@
 #' @param useChads2Vasc                                        The CHADS2VASc score using all
 #'                                                             conditions prior to the window end.
 #'                                                             (analysis ID 904)
-#' @param useHfrs                                              The Hospital Frailty Risk Score score using all
-#'                                                             conditions prior to the window end.
-#'                                                             (analysis ID 926)
+#' @param useHfrs                                              The Hospital Frailty Risk Score score
+#'                                                             using all conditions prior to the window
+#'                                                             end. (analysis ID 926)
 #' @param useDistinctConditionCountLongTerm                    The number of distinct condition
 #'                                                             concepts observed in the long term
 #'                                                             window. (analysis ID 905)

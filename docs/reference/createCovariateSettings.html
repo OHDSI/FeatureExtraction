@@ -61,7 +61,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">FeatureExtraction</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">2.1.5</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">2.2.0</span>
       </span>
     </div>
 
@@ -93,6 +93,9 @@
       <a href="../articles/UsingFeatureExtraction.html">Using FeatureExtraction</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       
@@ -189,7 +192,8 @@
   <span class='kw'>useObservationAnyTimePrior</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>useObservationLongTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>useObservationMediumTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>useObservationShortTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>useCharlsonIndex</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>useDcsi</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>useChads2</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>useChads2Vasc</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>useDistinctConditionCountLongTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useChads2Vasc</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>useHfrs</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useDistinctConditionCountLongTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>useDistinctConditionCountMediumTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>useDistinctConditionCountShortTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>useDistinctIngredientCountLongTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
@@ -734,6 +738,12 @@ conditions prior to the window end.
 (analysis ID 904)</p></td>
     </tr>
     <tr>
+      <th>useHfrs</th>
+      <td><p>The Hospital Frailty Risk Score score
+using all conditions prior to the window
+end. (analysis ID 926)</p></td>
+    </tr>
+    <tr>
       <th>useDistinctConditionCountLongTerm</th>
       <td><p>The number of distinct condition
 concepts observed in the long term
@@ -996,6 +1006,7 @@ restricted to.</p></td>
                                     <span class='kw'>useDcsi</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
                                     <span class='kw'>useChads2</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
                                     <span class='kw'>useChads2Vasc</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+                                    <span class='kw'>useHfrs</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
                                     <span class='kw'>useDistinctConditionCountLongTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
                                     <span class='kw'>useDistinctConditionCountMediumTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
                                     <span class='kw'>useDistinctConditionCountShortTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,

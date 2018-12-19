@@ -444,9 +444,9 @@ prior to the window end. (analysis ID
 conditions prior to the window end.
 (analysis ID 904)}
 
-\item{useHfrs}{The Hospital Frailty Risk Score score using all
-conditions prior to the window end.
-(analysis ID 926)}
+\item{useHfrs}{The Hospital Frailty Risk Score score
+using all conditions prior to the window
+end. (analysis ID 926)}
 
 \item{useDistinctConditionCountLongTerm}{The number of distinct condition
 concepts observed in the long term

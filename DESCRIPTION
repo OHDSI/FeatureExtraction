@@ -1,14 +1,14 @@
 Package: FeatureExtraction
 Type: Package
 Title: Generating Features for a Cohort
-Version: 2.1.5
-Date: 2018-08-14
+Version: 2.2.0
+Date: 2018-12-19
 Authors@R: c(
-    person("Martijn", "Schuemie", , "schuemie@ohdsi.org", role = c("aut", "cre")),
-    person("Marc", "Suchard", role = c("aut")),
-    person("Patrick", "Ryan", role = c("aut")),
+  person("Martijn", "Schuemie", , "schuemie@ohdsi.org", role = c("aut", "cre")),
+  person("Marc", "Suchard", role = c("aut")),
+  person("Patrick", "Ryan", role = c("aut")),
 	person("Jenna", "Reps", role = c("aut"))
-    )
+  )
 Maintainer: Martijn J. Schuemie <schuemie@ohdsi.org>
 Description: An R package for generating features (covariates) for a cohort using data in the Common Data Model.
 License: Apache License 2.0
@@ -16,22 +16,23 @@ VignetteBuilder: knitr
 URL: https://github.com/OHDSI/FeatureExtraction
 BugReports: https://github.com/OHDSI/FeatureExtraction/issues
 Depends:
-    R (>= 3.2.2),
-    DatabaseConnector (>= 2.0.2),
+  R (>= 3.2.2),
+  DatabaseConnector (>= 2.0.2),
 Imports:
-    methods,
-    bit,
-    ff,
-    ffbase (>= 0.12.1),
-    plyr,
-    Rcpp (>= 0.11.2),
-    rJava,
-    jsonlite,
-    SqlRender (>= 1.4.5),
+  methods,
+  bit,
+  ff,
+  ffbase (>= 0.12.1),
+  plyr,
+  Rcpp (>= 0.11.2),
+  rJava,
+  jsonlite,
+  SqlRender (>= 1.4.5),
 Suggests:
-    testthat,
-    knitr,
-    rmarkdown
+  testthat,
+  knitr,
+  rmarkdown
 LinkingTo: Rcpp
 NeedsCompilation: yes
 RoxygenNote: 6.1.1
+Encoding: UTF-8

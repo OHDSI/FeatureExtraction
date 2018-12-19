@@ -31,6 +31,7 @@ analysisId,analysisName,sqlFileName,subType,domainId,domainTable,domainConceptId
 902,Dcsi,Dcsi.sql,,Condition,,,,,TRUE,The Diabetes Comorbidity Severity Index (DCSI) using all conditions prior to the window end.
 903,Chads2,Chads2.sql,,Condition,,,,,TRUE,The CHADS2 score using all conditions prior to the window end.
 904,Chads2Vasc,Chads2Vasc.sql,,Condition,,,,,TRUE,The CHADS2VASc score using all conditions prior to the window end.
+926,Hfrs,Hfrs.sql,,Condition,,,,,FALSE,The Hospital Frailty Risk Score score using all conditions prior to the window end.
 905,DistinctConditionCount,ConceptCounts.sql,distinct,Condition,condition_era,condition_concept_id,condition_era_start_date,condition_era_end_date,FALSE,The number of distinct condition concepts observed in the time window.
 906,DistinctIngredientCount,ConceptCounts.sql,distinct,Drug,drug_era,drug_concept_id,drug_era_start_date,drug_era_end_date,FALSE,The number of distinct ingredients observed in the time window.
 907,DistinctProcedureCount,ConceptCounts.sql,distinct,Procedure,procedure_occurrence,procedure_concept_id,procedure_date,procedure_date,FALSE,The number of distinct procedures observed in the time window.

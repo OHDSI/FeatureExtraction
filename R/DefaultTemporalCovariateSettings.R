@@ -94,6 +94,9 @@
 #'                                                 window end. (analysis ID 903)
 #' @param useChads2Vasc                            The CHADS2VASc score using all conditions prior to
 #'                                                 the window end. (analysis ID 904)
+#' @param useHfrs                                  The Hospital Frailty Risk Score score using all
+#'                                                 conditions prior to the window end. (analysis ID
+#'                                                 926)
 #' @param useDistinctConditionCount                The number of distinct condition concepts observed
 #'                                                 in the time window. (analysis ID 905)
 #' @param useDistinctIngredientCount               The number of distinct ingredients observed in the
@@ -165,6 +168,7 @@
 #'                                             useDcsi = TRUE,
 #'                                             useChads2 = TRUE,
 #'                                             useChads2Vasc = TRUE,
+#'                                             useHfrs = FALSE,
 #'                                             useDistinctConditionCount = FALSE,
 #'                                             useDistinctIngredientCount = FALSE,
 #'                                             useDistinctProcedureCount = FALSE,
@@ -213,6 +217,7 @@ createTemporalCovariateSettings <- function(useDemographicsGender = FALSE,
                                             useDcsi = FALSE,
                                             useChads2 = FALSE,
                                             useChads2Vasc = FALSE,
+                                            useHfrs = FALSE,
                                             useDistinctConditionCount = FALSE,
                                             useDistinctIngredientCount = FALSE,
                                             useDistinctProcedureCount = FALSE,

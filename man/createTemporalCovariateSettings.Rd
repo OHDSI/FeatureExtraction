@@ -23,7 +23,8 @@ createTemporalCovariateSettings(useDemographicsGender = FALSE,
   useMeasurement = FALSE, useMeasurementValue = FALSE,
   useMeasurementRangeGroup = FALSE, useObservation = FALSE,
   useCharlsonIndex = FALSE, useDcsi = FALSE, useChads2 = FALSE,
-  useChads2Vasc = FALSE, useDistinctConditionCount = FALSE,
+  useChads2Vasc = FALSE, useHfrs = FALSE,
+  useDistinctConditionCount = FALSE,
   useDistinctIngredientCount = FALSE,
   useDistinctProcedureCount = FALSE,
   useDistinctMeasurementCount = FALSE,
@@ -139,6 +140,10 @@ window end. (analysis ID 903)}
 \item{useChads2Vasc}{The CHADS2VASc score using all conditions prior to
 the window end. (analysis ID 904)}
 
+\item{useHfrs}{The Hospital Frailty Risk Score score using all
+conditions prior to the window end. (analysis ID
+926)}
+
 \item{useDistinctConditionCount}{The number of distinct condition concepts observed
 in the time window. (analysis ID 905)}
 
@@ -229,6 +234,7 @@ settings <- createTemporalCovariateSettings(useDemographicsGender = TRUE,
                                             useDcsi = TRUE,
                                             useChads2 = TRUE,
                                             useChads2Vasc = TRUE,
+                                            useHfrs = FALSE,
                                             useDistinctConditionCount = FALSE,
                                             useDistinctIngredientCount = FALSE,
                                             useDistinctProcedureCount = FALSE,
