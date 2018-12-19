@@ -82,6 +82,7 @@ analysisId,analysisName,sqlFileName,startDay,endDay,subType,domainId,domainTable
 902,Dcsi,Dcsi.sql,,endDays,,Condition,,,,,TRUE,The Diabetes Comorbidity Severity Index (DCSI) using all conditions prior to the window end.
 903,Chads2,Chads2.sql,,endDays,,Condition,,,,,TRUE,The CHADS2 score using all conditions prior to the window end.
 904,Chads2Vasc,Chads2Vasc.sql,,endDays,,Condition,,,,,TRUE,The CHADS2VASc score using all conditions prior to the window end.
+926,Hfrs,Hfrs.sql,,endDays,,Condition,,,,,FALSE,The Hospital Frailty Risk Score score using all conditions prior to the window end.
 905,DistinctConditionCountLongTerm,ConceptCounts.sql,longTermStartDays,endDays,distinct,Condition,condition_era,condition_concept_id,condition_era_start_date,condition_era_end_date,FALSE,The number of distinct condition concepts observed in the long term window.
 906,DistinctConditionCountMediumTerm,ConceptCounts.sql,mediumTermStartDays,endDays,distinct,Condition,condition_era,condition_concept_id,condition_era_start_date,condition_era_end_date,FALSE,The number of distinct condition concepts observed in the medium term window.
 907,DistinctConditionCountShortTerm,ConceptCounts.sql,shortTermStartDays,endDays,distinct,Condition,condition_era,condition_concept_id,condition_era_start_date,condition_era_end_date,FALSE,The number of distinct condition concepts observed in the short term window.
