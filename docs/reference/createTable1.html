@@ -62,7 +62,7 @@ Allows for creating a table describing a single cohort, or a table comparing two
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">FeatureExtraction</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">2.2.0</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">2.2.1</span>
       </span>
     </div>
 
@@ -133,7 +133,8 @@ Allows for creating a table describing a single cohort, or a table comparing two
 
     <pre class="usage"><span class='fu'>createTable1</span>(<span class='no'>covariateData1</span>, <span class='kw'>covariateData2</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>specifications</span> <span class='kw'>=</span> <span class='fu'><a href='getDefaultTable1Specifications.html'>getDefaultTable1Specifications</a></span>(),
-  <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"two columns"</span>, <span class='kw'>percentDigits</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>stdDiffDigits</span> <span class='kw'>=</span> <span class='fl'>2</span>)</pre>
+  <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"two columns"</span>, <span class='kw'>percentDigits</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>valueDigits</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>stdDiffDigits</span> <span class='kw'>=</span> <span class='fl'>2</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -163,6 +164,10 @@ cohorts.</p></td>
     <tr>
       <th>stdDiffDigits</th>
       <td><p>Number of digits to be used for the standardized differences.</p></td>
+    </tr>
+    <tr>
+      <th>stdDiffDigits</th>
+      <td><p>Number of digits to be used for the values of continuous variables.</p></td>
     </tr>
     </table>
     

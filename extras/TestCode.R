@@ -187,7 +187,7 @@ saveCovariateData(covs, "c:/temp/covs2")
 
 saveCovariateData(covs, "s:/temp/covsAgg")
 covariateData <- loadCovariateData("c:/temp/covsPp")
-covs <- loadCovariateData("c:/temp/covsAgg")
+covs <- loadCovariateData("s:/temp/covsAgg")
 
 covs2 <- aggregateCovariates(covs)
 
@@ -345,7 +345,7 @@ saveCovariateData(covs, "s:/temp/covsTable1Medium")
 covariateData <- covs
 covariateData <- loadCovariateData("s:/temp/covsTable1Medium")
 
-tables <- createTable1(covs, covs, output = "one column")
+tables <- createTable1(covs)
 write.csv(tables$part1, "s:/temp/table1Part1.csv", row.names = FALSE)
 write.csv(tables$part2, "s:/temp/table1Part2.csv", row.names = FALSE)
 print(tables$part1)

@@ -44,6 +44,7 @@ getDefaultTable1Specifications <- function() {
 #'                         \code{output = "one column"}, or \code{output = "list"}.
 #' @param percentDigits    Number of digits to be used for percentages.
 #' @param stdDiffDigits    Number of digits to be used for the standardized differences.
+#' @param stdDiffDigits    Number of digits to be used for the values of continuous variables.
 #' 
 #' @return
 #' A data frame, or, when \code{output = "list"} a list of two data frames.
@@ -54,6 +55,7 @@ createTable1 <- function(covariateData1,
                          specifications = getDefaultTable1Specifications(),
                          output = "two columns",
                          percentDigits = 1,
+                         valueDigits = 1,
                          stdDiffDigits = 2) {
   comparison <- !is.null(covariateData2)
   if (!is(covariateData1, "covariateData")) {
@@ -79,21 +81,21 @@ createTable1 <- function(covariateData1,
   }
   
   formatPercent <- function(x) {
-    result <- format(round(100*x, percentDigits), digits = percentDigits+1, justify = "right")
+    result <- format(round(100*x, percentDigits), digits = percentDigits + 1, justify = "right")
     result <- gsub("NA", "", result)
     result <- gsub(" ", " ", result)
     return(result)
   }
   
   formatStdDiff <- function(x) {
-    result <- format(round(x, stdDiffDigits), digits = stdDiffDigits+1, justify = "right")
+    result <- format(round(x, stdDiffDigits), digits = stdDiffDigits + 1, justify = "right")
     result <- gsub("NA", "", result)
     result <- gsub(" ", " ", result)
     return(result)
   }
   
   formatValue <- function(x) {
-    return(format(x, digits = 0, width = 2))
+    return(format(round(x, valueDigits), nsmall = valueDigits))
   }
   
   if (is.null(covariateData1$covariates)) {
@@ -108,6 +110,7 @@ createTable1 <- function(covariateData1,
   } else {
     covariatesContinuous <- as.data.frame(ff::as.ram(covariateData1$covariatesContinuous[, c("covariateId",
                                                                                              "averageValue",
+                                                                                             "standardDeviation",
                                                                                              "minValue",
                                                                                              "p25Value",
                                                                                              "medianValue",
@@ -115,12 +118,14 @@ createTable1 <- function(covariateData1,
                                                                                              "maxValue")]))
     colnames(covariatesContinuous) <- c("covariateId",
                                         "averageValue1",
+                                        "standardDeviation1",
                                         "minValue1",
                                         "p25Value1",
                                         "medianValue1",
                                         "p75Value1",
                                         "maxValue1")
     covariatesContinuous$averageValue1 <- formatValue(covariatesContinuous$averageValue1)
+    covariatesContinuous$standardDeviation1 <- formatValue(covariatesContinuous$standardDeviation1)
     covariatesContinuous$minValue1 <- formatValue(covariatesContinuous$minValue1)
     covariatesContinuous$p25Value1 <- formatValue(covariatesContinuous$p25Value1)
     covariatesContinuous$medianValue1 <- formatValue(covariatesContinuous$medianValue1)
@@ -145,6 +150,7 @@ createTable1 <- function(covariateData1,
     if (!is.null(covariatesContinuous)) {
       tempCovariates <- as.data.frame(ff::as.ram(covariateData2$covariatesContinuous[, c("covariateId",
                                                                                          "averageValue",
+                                                                                         "standardDeviation",
                                                                                          "minValue",
                                                                                          "p25Value",
                                                                                          "medianValue",
@@ -152,12 +158,14 @@ createTable1 <- function(covariateData1,
                                                                                          "maxValue")]))
       colnames(tempCovariates) <- c("covariateId",
                                     "averageValue2",
+                                    "standardDeviation2",
                                     "minValue2",
                                     "p25Value2",
                                     "medianValue2",
                                     "p75Value2",
                                     "maxValue2")
       tempCovariates$averageValue2 <- formatValue(tempCovariates$averageValue2)
+      tempCovariates$standardDeviation2 <- formatValue(tempCovariates$standardDeviation2)
       tempCovariates$minValue2 <- formatValue(tempCovariates$minValue2)
       tempCovariates$p25Value2 <- formatValue(tempCovariates$p25Value2)
       tempCovariates$medianValue2 <- formatValue(tempCovariates$medianValue2)
@@ -165,12 +173,14 @@ createTable1 <- function(covariateData1,
       tempCovariates$maxValue2 <- formatValue(tempCovariates$maxValue2)
       covariatesContinuous <- merge(covariatesContinuous, tempCovariates, all = TRUE)
       covariatesContinuous$averageValue1[is.na(covariatesContinuous$averageValue1)] <- "  "
+      covariatesContinuous$standardDeviation1[is.na(covariatesContinuous$standardDeviation1)] <- "  "
       covariatesContinuous$minValue1[is.na(covariatesContinuous$minValue1)] <- "  "
       covariatesContinuous$p25Value1[is.na(covariatesContinuous$p25Value1)] <- "  "
       covariatesContinuous$medianValue1[is.na(covariatesContinuous$medianValue1)] <- "  "
       covariatesContinuous$p75Value1[is.na(covariatesContinuous$p75Value1)] <- "  "
       covariatesContinuous$maxValue1[is.na(covariatesContinuous$maxValue1)] <- "  "
       covariatesContinuous$averageValue2[is.na(covariatesContinuous$averageValue2)] <- "  "
+      covariatesContinuous$standardDeviation2[is.na(covariatesContinuous$standardDeviation2)] <- "  "
       covariatesContinuous$minValue2[is.na(covariatesContinuous$minValue2)] <- "  "
       covariatesContinuous$p25Value2[is.na(covariatesContinuous$p25Value2)] <- "  "
       covariatesContinuous$medianValue2[is.na(covariatesContinuous$medianValue2)] <- "  "
@@ -188,6 +198,7 @@ createTable1 <- function(covariateData1,
     covariates$value2 <- " 0"
     covariates$stdDiff <- " 0"
     covariatesContinuous$averageValue2 <- "  "
+    covariatesContinuous$standardDeviation2 <- "  "
     covariatesContinuous$minValue2 <- "  "
     covariatesContinuous$p25Value2 <- "  "
     covariatesContinuous$medianValue2 <- "  "
@@ -287,24 +298,28 @@ createTable1 <- function(covariateData1,
                                                     stdDiff = "",
                                                     stringsAsFactors = FALSE))
                 continuousTable <- rbind(continuousTable, data.frame(Characteristic = c("    Mean",
+                                                                                        "    Std. deviation",
                                                                                         "    Minimum",
                                                                                         "    25th percentile",
                                                                                         "    Median",
                                                                                         "    75th percentile",
                                                                                         "    Maximum"),
                                                                      value1 = c(covariatesSubset$averageValue1[j],
+                                                                                covariatesSubset$standardDeviation1[j],
                                                                                 covariatesSubset$minValue1[j],
                                                                                 covariatesSubset$p25Value1[j],
                                                                                 covariatesSubset$medianValue1[j],
                                                                                 covariatesSubset$p75Value1[j],
                                                                                 covariatesSubset$maxValue1[j]),
                                                                      value2 = c(covariatesSubset$averageValue2[j],
+                                                                                covariatesSubset$standardDeviation2[j],
                                                                                 covariatesSubset$minValue2[j],
                                                                                 covariatesSubset$p25Value2[j],
                                                                                 covariatesSubset$medianValue2[j],
                                                                                 covariatesSubset$p75Value2[j],
                                                                                 covariatesSubset$maxValue2[j]),
                                                                      stdDiff = c(covariatesSubset$stdDiff[j],
+                                                                                 "  ",
                                                                                  "  ",
                                                                                  "  ",
                                                                                  "  ",
@@ -321,24 +336,28 @@ createTable1 <- function(covariateData1,
                                                   stdDiff = "",
                                                   stringsAsFactors = FALSE))
               continuousTable <- rbind(continuousTable, data.frame(Characteristic = c("    Mean",
+                                                                                      "    Std. deviation",
                                                                                       "    Minimum",
                                                                                       "    25th percentile",
                                                                                       "    Median",
                                                                                       "    75th percentile",
                                                                                       "    Maximum"),
                                                                    value1 = c(covariatesSubset$averageValue1,
+                                                                              covariatesSubset$standardDeviation1,
                                                                               covariatesSubset$minValue1,
                                                                               covariatesSubset$p25Value1,
                                                                               covariatesSubset$medianValue1,
                                                                               covariatesSubset$p75Value1,
                                                                               covariatesSubset$maxValue1),
                                                                    value2 = c(covariatesSubset$averageValue2,
+                                                                              covariatesSubset$standardDeviation2,
                                                                               covariatesSubset$minValue2,
                                                                               covariatesSubset$p25Value2,
                                                                               covariatesSubset$medianValue2,
                                                                               covariatesSubset$p75Value2,
                                                                               covariatesSubset$maxValue2),
                                                                    stdDiff = c(covariatesSubset$stdDiff,
+                                                                               "  ",
                                                                                "  ",
                                                                                "  ",
                                                                                "  ",
