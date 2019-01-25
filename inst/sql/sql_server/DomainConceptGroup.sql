@@ -57,7 +57,7 @@ INNER JOIN (
 {@excluded_concept_table != '' | @included_concept_table != ''} ? {
 WHERE 
 {@excluded_concept_table != ''} ? {	ancestor_concept_id NOT IN (SELECT id FROM @excluded_concept_table)}
-{@included_concept_table != ''} ? {{@excluded_concept_table != ''} ? {	AND} : {	}ancestor_concept_id IN (SELECT id FROM @included_concept_table)}
+{@included_concept_table != ''} ? {{@excluded_concept_table != ''} ? {	AND } : {	}ancestor_concept_id IN (SELECT id FROM @included_concept_table)}
 }
 ;
 }
