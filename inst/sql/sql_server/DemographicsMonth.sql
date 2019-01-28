@@ -1,5 +1,7 @@
+{DEFAULT @covariate_id = CAST(MONTH(cohort_start_date) * 1000 + @analysis_id AS BIGINT)}
+
 -- Feature construction
-SELECT CAST(MONTH(cohort_start_date) * 1000 + @analysis_id AS BIGINT) AS covariate_id,
+SELECT @covariate_id AS covariate_id,
 {@temporal} ? {
     CAST(NULL AS INT) AS time_id,
 }	
@@ -18,7 +20,7 @@ INNER JOIN @cdm_database_schema.person
 	{@included_cov_table != ''} ? {		AND} :{WHERE} cohort.cohort_definition_id = @cohort_definition_id
 }
 {@aggregated} ? {		
-GROUP BY MONTH(cohort_start_date)
+GROUP BY @covariate_id
 }
 ;
 
