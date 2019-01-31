@@ -1,8 +1,6 @@
-{DEFAULT @covariate_id = CAST(race_concept_id AS BIGINT) * 1000 + @analysis_id}
-
 -- Feature construction
 SELECT 
-	@covariate_id AS covariate_id,
+	CAST(race_concept_id AS BIGINT) * 1000 + @analysis_id AS covariate_id,
 {@temporal} ? {
     CAST(NULL AS INT) AS time_id,
 }		
@@ -26,7 +24,7 @@ WHERE race_concept_id IN (
 {@included_cov_table != ''} ? {	AND CAST(race_concept_id AS BIGINT) * 1000 + @analysis_id IN (SELECT id FROM @included_cov_table)}	
 {@cohort_definition_id != -1} ? {		AND cohort.cohort_definition_id = @cohort_definition_id}
 {@aggregated} ? {		
-GROUP BY @covariate_id
+GROUP BY race_concept_id
 }
 ;
 
