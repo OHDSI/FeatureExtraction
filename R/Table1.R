@@ -44,7 +44,7 @@ getDefaultTable1Specifications <- function() {
 #'                         \code{output = "one column"}, or \code{output = "list"}.
 #' @param percentDigits    Number of digits to be used for percentages.
 #' @param stdDiffDigits    Number of digits to be used for the standardized differences.
-#' @param stdDiffDigits    Number of digits to be used for the values of continuous variables.
+#' @param valueDigits    Number of digits to be used for the values of continuous variables.
 #' 
 #' @return
 #' A data frame, or, when \code{output = "list"} a list of two data frames.

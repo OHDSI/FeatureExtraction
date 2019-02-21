@@ -97,14 +97,14 @@ We substitute the arguments in this SQL with actual values, translate it to the 
 ```{r tidy=FALSE,eval=FALSE}
 library(SqlRender)
 sql <- readSql("HospitalizationCohorts.sql")
-sql <- renderSql(sql,
+sql <- render(sql,
                  cdm_database_schema = cdmDatabaseSchema,
                  cohort_database_schema = cohortDatabaseSchema,
                  cohort_table = "rehospitalization",
                  cohort_attribute_table = "loo_cohort_attr",
                  attribute_definition_table = "loo_attr_def",
-                 cohort_definition_ids = c(1,2))$sql
-sql <- translateSql(sql, targetDialect = connectionDetails$dbms)$sql
+                 cohort_definition_ids = c(1,2))
+sql <- translate(sql, targetDialect = connectionDetails$dbms)
 
 connection <- connect(connectionDetails)
 executeSql(connection, sql)

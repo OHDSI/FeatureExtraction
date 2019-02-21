@@ -21,7 +21,7 @@
 #' @docType package
 #' @name FeatureExtraction
 #' @importFrom Rcpp evalCpp
-#' @importFrom SqlRender loadRenderTranslateSql translateSql
+#' @importFrom SqlRender loadRenderTranslateSql translate render
 #' @importFrom plyr ddply
 #' @importFrom methods is
 #' @importFrom stats aggregate quantile sd

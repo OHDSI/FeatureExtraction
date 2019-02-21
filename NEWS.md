@@ -1,3 +1,11 @@
+FeatureExtraction 2.2.2
+=======================
+
+Changes:
+
+1. Using new SqlRender (v1.6.0) functions.
+
+
 FeatureExtraction 2.2.1
 =======================
 

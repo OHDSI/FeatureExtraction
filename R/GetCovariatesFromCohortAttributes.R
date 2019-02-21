@@ -46,7 +46,7 @@ getDbCohortAttrCovariatesData <- function(connection,
   }
   start <- Sys.time()
   writeLines("Constructing covariates from cohort attributes table")
-
+  
   if (is.null(covariateSettings$includeAttrIds) || length(covariateSettings$includeAttrIds) == 0) {
     hasIncludeAttrIds <- FALSE
   } else {
@@ -61,7 +61,7 @@ getDbCohortAttrCovariatesData <- function(connection,
                                    tempTable = TRUE,
                                    oracleTempSchema = oracleTempSchema)
   }
-
+  
   renderedSql <- SqlRender::loadRenderTranslateSql("GetAttrCovariates.sql",
                                                    packageName = "FeatureExtraction",
                                                    dbms = attr(connection, "dbms"),
@@ -71,22 +71,22 @@ getDbCohortAttrCovariatesData <- function(connection,
                                                    row_id_field = rowIdField,
                                                    cohort_attribute_table = covariateSettings$cohortAttrTable,
                                                    has_include_attr_ids = hasIncludeAttrIds)
-
+  
   covariates <- DatabaseConnector::querySql.ffdf(connection, renderedSql)
   colnames(covariates) <- SqlRender::snakeCaseToCamelCase(colnames(covariates))
-
+  
   covariateRefSql <- "SELECT attribute_definition_id AS covariate_id, attribute_name AS covariate_name FROM @attr_database_schema.@attr_definition_table ORDER BY attribute_definition_id"
-  covariateRefSql <- SqlRender::renderSql(covariateRefSql,
-                                          attr_database_schema = covariateSettings$attrDatabaseSchema,
-                                          attr_definition_table = covariateSettings$attrDefinitionTable)$sql
-  covariateRefSql <- SqlRender::translateSql(sql = covariateRefSql,
-                                             targetDialect = attr(connection, "dbms"),
-                                             oracleTempSchema = oracleTempSchema)$sql
+  covariateRefSql <- SqlRender::render(covariateRefSql,
+                                       attr_database_schema = covariateSettings$attrDatabaseSchema,
+                                       attr_definition_table = covariateSettings$attrDefinitionTable)
+  covariateRefSql <- SqlRender::translate(sql = covariateRefSql,
+                                          targetDialect = attr(connection, "dbms"),
+                                          oracleTempSchema = oracleTempSchema)
   covariateRef <- DatabaseConnector::querySql.ffdf(connection, covariateRefSql)
   colnames(covariateRef) <- SqlRender::snakeCaseToCamelCase(colnames(covariateRef))
   covariateRef$analysisId <- ff::ff(0, length = nrow(covariateRef))
   covariateRef$conceptId <- ff::ff(0, length = nrow(covariateRef))
-
+  
   analysisRef <- data.frame(analysisId = as.numeric(-1),
                             analysisName = "Covariates from cohort attributes",
                             domainId = "Cohort",
@@ -97,7 +97,7 @@ getDbCohortAttrCovariatesData <- function(connection,
   analysisRef <- ff::as.ffdf(analysisRef)
   delta <- Sys.time() - start
   writeLines(paste("Loading took", signif(delta, 3), attr(delta, "units")))
-
+  
   result <- list(covariates = covariates, 
                  covariateRef = covariateRef, 
                  analysisRef = analysisRef,
@@ -145,7 +145,7 @@ createCohortAttrCovariateSettings <- function(attrDatabaseSchema,
     if (name %in% names(covariateSettings))
       covariateSettings[[name]] <- values[[name]]
   }
-
+  
   attr(covariateSettings, "fun") <- "getDbCohortAttrCovariatesData"
   class(covariateSettings) <- "covariateSettings"
   return(covariateSettings)

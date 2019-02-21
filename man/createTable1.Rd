@@ -22,9 +22,9 @@ cohorts.}
 
 \item{percentDigits}{Number of digits to be used for percentages.}
 
-\item{stdDiffDigits}{Number of digits to be used for the standardized differences.}
+\item{valueDigits}{Number of digits to be used for the values of continuous variables.}
 
-\item{stdDiffDigits}{Number of digits to be used for the values of continuous variables.}
+\item{stdDiffDigits}{Number of digits to be used for the standardized differences.}
 }
 \value{
 A data frame, or, when \code{output = "list"} a list of two data frames.

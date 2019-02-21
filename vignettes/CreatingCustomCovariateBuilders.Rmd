@@ -114,12 +114,12 @@ getDbLooCovariateData <- function(connection,
                "WHERE cohort_start_date >= observation_period_start_date",
                "AND cohort_start_date <= observation_period_end_date",
                "{@cohort_id != -1} ? {AND cohort_definition_id = @cohort_id}")
-  sql <- SqlRender::renderSql(sql,
+  sql <- SqlRender::render(sql,
                               cohort_table = cohortTable,
                               cohort_id = cohortId,
                               row_id_field = rowIdField,
-                              cdm_database_schema = cdmDatabaseSchema)$sql
-  sql <- SqlRender::translateSql(sql, targetDialect = attr(connection, "dbms"))$sql
+                              cdm_database_schema = cdmDatabaseSchema)
+  sql <- SqlRender::translate(sql, targetDialect = attr(connection, "dbms"))
   
   # Retrieve the covariate:
   covariates <- DatabaseConnector::querySql.ffdf(connection, sql)

@@ -1,8 +1,8 @@
 Package: FeatureExtraction
 Type: Package
 Title: Generating Features for a Cohort
-Version: 2.2.1
-Date: 2019-01-25
+Version: 2.2.2
+Date: 2019-02-21
 Authors@R: c(
   person("Martijn", "Schuemie", , "schuemie@ohdsi.org", role = c("aut", "cre")),
   person("Marc", "Suchard", role = c("aut")),
@@ -27,7 +27,7 @@ Imports:
   Rcpp (>= 0.11.2),
   rJava,
   jsonlite,
-  SqlRender (>= 1.4.5),
+  SqlRender (>= 1.6.0),
 Suggests:
   testthat,
   knitr,

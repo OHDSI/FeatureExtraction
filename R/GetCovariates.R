@@ -96,12 +96,12 @@ getDbCovariateData <- function(connectionDetails = NULL,
     cohortDatabaseSchemaTable <- paste(cohortDatabaseSchema, cohortTable, sep = ".")
   }
   sql <- "SELECT COUNT_BIG(*) FROM @cohort_database_schema_table {@cohort_id != -1} ? {WHERE cohort_definition_id = @cohort_id} "
-  sql <- SqlRender::renderSql(sql = sql,
-                              cohort_database_schema_table = cohortDatabaseSchemaTable,
-                              cohort_id = cohortId)$sql
-  sql <- SqlRender::translateSql(sql = sql,
-                                 targetDialect = attr(connection, "dbms"),
-                                 oracleTempSchema = oracleTempSchema)$sql
+  sql <- SqlRender::render(sql = sql,
+                           cohort_database_schema_table = cohortDatabaseSchemaTable,
+                           cohort_id = cohortId)
+  sql <- SqlRender::translate(sql = sql,
+                              targetDialect = attr(connection, "dbms"),
+                              oracleTempSchema = oracleTempSchema)
   populationSize <- DatabaseConnector::querySql(connection, sql)[1, 1]
   if (populationSize == 0) {
     covariateData <- list(covariates = data.frame(), covariateRef = data.frame(), metaData = list())
