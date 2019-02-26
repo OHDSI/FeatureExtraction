@@ -41,10 +41,12 @@ Getting Started
 
 User Documentation
 ==================
+The documentation website can be found at [http://ohdsi.github.io/FeatureExtraction/](http://ohdsi.github.io/FeatureExtraction/). PDF versions of the vignettes and package manual are here:
+
 * Vignette: [Using FeatureExtraction](https://raw.githubusercontent.com/OHDSI/FeatureExtraction/master/inst/doc/UsingFeatureExtraction.pdf)
 * Vignette: [Creating covariates using cohort attributes](https://raw.githubusercontent.com/OHDSI/FeatureExtraction/master/inst/doc/CreatingCovariatesUsingCohortAttributes.pdf)
 * Vignette: [Creating custom covariate builders](https://raw.githubusercontent.com/OHDSI/FeatureExtraction/master/inst/doc/CreatingCustomCovariateBuilders.pdf)
-* Package manual: [FeatureExtraction.pdf](https://raw.githubusercontent.com/OHDSI/FeatureExtraction/master/extras/FeatureExtraction.pdf) 
+* Package manual: [FeatureExtraction manual](https://raw.githubusercontent.com/OHDSI/FeatureExtraction/master/extras/FeatureExtraction.pdf) 
 
 Support
 =======
