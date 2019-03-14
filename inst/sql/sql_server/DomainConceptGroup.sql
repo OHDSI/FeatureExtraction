@@ -56,8 +56,14 @@ INNER JOIN (
 	ON ancestor_concept_id = valid_groups.concept_id
 {@excluded_concept_table != '' | @included_concept_table != ''} ? {
 WHERE 
-{@excluded_concept_table != ''} ? {	ancestor_concept_id NOT IN (SELECT id FROM @excluded_concept_table)}
-{@included_concept_table != ''} ? {{@excluded_concept_table != ''} ? {	AND } : {	}ancestor_concept_id IN (SELECT id FROM @included_concept_table)}
+{@excluded_concept_table != ''} ? {	
+	ancestor_concept_id NOT IN (SELECT id FROM @excluded_concept_table)
+	AND descendant_concept_id NOT IN (SELECT id FROM @excluded_concept_table)
+}
+{@included_concept_table != ''} ? {
+{@excluded_concept_table != ''} ? {	AND } : {	}ancestor_concept_id IN (SELECT id FROM @included_concept_table)
+	AND descendant_concept_id IN (SELECT id FROM @included_concept_table)
+}
 }
 ;
 }
