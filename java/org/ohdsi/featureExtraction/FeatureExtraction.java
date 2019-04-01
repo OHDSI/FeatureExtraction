@@ -70,6 +70,22 @@ public class FeatureExtraction {
 	
 	private static String									ADD_DESCENDANTS_SQL				= "SELECT descendant_concept_id AS id\nINTO @target_temp\nFROM @cdm_database_schema.concept_ancestor\nINNER JOIN @source_temp\n\tON ancestor_concept_id = id;\n\n";
 	
+	private static Map<String, Object> COVARIATE_SETTINGS = new HashMap<>();
+
+	static {
+		COVARIATE_SETTINGS.put("longTermStartDays", -365);
+		COVARIATE_SETTINGS.put("mediumTermStartDays", -180);
+		COVARIATE_SETTINGS.put("shortTermStartDays", -30);
+		COVARIATE_SETTINGS.put("endDays", 0);
+		COVARIATE_SETTINGS.put("includedCovariateConceptIds", new ArrayList<>());
+		COVARIATE_SETTINGS.put("addDescendantsToInclude", false);
+		COVARIATE_SETTINGS.put("excludedCovariateConceptIds", new ArrayList<>());
+		COVARIATE_SETTINGS.put("addDescendantsToExclude", false);
+		COVARIATE_SETTINGS.put("includedCovariateIds", new ArrayList<>());
+		COVARIATE_SETTINGS.put("temporal", false);
+	}
+
+
 	public static void main(String[] args) {
 		init("C:/Users/mschuemi/git/FeatureExtraction/inst");
 		// init("C:/R/R-3.3.1/library/FeatureExtraction");
@@ -291,7 +307,13 @@ public class FeatureExtraction {
 		jsonWriter.endObject();
 		return stringWriter.toString();
 	}
-	
+
+	public static String createDefaultCovariateSettings() {
+
+		return new JSONObject(COVARIATE_SETTINGS).toString();
+	}
+
+
 	/**
 	 * Creates a default temporal settings object
 	 * 
