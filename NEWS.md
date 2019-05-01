@@ -1,3 +1,15 @@
+FeatureExtraction 2.2.3
+=======================
+
+Changes:
+
+1. Also removing descendants when excluding condition concepts from condition groups. Condition groups therefore now work similar to drug groups.
+
+Bugfixes:
+
+1. Updated workaround for ff bug causing chunk.default error on R v3.6.0 on machines with lots of memory.
+
+
 FeatureExtraction 2.2.2
 =======================
 
