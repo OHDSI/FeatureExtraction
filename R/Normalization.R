@@ -94,35 +94,7 @@ tidyCovariateData <- function(covariateData,
   }
   if (nrow(covariates) != 0) {
     maxs <- byMaxFf(covariates$covariateValue, covariates$covariateId)
-    if (minFraction != 0) {
-      writeLines("Removing infrequent covariates")
-      start <- Sys.time()
-      minCount <- floor(minFraction * covariateData$metaData$populationSize)
-      valueCounts <- bySumFf(ff::ff(1, length = nrow(covariates)), covariates$covariateId)
-      deleteCovariateIds <- valueCounts$bins[valueCounts$sums < minCount]
-      if (length(deleteCovariateIds) != 0) {
-        covariates <- covariates[!ffbase::`%in%`(covariates$covariateId, deleteCovariateIds), ]
-        covariateData$metaData$deletedInfrequentCovariateIds <- deleteCovariateIds
-      }
-      delta <- Sys.time() - start
-      writeLines(paste("Removing infrequent covariates took",
-                       signif(delta, 3),
-                       attr(delta, "units")))
-    }
-    if (normalize) {
-      writeLines("Normalizing covariates")
-      start <- Sys.time()
-      ffdfMaxs <- ff::as.ffdf(maxs)
-      names(ffdfMaxs)[names(ffdfMaxs) == "bins"] <- "covariateId"
-      covariates <- ffbase::merge.ffdf(covariates, ffdfMaxs)
-      for (i in bit::chunk(covariates)) {
-        covariates$covariateValue[i] <- covariates$covariateValue[i]/covariates$maxs[i]
-      }
-      covariates$maxs <- NULL
-      covariateData$metaData$normFactors <- maxs
-      delta <- Sys.time() - start
-      writeLines(paste("Normalizing covariates took", signif(delta, 3), attr(delta, "units")))
-    }
+    ignoreCovariateIds <- c()
     if (removeRedundancy) {
       writeLines("Removing redundant covariates")
       start <- Sys.time()
@@ -188,16 +160,12 @@ tidyCovariateData <- function(covariateData,
                                by.y = "covariateId")
           countsPerAnalysis <- aggregate(sums ~ analysisId, data = valueCounts, sum)
           analysisIds <- countsPerAnalysis$analysisId[countsPerAnalysis$sums == covariateData$metaData$populationSize]
-          # TODO: maybe check if sum was not accidentally achieved by duplicates (unlikely) Find most prevalent
-          # covariateId per analysisId:
+          # TODO: maybe check if sum was not accidentally achieved by duplicates (unlikely) 
+          # Find most prevalent covariateId per analysisId:
           valueCounts <- valueCounts[valueCounts$analysisId %in% analysisIds, ]
           valueCounts <- valueCounts[order(valueCounts$analysisId, -valueCounts$sums), ]
-          deleteCovariateIds <- c(deleteCovariateIds,
-                                  valueCounts$bins[!duplicated(valueCounts$analysisId)])
-          
-          if (length(deleteCovariateIds) != 0) {
-            covariates <- covariates[!ffbase::`%in%`(covariates$covariateId, deleteCovariateIds), ]
-          }
+          deleteCovariateIds <- valueCounts$bins[!duplicated(valueCounts$analysisId)]
+          ignoreCovariateIds <- valueCounts$bins
         }
       }
       covariateData$metaData$deletedRedundantCovariateIds <- deleteCovariateIds
@@ -205,6 +173,43 @@ tidyCovariateData <- function(covariateData,
       writeLines(paste("Removing redundant covariates took",
                        signif(delta, 3),
                        attr(delta, "units")))
+    }
+    if (minFraction != 0) {
+      writeLines("Removing infrequent covariates")
+      start <- Sys.time()
+      minCount <- floor(minFraction * covariateData$metaData$populationSize)
+      valueCounts <- bySumFf(ff::ff(1, length = nrow(covariates)), covariates$covariateId)
+      deleteInfrequentCovariateIds <- valueCounts$bins[valueCounts$sums < minCount]
+      # Not deleting infrequent covariates that are part of analysis where most prevalent covariate was deleted (because of redundance):
+      deleteInfrequentCovariateIds <- deleteInfrequentCovariateIds[!deleteInfrequentCovariateIds %in% ignoreCovariateIds]
+      if (length(deleteInfrequentCovariateIds) != 0) {
+        idx <- !ffbase::`%in%`(covariates$covariateId, deleteInfrequentCovariateIds)
+        covariates <- covariates[idx, ]
+        covariateData$metaData$deletedInfrequentCovariateIds <- deleteInfrequentCovariateIds
+        deleteCovariateIds <- c(deleteCovariateIds, deleteInfrequentCovariateIds)
+      }
+      delta <- Sys.time() - start
+      writeLines(paste("Removing infrequent covariates took",
+                       signif(delta, 3),
+                       attr(delta, "units")))
+    }
+    if (length(deleteCovariateIds) != 0) {
+      covariates <- covariates[!ffbase::`%in%`(covariates$covariateId, deleteCovariateIds), ]
+    }
+    
+    if (normalize) {
+      writeLines("Normalizing covariates")
+      start <- Sys.time()
+      ffdfMaxs <- ff::as.ffdf(maxs)
+      names(ffdfMaxs)[names(ffdfMaxs) == "bins"] <- "covariateId"
+      covariates <- ffbase::merge.ffdf(covariates, ffdfMaxs)
+      for (i in bit::chunk(covariates)) {
+        covariates$covariateValue[i] <- covariates$covariateValue[i]/covariates$maxs[i]
+      }
+      covariates$maxs <- NULL
+      covariateData$metaData$normFactors <- maxs
+      delta <- Sys.time() - start
+      writeLines(paste("Normalizing covariates took", signif(delta, 3), attr(delta, "units")))
     }
   }
   covariateData$covariates <- covariates

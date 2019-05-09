@@ -1,8 +1,8 @@
 Package: FeatureExtraction
 Type: Package
 Title: Generating Features for a Cohort
-Version: 2.2.3
-Date: 2019-03-14
+Version: 2.2.4
+Date: 2019-05-09
 Authors@R: c(
   person("Martijn", "Schuemie", , "schuemie@ohdsi.org", role = c("aut", "cre")),
   person("Marc", "Suchard", role = c("aut")),
@@ -22,7 +22,7 @@ Imports:
   methods,
   bit,
   ff,
-  ffbase (>= 0.12.1),
+  ffbase (>= 0.12.7),
   plyr,
   Rcpp (>= 0.11.2),
   rJava,

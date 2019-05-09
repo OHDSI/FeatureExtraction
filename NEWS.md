@@ -1,3 +1,11 @@
+FeatureExtraction 2.2.4
+=======================
+
+Bugfixes:
+
+1. Removing redundant covariates now precedes removing infrequent covariates when calling tidyCovariates. Anlyses where the most prevalent (redundant) covariate was removed are now exempt from removal of infrequent covariates.
+
+
 FeatureExtraction 2.2.3
 =======================
 
