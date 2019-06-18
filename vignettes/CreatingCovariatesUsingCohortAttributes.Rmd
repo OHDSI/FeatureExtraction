@@ -96,7 +96,7 @@ We substitute the arguments in this SQL with actual values, translate it to the 
 
 ```{r tidy=FALSE,eval=FALSE}
 library(SqlRender)
-sql <- readSql("HospitalizationCohorts.sql")
+sql <- readSql("LengthOfObsCohortAttr.sql")
 sql <- render(sql,
                  cdm_database_schema = cdmDatabaseSchema,
                  cohort_database_schema = cohortDatabaseSchema,
