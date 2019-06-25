@@ -240,17 +240,16 @@ This is parameterized SQL which can be used by the `SqlRender` package. We use p
 ```{r tidy=FALSE,eval=FALSE}
 library(SqlRender)
 sql <- readSql("cohortsOfInterest.sql")
-
-sql <- SqlRender::loadRenderTranslateSql(sqlFilename = "cohortsOfInterest.sql"),
-                                         dbms = connectionDetails$dbms,
-                                         cdmDatabaseSchema = cdmDatabaseSchema,
-                                         resultsDatabaseSchema = resultsDatabaseSchema)
+sql <- render(sql,
+              cdmDatabaseSchema = cdmDatabaseSchema, 
+              resultsDatabaseSchema = resultsDatabaseSchema)
+sql <- translate(sql, targetDialect = connectionDetails$dbms)
 
 connection <- connect(connectionDetails)
 executeSql(connection, sql)
 ```
 
-`loadRenderTranslateSql` (which combines three functions earlier versions of SqlRender) reads the SQL from the file into memory, replaces the two parameter names with the actual values, then translates the SQL into the dialect appropriate for the DBMS we already specified in the `connectionDetails`. Next, we connect to the server, and submit the rendered and translated SQL.
+In this code, we first read the SQL from the file into memory. In the next line, we replace the two parameter names with the actual values. We then translate the SQL into the dialect appropriate for the DBMS we already specified in the `connectionDetails`. Next, we connect to the server, and submit the rendered and translated SQL.
 
 If all went well, we now have a table with the cohorts of interest. We can see how many events per type:
 
