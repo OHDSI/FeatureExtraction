@@ -45,9 +45,11 @@ rmarkdown::render("vignettes/UsingFeatureExtraction.Rmd",
 
 rmarkdown::render("vignettes/UsingFeatureExtractionKorean.Rmd",
                   output_file = "../inst/doc/UsingFeatureExtractionKorean.pdf",
-                  rmarkdown::pdf_document(latex_engine = "pdflatex",
-                                          toc = TRUE,
-                                          number_sections = TRUE))
+                  rmarkdown::pdf_document(number_sections = TRUE))
+
+rmarkdown::render("vignettes/CreatingCustomCovariateBuildersKorean.Rmd",
+                  output_file = "../inst/doc/CreatingCustomCovariateBuildersKorean.pdf",
+                  rmarkdown::pdf_document(number_sections = TRUE))
 
 
 pkgdown::build_site()

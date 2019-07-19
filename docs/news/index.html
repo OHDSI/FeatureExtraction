@@ -60,7 +60,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">FeatureExtraction</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.5</span>
       </span>
     </div>
 
@@ -89,10 +89,13 @@
       <a href="../articles/CreatingCustomCovariateBuilders.html">Creating custom covariate builders</a>
     </li>
     <li>
+      <a href="../articles/CreatingCustomCovariateBuildersKorean.html">Creating custom covariate builders (Korean)</a>
+    </li>
+    <li>
       <a href="../articles/UsingFeatureExtraction.html">Using FeatureExtraction</a>
     </li>
     <li>
-      <a href="../articles/UsingFeatureExtractionKorean.html">Using FeatureExtraction (í•œêµ­ì–´)</a>
+      <a href="../articles/UsingFeatureExtractionKorean.html">Using FeatureExtraction (Korean)</a>
     </li>
   </ul>
 </li>
@@ -124,18 +127,27 @@
       <small>Source: <a href='https://github.com/OHDSI/FeatureExtraction/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="featureextraction-2-2-4" class="section level1">
+    <div id="featureextraction-225" class="section level1">
 <h1 class="page-header">
-<a href="#featureextraction-2-2-4" class="anchor"></a>FeatureExtraction 2.2.4</h1>
+<a href="#featureextraction-225" class="anchor"></a>FeatureExtraction 2.2.5</h1>
+<p>Bugfixes:</p>
+<ol>
+<li><p>Fixing aggregation of covariates generated using the cohort_attribute table.</p></li>
+<li><p>Fixed error when calling tidyCovariates without removing redundancy, when there are no infrequent covariates.</p></li>
+</ol>
+</div>
+    <div id="featureextraction-224" class="section level1">
+<h1 class="page-header">
+<a href="#featureextraction-224" class="anchor"></a>FeatureExtraction 2.2.4</h1>
 <p>Bugfixes:</p>
 <ol>
 <li><p>Removing redundant covariates now precedes removing infrequent covariates when calling tidyCovariates. Anlyses where the most prevalent (redundant) covariate was removed are now exempt from removal of infrequent covariates.</p></li>
 <li><p>Fixed some typos in the vignette</p></li>
 </ol>
 </div>
-    <div id="featureextraction-2-2-3" class="section level1">
+    <div id="featureextraction-223" class="section level1">
 <h1 class="page-header">
-<a href="#featureextraction-2-2-3" class="anchor"></a>FeatureExtraction 2.2.3</h1>
+<a href="#featureextraction-223" class="anchor"></a>FeatureExtraction 2.2.3</h1>
 <p>Changes:</p>
 <ol>
 <li>Also removing descendants when excluding condition concepts from condition groups. Condition groups therefore now work similar to drug groups.</li>
@@ -145,17 +157,17 @@
 <li>Updated workaround for ff bug causing chunk.default error on R v3.6.0 on machines with lots of memory.</li>
 </ol>
 </div>
-    <div id="featureextraction-2-2-2" class="section level1">
+    <div id="featureextraction-222" class="section level1">
 <h1 class="page-header">
-<a href="#featureextraction-2-2-2" class="anchor"></a>FeatureExtraction 2.2.2</h1>
+<a href="#featureextraction-222" class="anchor"></a>FeatureExtraction 2.2.2</h1>
 <p>Changes:</p>
 <ol>
 <li>Using new SqlRender (v1.6.0) functions.</li>
 </ol>
 </div>
-    <div id="featureextraction-2-2-1" class="section level1">
+    <div id="featureextraction-221" class="section level1">
 <h1 class="page-header">
-<a href="#featureextraction-2-2-1" class="anchor"></a>FeatureExtraction 2.2.1</h1>
+<a href="#featureextraction-221" class="anchor"></a>FeatureExtraction 2.2.1</h1>
 <p>Changes:</p>
 <ol>
 <li>Added option to specify number of digits for continuous variables in createTable1 function.</li>
@@ -165,9 +177,9 @@
 <li>Added missing space cause SQL error when both include and exclude concept are specified.</li>
 </ol>
 </div>
-    <div id="featureextraction-2-2-0" class="section level1">
+    <div id="featureextraction-220" class="section level1">
 <h1 class="page-header">
-<a href="#featureextraction-2-2-0" class="anchor"></a>FeatureExtraction 2.2.0</h1>
+<a href="#featureextraction-220" class="anchor"></a>FeatureExtraction 2.2.0</h1>
 <p>Changes:</p>
 <ol>
 <li>Added the Hospital Frailty Risk Score.</li>
@@ -179,11 +191,12 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-        <li><a href="#featureextraction-2-2-4">2.2.4</a></li>
-        <li><a href="#featureextraction-2-2-3">2.2.3</a></li>
-        <li><a href="#featureextraction-2-2-2">2.2.2</a></li>
-        <li><a href="#featureextraction-2-2-1">2.2.1</a></li>
-        <li><a href="#featureextraction-2-2-0">2.2.0</a></li>
+        <li><a href="#featureextraction-225">2.2.5</a></li>
+        <li><a href="#featureextraction-224">2.2.4</a></li>
+        <li><a href="#featureextraction-223">2.2.3</a></li>
+        <li><a href="#featureextraction-222">2.2.2</a></li>
+        <li><a href="#featureextraction-221">2.2.1</a></li>
+        <li><a href="#featureextraction-220">2.2.0</a></li>
       </ul>
     </div>
   </div>
