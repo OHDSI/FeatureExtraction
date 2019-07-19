@@ -1,11 +1,8 @@
 ---
-title: "Using FeatureExtraction (한국어)"
+title: "Using FeatureExtraction (Korean)"
 author: "Jeon Ga Bin & Martijn J. Schuemie"
 date: "`r Sys.Date()`"
 output:
-  html_document:
-    number_sections: yes
-    toc: yes
   pdf_document:
     keep_tex: yes
     number_sections: yes
@@ -13,6 +10,9 @@ output:
     toc_depth: 4
     includes:
       in_header: style.sty
+  html_document:
+    number_sections: yes
+    toc: yes
 vignette: >
   %\VignetteIndexEntry{Using FeatureExtraction (Korean)}
   %\VignetteEncoding{UTF-8}

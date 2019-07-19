@@ -1,3 +1,10 @@
+FeatureExtraction 2.2.5
+=======================
+
+Bugfixes:
+
+1. Fixing aggregation of covariates generated using the cohort_attribute table.
+
 FeatureExtraction 2.2.4
 =======================
 

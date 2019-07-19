@@ -118,10 +118,12 @@ To use the constructed attributes as covariates in a predictive model, we need t
 looCovSet <- createCohortAttrCovariateSettings(attrDatabaseSchema = cohortDatabaseSchema,
                                                cohortAttrTable = "loo_cohort_attr",
                                                attrDefinitionTable = "loo_attr_def",
-                                               includeAttrIds = c())
+                                               includeAttrIds = c(),
+                                               isBinary = FALSE,
+                                               missingMeansZero = FALSE)
 ```
 
-We can then use these settings to fetch the `covariates` object:
+Setting `isBinary` and `missingMeansZero` is only necessary if we want to aggregate the covariates. We can then use these settings to fetch the `covariates` object:
 
 ```{r eval=FALSE}
 covariates <- getDbCovariateData(connectionDetails = connectionDetails,

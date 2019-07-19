@@ -249,6 +249,8 @@ covariates <- getDbCovariateData(connectionDetails = connectionDetails,
                                  cohortId = 1,
                                  covariateSettings = looCovSet)
 
+aggCovs <- aggregateCovariates(covariates)
+
 covariateSettings <- createCovariateSettings(useDemographicsGender = TRUE,
                                              useDemographicsAgeGroup = TRUE,
                                              useDemographicsRace = TRUE,
@@ -322,7 +324,9 @@ querySql(connection, "SELECT TOP 100 * FROM scratch.dbo.loo_cohort_attribute")
 looCovSet <- createCohortAttrCovariateSettings(attrDatabaseSchema = cohortDatabaseSchema,
                                                cohortAttrTable = "loo_cohort_attribute",
                                                attrDefinitionTable = "loo_attribute_definition",
-                                               includeAttrIds = c())
+                                               includeAttrIds = c(),
+                                               isBinary = FALSE,
+                                               missingMeansZero = FALSE)
 
 covariates <- getDbCovariateData(connectionDetails = connectionDetails,
                                  cdmDatabaseSchema = cdmDatabaseSchema,
@@ -331,6 +335,8 @@ covariates <- getDbCovariateData(connectionDetails = connectionDetails,
                                  cohortId = 1,
                                  covariateSettings = looCovSet)
 summary(covariates)
+
+aggCovs <- aggregateCovariates(covariates)
 
 covariateSettings <- createCovariateSettings(useDemographicsGender = TRUE,
                                              useDemographicsAgeGroup = TRUE,

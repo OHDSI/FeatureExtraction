@@ -54,9 +54,7 @@ describing the covariates that have been extracted.} \item{metaData}{A list of o
 information on how the covariateData object was constructed.} }
 }
 \description{
-Constructs a large default set of covariates for one or more cohorts using data in the CDM schema.
-Includes covariates for all drugs, drug classes, condition, condition classes, procedures,
-observations, etc.
+Constructs covariates using the cohort_attribute table.
 }
 \details{
 This function uses the data in the CDM to construct a large set of covariates for the provided

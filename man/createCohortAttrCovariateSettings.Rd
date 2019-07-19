@@ -4,11 +4,14 @@
 \alias{createCohortAttrCovariateSettings}
 \title{Create cohort attribute covariate settings}
 \usage{
-createCohortAttrCovariateSettings(attrDatabaseSchema,
+createCohortAttrCovariateSettings(analysisId = -1, attrDatabaseSchema,
   attrDefinitionTable = "attribute_definition",
-  cohortAttrTable = "cohort_attribute", includeAttrIds = c())
+  cohortAttrTable = "cohort_attribute", includeAttrIds = c(),
+  isBinary = FALSE, missingMeansZero = FALSE)
 }
 \arguments{
+\item{analysisId}{A unique identifier for this analysis.}
+
 \item{attrDatabaseSchema}{The database schema where the attribute definition and cohort attribute
 table can be found.}
 
@@ -17,6 +20,12 @@ table can be found.}
 \item{cohortAttrTable}{The name of the cohort attribute table.}
 
 \item{includeAttrIds}{(optional) A list of attribute definition IDs to restrict to.}
+
+\item{isBinary}{Needed for aggregation: Are these binary variables? Binary 
+variables should only have the values 0 or 1.}
+
+\item{missingMeansZero}{Needed for aggregation: For continuous values, should missing
+values be interpreted as 0?}
 }
 \value{
 An object of type \code{covariateSettings}, to be used in other functions.
