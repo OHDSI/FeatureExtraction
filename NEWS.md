@@ -5,6 +5,8 @@ Bugfixes:
 
 1. Fixing aggregation of covariates generated using the cohort_attribute table.
 
+2. Fixed error when calling tidyCovariates without removing redundancy, when there are no infrequent covariates.
+
 FeatureExtraction 2.2.4
 =======================
 

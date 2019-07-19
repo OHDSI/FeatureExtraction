@@ -95,10 +95,10 @@ tidyCovariateData <- function(covariateData,
   if (nrow(covariates) != 0) {
     maxs <- byMaxFf(covariates$covariateValue, covariates$covariateId)
     ignoreCovariateIds <- c()
+    deleteCovariateIds <- c()
     if (removeRedundancy) {
       writeLines("Removing redundant covariates")
       start <- Sys.time()
-      deleteCovariateIds <- c()
       binaryCovariateIds <- maxs$bins[maxs$maxs == 1]
       if (length(binaryCovariateIds) != 0) {
         if ("timeId" %in% colnames(covariates)) { 
