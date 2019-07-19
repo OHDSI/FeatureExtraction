@@ -61,6 +61,9 @@
     <li>
       <a href="../articles/UsingFeatureExtraction.html">Using FeatureExtraction</a>
     </li>
+    <li>
+      <a href="../articles/UsingFeatureExtractionKorean.html">Using FeatureExtraction (í•œêµ­ì–´)</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -89,7 +92,7 @@
       <h1>Creating custom covariate builders</h1>
                         <h4 class="author">Martijn J. Schuemie</h4>
             
-            <h4 class="date">2019-06-25</h4>
+            <h4 class="date">2019-07-19</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/FeatureExtraction/blob/master/vignettes/CreatingCustomCovariateBuilders.Rmd"><code>vignettes/CreatingCustomCovariateBuilders.Rmd</code></a></small>
       <div class="hidden name"><code>CreatingCustomCovariateBuilders.Rmd</code></div>
@@ -127,12 +130,12 @@
 <h2 class="hasAnchor">
 <a href="#example-function" class="anchor"></a>Example function</h2>
 <p>Here is an example covariate settings function:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>createLooCovariateSettings &lt;-<span class="st"> </span><span class="cf">function</span>(<span class="dt">useLengthOfObs =</span> <span class="ot">TRUE</span>) {</span>
-<span id="cb1-2"><a href="#cb1-2"></a>  covariateSettings &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">useLengthOfObs =</span> useLengthOfObs)</span>
-<span id="cb1-3"><a href="#cb1-3"></a>  <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/attr">attr</a></span>(covariateSettings, <span class="st">"fun"</span>) &lt;-<span class="st"> "getDbLooCovariateData"</span></span>
-<span id="cb1-4"><a href="#cb1-4"></a>  <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/class">class</a></span>(covariateSettings) &lt;-<span class="st"> "covariateSettings"</span></span>
-<span id="cb1-5"><a href="#cb1-5"></a>  <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/function">return</a></span>(covariateSettings)</span>
-<span id="cb1-6"><a href="#cb1-6"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">createLooCovariateSettings &lt;-<span class="st"> </span><span class="cf">function</span>(<span class="dt">useLengthOfObs =</span> <span class="ot">TRUE</span>) {</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">  covariateSettings &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">useLengthOfObs =</span> useLengthOfObs)</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">  <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/attr">attr</a></span>(covariateSettings, <span class="st">"fun"</span>) &lt;-<span class="st"> "getDbLooCovariateData"</span></a>
+<a class="sourceLine" id="cb1-4" data-line-number="4">  <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/class">class</a></span>(covariateSettings) &lt;-<span class="st"> "covariateSettings"</span></a>
+<a class="sourceLine" id="cb1-5" data-line-number="5">  <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/function">return</a></span>(covariateSettings)</a>
+<a class="sourceLine" id="cb1-6" data-line-number="6">}</a></code></pre></div>
 <p>In this example the function has only one argument: <code>useLengthOfObs</code>. This argument is stored in the <code>covariateSettings</code> object. We specify that the name of the function that will construct the covariates corresponding to these options is <code>getDbLooCovariateData</code>.</p>
 </div>
 </div>
@@ -153,7 +156,7 @@
 <li>
 <code>cdmVersion</code>: Defines the OMOP CDM version used: currently supports “4” and “5”.</li>
 <li>
-<code>cohortTable</code>: Name of the table holding the cohort for which we want to construct covariates. This is a fully specified name, so either the name of a temp table (e.g. ‘#cohort_table’), or a permanent table including its database schema (e.g. ‘cdm_schema.dbo.cohort’).</li>
+<code>cohortTable</code>: Name of the table holding the cohort for which we want to construct covariates. This is a fully specified name, so either the name of a temp table (e.g. ‘#cohort_table’), or a permanent table including its database schema (e.g. ‘cdm_schema.dbo.cohort’).</li>
 <li>
 <code>cohortId</code>: The cohort definition ID of the cohort. If set to -1, use all entries in the cohort table.</li>
 <li>
@@ -165,7 +168,7 @@
 <li>
 <code>aggregated</code>: Should covariates be constructed per-person, or aggregated across the cohort?</li>
 </ul>
-<p>The function can expect that a table exists with the name specified in the <code>cohortTable</code> argument. This table will identify the persons and the index dates for which we want to construct the covariates, and will have the following fields: <code>subject_id</code>, <code>cohort_start_date</code>, and <code>cohort_definition_id</code>. Because sometimes there can be more than one index date (i.e. <code>cohort_start_date</code>) per person, an additional field can be included with a unique identifier for each <code>subject_id</code> - <code>cohort_start_date</code> combination. The name of this field will be specified in the <code>rowIdField</code> argument</p>
+<p>The function can expect that a table exists with the name specified in the <code>cohortTable</code> argument. This table will identify the persons and the index dates for which we want to construct the covariates, and will have the following fields: <code>subject_id</code>, <code>cohort_start_date</code>, and <code>cohort_definition_id</code>. Because sometimes there can be more than one index date (i.e. <code>cohort_start_date</code>) per person, an additional field can be included with a unique identifier for each <code>subject_id</code> - <code>cohort_start_date</code> combination. The name of this field will be specified in the <code>rowIdField</code> argument</p>
 </div>
 <div id="function-outputs" class="section level2">
 <h2 class="hasAnchor">
@@ -185,71 +188,71 @@
 <div id="example-function-1" class="section level2">
 <h2 class="hasAnchor">
 <a href="#example-function-1" class="anchor"></a>Example function</h2>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>getDbLooCovariateData &lt;-<span class="st"> </span><span class="cf">function</span>(connection,</span>
-<span id="cb2-2"><a href="#cb2-2"></a>                                  <span class="dt">oracleTempSchema =</span> <span class="ot">NULL</span>,</span>
-<span id="cb2-3"><a href="#cb2-3"></a>                                  cdmDatabaseSchema,</span>
-<span id="cb2-4"><a href="#cb2-4"></a>                                  <span class="dt">cohortTable =</span> <span class="st">"#cohort_person"</span>,</span>
-<span id="cb2-5"><a href="#cb2-5"></a>                                  <span class="dt">cohortId =</span> <span class="dv">-1</span>,</span>
-<span id="cb2-6"><a href="#cb2-6"></a>                                  <span class="dt">cdmVersion =</span> <span class="st">"5"</span>,</span>
-<span id="cb2-7"><a href="#cb2-7"></a>                                  <span class="dt">rowIdField =</span> <span class="st">"subject_id"</span>,</span>
-<span id="cb2-8"><a href="#cb2-8"></a>                                  covariateSettings,</span>
-<span id="cb2-9"><a href="#cb2-9"></a>                                  <span class="dt">aggregated =</span> <span class="ot">FALSE</span>) {</span>
-<span id="cb2-10"><a href="#cb2-10"></a>  <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/writeLines">writeLines</a></span>(<span class="st">"Constructing length of observation covariates"</span>)</span>
-<span id="cb2-11"><a href="#cb2-11"></a>  <span class="cf">if</span> (covariateSettings<span class="op">$</span>useLengthOfObs <span class="op">==</span><span class="st"> </span><span class="ot">FALSE</span>) {</span>
-<span id="cb2-12"><a href="#cb2-12"></a>    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/function">return</a></span>(<span class="ot">NULL</span>)</span>
-<span id="cb2-13"><a href="#cb2-13"></a>  }</span>
-<span id="cb2-14"><a href="#cb2-14"></a>  <span class="cf">if</span> (aggregated)</span>
-<span id="cb2-15"><a href="#cb2-15"></a>    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/stop">stop</a></span>(<span class="st">"Aggregation not supported"</span>)</span>
-<span id="cb2-16"><a href="#cb2-16"></a>  </span>
-<span id="cb2-17"><a href="#cb2-17"></a>  <span class="co"># Some SQL to construct the covariate:</span></span>
-<span id="cb2-18"><a href="#cb2-18"></a>  sql &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(<span class="st">"SELECT @row_id_field AS row_id, 1 AS covariate_id,"</span>,</span>
-<span id="cb2-19"><a href="#cb2-19"></a>               <span class="st">"DATEDIFF(DAY, observation_period_start_date, cohort_start_date)"</span>,</span>
-<span id="cb2-20"><a href="#cb2-20"></a>               <span class="st">"AS covariate_value"</span>,</span>
-<span id="cb2-21"><a href="#cb2-21"></a>               <span class="st">"FROM @cohort_table c"</span>,</span>
-<span id="cb2-22"><a href="#cb2-22"></a>               <span class="st">"INNER JOIN @cdm_database_schema.observation_period op"</span>,</span>
-<span id="cb2-23"><a href="#cb2-23"></a>               <span class="st">"ON op.person_id = c.subject_id"</span>,</span>
-<span id="cb2-24"><a href="#cb2-24"></a>               <span class="st">"WHERE cohort_start_date &gt;= observation_period_start_date"</span>,</span>
-<span id="cb2-25"><a href="#cb2-25"></a>               <span class="st">"AND cohort_start_date &lt;= observation_period_end_date"</span>,</span>
-<span id="cb2-26"><a href="#cb2-26"></a>               <span class="st">"{@cohort_id != -1} ? {AND cohort_definition_id = @cohort_id}"</span>)</span>
-<span id="cb2-27"><a href="#cb2-27"></a>  sql &lt;-<span class="st"> </span>SqlRender<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/SqlRender/topics/render">render</a></span>(sql,</span>
-<span id="cb2-28"><a href="#cb2-28"></a>                              <span class="dt">cohort_table =</span> cohortTable,</span>
-<span id="cb2-29"><a href="#cb2-29"></a>                              <span class="dt">cohort_id =</span> cohortId,</span>
-<span id="cb2-30"><a href="#cb2-30"></a>                              <span class="dt">row_id_field =</span> rowIdField,</span>
-<span id="cb2-31"><a href="#cb2-31"></a>                              <span class="dt">cdm_database_schema =</span> cdmDatabaseSchema)</span>
-<span id="cb2-32"><a href="#cb2-32"></a>  sql &lt;-<span class="st"> </span>SqlRender<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/SqlRender/topics/translate">translate</a></span>(sql, <span class="dt">targetDialect =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/attr">attr</a></span>(connection, <span class="st">"dbms"</span>))</span>
-<span id="cb2-33"><a href="#cb2-33"></a>  </span>
-<span id="cb2-34"><a href="#cb2-34"></a>  <span class="co"># Retrieve the covariate:</span></span>
-<span id="cb2-35"><a href="#cb2-35"></a>  covariates &lt;-<span class="st"> </span>DatabaseConnector<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/DatabaseConnector/topics/querySql.ffdf">querySql.ffdf</a></span>(connection, sql)</span>
-<span id="cb2-36"><a href="#cb2-36"></a>  </span>
-<span id="cb2-37"><a href="#cb2-37"></a>  <span class="co"># Convert colum names to camelCase:</span></span>
-<span id="cb2-38"><a href="#cb2-38"></a>  <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(covariates) &lt;-<span class="st"> </span>SqlRender<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/SqlRender/topics/snakeCaseToCamelCase">snakeCaseToCamelCase</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(covariates))</span>
-<span id="cb2-39"><a href="#cb2-39"></a>  </span>
-<span id="cb2-40"><a href="#cb2-40"></a>  <span class="co"># Construct covariate reference:</span></span>
-<span id="cb2-41"><a href="#cb2-41"></a>  covariateRef &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">covariateId =</span> <span class="dv">1</span>,</span>
-<span id="cb2-42"><a href="#cb2-42"></a>                             <span class="dt">covariateName =</span> <span class="st">"Length of observation"</span>,</span>
-<span id="cb2-43"><a href="#cb2-43"></a>                             <span class="dt">analysisId =</span> <span class="dv">1</span>,</span>
-<span id="cb2-44"><a href="#cb2-44"></a>                             <span class="dt">conceptId =</span> <span class="dv">0</span>)</span>
-<span id="cb2-45"><a href="#cb2-45"></a>  covariateRef &lt;-<span class="st"> </span>ff<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/ff/topics/as.ffdf">as.ffdf</a></span>(covariateRef)</span>
-<span id="cb2-46"><a href="#cb2-46"></a>  </span>
-<span id="cb2-47"><a href="#cb2-47"></a>  <span class="co"># Construct analysis reference:</span></span>
-<span id="cb2-48"><a href="#cb2-48"></a>  analysisRef &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">analysisId =</span> <span class="dv">1</span>,</span>
-<span id="cb2-49"><a href="#cb2-49"></a>                            <span class="dt">analysisName =</span> <span class="st">"Length of observation"</span>,</span>
-<span id="cb2-50"><a href="#cb2-50"></a>                            <span class="dt">domainId =</span> <span class="st">"Demographics"</span>,</span>
-<span id="cb2-51"><a href="#cb2-51"></a>                            <span class="dt">startDay =</span> <span class="dv">0</span>,</span>
-<span id="cb2-52"><a href="#cb2-52"></a>                            <span class="dt">endDay =</span> <span class="dv">0</span>,</span>
-<span id="cb2-53"><a href="#cb2-53"></a>                            <span class="dt">isBinary =</span> <span class="st">"N"</span>,</span>
-<span id="cb2-54"><a href="#cb2-54"></a>                            <span class="dt">missingMeansZero =</span> <span class="st">"Y"</span>)</span>
-<span id="cb2-55"><a href="#cb2-55"></a>  analysisRef &lt;-<span class="st"> </span>ff<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/ff/topics/as.ffdf">as.ffdf</a></span>(analysisRef)</span>
-<span id="cb2-56"><a href="#cb2-56"></a>  </span>
-<span id="cb2-57"><a href="#cb2-57"></a>  <span class="co"># Construct analysis reference:</span></span>
-<span id="cb2-58"><a href="#cb2-58"></a>  metaData &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">sql =</span> sql, <span class="dt">call =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/match.call">match.call</a></span>())</span>
-<span id="cb2-59"><a href="#cb2-59"></a>  result &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">covariates =</span> covariates, </span>
-<span id="cb2-60"><a href="#cb2-60"></a>                 <span class="dt">covariateRef =</span> covariateRef, </span>
-<span id="cb2-61"><a href="#cb2-61"></a>                 <span class="dt">analysisRef =</span> analysisRef,</span>
-<span id="cb2-62"><a href="#cb2-62"></a>                 <span class="dt">metaData =</span> metaData)</span>
-<span id="cb2-63"><a href="#cb2-63"></a>  <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/class">class</a></span>(result) &lt;-<span class="st"> "covariateData"</span></span>
-<span id="cb2-64"><a href="#cb2-64"></a>  <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/function">return</a></span>(result)</span>
-<span id="cb2-65"><a href="#cb2-65"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">getDbLooCovariateData &lt;-<span class="st"> </span><span class="cf">function</span>(connection,</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2">                                  <span class="dt">oracleTempSchema =</span> <span class="ot">NULL</span>,</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">                                  cdmDatabaseSchema,</a>
+<a class="sourceLine" id="cb2-4" data-line-number="4">                                  <span class="dt">cohortTable =</span> <span class="st">"#cohort_person"</span>,</a>
+<a class="sourceLine" id="cb2-5" data-line-number="5">                                  <span class="dt">cohortId =</span> <span class="dv">-1</span>,</a>
+<a class="sourceLine" id="cb2-6" data-line-number="6">                                  <span class="dt">cdmVersion =</span> <span class="st">"5"</span>,</a>
+<a class="sourceLine" id="cb2-7" data-line-number="7">                                  <span class="dt">rowIdField =</span> <span class="st">"subject_id"</span>,</a>
+<a class="sourceLine" id="cb2-8" data-line-number="8">                                  covariateSettings,</a>
+<a class="sourceLine" id="cb2-9" data-line-number="9">                                  <span class="dt">aggregated =</span> <span class="ot">FALSE</span>) {</a>
+<a class="sourceLine" id="cb2-10" data-line-number="10">  <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/writeLines">writeLines</a></span>(<span class="st">"Constructing length of observation covariates"</span>)</a>
+<a class="sourceLine" id="cb2-11" data-line-number="11">  <span class="cf">if</span> (covariateSettings<span class="op">$</span>useLengthOfObs <span class="op">==</span><span class="st"> </span><span class="ot">FALSE</span>) {</a>
+<a class="sourceLine" id="cb2-12" data-line-number="12">    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/function">return</a></span>(<span class="ot">NULL</span>)</a>
+<a class="sourceLine" id="cb2-13" data-line-number="13">  }</a>
+<a class="sourceLine" id="cb2-14" data-line-number="14">  <span class="cf">if</span> (aggregated)</a>
+<a class="sourceLine" id="cb2-15" data-line-number="15">    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/stop">stop</a></span>(<span class="st">"Aggregation not supported"</span>)</a>
+<a class="sourceLine" id="cb2-16" data-line-number="16">  </a>
+<a class="sourceLine" id="cb2-17" data-line-number="17">  <span class="co"># Some SQL to construct the covariate:</span></a>
+<a class="sourceLine" id="cb2-18" data-line-number="18">  sql &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(<span class="st">"SELECT @row_id_field AS row_id, 1 AS covariate_id,"</span>,</a>
+<a class="sourceLine" id="cb2-19" data-line-number="19">               <span class="st">"DATEDIFF(DAY, observation_period_start_date, cohort_start_date)"</span>,</a>
+<a class="sourceLine" id="cb2-20" data-line-number="20">               <span class="st">"AS covariate_value"</span>,</a>
+<a class="sourceLine" id="cb2-21" data-line-number="21">               <span class="st">"FROM @cohort_table c"</span>,</a>
+<a class="sourceLine" id="cb2-22" data-line-number="22">               <span class="st">"INNER JOIN @cdm_database_schema.observation_period op"</span>,</a>
+<a class="sourceLine" id="cb2-23" data-line-number="23">               <span class="st">"ON op.person_id = c.subject_id"</span>,</a>
+<a class="sourceLine" id="cb2-24" data-line-number="24">               <span class="st">"WHERE cohort_start_date &gt;= observation_period_start_date"</span>,</a>
+<a class="sourceLine" id="cb2-25" data-line-number="25">               <span class="st">"AND cohort_start_date &lt;= observation_period_end_date"</span>,</a>
+<a class="sourceLine" id="cb2-26" data-line-number="26">               <span class="st">"{@cohort_id != -1} ? {AND cohort_definition_id = @cohort_id}"</span>)</a>
+<a class="sourceLine" id="cb2-27" data-line-number="27">  sql &lt;-<span class="st"> </span>SqlRender<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/SqlRender/topics/render">render</a></span>(sql,</a>
+<a class="sourceLine" id="cb2-28" data-line-number="28">                              <span class="dt">cohort_table =</span> cohortTable,</a>
+<a class="sourceLine" id="cb2-29" data-line-number="29">                              <span class="dt">cohort_id =</span> cohortId,</a>
+<a class="sourceLine" id="cb2-30" data-line-number="30">                              <span class="dt">row_id_field =</span> rowIdField,</a>
+<a class="sourceLine" id="cb2-31" data-line-number="31">                              <span class="dt">cdm_database_schema =</span> cdmDatabaseSchema)</a>
+<a class="sourceLine" id="cb2-32" data-line-number="32">  sql &lt;-<span class="st"> </span>SqlRender<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/SqlRender/topics/translate">translate</a></span>(sql, <span class="dt">targetDialect =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/attr">attr</a></span>(connection, <span class="st">"dbms"</span>))</a>
+<a class="sourceLine" id="cb2-33" data-line-number="33">  </a>
+<a class="sourceLine" id="cb2-34" data-line-number="34">  <span class="co"># Retrieve the covariate:</span></a>
+<a class="sourceLine" id="cb2-35" data-line-number="35">  covariates &lt;-<span class="st"> </span>DatabaseConnector<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/DatabaseConnector/topics/querySql.ffdf">querySql.ffdf</a></span>(connection, sql)</a>
+<a class="sourceLine" id="cb2-36" data-line-number="36">  </a>
+<a class="sourceLine" id="cb2-37" data-line-number="37">  <span class="co"># Convert colum names to camelCase:</span></a>
+<a class="sourceLine" id="cb2-38" data-line-number="38">  <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(covariates) &lt;-<span class="st"> </span>SqlRender<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/SqlRender/topics/snakeCaseToCamelCase">snakeCaseToCamelCase</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(covariates))</a>
+<a class="sourceLine" id="cb2-39" data-line-number="39">  </a>
+<a class="sourceLine" id="cb2-40" data-line-number="40">  <span class="co"># Construct covariate reference:</span></a>
+<a class="sourceLine" id="cb2-41" data-line-number="41">  covariateRef &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">covariateId =</span> <span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb2-42" data-line-number="42">                             <span class="dt">covariateName =</span> <span class="st">"Length of observation"</span>,</a>
+<a class="sourceLine" id="cb2-43" data-line-number="43">                             <span class="dt">analysisId =</span> <span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb2-44" data-line-number="44">                             <span class="dt">conceptId =</span> <span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb2-45" data-line-number="45">  covariateRef &lt;-<span class="st"> </span>ff<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/ff/topics/as.ffdf">as.ffdf</a></span>(covariateRef)</a>
+<a class="sourceLine" id="cb2-46" data-line-number="46">  </a>
+<a class="sourceLine" id="cb2-47" data-line-number="47">  <span class="co"># Construct analysis reference:</span></a>
+<a class="sourceLine" id="cb2-48" data-line-number="48">  analysisRef &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">analysisId =</span> <span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb2-49" data-line-number="49">                            <span class="dt">analysisName =</span> <span class="st">"Length of observation"</span>,</a>
+<a class="sourceLine" id="cb2-50" data-line-number="50">                            <span class="dt">domainId =</span> <span class="st">"Demographics"</span>,</a>
+<a class="sourceLine" id="cb2-51" data-line-number="51">                            <span class="dt">startDay =</span> <span class="dv">0</span>,</a>
+<a class="sourceLine" id="cb2-52" data-line-number="52">                            <span class="dt">endDay =</span> <span class="dv">0</span>,</a>
+<a class="sourceLine" id="cb2-53" data-line-number="53">                            <span class="dt">isBinary =</span> <span class="st">"N"</span>,</a>
+<a class="sourceLine" id="cb2-54" data-line-number="54">                            <span class="dt">missingMeansZero =</span> <span class="st">"Y"</span>)</a>
+<a class="sourceLine" id="cb2-55" data-line-number="55">  analysisRef &lt;-<span class="st"> </span>ff<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/ff/topics/as.ffdf">as.ffdf</a></span>(analysisRef)</a>
+<a class="sourceLine" id="cb2-56" data-line-number="56">  </a>
+<a class="sourceLine" id="cb2-57" data-line-number="57">  <span class="co"># Construct analysis reference:</span></a>
+<a class="sourceLine" id="cb2-58" data-line-number="58">  metaData &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">sql =</span> sql, <span class="dt">call =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/match.call">match.call</a></span>())</a>
+<a class="sourceLine" id="cb2-59" data-line-number="59">  result &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">covariates =</span> covariates, </a>
+<a class="sourceLine" id="cb2-60" data-line-number="60">                 <span class="dt">covariateRef =</span> covariateRef, </a>
+<a class="sourceLine" id="cb2-61" data-line-number="61">                 <span class="dt">analysisRef =</span> analysisRef,</a>
+<a class="sourceLine" id="cb2-62" data-line-number="62">                 <span class="dt">metaData =</span> metaData)</a>
+<a class="sourceLine" id="cb2-63" data-line-number="63">  <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/class">class</a></span>(result) &lt;-<span class="st"> "covariateData"</span></a>
+<a class="sourceLine" id="cb2-64" data-line-number="64">  <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/function">return</a></span>(result)</a>
+<a class="sourceLine" id="cb2-65" data-line-number="65">}</a></code></pre></div>
 <p>In this example function, we construct a single covariate called ‘Length of observation’, which is the number of days between the <code>observation_period_start_date</code> and the index date. We use parameterized SQL and the <code>SqlRender</code> package to generate the appropriate SQL statement for the database to which we are connected. Using the <code>DatabaseConnector</code> package, the result are immediately stored in an <code>ffdf</code> object. We also create the covariate reference and analysis reference objects, which have one row each, specifying our one covariate and one analysis. We then wrap up the <code>covariate</code>, <code>covariateRef</code>, and <code>analysisRef</code> objects in a single result object, together with some meta-data.</p>
 </div>
 </div>
@@ -257,32 +260,32 @@
 <h1 class="hasAnchor">
 <a href="#using-the-custom-covariate-builder" class="anchor"></a>Using the custom covariate builder</h1>
 <p>We can use our custom covariate builder in the <code>PatientLevelPrediction</code> package, as well other packages that depend on the <code>FeatureExtraction</code> package, such as the <code>CohortMethod</code> package. If we want to use only our custom defined covariate builder, we can simply replace the existing <code>covariateSettings</code> with our own, for example:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>looCovSet &lt;-<span class="st"> </span><span class="kw">createLooCovariateSettings</span>(<span class="dt">useLengthOfObs =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb3-2"><a href="#cb3-2"></a></span>
-<span id="cb3-3"><a href="#cb3-3"></a>covariates &lt;-<span class="st"> </span><span class="kw"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span>(<span class="dt">connectionDetails =</span> connectionDetails,</span>
-<span id="cb3-4"><a href="#cb3-4"></a>                                 <span class="dt">cdmDatabaseSchema =</span> cdmDatabaseSchema,</span>
-<span id="cb3-5"><a href="#cb3-5"></a>                                 <span class="dt">cohortDatabaseSchema =</span> resultsDatabaseSchema,</span>
-<span id="cb3-6"><a href="#cb3-6"></a>                                 <span class="dt">cohortTable =</span> <span class="st">"rehospitalization"</span>,</span>
-<span id="cb3-7"><a href="#cb3-7"></a>                                 <span class="dt">cohortId =</span> <span class="dv">1</span>,</span>
-<span id="cb3-8"><a href="#cb3-8"></a>                                 <span class="dt">covariateSettings =</span> looCovSet)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">looCovSet &lt;-<span class="st"> </span><span class="kw">createLooCovariateSettings</span>(<span class="dt">useLengthOfObs =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">covariates &lt;-<span class="st"> </span><span class="kw"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span>(<span class="dt">connectionDetails =</span> connectionDetails,</a>
+<a class="sourceLine" id="cb3-4" data-line-number="4">                                 <span class="dt">cdmDatabaseSchema =</span> cdmDatabaseSchema,</a>
+<a class="sourceLine" id="cb3-5" data-line-number="5">                                 <span class="dt">cohortDatabaseSchema =</span> resultsDatabaseSchema,</a>
+<a class="sourceLine" id="cb3-6" data-line-number="6">                                 <span class="dt">cohortTable =</span> <span class="st">"rehospitalization"</span>,</a>
+<a class="sourceLine" id="cb3-7" data-line-number="7">                                 <span class="dt">cohortId =</span> <span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb3-8" data-line-number="8">                                 <span class="dt">covariateSettings =</span> looCovSet)</a></code></pre></div>
 <p>In this case we will have only one covariate for our predictive model, the length of observation. In most cases, we will want our custom covariates in addition to the default covariates. We can do this by creating a list of covariate settings:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>covariateSettings &lt;-<span class="st"> </span><span class="kw"><a href="../reference/createCovariateSettings.html">createCovariateSettings</a></span>(<span class="dt">useDemographicsGender =</span> <span class="ot">TRUE</span>,</span>
-<span id="cb4-2"><a href="#cb4-2"></a>                                             <span class="dt">useDemographicsAgeGroup =</span> <span class="ot">TRUE</span>,</span>
-<span id="cb4-3"><a href="#cb4-3"></a>                                             <span class="dt">useDemographicsRace =</span> <span class="ot">TRUE</span>,</span>
-<span id="cb4-4"><a href="#cb4-4"></a>                                             <span class="dt">useDemographicsEthnicity =</span> <span class="ot">TRUE</span>,</span>
-<span id="cb4-5"><a href="#cb4-5"></a>                                             <span class="dt">useDemographicsIndexYear =</span> <span class="ot">TRUE</span>,</span>
-<span id="cb4-6"><a href="#cb4-6"></a>                                             <span class="dt">useDemographicsIndexMonth =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb4-7"><a href="#cb4-7"></a></span>
-<span id="cb4-8"><a href="#cb4-8"></a>looCovSet &lt;-<span class="st"> </span><span class="kw">createLooCovariateSettings</span>(<span class="dt">useLengthOfObs =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb4-9"><a href="#cb4-9"></a></span>
-<span id="cb4-10"><a href="#cb4-10"></a>covariateSettingsList &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(covariateSettings, looCovSet)</span>
-<span id="cb4-11"><a href="#cb4-11"></a></span>
-<span id="cb4-12"><a href="#cb4-12"></a>covariates &lt;-<span class="st"> </span><span class="kw"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span>(<span class="dt">connectionDetails =</span> connectionDetails,</span>
-<span id="cb4-13"><a href="#cb4-13"></a>                                 <span class="dt">cdmDatabaseSchema =</span> cdmDatabaseSchema,</span>
-<span id="cb4-14"><a href="#cb4-14"></a>                                 <span class="dt">cohortDatabaseSchema =</span> resultsDatabaseSchema,</span>
-<span id="cb4-15"><a href="#cb4-15"></a>                                 <span class="dt">cohortTable =</span> <span class="st">"rehospitalization"</span>,</span>
-<span id="cb4-16"><a href="#cb4-16"></a>                                 <span class="dt">cohortId =</span> <span class="dv">1</span>,</span>
-<span id="cb4-17"><a href="#cb4-17"></a>                                 <span class="dt">covariateSettings =</span> covariateSettingsList)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">covariateSettings &lt;-<span class="st"> </span><span class="kw"><a href="../reference/createCovariateSettings.html">createCovariateSettings</a></span>(<span class="dt">useDemographicsGender =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2">                                             <span class="dt">useDemographicsAgeGroup =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb4-3" data-line-number="3">                                             <span class="dt">useDemographicsRace =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb4-4" data-line-number="4">                                             <span class="dt">useDemographicsEthnicity =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb4-5" data-line-number="5">                                             <span class="dt">useDemographicsIndexYear =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb4-6" data-line-number="6">                                             <span class="dt">useDemographicsIndexMonth =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb4-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb4-8" data-line-number="8">looCovSet &lt;-<span class="st"> </span><span class="kw">createLooCovariateSettings</span>(<span class="dt">useLengthOfObs =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb4-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb4-10" data-line-number="10">covariateSettingsList &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(covariateSettings, looCovSet)</a>
+<a class="sourceLine" id="cb4-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb4-12" data-line-number="12">covariates &lt;-<span class="st"> </span><span class="kw"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span>(<span class="dt">connectionDetails =</span> connectionDetails,</a>
+<a class="sourceLine" id="cb4-13" data-line-number="13">                                 <span class="dt">cdmDatabaseSchema =</span> cdmDatabaseSchema,</a>
+<a class="sourceLine" id="cb4-14" data-line-number="14">                                 <span class="dt">cohortDatabaseSchema =</span> resultsDatabaseSchema,</a>
+<a class="sourceLine" id="cb4-15" data-line-number="15">                                 <span class="dt">cohortTable =</span> <span class="st">"rehospitalization"</span>,</a>
+<a class="sourceLine" id="cb4-16" data-line-number="16">                                 <span class="dt">cohortId =</span> <span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb4-17" data-line-number="17">                                 <span class="dt">covariateSettings =</span> covariateSettingsList)</a></code></pre></div>
 <p>In this example both demographic covariates and our length of observation covariate will be generated and can be used in our predictive model.</p>
 </div>
   </div>

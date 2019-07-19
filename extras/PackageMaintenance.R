@@ -43,6 +43,13 @@ rmarkdown::render("vignettes/UsingFeatureExtraction.Rmd",
                                           toc = TRUE,
                                           number_sections = TRUE))
 
+rmarkdown::render("vignettes/UsingFeatureExtractionKorean.Rmd",
+                  output_file = "../inst/doc/UsingFeatureExtractionKorean.pdf",
+                  rmarkdown::pdf_document(latex_engine = "pdflatex",
+                                          toc = TRUE,
+                                          number_sections = TRUE))
+
+
 pkgdown::build_site()
 
 # Store JAR checksum --------------------------------------------------------------

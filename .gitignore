@@ -26,3 +26,5 @@ standalone/build/*
 /bin
 
 /target/
+
+*.tex
