@@ -28,3 +28,4 @@ standalone/build/*
 /target/
 
 *.tex
+*.log
