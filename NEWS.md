@@ -7,6 +7,10 @@ Bugfixes:
 
 2. Fixed error when calling tidyCovariates without removing redundancy, when there are no infrequent covariates.
 
+3. Fixed server-side computation of median and interquartile range for measurement values.
+
+4. Restricting by concept ID now works for measurement values.
+
 FeatureExtraction 2.2.4
 =======================
 

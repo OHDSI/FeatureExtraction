@@ -6,7 +6,11 @@ SELECT DISTINCT measurement_concept_id,
   CAST((CAST(measurement_concept_id AS BIGINT) * 1000000) + ((unit_concept_id - (FLOOR(unit_concept_id / 1000) * 1000)) * 1000) + @analysis_id AS BIGINT) AS covariate_id
 INTO #meas_cov
 FROM @cdm_database_schema.measurement
-WHERE value_as_number IS NOT NULL; 
+WHERE value_as_number IS NOT NULL
+{@excluded_concept_table != ''} ? {		AND measurement_concept_id NOT IN (SELECT id FROM @excluded_concept_table)}
+{@included_concept_table != ''} ? {		AND measurement_concept_id IN (SELECT id FROM @included_concept_table)}
+{@included_cov_table != ''} ? {		AND CAST((CAST(measurement_concept_id AS BIGINT) * 1000000) + ((unit_concept_id - (FLOOR(unit_concept_id / 1000) * 1000)) * 1000) + @analysis_id AS BIGINT) IN (SELECT id FROM @included_cov_table)}
+; 
 
 -- Feature construction
 IF OBJECT_ID('tempdb..#meas_val_data', 'U') IS NOT NULL
@@ -22,8 +26,7 @@ SELECT
 {@temporal} ? {
     time_id,
 }	
-	measurement_concept_id,
-	unit_concept_id,
+	covariate_id,
 	value_as_number
 INTO #meas_val_data
 FROM (
@@ -33,34 +36,36 @@ FROM (
 		cohort_start_date,
 {@temporal} ? {
 		time_id,
-		ROW_NUMBER() OVER (PARTITION BY subject_id, cohort_start_date, measurement_concept_id, time_id ORDER BY measurement_date DESC) AS rn,
+		ROW_NUMBER() OVER (PARTITION BY subject_id, cohort_start_date, measurement.measurement_concept_id, time_id ORDER BY measurement_date DESC) AS rn,
 } : {
-		ROW_NUMBER() OVER (PARTITION BY subject_id, cohort_start_date, measurement_concept_id ORDER BY measurement_date DESC) AS rn,
+		ROW_NUMBER() OVER (PARTITION BY subject_id, cohort_start_date, measurement.measurement_concept_id ORDER BY measurement_date DESC) AS rn,
 }
 } : {
 		cohort.@row_id_field AS row_id,
 {@temporal} ? {
 		time_id,
-		ROW_NUMBER() OVER (PARTITION BY cohort.@row_id_field, measurement_concept_id, time_id ORDER BY measurement_date DESC) AS rn,
+		ROW_NUMBER() OVER (PARTITION BY cohort.@row_id_field, measurement.measurement_concept_id, time_id ORDER BY measurement_date DESC) AS rn,
 } : {
-		ROW_NUMBER() OVER (PARTITION BY cohort.@row_id_field, measurement_concept_id ORDER BY measurement_date DESC) AS rn,
+		ROW_NUMBER() OVER (PARTITION BY cohort.@row_id_field, measurement.measurement_concept_id ORDER BY measurement_date DESC) AS rn,
 }
 }
-		measurement_concept_id,
-		unit_concept_id,
+		covariate_id,
 		value_as_number
 	FROM @cohort_table cohort
 	INNER JOIN @cdm_database_schema.measurement
 		ON cohort.subject_id = measurement.person_id
+	INNER JOIN #meas_cov meas_cov
+		ON meas_cov.measurement_concept_id = measurement.measurement_concept_id 
+			AND meas_cov.unit_concept_id = measurement.unit_concept_id 
 {@temporal} ? {
 	INNER JOIN #time_period time_period
 		ON measurement_date <= DATEADD(DAY, time_period.end_day, cohort.cohort_start_date)
 		AND measurement_date >= DATEADD(DAY, time_period.start_day, cohort.cohort_start_date)
-	WHERE measurement_concept_id != 0 
+	WHERE measurement.measurement_concept_id != 0 
 } : {
 	WHERE measurement_date <= DATEADD(DAY, @end_day, cohort.cohort_start_date)
 {@start_day != 'anyTimePrior'} ? {				AND measurement_date >= DATEADD(DAY, @start_day, cohort.cohort_start_date)}
-		AND measurement_concept_id != 0
+		AND measurement.measurement_concept_id != 0
 }	
 		AND value_as_number IS NOT NULL 			
 {@cohort_definition_id != -1} ? {		AND cohort.cohort_definition_id = @cohort_definition_id}
@@ -77,8 +82,7 @@ IF OBJECT_ID('tempdb..#meas_val_prep', 'U') IS NOT NULL
 IF OBJECT_ID('tempdb..#meas_val_prep2', 'U') IS NOT NULL
 	DROP TABLE #meas_val_prep2;
 
-SELECT measurement_concept_id,
-	unit_concept_id,
+SELECT covariate_id,
 {@temporal} ? {
 	time_id,
 }
@@ -89,31 +93,28 @@ SELECT measurement_concept_id,
 	COUNT(*) AS count_value
 INTO #meas_val_stats
 FROM #meas_val_data
-GROUP BY measurement_concept_id,
+GROUP BY covariate_id
 {@temporal} ? {
-	time_id,
+	,time_id
 }
-	unit_concept_id;
+;
 
-SELECT measurement_concept_id,
-	unit_concept_id,
+SELECT covariate_id,
 {@temporal} ? {
 	time_id,
 }	
 	value_as_number,
 	COUNT(*) AS total,
-	ROW_NUMBER() OVER (PARTITION BY measurement_concept_id, unit_concept_id	ORDER BY value_as_number) AS rn
+	ROW_NUMBER() OVER (PARTITION BY covariate_id ORDER BY value_as_number) AS rn
 INTO #meas_val_prep
 FROM #meas_val_data
 GROUP BY value_as_number,
 {@temporal} ? {
 	time_id,
 }	
-	measurement_concept_id,
-	unit_concept_id;
+	covariate_id;
 	
-SELECT s.measurement_concept_id,
-	s.unit_concept_id,
+SELECT s.covariate_id,
 {@temporal} ? {
 	s.time_id,
 }	
@@ -123,14 +124,14 @@ INTO #meas_val_prep2
 FROM #meas_val_prep s
 INNER JOIN #meas_val_prep p
 	ON p.rn <= s.rn
-GROUP BY s.measurement_concept_id,
-	s.unit_concept_id,
+		AND p.covariate_id = s.covariate_id
+GROUP BY s.covariate_id,
 {@temporal} ? {
 	s.time_id,
 }			
 	s.value_as_number;
 	
-SELECT covariate_id,
+SELECT o.covariate_id,
 {@temporal} ? {
     o.time_id,
 }
@@ -147,16 +148,11 @@ SELECT covariate_id,
 INTO @covariate_table
 FROM #meas_val_prep2 p
 INNER JOIN #meas_val_stats o
-	ON o.measurement_concept_id = p.measurement_concept_id
-		AND	o.unit_concept_id = p.unit_concept_id
+	ON o.covariate_id = p.covariate_id
 {@temporal} ? {
 		AND	o.time_id = p.time_id
 }		
-INNER JOIN #meas_cov covariate_ids
-	ON o.measurement_concept_id = covariate_ids.measurement_concept_id
-		AND	o.unit_concept_id = covariate_ids.unit_concept_id
-{@included_cov_table != ''} ? {WHERE covariate_id IN (SELECT id FROM @included_cov_table)}
-GROUP BY covariate_id,
+GROUP BY o.covariate_id,
 {@temporal} ? {
     o.time_id,
 }
@@ -173,12 +169,7 @@ SELECT covariate_id,
 	row_id,
 	value_as_number AS covariate_value 
 INTO @covariate_table
-FROM #meas_val_data raw_data
-INNER JOIN #meas_cov covariate_ids
-	ON raw_data.measurement_concept_id = covariate_ids.measurement_concept_id
-		AND	raw_data.unit_concept_id = covariate_ids.unit_concept_id	
-{@included_cov_table != ''} ? {WHERE covariate_id IN (SELECT id FROM @included_cov_table)}
-;
+FROM #meas_val_data raw_data;
 }
 
 -- Reference construction
