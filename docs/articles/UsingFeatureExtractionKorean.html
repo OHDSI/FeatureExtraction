@@ -7,8 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Using FeatureExtraction (Korean) • FeatureExtraction</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Using FeatureExtraction (Korean)">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
@@ -38,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -76,7 +77,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/OHDSI/FeatureExtraction">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -89,13 +90,14 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Using FeatureExtraction (Korean)</h1>
                         <h4 class="author">Jeon Ga Bin &amp; Martijn J. Schuemie</h4>
             
-            <h4 class="date">2019-07-19</h4>
+            <h4 class="date">2019-08-28</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/FeatureExtraction/blob/master/vignettes/UsingFeatureExtractionKorean.Rmd"><code>vignettes/UsingFeatureExtractionKorean.Rmd</code></a></small>
       <div class="hidden name"><code>UsingFeatureExtractionKorean.Rmd</code></div>
@@ -237,16 +239,16 @@
 <p>상세 분석 설정 객체를 처음부터 만들 수 있고 이것을 사용하여 세부 설정 객체를 생성한다</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>analysisDetails &lt;-<span class="st"> </span><span class="kw"><a href="../reference/createAnalysisDetails.html">createAnalysisDetails</a></span>(<span class="dt">analysisId =</span> <span class="dv">1</span>,</span>
 <span id="cb8-2"><a href="#cb8-2"></a>                                         <span class="dt">sqlFileName =</span> <span class="st">"DemographicsGender.sql"</span>,</span>
-<span id="cb8-3"><a href="#cb8-3"></a>                                         <span class="dt">parameters =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">analysisId =</span> <span class="dv">1</span>,</span>
+<span id="cb8-3"><a href="#cb8-3"></a>                                         <span class="dt">parameters =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">analysisId =</span> <span class="dv">1</span>,</span>
 <span id="cb8-4"><a href="#cb8-4"></a>                                                           <span class="dt">analysisName =</span> <span class="st">"Gender"</span>,</span>
 <span id="cb8-5"><a href="#cb8-5"></a>                                                           <span class="dt">domainId =</span> <span class="st">"Demographics"</span>),</span>
-<span id="cb8-6"><a href="#cb8-6"></a>                                         <span class="dt">includedCovariateConceptIds =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(),</span>
+<span id="cb8-6"><a href="#cb8-6"></a>                                         <span class="dt">includedCovariateConceptIds =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(),</span>
 <span id="cb8-7"><a href="#cb8-7"></a>                                         <span class="dt">addDescendantsToInclude =</span> <span class="ot">FALSE</span>,</span>
-<span id="cb8-8"><a href="#cb8-8"></a>                                         <span class="dt">excludedCovariateConceptIds =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(),</span>
+<span id="cb8-8"><a href="#cb8-8"></a>                                         <span class="dt">excludedCovariateConceptIds =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(),</span>
 <span id="cb8-9"><a href="#cb8-9"></a>                                         <span class="dt">addDescendantsToExclude =</span> <span class="ot">FALSE</span>,</span>
-<span id="cb8-10"><a href="#cb8-10"></a>                                         <span class="dt">includedCovariateIds =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>())</span>
+<span id="cb8-10"><a href="#cb8-10"></a>                                         <span class="dt">includedCovariateIds =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>())</span>
 <span id="cb8-11"><a href="#cb8-11"></a></span>
-<span id="cb8-12"><a href="#cb8-12"></a>settings &lt;-<span class="st"> </span><span class="kw"><a href="../reference/createDetailedCovariateSettings.html">createDetailedCovariateSettings</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(analysisDetails))</span></code></pre></div>
+<span id="cb8-12"><a href="#cb8-12"></a>settings &lt;-<span class="st"> </span><span class="kw"><a href="../reference/createDetailedCovariateSettings.html">createDetailedCovariateSettings</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(analysisDetails))</span></code></pre></div>
 </div>
 <div id="section-5" class="section level2">
 <h2 class="hasAnchor">
@@ -262,21 +264,21 @@
 <p>이 경우 우리는 condition_occurrence 테이블의 각 개념에 대해 이진 공변량을 생성하기로 선택하였고, CDM의 measurement 테이블에 있는 각 측정 조합에 대해 연속 공변량을 생성하기로 했다. 기본적으로 시간 공변량은 코호트 시작일 365일 전(포함하지 않음)에 개별적으로 각 날에 대해 생성된다. 다른 시간대를 지정할수도 있수도 있는데 예를 들면 밑에 코드처럼 7일간격으로 만들 수 있다</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>settings &lt;-<span class="st"> </span><span class="kw"><a href="../reference/createTemporalCovariateSettings.html">createTemporalCovariateSettings</a></span>(<span class="dt">useConditionOccurrence =</span> <span class="ot">TRUE</span>,</span>
 <span id="cb11-2"><a href="#cb11-2"></a>                                            <span class="dt">useMeasurementValue =</span> <span class="ot">TRUE</span>,</span>
-<span id="cb11-3"><a href="#cb11-3"></a>                                            <span class="dt">temporalStartDays =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="op">-</span><span class="dv">364</span>, <span class="dv">-7</span>, <span class="dt">by =</span> <span class="dv">7</span>),</span>
-<span id="cb11-4"><a href="#cb11-4"></a>                                            <span class="dt">temporalEndDays =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="op">-</span><span class="dv">358</span>, <span class="dv">-1</span>, <span class="dt">by =</span> <span class="dv">7</span>))</span></code></pre></div>
+<span id="cb11-3"><a href="#cb11-3"></a>                                            <span class="dt">temporalStartDays =</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="op">-</span><span class="dv">364</span>, <span class="dv">-7</span>, <span class="dt">by =</span> <span class="dv">7</span>),</span>
+<span id="cb11-4"><a href="#cb11-4"></a>                                            <span class="dt">temporalEndDays =</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="op">-</span><span class="dv">358</span>, <span class="dv">-1</span>, <span class="dt">by =</span> <span class="dv">7</span>))</span></code></pre></div>
 <p>각 시간대는 지정된 시작일과 종료일을 포함한다. 일반 공변량과 유사하게 <strong>고급 사용자</strong>도 사용자 정의 분석을 정의할 수 있다.</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>analysisDetails &lt;-<span class="st"> </span><span class="kw"><a href="../reference/createAnalysisDetails.html">createAnalysisDetails</a></span>(<span class="dt">analysisId =</span> <span class="dv">1</span>,</span>
 <span id="cb12-2"><a href="#cb12-2"></a>                                         <span class="dt">sqlFileName =</span> <span class="st">"MeasurementValue.sql"</span>,</span>
-<span id="cb12-3"><a href="#cb12-3"></a>                                         <span class="dt">parameters =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">analysisId =</span> <span class="dv">1</span>,</span>
+<span id="cb12-3"><a href="#cb12-3"></a>                                         <span class="dt">parameters =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">analysisId =</span> <span class="dv">1</span>,</span>
 <span id="cb12-4"><a href="#cb12-4"></a>                                                           <span class="dt">analysisName =</span> <span class="st">"MeasurementValue"</span>,</span>
 <span id="cb12-5"><a href="#cb12-5"></a>                                                           <span class="dt">domainId =</span> <span class="st">"Measurement"</span>),</span>
-<span id="cb12-6"><a href="#cb12-6"></a>                                         <span class="dt">includedCovariateConceptIds =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(),</span>
+<span id="cb12-6"><a href="#cb12-6"></a>                                         <span class="dt">includedCovariateConceptIds =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(),</span>
 <span id="cb12-7"><a href="#cb12-7"></a>                                         <span class="dt">addDescendantsToInclude =</span> <span class="ot">FALSE</span>,</span>
-<span id="cb12-8"><a href="#cb12-8"></a>                                         <span class="dt">excludedCovariateConceptIds =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(),</span>
+<span id="cb12-8"><a href="#cb12-8"></a>                                         <span class="dt">excludedCovariateConceptIds =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(),</span>
 <span id="cb12-9"><a href="#cb12-9"></a>                                         <span class="dt">addDescendantsToExclude =</span> <span class="ot">FALSE</span>,</span>
-<span id="cb12-10"><a href="#cb12-10"></a>                                         <span class="dt">includedCovariateIds =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>())</span>
+<span id="cb12-10"><a href="#cb12-10"></a>                                         <span class="dt">includedCovariateIds =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>())</span>
 <span id="cb12-11"><a href="#cb12-11"></a></span>
-<span id="cb12-12"><a href="#cb12-12"></a>settings &lt;-<span class="st">  </span><span class="kw"><a href="../reference/createDetailedTemporalCovariateSettings.html">createDetailedTemporalCovariateSettings</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(analysisDetails))</span></code></pre></div>
+<span id="cb12-12"><a href="#cb12-12"></a>settings &lt;-<span class="st">  </span><span class="kw"><a href="../reference/createDetailedTemporalCovariateSettings.html">createDetailedTemporalCovariateSettings</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(analysisDetails))</span></code></pre></div>
 </div>
 </div>
 <div id="section-6" class="section level1">
@@ -305,7 +307,7 @@
 <span id="cb14-2"><a href="#cb14-2"></a><span class="co">File cohortsOfInterest.sql</span></span>
 <span id="cb14-3"><a href="#cb14-3"></a><span class="co">***********************************/</span></span>
 <span id="cb14-4"><a href="#cb14-4"></a></span>
-<span id="cb14-5"><a href="#cb14-5"></a><span class="cf">IF</span> OBJECT_ID(<span class="st">'@resultsDatabaseSchema.cohorts_of_interest'</span>, <span class="st">'U'</span>) <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NULL">NULL</a></span></span>
+<span id="cb14-5"><a href="#cb14-5"></a><span class="cf">IF</span> OBJECT_ID(<span class="st">'@resultsDatabaseSchema.cohorts_of_interest'</span>, <span class="st">'U'</span>) <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw"><a href="https://rdrr.io/r/base/NULL.html">NULL</a></span></span>
 <span id="cb14-6"><a href="#cb14-6"></a>  <span class="kw">DROP</span> <span class="kw">TABLE</span> @resultsDatabaseSchema.cohorts_of_interest;</span>
 <span id="cb14-7"><a href="#cb14-7"></a></span>
 <span id="cb14-8"><a href="#cb14-8"></a><span class="kw">SELECT</span> first_use.<span class="op">*</span></span>
@@ -327,7 +329,7 @@
 <span id="cb14-24"><a href="#cb14-24"></a>  <span class="kw">AND</span> cohort_end_date <span class="op">&lt;=</span> observation_period_end_date</span>
 <span id="cb14-25"><a href="#cb14-25"></a><span class="kw">WHERE</span> DATEDIFF(<span class="dt">DAY</span>, observation_period_start_date, cohort_start_date) <span class="op">&gt;=</span> <span class="dv">365</span>;</span></code></pre></div>
 <p>이 Sql은 SqlRender 패키지에서 사용할 수 있는 매개변수화된 SQL이다. 매개 변수가 있는 SQL을 사용하므로 CDM 및 결과 스키마의 이름을 미리 지정할 필요가 없다. 그런 식으로 다른 스키마에서 SQL을 실행하려면 매개 변수 값만 변경하면 된다. 우리는 SQL 코드를 변경할 필요가 없다. 또한 SqlRender의 번역 기능을 사용하여 다양한 환경에서 SQL 코드를 실행할 수 있다.</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(SqlRender)</span>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(SqlRender)</span>
 <span id="cb15-2"><a href="#cb15-2"></a>sql &lt;-<span class="st"> </span><span class="kw">readSql</span>(<span class="st">"cohortsOfInterest.sql"</span>)</span>
 <span id="cb15-3"><a href="#cb15-3"></a>sql &lt;-<span class="st"> </span><span class="kw">render</span>(sql,</span>
 <span id="cb15-4"><a href="#cb15-4"></a>              <span class="dt">cdmDatabaseSchema =</span> cdmDatabaseSchema, </span>
@@ -338,7 +340,7 @@
 <span id="cb15-9"><a href="#cb15-9"></a><span class="kw">executeSql</span>(connection, sql)</span></code></pre></div>
 <p>이 코드에서는 먼저 파일에서 메모리로 SQL을 읽는다. 다음 줄에서는 두 개의 매개 변수 이름을 실제 값으로 대체한다. 그런 다음 SQL을 연결 세부 정보에서 이미 지정되어있는 DBMS에 적합한 방언으로 변환한다. 다음으로, 우리는 서버에 연결하고 렌더링되고 번역 된 SQL을 제출한다.</p>
 <p>지금까지 잘했다면, 우리는 이제 관심 코호트의 테이블을 만들었다. 우리는 한 종류당 얼마나 많은 이벤트를 볼 수 있는 지 알 수 있다.</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>sql &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(<span class="st">"SELECT cohort_definition_id, COUNT(*) AS count"</span>,</span>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>sql &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(<span class="st">"SELECT cohort_definition_id, COUNT(*) AS count"</span>,</span>
 <span id="cb16-2"><a href="#cb16-2"></a>             <span class="st">"FROM @resultsDatabaseSchema.cohorts_of_interest"</span>,</span>
 <span id="cb16-3"><a href="#cb16-3"></a>             <span class="st">"GROUP BY cohort_definition_id"</span>)</span>
 <span id="cb16-4"><a href="#cb16-4"></a>sql &lt;-<span class="st"> </span><span class="kw">render</span>(sql, <span class="dt">resultsDatabaseSchema =</span> resultsDatabaseSchema)</span>
@@ -363,7 +365,7 @@
 <span id="cb18-8"><a href="#cb18-8"></a>                                    <span class="dt">rowIdField =</span> <span class="st">"subject_id"</span>,</span>
 <span id="cb18-9"><a href="#cb18-9"></a>                                    <span class="dt">covariateSettings =</span> covariateSettings)</span>
 <span id="cb18-10"><a href="#cb18-10"></a></span>
-<span id="cb18-11"><a href="#cb18-11"></a><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(covariateData)</span></code></pre></div>
+<span id="cb18-11"><a href="#cb18-11"></a><span class="kw"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(covariateData)</span></code></pre></div>
 <pre><code>## CovariateData object summary
 ## 
 ## Number of covariates: 41330
@@ -431,11 +433,11 @@
 <span id="cb23-4"><a href="#cb23-4"></a>                                    <span class="dt">removeRedundancy =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
 <p>몇 개의 간헐적인 공변량이 제거되었는지 알고 싶다면 metaData 객체를 쓰면 된다</p>
 <div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>deletedCovariateIds &lt;-<span class="st"> </span>tidyCovariates<span class="op">$</span>metaData<span class="op">$</span>deletedInfrequentCovariateIds</span>
-<span id="cb24-2"><a href="#cb24-2"></a><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(deletedCovariateIds)</span></code></pre></div>
+<span id="cb24-2"><a href="#cb24-2"></a><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(deletedCovariateIds)</span></code></pre></div>
 <pre><code>## [1]        3 22274210 22274212 22288210 22340212 22350210</code></pre>
 <p>비슷하게, 중복된 공변량이 제거되었는지 알고 싶으면 metaData 객체를 쓰면 된다.</p>
 <div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a>deletedCovariateIds &lt;-<span class="st"> </span>tidyCovariates<span class="op">$</span>metaData<span class="op">$</span>deletedRedundantCovariateIds</span>
-<span id="cb26-2"><a href="#cb26-2"></a><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(deletedCovariateIds)</span></code></pre></div>
+<span id="cb26-2"><a href="#cb26-2"></a><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(deletedCovariateIds)</span></code></pre></div>
 <pre><code>## [1]  1118084410  1118084412  1118084413 21603931410 21603931412 21603931413</code></pre>
 </div>
 </div>
@@ -455,7 +457,7 @@
 <span id="cb29-7"><a href="#cb29-7"></a>                                     <span class="dt">cohortId =</span> <span class="dv">1118084</span>,</span>
 <span id="cb29-8"><a href="#cb29-8"></a>                                     <span class="dt">covariateSettings =</span> covariateSettings,</span>
 <span id="cb29-9"><a href="#cb29-9"></a>                                     <span class="dt">aggregated =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb29-10"><a href="#cb29-10"></a><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(covariateData2)</span></code></pre></div>
+<span id="cb29-10"><a href="#cb29-10"></a><span class="kw"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(covariateData2)</span></code></pre></div>
 <pre><code>## CovariateData object summary
 ## 
 ## Number of covariates: 41330
@@ -531,7 +533,7 @@
 <a href="#section-15" class="anchor"></a>테이블 만들기 1</h2>
 <p>특징추출 패키지가 지원하는 한 가지 과제는 논문에 포함시킬 수 있는 전체 학습 인구 특성 테이블을 만드는 것이다. 이것은 일반적으로 첫 번째 테이블이므로 테이블를 ’테이블1’이라고 합니다. 특징추출 패키지에서 기본 테이블 1을 사용 할 수 있다.</p>
 <div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1"></a>result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/createTable1.html">createTable1</a></span>(covariateData2)</span>
-<span id="cb35-2"><a href="#cb35-2"></a><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(result, <span class="dt">row.names =</span> <span class="ot">FALSE</span>, <span class="dt">right =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
+<span id="cb35-2"><a href="#cb35-2"></a><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(result, <span class="dt">row.names =</span> <span class="ot">FALSE</span>, <span class="dt">right =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
 
 <pre><code> Characteristic                             % (n = 47,293) Characteristic                                          % (n = 47,293)
  Age group                                                   Ischemic heart disease                                  7.0         
@@ -606,7 +608,7 @@
 <span id="cb37-7"><a href="#cb37-7"></a>                                      <span class="dt">cohortId =</span> <span class="dv">1118084</span>,</span>
 <span id="cb37-8"><a href="#cb37-8"></a>                                      <span class="dt">covariateSettings =</span> covariateSettings,</span>
 <span id="cb37-9"><a href="#cb37-9"></a>                                      <span class="dt">aggregated =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb37-10"><a href="#cb37-10"></a><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(covariateData2b)</span></code></pre></div>
+<span id="cb37-10"><a href="#cb37-10"></a><span class="kw"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(covariateData2b)</span></code></pre></div>
 <pre><code>## CovariateData object summary
 ## 
 ## Number of covariates: 90
@@ -616,7 +618,7 @@
 </ol>
 <p>특징추출 패키지가 지원하는 또 다른 기능 두 가지 관심 코호트를 비교하는 것이다.</p>
 <p>기본 테이블 1에 포함된 변수에만 두 개의 코호트를 비교하려는 경우를 가정해보자</p>
-<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1"></a>settings &lt;-<span class="st"> </span><span class="kw"><a href="../reference/createTable1CovariateSettings.html">createTable1CovariateSettings</a></span>(<span class="dt">excludedCovariateConceptIds =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1118084</span>, <span class="dv">1124300</span>),</span>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1"></a>settings &lt;-<span class="st"> </span><span class="kw"><a href="../reference/createTable1CovariateSettings.html">createTable1CovariateSettings</a></span>(<span class="dt">excludedCovariateConceptIds =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1118084</span>, <span class="dv">1124300</span>),</span>
 <span id="cb39-2"><a href="#cb39-2"></a>                                          <span class="dt">addDescendantsToExclude =</span> <span class="ot">TRUE</span>)</span>
 <span id="cb39-3"><a href="#cb39-3"></a></span>
 <span id="cb39-4"><a href="#cb39-4"></a>covCelecoxib &lt;-<span class="st"> </span><span class="kw"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span>(<span class="dt">connectionDetails =</span> connectionDetails,</span>
@@ -637,7 +639,7 @@
 <span id="cb39-19"><a href="#cb39-19"></a></span>
 <span id="cb39-20"><a href="#cb39-20"></a>std &lt;-<span class="st"> </span><span class="kw"><a href="../reference/computeStandardizedDifference.html">computeStandardizedDifference</a></span>(covCelecoxib, covDiclofenac)</span></code></pre></div>
 <p>위의 예에서는 celecoxib (1118084)와 diclofenac (1124300)의 두 가지 코호트를 정의하는 데 사용 된 두 가지 개념에서 파생 된 공변량을 제외하기로 하였다. 나머지 공변량 간의 표준화 된 차이를 계산한다.</p>
-<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1"></a><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(std)</span></code></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1"></a><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(std)</span></code></pre></div>
 
 <pre><code>##    covariateId      mean1       sd1     mean2       sd2        sd    stdDiff                     covariateName
 ## 69 21601387410 0.27393060 0.5233893 1.0000000 1.0000021 1.1286897  0.6432852 ...o index: ANTINEOPLASTIC AGENTS
@@ -650,7 +652,7 @@
 <p>stdDiff 열에는 표준화 된 차이가 있습니다. 기본적으로데이터는 표준화된 차이의 절대 값을 기준으로 내림차순으로 정렬되며, 가장 큰 차이가 있는 공변량이 먼저 표시 됩니다.</p>
 <p>우리는 또한 비교를 표준 테이블 1로 보여줄 수 있다.</p>
 <div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1"></a>result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/createTable1.html">createTable1</a></span>(covCelecoxib, covDiclofenac)</span>
-<span id="cb42-2"><a href="#cb42-2"></a><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(result, <span class="dt">row.names =</span> <span class="ot">FALSE</span>, <span class="dt">right =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
+<span id="cb42-2"><a href="#cb42-2"></a><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(result, <span class="dt">row.names =</span> <span class="ot">FALSE</span>, <span class="dt">right =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
 
 <pre><code> Characteristic                             % (n = 47,293) % (n = 240,761) Std.Diff Characteristic                                          % (n = 47,293) % (n = 240,761) Std.Diff
  Age group                                                                            Ischemic heart disease                                  7.0            4.0           -0.09   
@@ -748,17 +750,20 @@
 </div>
 
 
+
       <footer><div class="copyright">
   <p>Developed by Martijn Schuemie, Marc Suchard, Patrick Ryan, Jenna Reps.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.9100.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>

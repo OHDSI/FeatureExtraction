@@ -1,6 +1,10 @@
 FeatureExtraction 2.2.5
 =======================
 
+Changes:
+
+1. Added Korean translation of vignettes.
+
 Bugfixes:
 
 1. Fixing aggregation of covariates generated using the cohort_attribute table.

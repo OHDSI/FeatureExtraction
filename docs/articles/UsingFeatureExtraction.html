@@ -7,8 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Using FeatureExtraction • FeatureExtraction</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Using FeatureExtraction">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
@@ -38,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -76,7 +77,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/OHDSI/FeatureExtraction">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -89,13 +90,14 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Using FeatureExtraction</h1>
                         <h4 class="author">Martijn J. Schuemie</h4>
             
-            <h4 class="date">2019-07-19</h4>
+            <h4 class="date">2019-08-28</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/FeatureExtraction/blob/master/vignettes/UsingFeatureExtraction.Rmd"><code>vignettes/UsingFeatureExtraction.Rmd</code></a></small>
       <div class="hidden name"><code>UsingFeatureExtraction.Rmd</code></div>
@@ -234,16 +236,16 @@
 <p>One can create a detailed analysis settings object from scratch, and use it to create a detailed settings object:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>analysisDetails &lt;-<span class="st"> </span><span class="kw"><a href="../reference/createAnalysisDetails.html">createAnalysisDetails</a></span>(<span class="dt">analysisId =</span> <span class="dv">1</span>,</span>
 <span id="cb8-2"><a href="#cb8-2"></a>                                         <span class="dt">sqlFileName =</span> <span class="st">"DemographicsGender.sql"</span>,</span>
-<span id="cb8-3"><a href="#cb8-3"></a>                                         <span class="dt">parameters =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">analysisId =</span> <span class="dv">1</span>,</span>
+<span id="cb8-3"><a href="#cb8-3"></a>                                         <span class="dt">parameters =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">analysisId =</span> <span class="dv">1</span>,</span>
 <span id="cb8-4"><a href="#cb8-4"></a>                                                           <span class="dt">analysisName =</span> <span class="st">"Gender"</span>,</span>
 <span id="cb8-5"><a href="#cb8-5"></a>                                                           <span class="dt">domainId =</span> <span class="st">"Demographics"</span>),</span>
-<span id="cb8-6"><a href="#cb8-6"></a>                                         <span class="dt">includedCovariateConceptIds =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(),</span>
+<span id="cb8-6"><a href="#cb8-6"></a>                                         <span class="dt">includedCovariateConceptIds =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(),</span>
 <span id="cb8-7"><a href="#cb8-7"></a>                                         <span class="dt">addDescendantsToInclude =</span> <span class="ot">FALSE</span>,</span>
-<span id="cb8-8"><a href="#cb8-8"></a>                                         <span class="dt">excludedCovariateConceptIds =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(),</span>
+<span id="cb8-8"><a href="#cb8-8"></a>                                         <span class="dt">excludedCovariateConceptIds =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(),</span>
 <span id="cb8-9"><a href="#cb8-9"></a>                                         <span class="dt">addDescendantsToExclude =</span> <span class="ot">FALSE</span>,</span>
-<span id="cb8-10"><a href="#cb8-10"></a>                                         <span class="dt">includedCovariateIds =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>())</span>
+<span id="cb8-10"><a href="#cb8-10"></a>                                         <span class="dt">includedCovariateIds =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>())</span>
 <span id="cb8-11"><a href="#cb8-11"></a></span>
-<span id="cb8-12"><a href="#cb8-12"></a>settings &lt;-<span class="st"> </span><span class="kw"><a href="../reference/createDetailedCovariateSettings.html">createDetailedCovariateSettings</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(analysisDetails))</span></code></pre></div>
+<span id="cb8-12"><a href="#cb8-12"></a>settings &lt;-<span class="st"> </span><span class="kw"><a href="../reference/createDetailedCovariateSettings.html">createDetailedCovariateSettings</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(analysisDetails))</span></code></pre></div>
 </div>
 <div id="temporal-covariates" class="section level2">
 <h2 class="hasAnchor">
@@ -257,22 +259,22 @@
 <p>In this case we’ve chosen to create binary covariates for each concept in the <code>condition_occurrence</code> table, and continuous covariates for each measurement - unit combination in the <code>measurement</code> table in the CDM. By default, temporal covariates are created for each day separately in the 365 days before (but not including) the cohort start date. Different time windows can also be specified, for example creating 7 day intervals instead:</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>settings &lt;-<span class="st"> </span><span class="kw"><a href="../reference/createTemporalCovariateSettings.html">createTemporalCovariateSettings</a></span>(<span class="dt">useConditionOccurrence =</span> <span class="ot">TRUE</span>,</span>
 <span id="cb11-2"><a href="#cb11-2"></a>                                            <span class="dt">useMeasurementValue =</span> <span class="ot">TRUE</span>,</span>
-<span id="cb11-3"><a href="#cb11-3"></a>                                            <span class="dt">temporalStartDays =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="op">-</span><span class="dv">364</span>, <span class="dv">-7</span>, <span class="dt">by =</span> <span class="dv">7</span>),</span>
-<span id="cb11-4"><a href="#cb11-4"></a>                                            <span class="dt">temporalEndDays =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="op">-</span><span class="dv">358</span>, <span class="dv">-1</span>, <span class="dt">by =</span> <span class="dv">7</span>))</span></code></pre></div>
+<span id="cb11-3"><a href="#cb11-3"></a>                                            <span class="dt">temporalStartDays =</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="op">-</span><span class="dv">364</span>, <span class="dv">-7</span>, <span class="dt">by =</span> <span class="dv">7</span>),</span>
+<span id="cb11-4"><a href="#cb11-4"></a>                                            <span class="dt">temporalEndDays =</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="op">-</span><span class="dv">358</span>, <span class="dv">-1</span>, <span class="dt">by =</span> <span class="dv">7</span>))</span></code></pre></div>
 <p>Each time window includes the specified start and end day.</p>
 <p>Similar to ordinary covariates, <strong>advanced users</strong> can also define custom analyses:</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>analysisDetails &lt;-<span class="st"> </span><span class="kw"><a href="../reference/createAnalysisDetails.html">createAnalysisDetails</a></span>(<span class="dt">analysisId =</span> <span class="dv">1</span>,</span>
 <span id="cb12-2"><a href="#cb12-2"></a>                                         <span class="dt">sqlFileName =</span> <span class="st">"MeasurementValue.sql"</span>,</span>
-<span id="cb12-3"><a href="#cb12-3"></a>                                         <span class="dt">parameters =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">analysisId =</span> <span class="dv">1</span>,</span>
+<span id="cb12-3"><a href="#cb12-3"></a>                                         <span class="dt">parameters =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">analysisId =</span> <span class="dv">1</span>,</span>
 <span id="cb12-4"><a href="#cb12-4"></a>                                                           <span class="dt">analysisName =</span> <span class="st">"MeasurementValue"</span>,</span>
 <span id="cb12-5"><a href="#cb12-5"></a>                                                           <span class="dt">domainId =</span> <span class="st">"Measurement"</span>),</span>
-<span id="cb12-6"><a href="#cb12-6"></a>                                         <span class="dt">includedCovariateConceptIds =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(),</span>
+<span id="cb12-6"><a href="#cb12-6"></a>                                         <span class="dt">includedCovariateConceptIds =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(),</span>
 <span id="cb12-7"><a href="#cb12-7"></a>                                         <span class="dt">addDescendantsToInclude =</span> <span class="ot">FALSE</span>,</span>
-<span id="cb12-8"><a href="#cb12-8"></a>                                         <span class="dt">excludedCovariateConceptIds =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(),</span>
+<span id="cb12-8"><a href="#cb12-8"></a>                                         <span class="dt">excludedCovariateConceptIds =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(),</span>
 <span id="cb12-9"><a href="#cb12-9"></a>                                         <span class="dt">addDescendantsToExclude =</span> <span class="ot">FALSE</span>,</span>
-<span id="cb12-10"><a href="#cb12-10"></a>                                         <span class="dt">includedCovariateIds =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>())</span>
+<span id="cb12-10"><a href="#cb12-10"></a>                                         <span class="dt">includedCovariateIds =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>())</span>
 <span id="cb12-11"><a href="#cb12-11"></a></span>
-<span id="cb12-12"><a href="#cb12-12"></a>settings &lt;-<span class="st">  </span><span class="kw"><a href="../reference/createDetailedTemporalCovariateSettings.html">createDetailedTemporalCovariateSettings</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(analysisDetails))</span></code></pre></div>
+<span id="cb12-12"><a href="#cb12-12"></a>settings &lt;-<span class="st">  </span><span class="kw"><a href="../reference/createDetailedTemporalCovariateSettings.html">createDetailedTemporalCovariateSettings</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(analysisDetails))</span></code></pre></div>
 </div>
 </div>
 <div id="constructing-covariates-for-a-cohort-of-interest" class="section level1">
@@ -300,7 +302,7 @@
 <span id="cb14-2"><a href="#cb14-2"></a><span class="co">File cohortsOfInterest.sql</span></span>
 <span id="cb14-3"><a href="#cb14-3"></a><span class="co">***********************************/</span></span>
 <span id="cb14-4"><a href="#cb14-4"></a></span>
-<span id="cb14-5"><a href="#cb14-5"></a><span class="cf">IF</span> OBJECT_ID(<span class="st">'@resultsDatabaseSchema.cohorts_of_interest'</span>, <span class="st">'U'</span>) <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NULL">NULL</a></span></span>
+<span id="cb14-5"><a href="#cb14-5"></a><span class="cf">IF</span> OBJECT_ID(<span class="st">'@resultsDatabaseSchema.cohorts_of_interest'</span>, <span class="st">'U'</span>) <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw"><a href="https://rdrr.io/r/base/NULL.html">NULL</a></span></span>
 <span id="cb14-6"><a href="#cb14-6"></a>  <span class="kw">DROP</span> <span class="kw">TABLE</span> @resultsDatabaseSchema.cohorts_of_interest;</span>
 <span id="cb14-7"><a href="#cb14-7"></a></span>
 <span id="cb14-8"><a href="#cb14-8"></a><span class="kw">SELECT</span> first_use.<span class="op">*</span></span>
@@ -322,7 +324,7 @@
 <span id="cb14-24"><a href="#cb14-24"></a>  <span class="kw">AND</span> cohort_end_date <span class="op">&lt;=</span> observation_period_end_date</span>
 <span id="cb14-25"><a href="#cb14-25"></a><span class="kw">WHERE</span> DATEDIFF(<span class="dt">DAY</span>, observation_period_start_date, cohort_start_date) <span class="op">&gt;=</span> <span class="dv">365</span>;</span></code></pre></div>
 <p>This is parameterized SQL which can be used by the <code>SqlRender</code> package. We use parameterized SQL so we do not have to pre-specify the names of the CDM and result schemas. That way, if we want to run the SQL on a different schema, we only need to change the parameter values; we do not have to change the SQL code. By also making use of translation functionality in <code>SqlRender</code>, we can make sure the SQL code can be run in many different environments.</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(SqlRender)</span>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(SqlRender)</span>
 <span id="cb15-2"><a href="#cb15-2"></a>sql &lt;-<span class="st"> </span><span class="kw">readSql</span>(<span class="st">"cohortsOfInterest.sql"</span>)</span>
 <span id="cb15-3"><a href="#cb15-3"></a>sql &lt;-<span class="st"> </span><span class="kw">render</span>(sql,</span>
 <span id="cb15-4"><a href="#cb15-4"></a>              <span class="dt">cdmDatabaseSchema =</span> cdmDatabaseSchema, </span>
@@ -333,7 +335,7 @@
 <span id="cb15-9"><a href="#cb15-9"></a><span class="kw">executeSql</span>(connection, sql)</span></code></pre></div>
 <p>In this code, we first read the SQL from the file into memory. In the next line, we replace the two parameter names with the actual values. We then translate the SQL into the dialect appropriate for the DBMS we already specified in the <code>connectionDetails</code>. Next, we connect to the server, and submit the rendered and translated SQL.</p>
 <p>If all went well, we now have a table with the cohorts of interest. We can see how many events per type:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>sql &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(<span class="st">"SELECT cohort_definition_id, COUNT(*) AS count"</span>,</span>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>sql &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(<span class="st">"SELECT cohort_definition_id, COUNT(*) AS count"</span>,</span>
 <span id="cb16-2"><a href="#cb16-2"></a>             <span class="st">"FROM @resultsDatabaseSchema.cohorts_of_interest"</span>,</span>
 <span id="cb16-3"><a href="#cb16-3"></a>             <span class="st">"GROUP BY cohort_definition_id"</span>)</span>
 <span id="cb16-4"><a href="#cb16-4"></a>sql &lt;-<span class="st"> </span><span class="kw">render</span>(sql, <span class="dt">resultsDatabaseSchema =</span> resultsDatabaseSchema)</span>
@@ -358,7 +360,7 @@
 <span id="cb18-8"><a href="#cb18-8"></a>                                    <span class="dt">rowIdField =</span> <span class="st">"subject_id"</span>,</span>
 <span id="cb18-9"><a href="#cb18-9"></a>                                    <span class="dt">covariateSettings =</span> covariateSettings)</span>
 <span id="cb18-10"><a href="#cb18-10"></a></span>
-<span id="cb18-11"><a href="#cb18-11"></a><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(covariateData)</span></code></pre></div>
+<span id="cb18-11"><a href="#cb18-11"></a><span class="kw"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(covariateData)</span></code></pre></div>
 <pre><code>## CovariateData object summary
 ## 
 ## Number of covariates: 41330
@@ -428,14 +430,14 @@
 <span id="cb23-4"><a href="#cb23-4"></a>                                    <span class="dt">removeRedundancy =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
 <p>If we want to know how many infrequent covariates were removed we can query the <code>metaData</code> object:</p>
 <div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>deletedCovariateIds &lt;-<span class="st"> </span>tidyCovariates<span class="op">$</span>metaData<span class="op">$</span>deletedInfrequentCovariateIds</span>
-<span id="cb24-2"><a href="#cb24-2"></a><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(deletedCovariateIds)</span></code></pre></div>
+<span id="cb24-2"><a href="#cb24-2"></a><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(deletedCovariateIds)</span></code></pre></div>
 <pre><code>## [1]        3 22274210 22274212 22288210 22340212 22350210</code></pre>
 <p>Similarly, if we want to know which redundant covariates were removed we can also query the <code>metaData</code> object:</p>
 <div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a>deletedCovariateIds &lt;-<span class="st"> </span>tidyCovariates<span class="op">$</span>metaData<span class="op">$</span>deletedRedundantCovariateIds</span>
-<span id="cb26-2"><a href="#cb26-2"></a><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(deletedCovariateIds)</span></code></pre></div>
+<span id="cb26-2"><a href="#cb26-2"></a><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(deletedCovariateIds)</span></code></pre></div>
 <pre><code>## [1]  1118084410  1118084412  1118084413 21603931410 21603931412 21603931413</code></pre>
 <p>If we want to know what these numbers mean, we can use the <code>covariateRef</code> object that is part of any <code>covariateData</code> object. Because <code>covariateRef</code>, like other parts of <code>covariateData</code>, uses the <code>ff</code> package, it is advised to load the <code>ffbase</code> package which allows <code>ff</code> objects to be used as data frames:</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(ffbase)</span>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(ffbase)</span>
 <span id="cb28-2"><a href="#cb28-2"></a>covariateData<span class="op">$</span>covariateRef[covariateData<span class="op">$</span>covariateRef<span class="op">$</span>covariateId <span class="op">%in%</span><span class="st"> </span>deletedCovariateIds, ]</span></code></pre></div>
 <pre><code>##     covariateId                     covariateName analysisId conceptId
 ## 1       8527004                      race = White          4      8527
@@ -475,7 +477,7 @@
 <span id="cb31-7"><a href="#cb31-7"></a>                                     <span class="dt">cohortId =</span> <span class="dv">1118084</span>,</span>
 <span id="cb31-8"><a href="#cb31-8"></a>                                     <span class="dt">covariateSettings =</span> covariateSettings,</span>
 <span id="cb31-9"><a href="#cb31-9"></a>                                     <span class="dt">aggregated =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb31-10"><a href="#cb31-10"></a><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(covariateData2)</span></code></pre></div>
+<span id="cb31-10"><a href="#cb31-10"></a><span class="kw"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(covariateData2)</span></code></pre></div>
 <pre><code>## CovariateData object summary
 ## 
 ## Number of covariates: 41330
@@ -557,7 +559,7 @@
 <a href="#creating-a-table-1" class="anchor"></a>Creating a table 1</h2>
 <p>One task supported by the <code>FeatureExtraction</code> package is creating a table of overall study population characteristics that can be include in a paper. Since this is typically the first table in a paper we refer to such a table as ‘table 1’. A default table 1 is available in the <code>FeatureExtraction</code> package:</p>
 <div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1"></a>result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/createTable1.html">createTable1</a></span>(covariateData2)</span>
-<span id="cb37-2"><a href="#cb37-2"></a><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(result, <span class="dt">row.names =</span> <span class="ot">FALSE</span>, <span class="dt">right =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
+<span id="cb37-2"><a href="#cb37-2"></a><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(result, <span class="dt">row.names =</span> <span class="ot">FALSE</span>, <span class="dt">right =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
 
 <pre><code> Characteristic                             % (n = 47,293) Characteristic                                          % (n = 47,293)
  Age group                                                   Ischemic heart disease                                  7.0         
@@ -633,7 +635,7 @@
 <span id="cb39-7"><a href="#cb39-7"></a>                                      <span class="dt">cohortId =</span> <span class="dv">1118084</span>,</span>
 <span id="cb39-8"><a href="#cb39-8"></a>                                      <span class="dt">covariateSettings =</span> covariateSettings,</span>
 <span id="cb39-9"><a href="#cb39-9"></a>                                      <span class="dt">aggregated =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb39-10"><a href="#cb39-10"></a><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(covariateData2b)</span></code></pre></div>
+<span id="cb39-10"><a href="#cb39-10"></a><span class="kw"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(covariateData2b)</span></code></pre></div>
 <pre><code>## CovariateData object summary
 ## 
 ## Number of covariates: 90
@@ -644,7 +646,7 @@
 <h1 class="hasAnchor">
 <a href="#comparing-two-cohorts" class="anchor"></a>Comparing two cohorts</h1>
 <p>Another task supported by the <code>FeatureExtraction</code> package is comparing two cohorts of interest. Suppose we want to compare two cohorts only on the variables included in the default table 1:</p>
-<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1"></a>settings &lt;-<span class="st"> </span><span class="kw"><a href="../reference/createTable1CovariateSettings.html">createTable1CovariateSettings</a></span>(<span class="dt">excludedCovariateConceptIds =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1118084</span>, <span class="dv">1124300</span>),</span>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1"></a>settings &lt;-<span class="st"> </span><span class="kw"><a href="../reference/createTable1CovariateSettings.html">createTable1CovariateSettings</a></span>(<span class="dt">excludedCovariateConceptIds =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1118084</span>, <span class="dv">1124300</span>),</span>
 <span id="cb41-2"><a href="#cb41-2"></a>                                          <span class="dt">addDescendantsToExclude =</span> <span class="ot">TRUE</span>)</span>
 <span id="cb41-3"><a href="#cb41-3"></a></span>
 <span id="cb41-4"><a href="#cb41-4"></a>covCelecoxib &lt;-<span class="st"> </span><span class="kw"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span>(<span class="dt">connectionDetails =</span> connectionDetails,</span>
@@ -665,7 +667,7 @@
 <span id="cb41-19"><a href="#cb41-19"></a></span>
 <span id="cb41-20"><a href="#cb41-20"></a>std &lt;-<span class="st"> </span><span class="kw"><a href="../reference/computeStandardizedDifference.html">computeStandardizedDifference</a></span>(covCelecoxib, covDiclofenac)</span></code></pre></div>
 <p>In this example we have chosen to exclude any covariates derived from the two concepts that were used to define the two cohorts: celecoxib (1118084), and diclofenac (1124300). We compute the standardized difference between the remaining covariates.</p>
-<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1"></a><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(std)</span></code></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1"></a><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(std)</span></code></pre></div>
 
 <pre><code>##    covariateId      mean1       sd1     mean2       sd2        sd    stdDiff                     covariateName
 ## 69 21601387410 0.27393060 0.5233893 1.0000000 1.0000021 1.1286897  0.6432852 ...o index: ANTINEOPLASTIC AGENTS
@@ -678,7 +680,7 @@
 <p>The <code>stdDiff</code> column contains the standardized difference. By default the data is ranked in descending order of the absolute value of the standardized difference, showing the covariate with the largest difference first.</p>
 <p>We can also show the comparison as a standard table 1:</p>
 <div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1"></a>result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/createTable1.html">createTable1</a></span>(covCelecoxib, covDiclofenac)</span>
-<span id="cb44-2"><a href="#cb44-2"></a><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(result, <span class="dt">row.names =</span> <span class="ot">FALSE</span>, <span class="dt">right =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
+<span id="cb44-2"><a href="#cb44-2"></a><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(result, <span class="dt">row.names =</span> <span class="ot">FALSE</span>, <span class="dt">right =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
 
 <pre><code> Characteristic                             % (n = 47,293) % (n = 240,761) Std.Diff Characteristic                                          % (n = 47,293) % (n = 240,761) Std.Diff
  Age group                                                                            Ischemic heart disease                                  7.0            4.0           -0.09   
@@ -776,17 +778,20 @@
 </div>
 
 
+
       <footer><div class="copyright">
   <p>Developed by Martijn Schuemie, Marc Suchard, Patrick Ryan, Jenna Reps.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.9100.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>
