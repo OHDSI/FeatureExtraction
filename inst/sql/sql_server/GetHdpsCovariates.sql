@@ -432,8 +432,15 @@ WHERE co1.condition_concept_id != 0
 } : {
 	AND vo1.visit_concept_id = 9201
 }
+                                                                             
+  {@cdm_version in (4,5)} ? {
 	AND co1.condition_start_date <= cp1.cohort_start_date
 	AND co1.condition_start_date >= dateadd(dd, - 180, cp1.cohort_start_date)
+     } : {
+    AND cast(co1.condition_start_datetime as date) <= cp1.cohort_start_date
+	AND cast(co1.condition_start_datetime as date)  >= dateadd(dd, - 180, cp1.cohort_start_date)
+    }
+
 GROUP BY cp1.@row_id_field,
 	icd9_concept_id;
 }
@@ -557,8 +564,14 @@ WHERE co1.condition_concept_id != 0
 } : {
 	AND vo1.visit_concept_id != 9201
 }
+    {@cdm_version in (4,5)} ? {
 	AND co1.condition_start_date <= cp1.cohort_start_date
 	AND co1.condition_start_date >= dateadd(dd, - 180, cp1.cohort_start_date)
+     } : {
+    AND cast(co1.condition_start_datetime as date) <= cp1.cohort_start_date
+	AND cast(co1.condition_start_datetime as date) >= dateadd(dd, - 180, cp1.cohort_start_date)
+      }
+                                                                             
 GROUP BY cp1.@row_id_field,
 	icd9_concept_id;
 }
@@ -694,8 +707,14 @@ INNER JOIN concept ingredient
 WHERE de1.drug_concept_id != 0
 {@has_excluded_covariate_concept_ids} ? {	AND de1.drug_concept_id NOT IN (SELECT concept_id FROM #excluded_cov)}
 {@has_included_covariate_concept_ids} ? {	AND de1.drug_concept_id IN (SELECT concept_id FROM #included_cov)}
+                                                                        
+  {@cdm_version in (4,5)} ? {
 	AND de1.drug_exposure_start_date <= cp1.cohort_start_date
 	AND de1.drug_exposure_start_date >= dateadd(dd, - 180, cp1.cohort_start_date)
+   } : {
+    AND cast(de1.drug_exposure_start_datetime as date) <= cp1.cohort_start_date
+	AND cast(de1.drug_exposure_start_datetime as date) >= dateadd(dd, - 180, cp1.cohort_start_date)                                                                    
+   }
 {@cdm_version == '4'} ? {
 	AND ingredient.vocabulary_id = 8
 	AND ingredient.concept_class = 'Ingredient'

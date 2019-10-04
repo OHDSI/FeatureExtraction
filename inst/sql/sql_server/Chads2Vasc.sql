@@ -160,11 +160,21 @@ FROM (
 		ON condition_era.condition_concept_id = chads2vasc_concepts.concept_id
 	INNER JOIN #chads2vasc_scoring chads2vasc_scoring
 		ON chads2vasc_concepts.diag_category_id = chads2vasc_scoring.diag_category_id
+    {@cdm_version in (4,5)} ? {
 {@temporal} ? {		
 	WHERE condition_era_start_date <= cohort.cohort_start_date
 } : {
 	WHERE condition_era_start_date <= DATEADD(DAY, @end_day, cohort.cohort_start_date)
 }
+    } :
+    {
+    {@temporal} ? {		
+	WHERE cast(condition_era_start_datetime as date) <= cohort.cohort_start_date
+} : {
+	WHERE cast(condition_era_start_datetime as date) <= DATEADD(DAY, @end_day, cohort.cohort_start_date)
+}
+  
+    }
 {@cohort_definition_id != -1} ? {		AND cohort.cohort_definition_id = @cohort_definition_id}
 
 	UNION

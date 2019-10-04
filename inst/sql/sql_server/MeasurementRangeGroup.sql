@@ -30,6 +30,8 @@ FROM (
 	FROM @cohort_table cohort
 	INNER JOIN @cdm_database_schema.measurement
 		ON cohort.subject_id = measurement.person_id
+    
+    {@cdm_version in (4,5)} ? {
 {@temporal} ? {
 	INNER JOIN #time_period time_period
 		ON measurement_date <= DATEADD(DAY, time_period.end_day, cohort.cohort_start_date)
@@ -40,6 +42,19 @@ FROM (
 {@start_day != 'anyTimePrior'} ? {				AND measurement_date >= DATEADD(DAY, @start_day, cohort.cohort_start_date)}
 		AND measurement_concept_id != 0
 }
+    } : {
+  {@temporal} ? {
+	INNER JOIN #time_period time_period
+		ON cast(measurement_datetime as date) <= DATEADD(DAY, time_period.end_day, cohort.cohort_start_date)
+		AND cast(measurement_datetime as date) >= DATEADD(DAY, time_period.start_day, cohort.cohort_start_date)
+	WHERE measurement_concept_id != 0
+} : {
+	WHERE cast(measurement_datetime as date) <= DATEADD(DAY, @end_day, cohort.cohort_start_date)
+{@start_day != 'anyTimePrior'} ? {				AND cast(measurement_datetime as date) >= DATEADD(DAY, @start_day, cohort.cohort_start_date)}
+		AND measurement_concept_id != 0
+}  
+    
+    }
 		AND range_low IS NOT NULL
 		AND range_high IS NOT NULL
 {@excluded_concept_table != ''} ? {		AND measurement_concept_id NOT IN (SELECT id FROM @excluded_concept_table)}

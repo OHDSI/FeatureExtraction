@@ -25,6 +25,8 @@ FROM (
 	FROM @cohort_table cohort
 	INNER JOIN @cdm_database_schema.@domain_table
 		ON cohort.subject_id = @domain_table.person_id
+    
+    {@cdm_version in (4,5)} ? {
 {@temporal} ? {
 	INNER JOIN #time_period time_period
 		ON @domain_start_date <= DATEADD(DAY, time_period.end_day, cohort.cohort_start_date)
@@ -35,6 +37,19 @@ FROM (
 {@start_day != 'anyTimePrior'} ? {		AND @domain_end_date >= DATEADD(DAY, @start_day, cohort.cohort_start_date)}
 		AND @domain_concept_id != 0
 }
+    } :
+    {
+    {@temporal} ? {
+	INNER JOIN #time_period time_period
+		ON cast(@domain_start_datetime as date) <= DATEADD(DAY, time_period.end_day, cohort.cohort_start_date)
+		AND cast(@domain_end_datetime as date) >= DATEADD(DAY, time_period.start_day, cohort.cohort_start_date)
+	WHERE @domain_concept_id != 0
+} : {
+	WHERE cast(@domain_start_datetime as date) <= DATEADD(DAY, @end_day, cohort.cohort_start_date)
+{@start_day != 'anyTimePrior'} ? {		AND cast(@domain_end_datetime as date) >= DATEADD(DAY, @start_day, cohort.cohort_start_date)}
+		AND @domain_concept_id != 0
+}
+    }
 {@sub_type == 'inpatient'} ? {	AND condition_type_concept_id IN (38000183, 38000184, 38000199, 38000200)}
 {@excluded_concept_table != ''} ? {		AND @domain_concept_id NOT IN (SELECT id FROM @excluded_concept_table)}
 {@included_concept_table != ''} ? {		AND @domain_concept_id IN (SELECT id FROM @included_concept_table)}

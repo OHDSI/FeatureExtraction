@@ -60,7 +60,7 @@ getDbDefaultCovariateData <- function(connection,
   
   settings <- .toJson(covariateSettings)
   rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$init(system.file("", package = "FeatureExtraction"))
-  json <- rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$createSql(settings, aggregated, cohortTable, rowIdField, as.integer(cohortId), cdmDatabaseSchema)
+  json <- rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$createSql(settings, aggregated, cohortTable, rowIdField, as.integer(cohortId), cdmDatabaseSchema, cdmVersion)
   todo <- .fromJson(json)
   if (length(todo$tempTables) != 0) {
     writeLines("Sending temp tables to server")

@@ -2690,11 +2690,23 @@ FROM (
 		ON cohort.subject_id = condition_era.person_id
 	INNER JOIN #hfrs_scoring hfrs_scoring
 		ON condition_concept_id = hfrs_scoring.hfrs_concept_id
+    
+    {@cdm_version in (4,5)} ? {
+    
 {@temporal} ? {		
 	WHERE condition_era_start_date <= cohort.cohort_start_date
 } : {
 	WHERE condition_era_start_date <= DATEADD(DAY, @end_day, cohort.cohort_start_date)
 }
+    } : {
+    
+    {@temporal} ? {		
+	WHERE cast(condition_era_start_datetime as date) <= cohort.cohort_start_date
+} : {
+	WHERE cast(condition_era_start_datetime as date) <= DATEADD(DAY, @end_day, cohort.cohort_start_date)
+}
+    
+    }
 {@cohort_definition_id != -1} ? {		AND cohort.cohort_definition_id = @cohort_definition_id}
 {@aggregated} ? {
 	GROUP BY subject_id,

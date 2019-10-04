@@ -7,10 +7,17 @@ IF OBJECT_ID('@resultsDatabaseSchema.cohorts_of_interest', 'U') IS NOT NULL
 
 SELECT first_use.*
 INTO @resultsDatabaseSchema.cohorts_of_interest
-FROM (
-  SELECT drug_concept_id AS cohort_definition_id,
+FROM ( 
+    SELECT drug_concept_id AS cohort_definition_id,
+    
+{@cdm_version in (4,5)} ? {
   	MIN(drug_era_start_date) AS cohort_start_date,
   	MIN(drug_era_end_date) AS cohort_end_date,
+
+} : {
+  	MIN(cast(drug_era_start_datetime as date)) AS cohort_start_date,
+  	MIN(cast(drug_era_end_datetime as date)) AS cohort_end_date,
+}
   	person_id AS subject_id
   FROM @cdmDatabaseSchema.drug_era
   WHERE drug_concept_id = 1118084-- celecoxib

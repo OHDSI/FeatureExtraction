@@ -84,7 +84,7 @@ public class FeatureExtraction {
 		// System.out.println(convertSettingsPrespecToDetails(getDefaultPrespecAnalyses()));
 		String settings = "{\"temporal\":false,\"analyses\":[{\"analysisId\":301,\"sqlFileName\":\"DomainConcept.sql\",\"parameters\":{\"analysisId\":301,\"startDay\":-365,\"endDay\":0,\"inpatient\":\"\",\"domainTable\":\"drug_exposure\",\"domainConceptId\":\"drug_concept_id\",\"domainStartDate\":\"drug_exposure_start_date\",\"domainEndDate\":\"drug_exposure_start_date\"},\"addDescendantsToExclude\":true,\"includedCovariateConceptIds\":[1,2,21600537410],\"excludedCovariateConceptIds\":{},\"addDescendantsToInclude\":true,\"includedCovariateIds\":12301}]}";
 		// String settings = convertSettingsPrespecToDetails(getDefaultPrespecAnalyses());
-		System.out.println(createSql(settings, true, "#temp_cohort", "row_id", -1, "cdm_synpuf"));
+		System.out.println(createSql(settings, true, "#temp_cohort", "row_id", -1, "cdm_synpuf", "5"));
 		// System.out.println(createSql(getDefaultPrespecAnalyses(), true, "#temp_cohort", "row_id", -1, "cdm_synpuf"));
 		// System.out.println(createSql(getDefaultPrespecTemporalAnalyses(), false, "#temp_cohort", "row_id", -1, "cdm_synpuf"));
 	}
@@ -410,10 +410,12 @@ public class FeatureExtraction {
 	 * @param cdmDatabaseSchema
 	 *            The name of the database schema that contains the OMOP CDM instance. Requires read permissions to this database. On SQL Server, this should
 	 *            specify both the database and the schema, so for example 'cdm_instance.dbo'.
+	 * @param cdmVersion
+	 *            The  version of the OMOP CDM you are using (e.g., 4, 5 or 6)
 	 * @return A JSON object.
 	 */
 	public static String createSql(String settings, boolean aggregated, String cohortTable, String rowIdField, int cohortDefinitionId,
-			String cdmDatabaseSchema) {
+			String cdmDatabaseSchema, String cdmVersion) {
 		JSONObject jsonObject = new JSONObject(settings);
 		
 		// If input in prespec analyses, convert to detailed settings:
@@ -453,9 +455,9 @@ public class FeatureExtraction {
 		jsonWriter.endObject();
 		
 		jsonWriter.key("sqlConstruction");
-		jsonWriter.value(createConstructionSql(jsonObject, idSetToName, temporal, aggregated, cohortTable, rowIdField, cohortDefinitionId, cdmDatabaseSchema));
+		jsonWriter.value(createConstructionSql(jsonObject, idSetToName, temporal, aggregated, cohortTable, rowIdField, cohortDefinitionId, cdmDatabaseSchema, cdmVersion));
 		
-		String sqlQueryFeatures = createQuerySql(jsonObject, cohortTable, cohortDefinitionId, aggregated, temporal);
+		String sqlQueryFeatures = createQuerySql(jsonObject, cohortTable, cohortDefinitionId, aggregated, temporal, cdmVersion);
 		if (sqlQueryFeatures != null) {
 			jsonWriter.key("sqlQueryFeatures");
 			jsonWriter.value(sqlQueryFeatures);
@@ -516,7 +518,7 @@ public class FeatureExtraction {
 		return sql.toString();
 	}
 	
-	private static String createQuerySql(JSONObject jsonObject, String cohortTable, int cohortDefinitionId, boolean aggregated, boolean temporal) {
+	private static String createQuerySql(JSONObject jsonObject, String cohortTable, int cohortDefinitionId, boolean aggregated, boolean temporal, String cdmVersion) {
 		StringBuilder fields = new StringBuilder();
 		if (aggregated) {
 			fields.append("covariate_id, sum_value");
@@ -552,8 +554,8 @@ public class FeatureExtraction {
 		} else {
 			sql.append("\n) all_covariates;");
 		}
-		return SqlRender.renderSql(sql.toString(), new String[] { "cohort_table", "cohort_definition_id" },
-				new String[] { cohortTable, Integer.toString(cohortDefinitionId) });
+		return SqlRender.renderSql(sql.toString(), new String[] { "cohort_table", "cohort_definition_id", "cdm_version" },
+				new String[] { cohortTable, Integer.toString(cohortDefinitionId), cdmVersion });
 	}
 	
 	private static String createQueryContinuousFeaturesSql(JSONObject jsonObject, boolean temporal) {
@@ -583,7 +585,7 @@ public class FeatureExtraction {
 	}
 	
 	private static String createConstructionSql(JSONObject jsonObject, Map<IdSet, String> idSetToName, boolean temporal, boolean aggregated, String cohortTable,
-			String rowIdField, int cohortDefinitionId, String cdmDatabaseSchema) {
+			String rowIdField, int cohortDefinitionId, String cdmDatabaseSchema, String cdmVersion) {
 		StringBuilder sql = new StringBuilder();
 		
 		// Add descendants to ID sets if needed:
@@ -609,8 +611,8 @@ public class FeatureExtraction {
 				analysis.put("covariateTable", covariateTable);
 				String templateSql = nameToSql.get(analysis.get(SQL_FILE_NAME));
 				JSONObject parameters = analysis.getJSONObject(PARAMETERS);
-				String[] keys = new String[parameters.length() + 10];
-				String[] values = new String[parameters.length() + 10];
+				String[] keys = new String[parameters.length() + 11];
+				String[] values = new String[parameters.length() + 11];
 				int i = 0;
 				for (String key : parameters.keySet()) {
 					keys[i] = StringUtilities.camelCaseToSnakeCase(key);
@@ -637,6 +639,9 @@ public class FeatureExtraction {
 				i++;
 				keys[i] = "aggregated";
 				values[i] = Boolean.toString(aggregated);
+				i++;
+        keys[i] = "cdm_version";
+				values[i] = cdmVersion;
 				i++;
 				keys[i] = "included_concept_table";
 				values[i] = analysis.getString("incConcepts");

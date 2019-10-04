@@ -57,6 +57,8 @@ FROM (
 	INNER JOIN #meas_cov meas_cov
 		ON meas_cov.measurement_concept_id = measurement.measurement_concept_id 
 			AND meas_cov.unit_concept_id = measurement.unit_concept_id 
+    
+    {@cdm_version in (4,5)} ? {
 {@temporal} ? {
 	INNER JOIN #time_period time_period
 		ON measurement_date <= DATEADD(DAY, time_period.end_day, cohort.cohort_start_date)
@@ -67,6 +69,23 @@ FROM (
 {@start_day != 'anyTimePrior'} ? {				AND measurement_date >= DATEADD(DAY, @start_day, cohort.cohort_start_date)}
 		AND measurement.measurement_concept_id != 0
 }	
+    } :
+    
+    {
+ {@temporal} ? {
+	INNER JOIN #time_period time_period
+		ON cast(measurement_datetime as date) <= DATEADD(DAY, time_period.end_day, cohort.cohort_start_date)
+		AND cast(measurement_datetime as date) >= DATEADD(DAY, time_period.start_day, cohort.cohort_start_date)
+	WHERE measurement.measurement_concept_id != 0 
+} : {
+	WHERE cast(measurement_datetime as date) <= DATEADD(DAY, @end_day, cohort.cohort_start_date)
+{@start_day != 'anyTimePrior'} ? {				AND cast(measurement_datetime as date) >= DATEADD(DAY, @start_day, cohort.cohort_start_date)}
+		AND measurement.measurement_concept_id != 0
+}   
+    
+    }
+    
+    
 		AND value_as_number IS NOT NULL 			
 {@cohort_definition_id != -1} ? {		AND cohort.cohort_definition_id = @cohort_definition_id}
 ) temp
