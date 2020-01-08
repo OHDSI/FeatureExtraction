@@ -1,6 +1,10 @@
 FeatureExtraction 2.2.6
 =======================
 
+Changes:
+
+1. For analyses that restrict to inpatient diagnoses, the string '(inpatient)' is now appended to the covariate name.
+
 Bugfixes: 
 
 1. Preventing hard R crash due to ff issues in R version >= 3.6.0 (in machines with lots of RAM)
