@@ -4,9 +4,13 @@
 \alias{createDefaultCovariateSettings}
 \title{Create default covariate settings}
 \usage{
-createDefaultCovariateSettings(includedCovariateConceptIds = c(),
-  addDescendantsToInclude = FALSE, excludedCovariateConceptIds = c(),
-  addDescendantsToExclude = FALSE, includedCovariateIds = c())
+createDefaultCovariateSettings(
+  includedCovariateConceptIds = c(),
+  addDescendantsToInclude = FALSE,
+  excludedCovariateConceptIds = c(),
+  addDescendantsToExclude = FALSE,
+  includedCovariateIds = c()
+)
 }
 \arguments{
 \item{includedCovariateConceptIds}{A list of concept IDs that should be used to construct

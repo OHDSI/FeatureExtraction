@@ -4,7 +4,8 @@
 \alias{createHdpsCovariateSettings}
 \title{Create HDPS covariate settings}
 \usage{
-createHdpsCovariateSettings(useCovariateCohortIdIs1 = FALSE,
+createHdpsCovariateSettings(
+  useCovariateCohortIdIs1 = FALSE,
   useCovariateDemographics = TRUE,
   useCovariateDemographicsGender = TRUE,
   useCovariateDemographicsRace = TRUE,
@@ -30,8 +31,10 @@ createHdpsCovariateSettings(useCovariateCohortIdIs1 = FALSE,
   useCovariateProcedureOccurrenceAmbulatory180d = FALSE,
   useCovariateProcedureOccurrenceAmbulatory180dMedF = FALSE,
   useCovariateProcedureOccurrenceAmbulatory180d75F = FALSE,
-  excludedCovariateConceptIds = c(), includedCovariateConceptIds = c(),
-  deleteCovariatesSmallCount = 100)
+  excludedCovariateConceptIds = c(),
+  includedCovariateConceptIds = c(),
+  deleteCovariatesSmallCount = 100
+)
 }
 \arguments{
 \item{useCovariateCohortIdIs1}{A boolean value (TRUE/FALSE) to determine

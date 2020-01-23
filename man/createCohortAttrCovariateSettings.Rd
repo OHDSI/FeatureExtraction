@@ -4,10 +4,15 @@
 \alias{createCohortAttrCovariateSettings}
 \title{Create cohort attribute covariate settings}
 \usage{
-createCohortAttrCovariateSettings(analysisId = -1, attrDatabaseSchema,
+createCohortAttrCovariateSettings(
+  analysisId = -1,
+  attrDatabaseSchema,
   attrDefinitionTable = "attribute_definition",
-  cohortAttrTable = "cohort_attribute", includeAttrIds = c(),
-  isBinary = FALSE, missingMeansZero = FALSE)
+  cohortAttrTable = "cohort_attribute",
+  includeAttrIds = c(),
+  isBinary = FALSE,
+  missingMeansZero = FALSE
+)
 }
 \arguments{
 \item{analysisId}{A unique identifier for this analysis.}

@@ -4,10 +4,15 @@
 \alias{createTable1}
 \title{Create a table 1}
 \usage{
-createTable1(covariateData1, covariateData2 = NULL,
+createTable1(
+  covariateData1,
+  covariateData2 = NULL,
   specifications = getDefaultTable1Specifications(),
-  output = "two columns", percentDigits = 1, valueDigits = 1,
-  stdDiffDigits = 2)
+  output = "two columns",
+  percentDigits = 1,
+  valueDigits = 1,
+  stdDiffDigits = 2
+)
 }
 \arguments{
 \item{covariateData1}{The covariate data of the cohort to be included in the table.}

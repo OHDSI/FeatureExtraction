@@ -4,10 +4,16 @@
 \alias{createAnalysisDetails}
 \title{Create detailed covariate settings}
 \usage{
-createAnalysisDetails(analysisId, sqlFileName, parameters,
-  includedCovariateConceptIds = c(), addDescendantsToInclude = FALSE,
-  excludedCovariateConceptIds = c(), addDescendantsToExclude = FALSE,
-  includedCovariateIds = c())
+createAnalysisDetails(
+  analysisId,
+  sqlFileName,
+  parameters,
+  includedCovariateConceptIds = c(),
+  addDescendantsToInclude = FALSE,
+  excludedCovariateConceptIds = c(),
+  addDescendantsToExclude = FALSE,
+  includedCovariateIds = c()
+)
 }
 \arguments{
 \item{analysisId}{An integer between 0 and 999 that uniquely identifies this

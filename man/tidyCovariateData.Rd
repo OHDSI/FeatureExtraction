@@ -4,8 +4,15 @@
 \alias{tidyCovariateData}
 \title{Tidy covariate data}
 \usage{
-tidyCovariateData(covariateData, covariates, covariateRef, populationSize,
-  minFraction = 0.001, normalize = TRUE, removeRedundancy = TRUE)
+tidyCovariateData(
+  covariateData,
+  covariates,
+  covariateRef,
+  populationSize,
+  minFraction = 0.001,
+  normalize = TRUE,
+  removeRedundancy = TRUE
+)
 }
 \arguments{
 \item{covariateData}{An object as generated using the \code{\link{getDbCovariateData}}

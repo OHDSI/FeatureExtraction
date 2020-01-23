@@ -4,10 +4,17 @@
 \alias{getDbCohortAttrCovariatesData}
 \title{Getcovariate information from the database through the cohort_attribute table}
 \usage{
-getDbCohortAttrCovariatesData(connection, oracleTempSchema = NULL,
-  cdmDatabaseSchema, cohortTable = "#cohort_person", cohortId = -1,
-  cdmVersion = "5", rowIdField = "subject_id", covariateSettings,
-  aggregated = FALSE)
+getDbCohortAttrCovariatesData(
+  connection,
+  oracleTempSchema = NULL,
+  cdmDatabaseSchema,
+  cohortTable = "#cohort_person",
+  cohortId = -1,
+  cdmVersion = "5",
+  rowIdField = "subject_id",
+  covariateSettings,
+  aggregated = FALSE
+)
 }
 \arguments{
 \item{connection}{A connection to the server containing the schema as created using the

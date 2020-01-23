@@ -9,6 +9,8 @@ Bugfixes:
 
 1. Preventing hard R crash due to ff issues in R version >= 3.6.0 (in machines with lots of RAM)
 
+2. Dropping spurious 'analysis_name' field in temporary covariate reference table.
+
 FeatureExtraction 2.2.5
 =======================
 

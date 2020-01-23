@@ -3,7 +3,6 @@
 \docType{package}
 \name{FeatureExtraction}
 \alias{FeatureExtraction}
-\alias{FeatureExtraction-package}
 \title{FeatureExtraction}
 \description{
 FeatureExtraction

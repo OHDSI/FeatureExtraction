@@ -4,12 +4,15 @@
 \alias{createTable1CovariateSettings}
 \title{Create covariate settings for a table 1}
 \usage{
-
-  createTable1CovariateSettings(specifications = getDefaultTable1Specifications(),
+createTable1CovariateSettings(
+  specifications = getDefaultTable1Specifications(),
   covariateSettings = createDefaultCovariateSettings(),
-  includedCovariateConceptIds = c(), addDescendantsToInclude = FALSE,
-  excludedCovariateConceptIds = c(), addDescendantsToExclude = FALSE,
-  includedCovariateIds = c())
+  includedCovariateConceptIds = c(),
+  addDescendantsToInclude = FALSE,
+  excludedCovariateConceptIds = c(),
+  addDescendantsToExclude = FALSE,
+  includedCovariateIds = c()
+)
 }
 \arguments{
 \item{specifications}{A specifications object for generating a table using the

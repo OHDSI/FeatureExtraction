@@ -4,11 +4,21 @@
 \alias{getDbDefaultCovariateData}
 \title{Get default covariate information from the database}
 \usage{
-getDbDefaultCovariateData(connection, oracleTempSchema = NULL,
-  cdmDatabaseSchema, cohortTable = "#cohort_person", cohortId = -1,
-  cdmVersion = "5", rowIdField = "subject_id", covariateSettings,
-  targetDatabaseSchema, targetCovariateTable, targetCovariateRefTable,
-  targetAnalysisRefTable, aggregated = FALSE)
+getDbDefaultCovariateData(
+  connection,
+  oracleTempSchema = NULL,
+  cdmDatabaseSchema,
+  cohortTable = "#cohort_person",
+  cohortId = -1,
+  cdmVersion = "5",
+  rowIdField = "subject_id",
+  covariateSettings,
+  targetDatabaseSchema,
+  targetCovariateTable,
+  targetCovariateRefTable,
+  targetAnalysisRefTable,
+  aggregated = FALSE
+)
 }
 \arguments{
 \item{connection}{A connection to the server containing the schema as created using the

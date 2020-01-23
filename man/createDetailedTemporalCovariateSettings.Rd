@@ -4,8 +4,11 @@
 \alias{createDetailedTemporalCovariateSettings}
 \title{Create detailed temporal covariate settings}
 \usage{
-createDetailedTemporalCovariateSettings(analyses = list(),
-  temporalStartDays = -365:-1, temporalEndDays = -365:-1)
+createDetailedTemporalCovariateSettings(
+  analyses = list(),
+  temporalStartDays = -365:-1,
+  temporalEndDays = -365:-1
+)
 }
 \arguments{
 \item{analyses}{A list of analysis detail objects as created using
