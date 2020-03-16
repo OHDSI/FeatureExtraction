@@ -9,6 +9,8 @@ createTable1(
   covariateData2 = NULL,
   specifications = getDefaultTable1Specifications(),
   output = "two columns",
+  showCounts = FALSE,
+  showPercent = TRUE,
   percentDigits = 1,
   valueDigits = 1,
   stdDiffDigits = 2
@@ -24,6 +26,10 @@ cohorts.}
 
 \item{output}{The output format for the table. Options are \code{output = "two columns"},
 \code{output = "one column"}, or \code{output = "list"}.}
+
+\item{showCounts}{Show the number of cohort entries having the binary covariate?}
+
+\item{showPercent}{Show the percentage of cohort entries having the binary covariate?}
 
 \item{percentDigits}{Number of digits to be used for percentages.}
 

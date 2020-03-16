@@ -1,3 +1,10 @@
+FeatureExtraction 2.2.7
+=======================
+
+Changes:
+
+1. Adding option to createTable1 to (also) show absolute counts.
+
 FeatureExtraction 2.2.6
 =======================
 
