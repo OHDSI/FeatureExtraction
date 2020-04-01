@@ -30,14 +30,10 @@ FROM (
 		AND relationship_id = 'Maps to'
 	) source_to_concept_map
 WHERE source_code LIKE '250.5%'
-	OR source_code IN ('362.01', '362.1', '362.83', '362.53', '362.81', '362.82');
+	OR source_code IN ('362.01', '362.1', '362.83', '362.53', '362.81', '362.82')
 
-INSERT INTO #dcsi_scoring (
-	dcsi_category,
-	dcsi_icd9_code,
-	dcsi_concept_id,
-	dcsi_score
-	)
+UNION ALL
+
 SELECT CAST('Retinopathy' AS VARCHAR(255)) AS dcsi_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -56,14 +52,10 @@ FROM (
 	) source_to_concept_map
 WHERE source_code LIKE '361%'
 	OR source_code LIKE '369%'
-	OR source_code IN ('362.02', '379.23');
+	OR source_code IN ('362.02', '379.23')
 
-INSERT INTO #dcsi_scoring (
-	dcsi_category,
-	dcsi_icd9_code,
-	dcsi_concept_id,
-	dcsi_score
-	)
+UNION ALL
+
 SELECT CAST('Nephropathy' AS VARCHAR(255)) AS dcsi_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -84,14 +76,10 @@ WHERE source_code IN ('250.4', '580', '581', '581.81', '582', '583')
 	OR source_code LIKE '580%'
 	OR source_code LIKE '581%'
 	OR source_code LIKE '582%'
-	OR source_code LIKE '583%';
+	OR source_code LIKE '583%'
 
-INSERT INTO #dcsi_scoring (
-	dcsi_category,
-	dcsi_icd9_code,
-	dcsi_concept_id,
-	dcsi_score
-	)
+UNION ALL
+
 SELECT CAST('Nephropathy' AS VARCHAR(255)) AS dcsi_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -111,14 +99,10 @@ FROM (
 WHERE source_code IN ('585', '586', '593.9')
 	OR source_code LIKE '585%'
 	OR source_code LIKE '586%'
-	OR source_code LIKE '593.9%';
+	OR source_code LIKE '593.9%'
 
-INSERT INTO #dcsi_scoring (
-	dcsi_category,
-	dcsi_icd9_code,
-	dcsi_concept_id,
-	dcsi_score
-	)
+UNION ALL
+
 SELECT CAST('Neuropathy' AS VARCHAR(255)) AS dcsi_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -152,14 +136,10 @@ WHERE source_code IN ('356.9', '250.6', '358.1', '951.0', '951.1', '951.3', '713
 	OR source_code LIKE '337.1%'
 	OR source_code LIKE '564.5%'
 	OR source_code LIKE '536.3%'
-	OR source_code LIKE '458.0%';
+	OR source_code LIKE '458.0%'
 
-INSERT INTO #dcsi_scoring (
-	dcsi_category,
-	dcsi_icd9_code,
-	dcsi_concept_id,
-	dcsi_score
-	)
+UNION ALL
+
 SELECT CAST('Cerebrovascular' AS VARCHAR(255)) AS dcsi_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -176,14 +156,10 @@ FROM (
 		AND target.vocabulary_id = 'SNOMED'
 		AND relationship_id = 'Maps to'
 	) source_to_concept_map
-WHERE source_code LIKE '435%';
+WHERE source_code LIKE '435%'
 
-INSERT INTO #dcsi_scoring (
-	dcsi_category,
-	dcsi_icd9_code,
-	dcsi_concept_id,
-	dcsi_score
-	)
+UNION ALL
+
 SELECT CAST('Cerebrovascular' AS VARCHAR(255)) AS dcsi_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -204,14 +180,10 @@ WHERE source_code IN ('431', '433', '434', '436')
 	OR source_code LIKE '431%'
 	OR source_code LIKE '433%'
 	OR source_code LIKE '434%'
-	OR source_code LIKE '436%';
+	OR source_code LIKE '436%'
 
-INSERT INTO #dcsi_scoring (
-	dcsi_category,
-	dcsi_icd9_code,
-	dcsi_concept_id,
-	dcsi_score
-	)
+UNION ALL
+
 SELECT CAST('Cardiovascular' AS VARCHAR(255)) AS dcsi_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -232,14 +204,10 @@ WHERE source_code LIKE '440%'
 	OR source_code LIKE '411%'
 	OR source_code LIKE '413%'
 	OR source_code LIKE '414%'
-	OR source_code LIKE '429.2%';
+	OR source_code LIKE '429.2%'
 
-INSERT INTO #dcsi_scoring (
-	dcsi_category,
-	dcsi_icd9_code,
-	dcsi_concept_id,
-	dcsi_score
-	)
+UNION ALL
+
 SELECT CAST('Cardiovascular' AS VARCHAR(255)) AS dcsi_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -264,14 +232,10 @@ WHERE source_code LIKE '410%'
 	OR source_code LIKE '412%'
 	OR source_code LIKE '428%'
 	OR source_code LIKE '441%'
-	OR source_code IN ('440.23', '440.24');
+	OR source_code IN ('440.23', '440.24')
 
-INSERT INTO #dcsi_scoring (
-	dcsi_category,
-	dcsi_icd9_code,
-	dcsi_concept_id,
-	dcsi_score
-	)
+UNION ALL
+
 SELECT CAST('Peripheral vascular disease' AS VARCHAR(255)) AS dcsi_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -292,14 +256,10 @@ WHERE source_code LIKE '250.7%'
 	OR source_code LIKE '442.3%'
 	OR source_code LIKE '892.1%'
 	OR source_code LIKE '443.9%'
-	OR source_code IN ('443.81');
+	OR source_code IN ('443.81')
 
-INSERT INTO #dcsi_scoring (
-	dcsi_category,
-	dcsi_icd9_code,
-	dcsi_concept_id,
-	dcsi_score
-	)
+UNION ALL
+
 SELECT CAST('Peripheral vascular disease' AS VARCHAR(255)) AS dcsi_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
@@ -319,14 +279,10 @@ FROM (
 WHERE source_code LIKE '785.4%'
 	OR source_code LIKE '707.1%'
 	OR source_code LIKE '040.0%'
-	OR source_code IN ('444.22');
+	OR source_code IN ('444.22')
 
-INSERT INTO #dcsi_scoring (
-	dcsi_category,
-	dcsi_icd9_code,
-	dcsi_concept_id,
-	dcsi_score
-	)
+UNION ALL
+
 SELECT CAST('Metabolic' AS VARCHAR(255)) AS dcsi_category,
 	CAST(source_code AS VARCHAR(255)),
 	target_concept_id,
