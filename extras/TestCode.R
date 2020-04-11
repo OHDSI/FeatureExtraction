@@ -1,5 +1,5 @@
 library(FeatureExtraction)
-options(fftempdir = "c:/FFtemp")
+# options(fftempdir = "c:/FFtemp")
 # setwd("s:/temp/pgProfile/")
 
 # Pdw ---------------------------------------------------------------------
@@ -114,7 +114,7 @@ settings <- createCovariateSettings(useDemographicsGender = FALSE,
                                     useConditionGroupEraStartLongTerm = FALSE,
                                     useConditionGroupEraStartMediumTerm = FALSE,
                                     useConditionGroupEraStartShortTerm = FALSE,
-                                    useConditionOccurrencePrimaryInpatientLongTerm = TRUE,
+                                    useConditionOccurrencePrimaryInpatientLongTerm = FALSE,
                                     useDrugExposureAnyTimePrior = FALSE,
                                     useDrugExposureLongTerm = FALSE,
                                     useDrugExposureMediumTerm = FALSE,
@@ -188,8 +188,10 @@ settings <- createCovariateSettings(useDemographicsGender = FALSE,
                                     addDescendantsToExclude = FALSE,
                                     includedCovariateIds = c())
 
-settings <- createDefaultCovariateSettings(excludedCovariateConceptIds = 312327,
-                                           addDescendantsToExclude = FALSE)
+
+
+# settings <- createDefaultCovariateSettings(excludedCovariateConceptIds = 312327,
+#                                            addDescendantsToExclude = FALSE)
 
 # covariateSettings <- convertPrespecSettingsToDetailedSettings(covariateSettings)
 covs <- getDbCovariateData(connectionDetails = connectionDetails,
@@ -207,34 +209,35 @@ covs$covariates[covs$covariates$covariateId == 4329847210, ]
 # Exclude: sum = 2.883000e+03
 # Not exclude: sum = 2.883000e+03
 # Exclude after fix: sum = 2.538000e+03
-saveCovariateData(covs, "c:/temp/covs2")
+saveCovariateData(covs, "c:/temp/covs2.zip")
 
 saveCovariateData(covs, "s:/temp/covsAgg")
-covariateData <- loadCovariateData("c:/temp/covsPp")
-covs <- loadCovariateData("s:/temp/covsAgg")
+covariateData <- loadCovariateData("c:/temp/covs2.zip")
+covariateData
+print(covariateData)
+summary(covariateData)
+
+tempCovariateData <- loadCovariateData("c:/temp/covs2.zip")
+
 
 covs2 <- aggregateCovariates(covs)
 
-covariates1 <- ff::as.ram(covs$covariates)
-covariates2 <- ff::as.ram(covs2$covariates)
-covariates1 <- covariates1[order(covariates1$covariateId), ]
-covariates2 <- covariates2[order(covariates2$covariateId), ]
-row.names(covariates1) <- NULL
-row.names(covariates2) <- NULL
-testthat::expect_equal(covariates1, covariates2)
 
-covariates1 <- ff::as.ram(covs$covariatesContinuous)
-covariates2 <- ff::as.ram(covs2$covariatesContinuous)
-covariates1 <- covariates1[order(covariates1$covariateId), ]
-covariates2 <- covariates2[order(covariates2$covariateId), ]
-row.names(covariates1) <- NULL
-row.names(covariates2) <- NULL
-covariates1 <- covariates1[covariates1$countValue > 3,]
-covariates2 <- covariates1[covariates1$countValue > 3,]
-testthat::expect_equal(covariates1, covariates2, tolerance = 0.01)
-head(covariates1)
-head(covariates2)
 
+settings2 <- createCovariateSettings(useDemographicsGender = TRUE)
+covs <- getDbCovariateData(connectionDetails = connectionDetails,
+                           oracleTempSchema = oracleTempSchema,
+                           cdmDatabaseSchema = cdmDatabaseSchema,
+                           cohortDatabaseSchema = cohortDatabaseSchema,
+                           cohortTable = cohortTable,
+                           cohortId = 1,
+                           rowIdField = "row_id",
+                           cohortTableIsTemp = FALSE,
+                           covariateSettings = list(settings, settings2),
+                           aggregated = TRUE)
+print(covs)
+summary(covs)
+print(covs$covariateRef, n = 100)
 # Temporal covariates -----------------------------------------------
 covariateSettings <- createTemporalCovariateSettings(useDemographicsGender = TRUE,
                                                      useMeasurementValue = TRUE)

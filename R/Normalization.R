@@ -14,36 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#' Compute max of values binned by a second variable
-#'
-#' @param values   An ff object containing the numeric values to take the max of.
-#' @param bins     An ff object containing the numeric values to bin by.
-#'
-#' @examples
-#' values <- ff::as.ff(c(1, 1, 2, 2, 1))
-#' bins <- ff::as.ff(c(1, 1, 1, 2, 2))
-#' byMaxFf(values, bins)
-#'
-#' @export
-byMaxFf <- function(values, bins) {
-  byMax(values, bins)
-}
-
-#' Compute sum of values binned by a second variable
-#'
-#' @param values   An ff object containing the numeric values to take the sum of.
-#' @param bins     An ff object containing the numeric values to bin by.
-#'
-#' @examples
-#' values <- ff::as.ff(c(1, 1, 2, 2, 1))
-#' bins <- ff::as.ff(c(1, 1, 1, 2, 2))
-#' bySumFf(values, bins)
-#'
-#' @export
-bySumFf <- function(values, bins) {
-  bySum(values, bins)
-}
-
 #' Tidy covariate data
 #'
 #' @details

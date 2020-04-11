@@ -114,7 +114,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
     if (is.list(covariateSettings)) {
       covariateData <- NULL
       hasData <- function(data) {
-        return(!is.null(data) && nrow(data) != 0) 
+        return(!is.null(data) && (data %>% count() %>% collect())$n > 0)
       }
       for (i in 1:length(covariateSettings)) {
         fun <- attr(covariateSettings[[i]], "fun")
@@ -133,168 +133,33 @@ getDbCovariateData <- function(connectionDetails = NULL,
         } else {
           if (hasData(covariateData$covariates)) {
             if (hasData(tempCovariateData$covariates)) {
-              covariateData$covariates <- ffbase::ffdfappend(covariateData$covariates,
-                                                             tempCovariateData$covariates)
+              Andromeda::appendToTable(covariateData$covariates, tempCovariateData$covariates)
             } 
           } else if (hasData(tempCovariateData$covariates)) {
             covariateData$covariates <- tempCovariateData$covariates
           }
           if (hasData(covariateData$covariatesContinuous)) {
             if (hasData(tempCovariateData$covariatesContinuous)) {
-              covariateData$covariatesContinuous <- ffbase::ffdfappend(covariateData$covariatesContinuous,
-                                                                       tempCovariateData$covariatesContinuous)
+              Andromeda::appendToTable(covariateData$covariatesContinuous, tempCovariateData$covariatesContinuous)
             } else if (hasData(tempCovariateData$covariatesContinuous)) {
               covariateData$covariatesContinuous <- tempCovariateData$covariatesContinuous
             }
           } 
-          covariateData$covariateRef <- ffbase::ffdfappend(covariateData$covariateRef,
-                                                           ff::as.ram(tempCovariateData$covariateRef))
-          covariateData$analysisRef <- ffbase::ffdfappend(covariateData$analysisRef,
-                                                          ff::as.ram(tempCovariateData$analysisRef))
-          for (name in names(tempCovariateData$metaData)) {
-            if (is.null(covariateData$metaData[name])) {
-              covariateData$metaData[[name]] <- tempCovariateData$metaData[[name]]
+          Andromeda::appendToTable(covariateData$covariateRef, tempCovariateData$covariateRef)
+          Andromeda::appendToTable(covariateData$analysisRef, tempCovariateData$analysisRef)
+          for (name in names(attr(tempCovariateData, "metaData"))) {
+            if (is.null(attr(covariateData, "metaData")[name])) {
+              attr(covariateData, "metaData")[[name]] <- attr(tempCovariateData, "metaData")[[name]]
             } else {
-              covariateData$metaData[[name]] <- list(covariateData$metaData[[name]],
-                                                     tempCovariateData$metaData[[name]])
+              attr(covariateData, "metaData")[[name]] <- list(attr(covariateData, "metaData")[[name]],
+                                                              attr(tempCovariateData, "metaData")[[name]])
             }
           }
         }
       }
     }
   }
-  covariateData$metaData$populationSize <- populationSize
-  covariateData$metaData$cohortId <- cohortId
+  attr(covariateData, "metaData")$populationSize <- populationSize
+  attr(covariateData, "metaData")$cohortId <- cohortId
   return(covariateData)
 }
-
-#' Save the covariate data to folder
-#'
-#' @description
-#' \code{saveCovariateData} saves an object of type covariateData to folder.
-#'
-#' @param covariateData   An object of type \code{covariateData} as generated using
-#'                        \code{getDbCovariateData}.
-#' @param file            The name of the folder where the data will be written. The folder should not
-#'                        yet exist.
-#'
-#' @details
-#' The data will be written to a set of files in the folder specified by the user.
-#'
-#' @examples
-#' # todo
-#'
-#' @export
-saveCovariateData <- function(covariateData, file) {
-  if (missing(covariateData))
-    stop("Must specify covariateData")
-  if (missing(file))
-    stop("Must specify file")
-  if (class(covariateData) != "covariateData")
-    stop("Data not of class covariateData")
-  
-  covariateRef <- covariateData$covariateRef
-  analysisRef <- covariateData$analysisRef
-  if (!is.null(covariateData$covariates) && !is.null(covariateData$covariatesContinuous)) {
-    covariates <- covariateData$covariates
-    covariatesContinuous <- covariateData$covariatesContinuous
-    ffbase::save.ffdf(analysisRef, covariateRef, covariates, covariatesContinuous, dir = file)
-    open(covariateData$covariates)
-    open(covariateData$covariatesContinuous)
-  } else if (!is.null(covariateData$covariates) && is.null(covariateData$covariatesContinuous)) {
-    covariates <- covariateData$covariates
-    ffbase::save.ffdf(analysisRef, covariateRef, covariates, dir = file)
-    open(covariateData$covariates)
-  } else if (is.null(covariateData$covariates) && !is.null(covariateData$covariatesContinuous)) {
-    covariatesContinuous <- covariateData$covariatesContinuous
-    ffbase::save.ffdf(analysisRef, covariateRef, covariatesContinuous, dir = file)
-    open(covariateData$covariatesContinuous)
-  }
-  open(covariateData$covariateRef)
-  open(covariateData$analysisRef)
-  metaData <- covariateData$metaData
-  save(metaData, file = file.path(file, "metaData.Rdata"))
-}
-
-#' Load the covariate data from a folder
-#'
-#' @description
-#' \code{loadCovariateData} loads an object of type covariateData from a folder in the file system.
-#'
-#' @param file       The name of the folder containing the data.
-#' @param readOnly   If true, the data is opened read only.
-#'
-#' @details
-#' The data will be written to a set of files in the folder specified by the user.
-#'
-#' @return
-#' An object of class \code{covariateData}.
-#'
-#' @examples
-#' # todo
-#'
-#' @export
-loadCovariateData <- function(file, readOnly = FALSE) {
-  if (!file.exists(file))
-    stop(paste("Cannot find folder", file))
-  if (!file.info(file)$isdir)
-    stop(paste("Not a folder", file))
-  
-  temp <- setwd(file)
-  absolutePath <- setwd(temp)
-  
-  e <- new.env()
-  ffbase::load.ffdf(absolutePath, e)
-  load(file.path(absolutePath, "metaData.Rdata"), e)
-  result <- list(analysisRef = get("analysisRef", envir = e),
-                 covariateRef = get("covariateRef", envir = e),
-                 metaData = get("metaData", envir = e))
-  open(result$analysisRef, readonly = readOnly)
-  open(result$covariateRef, readonly = readOnly)
-  # 'exists' for some reason generates false positives, so checking object names instead:
-  eNames <- ls(envir = e)
-  if (any(eNames == "covariates")) {
-    result$covariates <- get("covariates", envir = e)
-    open(result$covariates, readonly = readOnly)
-  }
-  if (any(eNames == "covariatesContinuous")) {
-    result$covariatesContinuous <- get("covariatesContinuous", envir = e)
-    open(result$covariatesContinuous, readonly = readOnly)
-  }
-  class(result) <- "covariateData"
-  rm(e)
-  return(result)
-}
-
-#' @export
-print.covariateData <- function(x, ...) {
-  writeLines("CovariateData object")
-  writeLines("")
-  writeLines(paste("Cohort of interest ID:", x$metaData$cohortId))
-}
-
-#' @export
-summary.covariateData <- function(object, ...) {
-  covariateValueCount <- 0
-  if (!is.null(object$covariates)) {
-    covariateValueCount <- covariateValueCount + nrow(object$covariates)
-  }
-  if (!is.null(object$covariatesContinuous)) {
-    covariateValueCount <- covariateValueCount + nrow(object$covariatesContinuous)
-  }
-  
-  result <- list(metaData = object$metaData,
-                 covariateCount = nrow(object$covariateRef),
-                 covariateValueCount = covariateValueCount)
-  class(result) <- "summary.covariateData"
-  return(result)
-}
-
-#' @export
-print.summary.covariateData <- function(x, ...) {
-  writeLines("CovariateData object summary")
-  writeLines("")
-  writeLines(paste("Number of covariates:", x$covariateCount))
-  writeLines(paste("Number of non-zero covariate values:", x$covariateValueCount))
-}
-
