@@ -84,9 +84,13 @@ loadCovariateData <- function(file, readOnly) {
 #' @export
 #' @rdname CovariateData-class
 setMethod("show", "CovariateData", function(object) {
-  writeLines("CovariateData object")
+  writeLines("# CovariateData object")
   writeLines("")
   writeLines(paste("Cohort of interest ID:", attr(object, "metaData")$cohortId))
+  writeLines("")
+  writeLines("Inherits from Andromeda:")
+  class(object) <- "Andromeda"
+  show(object)
 })
 
 

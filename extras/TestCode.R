@@ -203,7 +203,7 @@ covs <- getDbCovariateData(connectionDetails = connectionDetails,
                            rowIdField = "row_id",
                            cohortTableIsTemp = FALSE,
                            covariateSettings = settings,
-                           aggregated = TRUE)
+                           aggregated = FALSE)
 
 covs$covariates[covs$covariates$covariateId == 4329847210, ]
 # Exclude: sum = 2.883000e+03
@@ -216,6 +216,7 @@ covariateData <- loadCovariateData("c:/temp/covs2.zip")
 covariateData
 print(covariateData)
 summary(covariateData)
+tidyCovariateData(covariateData)
 
 tempCovariateData <- loadCovariateData("c:/temp/covs2.zip")
 

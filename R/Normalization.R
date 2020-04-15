@@ -55,25 +55,29 @@ tidyCovariateData <- function(covariateData,
     stop("Argument covariateData is not of type covariateData")
   }
   if (missing(covariateData)) {
-    covariateData <- list(metaData = list(populationSize = populationSize))
-  } else {
-    covariates <- covariateData$covariates
+    covariateData <- Andromeda::andromeda()
+    covariateData$covariates <- covariates
     if (removeRedundancy) {
-      covariateRef <- covariateData$covariateRef
+      covariateData$covariateRef <- covariateRef
     }
+  } else {
+    populationSize <- attr(covariateData, "metaData")$populationSize 
   }
-  if (nrow(covariates) != 0) {
-    maxs <- byMaxFf(covariates$covariateValue, covariates$covariateId)
+  if ((covariateData$covariates %>% count() %>% collect())$n != 0) {
+    covariateData$maxValuesPerCovariateId <- covariateData$covariates %>% 
+      group_by(rlang::sym("covariateId")) %>% 
+      summarise(maxValue = max(rlang::sym("covariateValue")))
     ignoreCovariateIds <- c()
     deleteCovariateIds <- c()
     if (removeRedundancy) {
       writeLines("Removing redundant covariates")
       start <- Sys.time()
-      binaryCovariateIds <- maxs$bins[maxs$maxs == 1]
-      if (length(binaryCovariateIds) != 0) {
-        if ("timeId" %in% colnames(covariates)) { 
+      covariateData$binaryCovariateIds <- covariateData$maxValuesPerCovariateId %>% 
+        filter(rlang::sym("maxValue") == 1) %>% 
+        select(covariateId = rlang::sym("covariateId"))
+      if ((covariateData$binaryCovariateIds %>% tally() %>% collect())$n != 0) {
+        if ("timeId" %in% colnames(covariateData$covariates)) { 
           # Temporal
-          
           timeIds <- ff::as.ram(ffbase::unique.ff(covariates$timeId))
           deleteCovTimeIds <- data.frame()
           for (timeId in timeIds) {
@@ -116,11 +120,21 @@ tidyCovariateData <- function(covariateData,
           # Non-temporal
           
           # First, find all single covariates that appear in every row with the same value
-          valueCounts <- bySumFf(ff::ff(1, length = nrow(covariates)), covariates$covariateId)
-          valueCounts <- valueCounts[valueCounts$bins %in% binaryCovariateIds, ]
-          deleteCovariateIds <- valueCounts$bins[valueCounts$sums == covariateData$metaData$populationSize]
+          covariateData$valueCounts <- covariateData$covariates %>% 
+            inner_join(covariateData$binaryCovariateIds, by = "covariateId") %>% 
+            group_by(rlang::sym("covariateId")) %>% count()
+          deleteCovariateIds <-  covariateData$valueCounts %>% 
+            filter(n == populationSize) %>% 
+            select(rlang::sym("covariateId")) %>% 
+            collect()
+          deleteCovariateIds <- deleteCovariateIds$covariateId
           
           # Next, find groups of covariates that together cover everyone:
+          covariateData$valueCounts %>%
+            filter(!covariateId %in% deleteCovariateIds) %>%
+            inner_join(covariateData$covariateRef
+          
+          
           valueCounts <- valueCounts[!(valueCounts$bins %in% deleteCovariateIds), ]
           row.names(covariateRef) <- NULL # Prevents error in merge when duplicate row names exist
           valueCounts <- merge(valueCounts,

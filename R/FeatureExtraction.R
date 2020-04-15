@@ -25,7 +25,6 @@
 #' @importFrom methods is
 #' @importFrom stats aggregate quantile sd
 #' @importFrom utils read.csv
-#' @import bit
 #' @import DatabaseConnector
 #' @import dplyr
 NULL

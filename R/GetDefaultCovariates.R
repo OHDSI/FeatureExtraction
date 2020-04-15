@@ -87,17 +87,17 @@ getDbDefaultCovariateData <- function(connection,
     writeLines("Fetching data from server")
     start <- Sys.time()
     # Binary or non-aggregated features
-    covariateData <- Andromeda::Andromeda()
+    covariateData <- Andromeda::andromeda()
     if (!is.null(todo$sqlQueryFeatures)) {
       sql <- SqlRender::translate(sql = todo$sqlQueryFeatures,
                                   targetDialect = attr(connection, "dbms"),
                                   oracleTempSchema = oracleTempSchema)
       
-      DatabaseConnector::querySql.sqlite(connection = connection, 
-                                         sql = sql, 
-                                         sqliteConnection = covariateData, 
-                                         sqliteTableName = "covariates",
-                                         snakeCaseToCamelCase = TRUE)
+      DatabaseConnector::querySqlToAndromeda(connection = connection, 
+                                             sql = sql, 
+                                             andromeda = covariateData, 
+                                             andromedaTableName = "covariates",
+                                             snakeCaseToCamelCase = TRUE)
     } 
     
     # Continuous aggregated features
@@ -105,11 +105,11 @@ getDbDefaultCovariateData <- function(connection,
       sql <- SqlRender::translate(sql = todo$sqlQueryContinuousFeatures,
                                   targetDialect = attr(connection, "dbms"),
                                   oracleTempSchema = oracleTempSchema)
-      DatabaseConnector::querySql.sqlite(connection = connection, 
-                                         sql = sql, 
-                                         sqliteConnection = covariateData, 
-                                         sqliteTableName = "covariatesContinuous",
-                                         snakeCaseToCamelCase = TRUE)
+      DatabaseConnector::querySqlToAndromeda(connection = connection, 
+                                             sql = sql, 
+                                             andromeda = covariateData, 
+                                             andromedaTableName = "covariatesContinuous",
+                                             snakeCaseToCamelCase = TRUE)
     }
     
     # Covariate reference
@@ -117,22 +117,22 @@ getDbDefaultCovariateData <- function(connection,
                                 targetDialect = attr(connection, "dbms"),
                                 oracleTempSchema = oracleTempSchema)
     
-    DatabaseConnector::querySql.sqlite(connection = connection, 
-                                       sql = sql, 
-                                       sqliteConnection = covariateData, 
-                                       sqliteTableName = "covariateRef",
-                                       snakeCaseToCamelCase = TRUE)
-
+    DatabaseConnector::querySqlToAndromeda(connection = connection, 
+                                           sql = sql, 
+                                           andromeda = covariateData, 
+                                           andromedaTableName = "covariateRef",
+                                           snakeCaseToCamelCase = TRUE)
+    
     # Analysis reference
     sql <- SqlRender::translate(sql = todo$sqlQueryAnalysisRef,
                                 targetDialect = attr(connection, "dbms"),
                                 oracleTempSchema = oracleTempSchema)
-    DatabaseConnector::querySql.sqlite(connection = connection, 
-                                       sql = sql, 
-                                       sqliteConnection = covariateData, 
-                                       sqliteTableName = "analysisRef",
-                                       snakeCaseToCamelCase = TRUE)
-
+    DatabaseConnector::querySqlToAndromeda(connection = connection, 
+                                           sql = sql, 
+                                           andromeda = covariateData, 
+                                           andromedaTableName = "analysisRef",
+                                           snakeCaseToCamelCase = TRUE)
+    
     delta <- Sys.time() - start
     writeLines(paste("Fetching data took", signif(delta, 3), attr(delta, "units")))
   } else {
