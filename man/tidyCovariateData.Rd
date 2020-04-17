@@ -6,9 +6,6 @@
 \usage{
 tidyCovariateData(
   covariateData,
-  covariates,
-  covariateRef,
-  populationSize,
   minFraction = 0.001,
   normalize = TRUE,
   removeRedundancy = TRUE
@@ -16,19 +13,7 @@ tidyCovariateData(
 }
 \arguments{
 \item{covariateData}{An object as generated using the \code{\link{getDbCovariateData}}
-function. If provided, the \code{covariates}, \code{covariateRef}, and
-\code{populationSize} arguments will be ignored.}
-
-\item{covariates}{An ffdf object with the covariate values in spare format. Will be ignored
-if \code{covariateData} is provided.}
-
-\item{covariateRef}{An ffdf object with the covariate definitions. Will be ignored if
-\code{covariateData} is provided. Only needed when \code{removeRedundancy
-= TRUE}.}
-
-\item{populationSize}{An integer specifying the total number of unique cohort entries (rowIds).
-Will be ignored if \code{covariateData} is provided. Only needed when
-\code{removeRedundancy = TRUE}.}
+function.}
 
 \item{minFraction}{Minimum fraction of the population that should have a non-zero value for a
 covariate for that covariate to be kept. Set to 0 to don't filter on

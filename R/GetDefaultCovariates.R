@@ -63,7 +63,7 @@ getDbDefaultCovariateData <- function(connection,
   json <- rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$createSql(settings, aggregated, cohortTable, rowIdField, as.integer(cohortId), cdmDatabaseSchema)
   todo <- .fromJson(json)
   if (length(todo$tempTables) != 0) {
-    writeLines("Sending temp tables to server")
+    ParallelLogger::logInfo("Sending temp tables to server")
     for (i in 1:length(todo$tempTables)) {
       DatabaseConnector::insertTable(connection,
                                      tableName = names(todo$tempTables)[i],
@@ -75,7 +75,7 @@ getDbDefaultCovariateData <- function(connection,
     }
   }
   
-  writeLines("Constructing features on server")
+  ParallelLogger::logInfo("Constructing features on server")
   
   sql <- SqlRender::translate(sql = todo$sqlConstruction,
                               targetDialect = attr(connection, "dbms"),
@@ -84,7 +84,7 @@ getDbDefaultCovariateData <- function(connection,
   DatabaseConnector::executeSql(connection, sql, profile = profile)
   
   if (missing(targetCovariateTable) || is.null(targetCovariateTable)) {
-    writeLines("Fetching data from server")
+    ParallelLogger::logInfo("Fetching data from server")
     start <- Sys.time()
     # Binary or non-aggregated features
     covariateData <- Andromeda::andromeda()
@@ -134,10 +134,10 @@ getDbDefaultCovariateData <- function(connection,
                                            snakeCaseToCamelCase = TRUE)
     
     delta <- Sys.time() - start
-    writeLines(paste("Fetching data took", signif(delta, 3), attr(delta, "units")))
+    ParallelLogger::logInfo("Fetching data took ", signif(delta, 3), " ", attr(delta, "units"))
   } else {
     # Don't fetch to R , but create on server instead
-    writeLines("Writing data to table")
+    ParallelLogger::logInfo("Writing data to table")
     start <- Sys.time()
     convertQuery <- function(sql, databaseSchema, table) {
       if (missing(databaseSchema) || is.null(databaseSchema)) {
@@ -175,7 +175,7 @@ getDbDefaultCovariateData <- function(connection,
       DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
     }
     delta <- Sys.time() - start
-    writeLines(paste("Writing data took", signif(delta, 3), attr(delta, "units")))
+    ParallelLogger::logInfo("Writing data took", signif(delta, 3), " ", attr(delta, "units"))
     
   }
   # Drop temp tables

@@ -119,3 +119,15 @@ print.summary.CovariateData <- function(x, ...) {
   writeLines(paste("Number of covariates:", x$covariateCount))
   writeLines(paste("Number of non-zero covariate values:", x$covariateValueCount))
 }
+
+#' Check whether an object is a CovariateData object
+#'
+#' @param x  The object to check.
+#'
+#' @return
+#' A logical value.
+#' 
+#' @export
+isCovariateData <- function(x) {
+  return(inherits(x, "CovariateData"))
+}
