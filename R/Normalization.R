@@ -33,9 +33,12 @@ tidyCovariateData <- function(covariateData,
                               minFraction = 0.001,
                               normalize = TRUE,
                               removeRedundancy = TRUE) {
-  if (!inherits(covariateData, "CovariateData")) {
-    stop("Argument covariateData is not of type CovariateData")
-  }
+  if (!isCovariateData(covariateData))
+    stop("Data not of class CovariateData")
+  if (!Andromeda::isValidAndromeda(covariateData)) 
+    stop("CovariateData object is closed")
+  if (isAggregatedCovariateData(covariateData))
+    stop("Cannot tidy aggregatd covariates")
   newCovariateData <- Andromeda::andromeda(covariateRef = covariateData$covariateRef,
                                            analysisRef = covariateData$analysisRef)
   metaData <- attr(covariateData, "metaData")
@@ -63,7 +66,7 @@ tidyCovariateData <- function(covariateData,
         filter(rlang::sym("maxValue") == 1) %>% 
         select(covariateId = rlang::sym("covariateId"))
       if (nrow(covariateData$binaryCovariateIds) != 0) {
-        if ("timeId" %in% colnames(covariateData$covariates)) { 
+        if (isTemporalCovariateData(covariateData)) { 
           # Temporal
           covariateData$temporalValueCounts <- covariateData$covariates %>% 
             inner_join(covariateData$binaryCovariateIds, by = "covariateId") %>% 

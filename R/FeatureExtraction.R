@@ -21,10 +21,8 @@
 
 #' @importFrom Rcpp evalCpp
 #' @importFrom SqlRender loadRenderTranslateSql translate render
-#' @importFrom plyr ddply
 #' @importFrom methods is
 #' @importFrom stats aggregate quantile sd
-#' @importFrom utils read.csv
 #' @import DatabaseConnector
 #' @import dplyr
 NULL

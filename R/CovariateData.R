@@ -84,11 +84,11 @@ loadCovariateData <- function(file, readOnly) {
 #' @export
 #' @rdname CovariateData-class
 setMethod("show", "CovariateData", function(object) {
-  writeLines("# CovariateData object")
-  writeLines("")
-  writeLines(paste("Cohort of interest ID:", attr(object, "metaData")$cohortId))
-  writeLines("")
-  writeLines("Inherits from Andromeda:")
+  cli::cat_line(pillar::style_subtle("# CovariateData object"))
+  cli::cat_line("")
+  cli::cat_line(paste("Cohort of interest ID:", attr(object, "metaData")$cohortId))
+  cli::cat_line("")
+  cli::cat_line(pillar::style_subtle("Inherits from Andromeda:"))
   class(object) <- "Andromeda"
   show(object)
 })
@@ -130,4 +130,36 @@ print.summary.CovariateData <- function(x, ...) {
 #' @export
 isCovariateData <- function(x) {
   return(inherits(x, "CovariateData"))
+}
+
+#' Check whether covariate data is aggregated
+#'
+#' @param x  The covariate data object to check.
+#'
+#' @return
+#' A logical value.
+#' 
+#' @export
+isAggregatedCovariateData <- function(x) {
+  if (!isCovariateData(x))
+    stop("Object not of class CovariateData")
+  if (!Andromeda::isValidAndromeda(x)) 
+    stop("CovariateData object is closed")
+  return(!is.null(x$covariatesContinuous) || !"rowId" %in% colnames(x$covariates))
+}
+
+#' Check whether covariate data is temporal
+#'
+#' @param x  The covariate data object to check.
+#'
+#' @return
+#' A logical value.
+#' 
+#' @export
+isTemporalCovariateData <- function(x) {
+  if (!isCovariateData(x))
+    stop("Object not of class CovariateData")
+  if (!Andromeda::isValidAndromeda(x)) 
+    stop("CovariateData object is closed")
+  return("timeId" %in% colnames(x$covariates$timeId))
 }

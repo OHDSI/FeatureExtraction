@@ -4,17 +4,15 @@
 \alias{filterByRowId}
 \title{Filter covariates by row ID}
 \usage{
-filterByRowId(object, rowIds)
+filterByRowId(covariateData, rowIds)
 }
 \arguments{
-\item{object}{Either an object of type \code{covariateData}, or an ffdf object containing
-covariate values.}
+\item{covariateData}{An object of type \code{CovariateData}}
 
-\item{rowIds}{A vector (or ff object) containing the rowIds to keep.}
+\item{rowIds}{A vector containing the rowIds to keep.}
 }
 \value{
-Either an object of type \code{covariateData}, or an ffdf object containing covariate values.
-(depending on the type of the \code{object} argument.
+An object of type \code{covariateData}.
 }
 \description{
 Filter covariates by row ID

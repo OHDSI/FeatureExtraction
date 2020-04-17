@@ -16,25 +16,26 @@
 
 #' Filter covariates by row ID
 #'
-#' @param object   Either an object of type \code{covariateData}, or an ffdf object containing
-#'                 covariate values.
-#' @param rowIds   A vector (or ff object) containing the rowIds to keep.
+#' @param covariateData  An object of type \code{CovariateData}
+#' @param rowIds         A vector containing the rowIds to keep.
 #'
 #' @return
-#' Either an object of type \code{covariateData}, or an ffdf object containing covariate values.
-#' (depending on the type of the \code{object} argument.
+#' An object of type \code{covariateData}.
 #' @export
-filterByRowId <- function(object, rowIds) {
-  if (!is(rowIds, "ff")) {
-    rowIds <- ff::as.ff(rowIds)
-  }
-  if (is(object, "covariateData")) {
-    idx <- ffbase::`%in%`(object$covariates$rowId, rowIds)
-    object$covariates <- object$covariates[idx, ]
-    return(object)
-  } else {
-    idx <- ffbase::`%in%`(object$rowId, rowIds)
-    object <- object[idx, ]
-    return(object)
-  }
+filterByRowId <- function(covariateData, rowIds) {
+  if (!isCovariateData(covariateData))
+    stop("Data not of class CovariateData")
+  if (!Andromeda::isValidAndromeda(covariateData)) 
+    stop("CovariateData object is closed")
+  if (isAggregatedCovariateData(covariateData))
+    stop("Cannot filter aggregated data by rowId")
+  covariates <- covariateData$covariates %>%
+    filter(rlang::sym("covariateId") %in% rowIds)
+  
+  result <- Andromeda::andromeda(covariates = covariates,
+                                 covariateRef = covariateData$covariateRef,
+                                 analysisRef = covariateData$analysisRef)
+  attr(result, "metaData") <- attr(covariateData, "metaData")
+  class(result) <- "CovariateData"
+  return(result)
 }

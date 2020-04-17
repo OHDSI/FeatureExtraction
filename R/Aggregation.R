@@ -25,115 +25,84 @@
 #'
 #' @export
 aggregateCovariates <- function(covariateData) {
-  if (class(covariateData) != "covariateData")
-    stop("Data not of class covariateData")
-  if (!is.null(covariateData$covariatesContinuous) || is.null(covariateData$covariates$rowId))
+  if (!isCovariateData(covariateData))
+    stop("Data not of class CovariateData")
+  if (!Andromeda::isValidAndromeda(covariateData)) 
+    stop("CovariateData object is closed")
+  if (isAggregatedCovariateData(covariateData))
     stop("Data appears to already be aggregated")
-  if (!is.null(covariateData$covariates$timeId))
+  if (isTemporalCovariateData(covariateData))
     stop("Aggregation for temporal covariates is not yet implemented")
   start <- Sys.time()
-  result <- list(covariateRef = ff::clone.ffdf(covariateData$covariateRef),
-                 analysisRef = ff::clone.ffdf(covariateData$analysisRef),
-                 metaData = covariateData$metaData)
-  populationSize <- covariateData$metaData$populationSize
+  result <- Andromeda::andromeda(covariateRef = covariateData$covariateRef,
+                                 analysisRef = covariateData$analysisRef)
+  attr(result, "metaData") <- attr(covariateData, "metaData")
+  class(result) <- "CovariateData"
+  populationSize <-  attr(covariateData, "metaData")$populationSize
+  
   # Aggregate binary variables
-  idx <- covariateData$analysisRef$isBinary == "Y"
-  if (ffbase::any.ff(idx)) {
-    analysisIds <- covariateData$analysisRef$analysisId[idx]
-    idx <- ffbase::`%in%`(covariateData$covariateRef$analysisId, analysisIds)
-    if (ffbase::any.ff(idx)) {
-      covariateIds <- covariateData$covariateRef$covariateId[idx]
-      idx <- ffbase::`%in%`(covariateData$covariates$covariateId, covariateIds)
-      if (ffbase::any.ff(idx)) {
-        binaryCovariates <- covariateData$covariates[idx, ]
-        covariates <- bySumFf(binaryCovariates$covariateValue, binaryCovariates$covariateId)
-        colnames(covariates) <- c("covariateId", "sumValue")
-        covariates$averageValue <- covariates$sumValue/populationSize
-        result$covariates <- ff::as.ffdf(covariates)
-      }
-    }
-  }
-
+  result$covariates <- covariateData$analysisRef %>%
+    filter(rlang::sym("isBinary") == "Y") %>%
+    inner_join(covariateData$covariateRef, by = "analysisId") %>%
+    inner_join(covariateData$covariates, by = "covariateId") %>%
+    group_by(rlang::sym("covariateId")) %>%
+    summarize(sumValue = sum(rlang::sym("covariateValue"), na.rm = TRUE),
+              averageValue = sum(rlang::sym("covariateValue") / populationSize, na.rm = TRUE))
+  
   # Aggregate continuous variables where missing means zero
-  idx <- covariateData$analysisRef$isBinary == "N" & covariateData$analysisRef$missingMeansZero == "Y"
-  if (ffbase::any.ff(idx)) {
-    analysisIds <- covariateData$analysisRef$analysisId[idx]
-    idx <- ffbase::`%in%`(covariateData$covariateRef$analysisId, analysisIds)
-    if (ffbase::any.ff(idx)) {
-      covariateIds <- covariateData$covariateRef$covariateId[idx]
-
-      computeStats <- function(covariateId) {
-        idx <- covariateData$covariates$covariateId == covariateId
-        if (ffbase::any.ff(idx)) {
-          values <- ff::as.ram(covariateData$covariates$covariateValue[idx])
-          zeroFraction <- 1 - (length(values)/populationSize)
-          allProbs <- c(0, 0.1, 0.25, 0.5, 0.75, 0.9, 1)
-          probs <- allProbs[allProbs > zeroFraction]
-          probs <- (probs - zeroFraction)/(1 - zeroFraction)
-          quants <- quantile(values, probs = probs, type = 1)
-          quants <- c(rep(0, length(allProbs) - length(quants)), quants)
-          result <- data.frame(covariateId = covariateId,
-                               countValue = length(values),
-                               minValue = quants[1],
-                               maxValue = quants[7],
-                               averageValue = mean(values) * (1 - zeroFraction),
-                               standardDeviation = sqrt((populationSize *
-            sum(values^2) - sum(values)^2)/(populationSize * (populationSize - 1))), medianValue = quants[4], p10Value = quants[2], p25Value = quants[3], p75Value = quants[5], p90Value = quants[6])
-          return(result)
-        } else {
-          return(NULL)
-        }
-      }
-      stats <- lapply(ff::as.ram(covariateIds), computeStats)
-      if (!is.null(result$covariatesContinuous)) {
-        stats <- append(result$covariatesContinuous, stats)
-      }
-      result$covariatesContinuous <- do.call("rbind", stats)
-    }
+  computeStats <- function(data) {
+    zeroFraction <- 1 - (nrow(data)/populationSize)
+    allProbs <- c(0, 0.1, 0.25, 0.5, 0.75, 0.9, 1)
+    probs <- allProbs[allProbs >= zeroFraction]
+    probs <- (probs - zeroFraction)/(1 - zeroFraction)
+    quants <- quantile(data$covariateValue, probs = probs, type = 1)
+    quants <- c(rep(0, length(allProbs) - length(quants)), quants)
+    result <- tibble::tibble(covariateId = data$covariateId[1],
+                             countValue = nrow(data),
+                             minValue = quants[1],
+                             maxValue = quants[7],
+                             averageValue = mean(data$covariateValue) * (1 - zeroFraction),
+                             standardDeviation = sqrt((populationSize * sum(data$covariateValue^2) - sum(data$covariateValue)^2)/(populationSize * (populationSize - 1))), 
+                             medianValue = quants[4], 
+                             p10Value = quants[2], 
+                             p25Value = quants[3], 
+                             p75Value = quants[5], 
+                             p90Value = quants[6])
   }
-
+  
+  covariatesContinuous1 <- covariateData$analysisRef %>%
+    filter(rlang::sym("isBinary") == "N" & rlang::sym("missingMeansZero") == "Y") %>%
+    inner_join(covariateData$covariateRef, by = "analysisId") %>%
+    inner_join(covariateData$covariates, by = "covariateId") %>%
+    Andromeda::groupApply("covariateId",  computeStats) %>%
+    bind_rows()
+  
   # Aggregate continuous variables where missing means missing
-  idx <- covariateData$analysisRef$isBinary == "N" & covariateData$analysisRef$missingMeansZero == "N"
-  if (ffbase::any.ff(idx)) {
-    analysisIds <- covariateData$analysisRef$analysisId[idx]
-    idx <- ffbase::`%in%`(covariateData$covariateRef$analysisId, analysisIds)
-    if (ffbase::any.ff(idx)) {
-      covariateIds <- covariateData$covariateRef$covariateId[idx]
-
-      computeStats <- function(covariateId) {
-        idx <- covariateData$covariates$covariateId == covariateId
-        if (ffbase::any.ff(idx)) {
-          values <- ff::as.ram(covariateData$covariates$covariateValue[idx])
-          probs <- c(0, 0.1, 0.25, 0.5, 0.75, 0.9, 1)
-          quants <- quantile(values, probs = probs, type = 1)
-          result <- data.frame(covariateId = covariateId,
-                               countValue = length(values),
-                               minValue = quants[1],
-                               maxValue = quants[7],
-                               averageValue = mean(values),
-                               standardDeviation = sd(values),
-                               medianValue = quants[4],
-                               p10Value = quants[2],
-                               p25Value = quants[3],
-                               p75Value = quants[5],
-                               p90Value = quants[6])
-          return(result)
-        } else {
-          return(NULL)
-        }
-      }
-      stats <- lapply(ff::as.ram(covariateIds), computeStats)
-      if (!is.null(result$covariatesContinuous)) {
-        stats <- append(result$covariatesContinuous, stats)
-      }
-      result$covariatesContinuous <- do.call("rbind", stats)
-    }
+  computeStats <- function(data) {
+    probs <- c(0, 0.1, 0.25, 0.5, 0.75, 0.9, 1)
+    quants <- quantile(data$covariateValue, probs = probs, type = 1)
+    result <- tibble::tibble(covariateId = data$covariateId[1],
+                         countValue = length(data$covariateValue),
+                         minValue = quants[1],
+                         maxValue = quants[7],
+                         averageValue = mean(data$covariateValue),
+                         standardDeviation = sd(data$covariateValue),
+                         medianValue = quants[4],
+                         p10Value = quants[2],
+                         p25Value = quants[3],
+                         p75Value = quants[5],
+                         p90Value = quants[6])
   }
-  if (!is.null(result$covariatesContinuous) && nrow(result$covariatesContinuous) != 0) {
-    result$covariatesContinuous <- ff::as.ffdf(result$covariatesContinuous)
-  }
+  
+  covariatesContinuous2 <- covariateData$analysisRef %>%
+    filter(rlang::sym("isBinary") == "N" & rlang::sym("missingMeansZero") == "N") %>%
+    inner_join(covariateData$covariateRef, by = "analysisId") %>%
+    inner_join(covariateData$covariates, by = "covariateId") %>%
+    Andromeda::groupApply("covariateId",  computeStats) %>%
+    bind_rows()
+  
+  result$covariatesContinuous <- bind_rows(covariatesContinuous1, covariatesContinuous2)
   delta <- Sys.time() - start
   writeLines(paste("Aggregating covariates took", signif(delta, 3), attr(delta, "units")))
-  class(result) <- "covariateData"
   return(result)
 }

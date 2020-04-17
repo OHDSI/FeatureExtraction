@@ -2,6 +2,10 @@ library(FeatureExtraction)
 
 # For debugging purposes. This shouldn't be needed in real use:
 options(andromedaTempFolder = "c:/andromedaTemp")
+library(Andromeda)
+
+# For debugging of new ParallelLogger:
+ParallelLogger::addDefaultErrorReportLogger()
 
 # options(fftempdir = "c:/FFtemp")
 # setwd("s:/temp/pgProfile/")
@@ -263,6 +267,50 @@ tidyCovs <- tidyCovariateData(covariateData)
 saveCovariateData(tidyCovs, "c:/temp/tidyCovs.zip")
 
 
+# Aggregation ---------------------------------------------------------------------------------
+covariateSettings <- createCovariateSettings(useDemographicsAge = TRUE,
+                                             useDemographicsGender = TRUE)
+
+covs <- getDbCovariateData(connectionDetails = connectionDetails,
+                           oracleTempSchema = oracleTempSchema,
+                           cdmDatabaseSchema = cdmDatabaseSchema,
+                           cohortDatabaseSchema = cohortDatabaseSchema,
+                           cohortTable = cohortTable,
+                           cohortId = 1,
+                           rowIdField = "row_id",
+                           cohortTableIsTemp = FALSE,
+                           covariateSettings = covariateSettings,
+                           aggregated = FALSE)
+
+saveCovariateData(covs, "c:/temp/unaggregatedCovs.zip")
+
+aggCovs <- getDbCovariateData(connectionDetails = connectionDetails,
+                               oracleTempSchema = oracleTempSchema,
+                               cdmDatabaseSchema = cdmDatabaseSchema,
+                               cohortDatabaseSchema = cohortDatabaseSchema,
+                               cohortTable = cohortTable,
+                               cohortId = 1,
+                               rowIdField = "row_id",
+                               cohortTableIsTemp = FALSE,
+                               covariateSettings = covariateSettings,
+                               aggregated = TRUE)
+saveCovariateData(aggCovs, "c:/temp/aggregatedCovs.zip")
+
+
+covariateData <- loadCovariateData("c:/temp/unaggregatedCovs.zip")
+aggCovs2 <- aggregateCovariates(covariateData)
+
+aggCovs <- loadCovariateData("c:/temp/aggregatedCovs.zip")
+
+
+
+aggCovs$covariates %>% collect()
+aggCovs2$covariates %>% collect()
+
+aggCovs$covariatesContinuous %>% collect()
+aggCovs2$covariatesContinuous %>% collect()
+
+
 # Storing data on server -----------------------------------------------------------------------
 settings <- createCovariateSettings(useDemographicsGender = TRUE,
                                     useDemographicsAgeGroup = TRUE)
@@ -375,18 +423,18 @@ covs <- getDbCovariateData(connectionDetails = connectionDetails,
                            covariateSettings = settings,
                            aggregated = TRUE)
 
-saveCovariateData(covs, "s:/temp/covsTable1Medium")
-covariateData <- covs
-covariateData <- loadCovariateData("s:/temp/covsTable1Medium")
+saveCovariateData(covs, "c:/temp/covsTable1")
 
-tables <- createTable1(covs, output = "one column", showCounts = T, showPercent = F)
-tables <- createTable1(covs, output = "two columns", showCounts = T, showPercent = F)
+covariateData1 <- loadCovariateData("c:/temp/covsTable1")
 
-tables <- createTable1(covs, covs, output = "one column", showCounts = F, showPercent = T)
-tables <- createTable1(covs, covs, output = "two columns", showCounts = T, showPercent = F)
+tables <- createTable1(covariateData1, output = "one column", showCounts = T, showPercent = F)
+tables <- createTable1(covariateData1, output = "two columns", showCounts = T, showPercent = F)
 
-write.csv(tables$part1, "s:/temp/table1Part1.csv", row.names = FALSE)
-write.csv(tables$part2, "s:/temp/table1Part2.csv", row.names = FALSE)
+tables <- createTable1(covariateData1, covariateData1, output = "one column", showCounts = F, showPercent = T)
+tables <- createTable1(covariateData1, covariateData1, output = "two columns", showCounts = T, showPercent = F)
+
+write.csv(tables$part1, "c:/temp/table1Part1.csv", row.names = FALSE)
+write.csv(tables$part2, "c:/temp/table1Part2.csv", row.names = FALSE)
 print(tables$part1)
 
 

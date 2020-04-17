@@ -104,7 +104,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
                               oracleTempSchema = oracleTempSchema)
   populationSize <- DatabaseConnector::querySql(connection, sql)[1, 1]
   if (populationSize == 0) {
-    covariateData <- list(covariates = data.frame(), covariateRef = data.frame(), metaData = list())
+    covariateData <- list(covariates = tibble::tibble(), covariateRef = tibble::tibble(), metaData = list())
     class(covariateData) <- "covariateData"
     warning("Population is empty. No covariates were constructed")
   } else {

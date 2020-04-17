@@ -20,14 +20,14 @@ Depends:
   DatabaseConnector (>= 2.0.2),
 Imports:
   methods,
-  plyr,
   dplyr,
-  Rcpp (>= 0.11.2),
   rJava,
   jsonlite,
   SqlRender (>= 1.6.0),
   Andromeda,
-  ParallelLogger
+  ParallelLogger,
+  cli,
+  pillar
 Suggests:
   testthat,
   knitr,
