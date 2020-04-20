@@ -39,6 +39,9 @@ tidyCovariateData <- function(covariateData,
     stop("CovariateData object is closed")
   if (isAggregatedCovariateData(covariateData))
     stop("Cannot tidy aggregatd covariates")
+  start <- Sys.time()
+  
+  
   newCovariateData <- Andromeda::andromeda(covariateRef = covariateData$covariateRef,
                                            analysisRef = covariateData$analysisRef)
   metaData <- attr(covariateData, "metaData")
@@ -60,8 +63,6 @@ tidyCovariateData <- function(covariateData,
     ignoreCovariateIds <- c()
     deleteCovariateIds <- c()
     if (removeRedundancy) {
-      ParallelLogger::logInfo("Removing redundant covariates")
-      start <- Sys.time()
       covariateData$binaryCovariateIds <- covariateData$maxValuePerCovariateId %>% 
         filter(rlang::sym("maxValue") == 1) %>% 
         select(covariateId = rlang::sym("covariateId"))
@@ -98,6 +99,8 @@ tidyCovariateData <- function(covariateData,
           
           newCovariates <- newCovariates %>%
             anti_join(covariateData$deleteCovariateTimeIds, by = c("covariateId", "timeId"))
+          
+          ParallelLogger::logInfo("Removing ", nrow(covariateData$deleteCovariateTimeIds), " redunant covariate ID - time ID combinations")
         } else {
           # Non-temporal
           
@@ -127,15 +130,12 @@ tidyCovariateData <- function(covariateData,
           valueCounts <- valueCounts[order(valueCounts$analysisId, -valueCounts$n), ]
           deleteCovariateIds <- c(deleteCovariateIds, valueCounts$covariateId[!duplicated(valueCounts$analysisId)])
           ignoreCovariateIds <- valueCounts$covariateId
+          ParallelLogger::logInfo("Removing ", length(deleteCovariateIds), " redundant covariates")
         }
       }
       metaData$deletedRedundantCovariateIds <- deleteCovariateIds
-      delta <- Sys.time() - start
-      ParallelLogger::logInfo("Removing redundant covariates took ", signif(delta, 3), " ", attr(delta, "units"))
     }
     if (minFraction != 0) {
-      ParallelLogger::logInfo("Removing infrequent covariates")
-      start <- Sys.time()
       minCount <- floor(minFraction * populationSize)
       toDelete <- covariateData$valueCounts %>%
         filter(rlang::sym("n") < minCount) %>%
@@ -145,8 +145,7 @@ tidyCovariateData <- function(covariateData,
       
       metaData$deletedInfrequentCovariateIds <- toDelete$covariateId
       deleteCovariateIds <- c(deleteCovariateIds, toDelete$covariateId)
-      delta <- Sys.time() - start
-      ParallelLogger::logInfo("Removing infrequent covariates took ", signif(delta, 3), " ", attr(delta, "units"))
+      ParallelLogger::logInfo("Removing ", length(deleteCovariateIds), " infrequent covariates")
     }
     if (length(deleteCovariateIds) > 0) {
       newCovariates <- newCovariates %>% 
@@ -155,16 +154,12 @@ tidyCovariateData <- function(covariateData,
     
     if (normalize) {
       ParallelLogger::logInfo("Normalizing covariates")
-      start <- Sys.time()
       newCovariates <- newCovariates %>% 
         inner_join(covariateData$maxValuePerCovariateId, by = "covariateId") %>%
         mutate(covariateValue = rlang::sym("covariateValue") / rlang::sym("maxValue")) %>%
         select(-rlang::sym("maxValue"))
       metaData$normFactors <- covariateData$maxValuePerCovariateId %>%
         collect()
-      
-      delta <- Sys.time() - start
-      ParallelLogger::logInfo("Normalizing covariates took ", signif(delta, 3), " ", attr(delta, "units"))
     } 
     newCovariateData$covariates <- newCovariates
   }
@@ -176,5 +171,9 @@ tidyCovariateData <- function(covariateData,
   
   class(newCovariateData) <- "CovariateData"
   attr(newCovariateData, "metaData") <- metaData
+  
+  delta <- Sys.time() - start
+  ParallelLogger::logInfo("Tidying covariates took ", signif(delta, 3), " ", attr(delta, "units"))
+  
   return(newCovariateData)
 }
