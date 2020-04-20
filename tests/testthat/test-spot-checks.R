@@ -1,4 +1,5 @@
 library(testthat)
+library(Andromeda)
 
 runSpotChecks <- function(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema) {
   connection <- DatabaseConnector::connect(connectionDetails)
@@ -52,20 +53,21 @@ runSpotChecks <- function(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSch
                               cdmDatabaseSchema = cdmDatabaseSchema,
                               resultsDatabaseSchema = ohdsiDatabaseSchema)
   sql <- SqlRender::translate(sql, targetDialect = connectionDetails$dbms)
-  results <- DatabaseConnector::querySql(connection, sql)
+  results <- tibble::as_tibble(DatabaseConnector::querySql(connection, sql))
   colnames(results) <- c("rowId", "covariateId")
   results$covariateId <- results$covariateId*1000 + 1
   results$covariateValue <- 1
   results <- results[order(results$rowId), ]
-  row.names(results) <- NULL
-  
-  covariateIds <- covariateData$covariateRef$covariateId[covariateData$covariateRef$analysisId == 1]
-  results2 <- ff::as.ram(covariateData$covariates[ffbase::`%in%`(covariateData$covariates$covariateId, covariateIds),])
-  results2 <- results2[order(results2$rowId), ]
-  row.names(results2) <- NULL
-  
-  expect_equal(results, results2)
-  
+
+  covariateIds <- covariateData$covariateRef %>%
+    filter(rlang::sym("analysisId") == 1) %>%
+    select(rlang::sym("covariateId"))
+  results2 <- covariateData$covariates %>%
+    inner_join(covariateIds, by = "covariateId") %>%
+    arrange(rlang::sym("rowId")) %>%
+    collect()
+
+  expect_equivalent(results, results2)
   
   # Test analysis 2: age
   sql <- "SELECT subject_id, YEAR(cohort_start_date) - year_of_birth AS age FROM @resultsDatabaseSchema.cohorts_of_interest INNER JOIN @cdmDatabaseSchema.person ON subject_id = person_id WHERE cohort_definition_id = 1124300"
@@ -73,19 +75,21 @@ runSpotChecks <- function(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSch
                               cdmDatabaseSchema = cdmDatabaseSchema,
                               resultsDatabaseSchema = ohdsiDatabaseSchema)
   sql <- SqlRender::translate(sql, targetDialect = connectionDetails$dbms)
-  results <- DatabaseConnector::querySql(connection, sql)
+  results <- tibble::as_tibble(DatabaseConnector::querySql(connection, sql))
   colnames(results) <- c("rowId", "covariateValue")
   results$covariateId <- 1000 + 2
   results <- results[, c("rowId", "covariateId", "covariateValue")]
   results <- results[order(results$rowId), ]
-  row.names(results) <- NULL
   
-  covariateIds <- covariateData$covariateRef$covariateId[covariateData$covariateRef$analysisId == 2]
-  results2 <- ff::as.ram(covariateData$covariates[ffbase::`%in%`(covariateData$covariates$covariateId, covariateIds),])
-  results2 <- results2[order(results2$rowId), ]
-  row.names(results2) <- NULL
+  covariateIds <- covariateData$covariateRef %>%
+    filter(rlang::sym("analysisId") == 2) %>%
+    select(rlang::sym("covariateId"))
+  results2 <- covariateData$covariates %>%
+    inner_join(covariateIds, by = "covariateId") %>%
+    arrange(rlang::sym("rowId"))  %>%
+    collect()
   
-  expect_equal(results, results2)
+  expect_equivalent(results, results2)
   
   
   # Test analysis 102: condition occurrence long term
@@ -100,13 +104,16 @@ runSpotChecks <- function(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSch
   results$covariateValue <- 1
   results <- results[order(results$rowId, results$covariateId), ]
   row.names(results) <- NULL
+
+  covariateIds <- covariateData$covariateRef %>%
+    filter(rlang::sym("analysisId") == 102) %>%
+    select(rlang::sym("covariateId"))
+  results2 <- covariateData$covariates %>%
+    inner_join(covariateIds, by = "covariateId") %>%
+    arrange(rlang::sym("rowId"), rlang::sym("covariateId"))  %>%
+    collect()
   
-  covariateIds <- covariateData$covariateRef$covariateId[covariateData$covariateRef$analysisId == 102]
-  results2 <- ff::as.ram(covariateData$covariates[ffbase::`%in%`(covariateData$covariates$covariateId, covariateIds),])
-  results2 <- results2[order(results2$rowId, results2$covariateId), ]
-  row.names(results2) <- NULL
-  
-  expect_equal(results, results2)
+  expect_equivalent(results, results2)
   
   
   # Test analysis 404: drug era short term (excluding NSAIDS)
@@ -122,12 +129,15 @@ runSpotChecks <- function(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSch
   results <- results[order(results$rowId, results$covariateId), ]
   row.names(results) <- NULL
   
-  covariateIds <- covariateData$covariateRef$covariateId[covariateData$covariateRef$analysisId == 404]
-  results2 <- ff::as.ram(covariateData$covariates[ffbase::`%in%`(covariateData$covariates$covariateId, covariateIds),])
-  results2 <- results2[order(results2$rowId, results2$covariateId), ]
-  row.names(results2) <- NULL
+  covariateIds <- covariateData$covariateRef %>%
+    filter(rlang::sym("analysisId") == 404) %>%
+    select(rlang::sym("covariateId"))
+  results2 <- covariateData$covariates %>%
+    inner_join(covariateIds, by = "covariateId") %>%
+    arrange(rlang::sym("rowId"), rlang::sym("covariateId"))  %>%
+    collect()
   
-  expect_equal(results, results2)
+  expect_equivalent(results, results2)
   
   # Test analysis 923: visit concept count (long term)
   sql <- "SELECT subject_id, visit_concept_id, COUNT(*) AS visit_count FROM @resultsDatabaseSchema.cohorts_of_interest INNER JOIN @cdmDatabaseSchema.visit_occurrence ON subject_id = person_id WHERE cohort_definition_id = 1124300 AND visit_start_date <= cohort_start_date AND visit_start_date >= DATEADD(DAY, -365, cohort_start_date) AND visit_concept_id != 0 GROUP BY subject_id, visit_concept_id"
@@ -141,12 +151,15 @@ runSpotChecks <- function(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSch
   results <- results[order(results$rowId, results$covariateId), ]
   row.names(results) <- NULL
   
-  covariateIds <- covariateData$covariateRef$covariateId[covariateData$covariateRef$analysisId == 923]
-  results2 <- ff::as.ram(covariateData$covariates[ffbase::`%in%`(covariateData$covariates$covariateId, covariateIds),])
-  results2 <- results2[order(results2$rowId, results2$covariateId), ]
-  row.names(results2) <- NULL
+  covariateIds <- covariateData$covariateRef %>%
+    filter(rlang::sym("analysisId") == 923) %>%
+    select(rlang::sym("covariateId"))
+  results2 <- covariateData$covariates %>%
+    inner_join(covariateIds, by = "covariateId") %>%
+    arrange(rlang::sym("rowId"), rlang::sym("covariateId"))  %>%
+    collect()
   
-  expect_equal(results, results2)
+  expect_equivalent(results, results2)
   
   # Aggregated
   results$count <- 1
@@ -154,16 +167,20 @@ runSpotChecks <- function(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSch
   aggCount <- aggCount[order(aggCount$covariateId), ]
   aggMax <- aggregate(covariateValue ~ covariateId, results, max)
   aggMax <- aggMax[order(aggMax$covariateId), ]
-  covariateIds <- covariateDataAgg$covariateRef$covariateId[covariateDataAgg$covariateRef$analysisId == 923]
-  results3 <- ff::as.ram(covariateDataAgg$covariatesContinuous[ffbase::`%in%`(covariateDataAgg$covariatesContinuous$covariateId, covariateIds),])
-  results3 <- results3[order(results3$covariateId), ]
+  
+  covariateIds <- covariateDataAgg$covariateRef %>%
+    filter(rlang::sym("analysisId") == 923) %>%
+    select(rlang::sym("covariateId"))
+  results3 <- covariateDataAgg$covariatesContinuous %>%
+    inner_join(covariateIds, by = "covariateId") %>%
+    arrange(rlang::sym("covariateId"))  %>%
+    collect()
   
   expect_equal(aggCount$covariateId, results3$covariateId)
   expect_equal(aggCount$count, results3$countValue)
 
   expect_equal(aggMax$covariateId, results3$covariateId)
   expect_equal(aggMax$covariateValue, results3$maxValue)
-  
   
   DatabaseConnector::disconnect(connection)
 }
