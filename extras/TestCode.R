@@ -1,7 +1,7 @@
 library(FeatureExtraction)
 
 # For debugging purposes. This shouldn't be needed in real use:
-options(andromedaTempFolder = "c:/andromedaTemp")
+options(andromedaTempFolder = "s:/andromedaTemp")
 library(Andromeda)
 
 # For debugging of new ParallelLogger:
@@ -72,7 +72,7 @@ sql <- "IF OBJECT_ID('@cohort_database_schema.@cohort_table', 'U') IS NOT NULL
 DROP TABLE @cohort_database_schema.@cohort_table;
 SELECT 1 AS cohort_definition_id, person_id AS subject_id, drug_era_start_date AS cohort_start_date, drug_era_end_date AS cohort_end_date, ROW_NUMBER() OVER (ORDER BY person_id, drug_era_start_date) AS row_id
 INTO @cohort_database_schema.@cohort_table FROM @cdm_database_schema.drug_era 
-WHERE drug_concept_id = 1125443;"
+WHERE drug_concept_id = 1118084;"
 sql <- SqlRender::render(sql, 
                             cdm_database_schema = cdmDatabaseSchema,
                             cohort_database_schema = cohortDatabaseSchema,
@@ -198,8 +198,7 @@ settings <- createCovariateSettings(useDemographicsGender = TRUE,
 
 
 
-# settings <- createDefaultCovariateSettings(excludedCovariateConceptIds = 312327,
-#                                            addDescendantsToExclude = FALSE)
+settings <- createDefaultCovariateSettings()
 
 # covariateSettings <- convertPrespecSettingsToDetailedSettings(covariateSettings)
 covs <- getDbCovariateData(connectionDetails = connectionDetails,
@@ -217,14 +216,15 @@ covs$covariates[covs$covariates$covariateId == 4329847210, ]
 # Exclude: sum = 2.883000e+03
 # Not exclude: sum = 2.883000e+03
 # Exclude after fix: sum = 2.538000e+03
-saveCovariateData(covs, "c:/temp/covs2.zip")
-
+system.time(
+saveCovariateData(covs, "s:/temp/covsHuge.zip")
+)
 saveCovariateData(covs, "s:/temp/covsAgg")
-covariateData <- loadCovariateData("c:/temp/covs2.zip")
+covariateData <- loadCovariateData("s:/temp/covsHuge.zip")
 covariateData
 print(covariateData)
 summary(covariateData)
-tidyCovariateData(covariateData)
+tidyCovs <- tidyCovariateData(covariateData)
 
 tempCovariateData <- loadCovariateData("c:/temp/covs2.zip")
 

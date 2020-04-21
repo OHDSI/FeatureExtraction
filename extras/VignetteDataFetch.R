@@ -20,7 +20,6 @@
 library(SqlRender)
 library(DatabaseConnector)
 library(FeatureExtraction)
-options(fftempdir = "s:/FFtemp")
 
 # Datafetch for main vignette ----------------------------------
 
@@ -82,9 +81,9 @@ tidyCovariates <- tidyCovariateData(covariateData,
                                     normalize = TRUE,
                                     removeRedundancy = TRUE,
                                     minFraction = 0.001)
-deletedCovariateIds <- tidyCovariates$metaData$deletedRedundantCovariateIds
+deletedCovariateIds <- attr(tidyCovariates, "metaData")$deletedRedundantCovariateIds
 saveRDS(deletedCovariateIds, file.path(vignetteFolder, "deletedRedundantCovariateIds.rds"))
-deletedCovariateIds <- tidyCovariates$metaData$deletedInfrequentCovariateIds
+deletedCovariateIds <- attr(tidyCovariates, "metaData")$deletedInfrequentCovariateIds
 saveRDS(deletedCovariateIds, file.path(vignetteFolder, "deletedInfrequentCovariateIds.rds"))
 
 # aggCovariates <- aggregateCovariates(covariateData)
@@ -158,10 +157,10 @@ specifications = getDefaultTable1Specifications()
 output <- "two columns"
 
 covariateData2 <- loadCovariateData(file.path(vignetteFolder, "aggregatedCovariates"))
-x <- ff::as.ram(covariateData2$covariates)
+x <- dplyr::collect(covariateData2$covariates)
 total <- sum(x$sumValue)
 sum(x$sumValue[x$sumValue < 100]) / total
-x <- merge(x, ff::as.ram(covariateData2$covariateRef))
+x <- merge(x, dplyr::collect(covariateData2$covariateRef))
 x <- x[order(-x$sumValue), ]
 
 # Tests for custom covariate builders ----------------------------
@@ -208,18 +207,14 @@ getDbLooCovariateData <- function(connection,
   sql <- SqlRender::translate(sql, targetDialect = attr(connection, "dbms"))
   
   # Retrieve the covariate:
-  covariates <- DatabaseConnector::querySql.ffdf(connection, sql)
-  
-  # Convert colum names to camelCase:
-  colnames(covariates) <- SqlRender::snakeCaseToCamelCase(colnames(covariates))
+  covariates <- DatabaseConnector::querySql(connection, sql, snakeCaseToCamelCase = TRUE)
   
   # Construct covariate reference:
   covariateRef <- data.frame(covariateId = 1,
                              covariateName = "Length of observation",
                              analysisId = 1,
                              conceptId = 0)
-  covariateRef <- ff::as.ffdf(covariateRef)
-  
+
   # Construct analysis reference:
   analysisRef <- data.frame(analysisId = 1,
                             analysisName = "Length of observation",
@@ -228,15 +223,14 @@ getDbLooCovariateData <- function(connection,
                             endDay = 0,
                             isBinary = "N",
                             missingMeansZero = "Y")
-  analysisRef <- ff::as.ffdf(analysisRef)
-  
+
   # Construct analysis reference:
   metaData <- list(sql = sql, call = match.call())
-  result <- list(covariates = covariates, 
+  result <- Andromeda::andromeda(covariates = covariates, 
                  covariateRef = covariateRef, 
-                 analysisRef = analysisRef,
-                 metaData = metaData)
-  class(result) <- "covariateData"
+                 analysisRef = analysisRef)
+  attr(result, "metaData") <- metaData
+  class(result) <- "CovariateData"
   return(result)
 }
 
@@ -277,7 +271,6 @@ covariates$analysisRef
 library(SqlRender)
 library(DatabaseConnector)
 library(FeatureExtraction)
-options(fftempdir = "s:/FFtemp")
 
 dbms <- "pdw"
 user <- NULL

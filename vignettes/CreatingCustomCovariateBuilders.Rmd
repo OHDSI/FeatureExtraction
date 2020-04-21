@@ -10,12 +10,12 @@ output:
     number_sections: yes
     toc: yes
 vignette: >
-  %\VignetteIndexEntry{Creating custom covariate builders}
+%\VignetteIndexEntry{Creating custom covariate builders}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
----
-
-```{r echo=FALSE,message=FALSE,warning=FALSE,eval=TRUE}
+  ---
+  
+  ```{r echo=FALSE,message=FALSE,warning=FALSE,eval=TRUE}
 library(FeatureExtraction)
 ```
 
@@ -44,7 +44,7 @@ The covariate settings function must create an object that meets two requirement
 2. The object must have an attribute `fun` that specifies the name of the function for generating the covariates.
 
 ## Example function
-  
+
 Here is an example covariate settings function:  
 ```{r eval=FALSE}
 createLooCovariateSettings <- function(useLengthOfObs = TRUE) {
@@ -78,12 +78,13 @@ The function can expect that a  table exists with the name specified in the `coh
 
 ## Function outputs
 
-The function must return an object of type `covariateData`, which is a list with the following members:
+The function must return an object of type `CovariateData`, which is an Andromeda object with the following members:
 
-* `covariates`: An `ffdf` object listing the covariates per row ID. This is done using a sparse representation; covariates with a value of 0 are omitted to save space. The covariates object must have three columns: `rowId`, `covariateId`, and `covariateValue`. 
-* `covariateRef`: An `ffdf` object describing the covariates that have been extracted. This should have the following columns: `covariateId`, `covariateName`, `analysisId`, `conceptId`.
-* `analysisRef`: An `ffdf` object describing the analyses performed by the function. This should have the following columns: `analysisId`, `analysisName`, `domainIdsta`, `startDay`, `endDay`, `isBinary`, `missingMeansZero`.
-* `metaData`: A list of objects with information on how the `covariateData` object was constructed.
+* `covariates`, listing the covariates per row ID. This is done using a sparse representation; covariates with a value of 0 are omitted to save space. The covariates object must have three columns: `rowId`, `covariateId`, and `covariateValue`. 
+* `covariateRef`, describing the covariates that have been extracted. This should have the following columns: `covariateId`, `covariateName`, `analysisId`, `conceptId`.
+* `analysisRef`, dscribing the analyses performed by the function. This should have the following columns: `analysisId`, `analysisName`, `domainIdsta`, `startDay`, `endDay`, `isBinary`, `missingMeansZero`.
+
+Additionally, the object should have an attribute called `metaData`, which is a (potentially empty) list of objects with information on how the `CovariateData` object was constructed.
 
 ## Example function
 
@@ -115,24 +116,20 @@ getDbLooCovariateData <- function(connection,
                "AND cohort_start_date <= observation_period_end_date",
                "{@cohort_id != -1} ? {AND cohort_definition_id = @cohort_id}")
   sql <- SqlRender::render(sql,
-                              cohort_table = cohortTable,
-                              cohort_id = cohortId,
-                              row_id_field = rowIdField,
-                              cdm_database_schema = cdmDatabaseSchema)
+                           cohort_table = cohortTable,
+                           cohort_id = cohortId,
+                           row_id_field = rowIdField,
+                           cdm_database_schema = cdmDatabaseSchema)
   sql <- SqlRender::translate(sql, targetDialect = attr(connection, "dbms"))
   
   # Retrieve the covariate:
-  covariates <- DatabaseConnector::querySql.ffdf(connection, sql)
-  
-  # Convert colum names to camelCase:
-  colnames(covariates) <- SqlRender::snakeCaseToCamelCase(colnames(covariates))
+  covariates <- DatabaseConnector::querySql(connection, sql, snakeCaseToCamelCase = TRUE)
   
   # Construct covariate reference:
   covariateRef <- data.frame(covariateId = 1,
                              covariateName = "Length of observation",
                              analysisId = 1,
                              conceptId = 0)
-  covariateRef <- ff::as.ffdf(covariateRef)
   
   # Construct analysis reference:
   analysisRef <- data.frame(analysisId = 1,
@@ -142,20 +139,19 @@ getDbLooCovariateData <- function(connection,
                             endDay = 0,
                             isBinary = "N",
                             missingMeansZero = "Y")
-  analysisRef <- ff::as.ffdf(analysisRef)
   
   # Construct analysis reference:
   metaData <- list(sql = sql, call = match.call())
-  result <- list(covariates = covariates, 
-                 covariateRef = covariateRef, 
-                 analysisRef = analysisRef,
-                 metaData = metaData)
-  class(result) <- "covariateData"
+  result <- Andromeda::andromeda(covariates = covariates, 
+                                 covariateRef = covariateRef, 
+                                 analysisRef = analysisRef)
+  attr(result, "metaData") <- metaData
+  class(result) <- "CovariateData"
   return(result)
 }
 ```
 
-In this example function, we construct a single covariate called 'Length of observation', which is the number of days between the `observation_period_start_date` and the index date. We use parameterized SQL and the `SqlRender` package to generate the appropriate SQL statement for the database to which we are connected. Using the `DatabaseConnector` package, the result are immediately stored in an `ffdf` object. We also create the covariate reference and analysis reference objects, which have one row each, specifying our one covariate and one analysis. We then wrap up the `covariate`, `covariateRef`, and `analysisRef` objects in a single result object, together with some meta-data.
+In this example function, we construct a single covariate called 'Length of observation', which is the number of days between the `observation_period_start_date` and the index date. We use parameterized SQL and the `SqlRender` package to generate the appropriate SQL statement for the database to which we are connected.  We also create the covariate reference and analysis reference objects, which have one row each, specifying our one covariate and one analysis. We then wrap up the `covariate`, `covariateRef`, and `analysisRef` objects in a single result Andromeda object, together with some meta-data.
 
 # Using the custom covariate builder
 

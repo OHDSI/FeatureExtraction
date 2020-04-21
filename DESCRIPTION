@@ -27,7 +27,10 @@ Imports:
   Andromeda,
   ParallelLogger,
   cli,
-  pillar
+  pillar,
+  readr,
+  rlang,
+  tibble
 Suggests:
   testthat,
   knitr,

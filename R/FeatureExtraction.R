@@ -19,7 +19,6 @@
 #' @keywords internal
 "_PACKAGE"
 
-#' @importFrom Rcpp evalCpp
 #' @importFrom SqlRender loadRenderTranslateSql translate render
 #' @importFrom methods is
 #' @importFrom stats aggregate quantile sd

@@ -20,6 +20,7 @@
 OhdsiRTools::formatRFolder("./R")
 OhdsiRTools::checkUsagePackage("FeatureExtraction")
 OhdsiRTools::updateCopyrightYearFolder()
+devtools::spell_check()
 
 # Create manual and vignettes
 shell("rm extras/FeatureExtraction.pdf")
