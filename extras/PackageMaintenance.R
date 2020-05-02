@@ -43,6 +43,12 @@ rmarkdown::render("vignettes/UsingFeatureExtraction.Rmd",
                                           toc = TRUE,
                                           number_sections = TRUE))
 
+# Note: these LaTex packages are required to render the Korean vignettes, but for 
+# some reason are not installed automatically:
+# - kotex*
+# - infwarerr
+# - kvoptions
+
 rmarkdown::render("vignettes/UsingFeatureExtractionKorean.Rmd",
                   output_file = "../inst/doc/UsingFeatureExtractionKorean.pdf",
                   rmarkdown::pdf_document(number_sections = TRUE))
