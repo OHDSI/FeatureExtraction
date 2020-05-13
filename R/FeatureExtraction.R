@@ -22,6 +22,7 @@
 #' @importFrom SqlRender loadRenderTranslateSql translate render
 #' @importFrom methods is
 #' @importFrom stats aggregate quantile sd
+#' @importFrom rlang .data
 #' @import DatabaseConnector
 #' @import dplyr
 NULL

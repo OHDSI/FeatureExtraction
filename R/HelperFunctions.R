@@ -30,12 +30,14 @@ filterByRowId <- function(covariateData, rowIds) {
   if (isAggregatedCovariateData(covariateData))
     stop("Cannot filter aggregated data by rowId")
   covariates <- covariateData$covariates %>%
-    filter(rlang::sym("covariateId") %in% rowIds)
+    filter(.data$rowId %in% rowIds)
   
   result <- Andromeda::andromeda(covariates = covariates,
                                  covariateRef = covariateData$covariateRef,
                                  analysisRef = covariateData$analysisRef)
-  attr(result, "metaData") <- attr(covariateData, "metaData")
+  metaData <- attr(covariateData, "metaData")
+  metaData$populationSize <- length(rowIds)
+  attr(result, "metaData") <- metaData
   class(result) <- "CovariateData"
   return(result)
 }

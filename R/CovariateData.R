@@ -14,9 +14,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+#' Covariate Data
+#'
+#' @description
+#' \code{CovariateData} is an S4 class that inherits from \code{\link[Andromeda]{Andromeda}}. It contains 
+#' information on covariates, which can be either captured on a per-person basis, or aggregated across
+#' the cohort(s).
+#' 
+#' By default covariates refer to a specific time period, with for example different covariate IDs for 
+#' whether a diagnosis code was observed in the year before and month before index date. However, a
+#' \code{CovariateData} can also be temporal, meaning that next to a covariate ID there is also a time ID,
+#' which identifies the (user specified) time window the covariate was captured.
+#'
+#' A \code{CovariateData} object is typically created using \code{\link{getDbCovariateData}}, can only be saved using
+#' \code{\link{saveCovariateData}}, and loaded using \code{\link{loadCovariateData}}.
+#'
+#' @seealso \code{\link{isCovariateData}}, \code{\link{isAggregatedCovariateData}}, \code{\link{isTemporalCovariateData}}
+#' @name CovariateData-class
+#' @aliases CovariateData
+NULL
+
 #' CovariateData class.
 #'
-#' @keywords internal
 #' @export
 #' @import Andromeda
 setClass("CovariateData", contains = "Andromeda")
@@ -86,7 +105,12 @@ loadCovariateData <- function(file, readOnly) {
 setMethod("show", "CovariateData", function(object) {
   cli::cat_line(pillar::style_subtle("# CovariateData object"))
   cli::cat_line("")
-  cli::cat_line(paste("Cohort of interest ID:", attr(object, "metaData")$cohortId))
+  cohortId <- attr(object, "metaData")$cohortId
+  if (cohortId == -1) {
+    cli::cat_line("All cohorts")
+  } else {
+    cli::cat_line(paste("Cohort of interest ID:", cohortId))
+  }
   cli::cat_line("")
   cli::cat_line(pillar::style_subtle("Inherits from Andromeda:"))
   class(object) <- "Andromeda"
