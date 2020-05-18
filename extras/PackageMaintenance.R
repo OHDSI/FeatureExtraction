@@ -26,31 +26,37 @@ devtools::spell_check()
 shell("rm extras/FeatureExtraction.pdf")
 shell("R CMD Rd2pdf ./ --output=extras/FeatureExtraction.pdf")
 
+dir.create("inst/doc")
 rmarkdown::render("vignettes/CreatingCustomCovariateBuilders.Rmd",
                   output_file = "../inst/doc/CreatingCustomCovariateBuilders.pdf",
                   rmarkdown::pdf_document(latex_engine = "pdflatex",
                                           toc = TRUE,
                                           number_sections = TRUE))
+unlink("inst/doc/CreatingCustomCovariateBuilders.tex")
 
 rmarkdown::render("vignettes/CreatingCovariatesUsingCohortAttributes.Rmd",
                   output_file = "../inst/doc/CreatingCovariatesUsingCohortAttributes.pdf",
                   rmarkdown::pdf_document(latex_engine = "pdflatex",
                                           toc = TRUE,
                                           number_sections = TRUE))
+unlink("inst/doc/CreatingCovariatesUsingCohortAttributes.tex")
 
 rmarkdown::render("vignettes/UsingFeatureExtraction.Rmd",
                   output_file = "../inst/doc/UsingFeatureExtraction.pdf",
                   rmarkdown::pdf_document(latex_engine = "pdflatex",
                                           toc = TRUE,
                                           number_sections = TRUE))
+unlink("inst/doc/UsingFeatureExtraction.tex")
 
 rmarkdown::render("vignettes/UsingFeatureExtractionKorean.Rmd",
                   output_file = "../inst/doc/UsingFeatureExtractionKorean.pdf",
                   rmarkdown::pdf_document(number_sections = TRUE))
+unlink("inst/doc/UsingFeatureExtractionKorean.tex")
 
 rmarkdown::render("vignettes/CreatingCustomCovariateBuildersKorean.Rmd",
                   output_file = "../inst/doc/CreatingCustomCovariateBuildersKorean.pdf",
                   rmarkdown::pdf_document(number_sections = TRUE))
+unlink("inst/doc/CreatingCustomCovariateBuildersKorean.tex")
 
 
 pkgdown::build_site()

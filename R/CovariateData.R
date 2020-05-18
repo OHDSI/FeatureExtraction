@@ -32,10 +32,6 @@
 #' @seealso \code{\link{isCovariateData}}, \code{\link{isAggregatedCovariateData}}, \code{\link{isTemporalCovariateData}}
 #' @name CovariateData-class
 #' @aliases CovariateData
-NULL
-
-#' CovariateData class.
-#'
 #' @export
 #' @import Andromeda
 setClass("CovariateData", contains = "Andromeda")
@@ -124,13 +120,13 @@ setMethod("show", "CovariateData", function(object) {
 setMethod("summary", "CovariateData", function(object) {
   covariateValueCount <- 0
   if (!is.null(object$covariates)) {
-    covariateValueCount <- covariateValueCount + nrow(object$covariates)
+    covariateValueCount <- covariateValueCount + (object$covariates %>% count() %>% pull())
   }
   if (!is.null(object$covariatesContinuous)) {
-    covariateValueCount <- covariateValueCount + nrow(object$covariatesContinuous)
+    covariateValueCount <- covariateValueCount + (object$covariatesContinuous %>% count() %>% pull())
   }
   result <- list(metaData = attr(object, "metaData"),
-                 covariateCount = nrow(object$covariateRef),
+                 covariateCount = object$covariateRef %>% count() %>% pull(),
                  covariateValueCount = covariateValueCount)
   class(result) <- "summary.CovariateData"
   return(result)
@@ -186,4 +182,31 @@ isTemporalCovariateData <- function(x) {
   if (!Andromeda::isValidAndromeda(x)) 
     stop("CovariateData object is closed")
   return("timeId" %in% colnames(x$covariates$timeId))
+}
+
+createEmptyCovariateData <- function(cohortId, aggregated, temporal) {
+  dummy <- tibble::tibble(covariateId = 1,
+                          covariateValue = 1)
+  if (!aggregated) {
+    dummy$rowId <- 1
+  }
+  if (!is.null(temporal) && temporal) {
+    dummy$timeId <- 1
+  }
+  covariateData <- Andromeda::andromeda(covariates = dummy[!1, ],
+                                        covariateRef = tibble::tibble(covariateId = 1, 
+                                                                      covariateName = "", 
+                                                                      analysisId = 1,
+                                                                      conceptId = 1)[!1, ],
+                                        analysisRef = tibble::tibble(analysisId = 1, 
+                                                                     analysisName = "",
+                                                                     domainId = "",
+                                                                     startDay = 1, 
+                                                                     endDay = 1, 
+                                                                     isBinary = "", 
+                                                                     missingMeansZero = "")[!1, ])
+  attr(covariateData, "metaData") <- list(populationSize = 0,
+                                          cohortId = cohortId)
+  class(covariateData) <- "CovariateData"
+  return(covariateData)
 }

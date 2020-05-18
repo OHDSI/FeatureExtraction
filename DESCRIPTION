@@ -18,13 +18,13 @@ BugReports: https://github.com/OHDSI/FeatureExtraction/issues
 Depends:
   R (>= 3.2.2),
   DatabaseConnector (>= 2.0.2),
+  Andromeda
 Imports:
   methods,
   dplyr,
   rJava,
   jsonlite,
   SqlRender (>= 1.6.0),
-  Andromeda,
   ParallelLogger,
   cli,
   pillar,
@@ -35,8 +35,6 @@ Suggests:
   testthat,
   knitr,
   rmarkdown
-Remotes:
-  ohdsi/Andromeda
 NeedsCompilation: no
 RoxygenNote: 7.1.0
 Encoding: UTF-8

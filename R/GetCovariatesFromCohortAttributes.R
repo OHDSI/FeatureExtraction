@@ -1,5 +1,3 @@
-# @file GetCovariatesFromCohortAttributes.R
-#
 # Copyright 2020 Observational Health Data Sciences and Informatics
 #
 # This file is part of FeatureExtraction
@@ -87,14 +85,14 @@ getDbCohortAttrCovariatesData <- function(connection,
                             domainId = "Cohort",
                             startDay = as.numeric(NA),
                             endDay = as.numeric(NA),
-                            isBinary = if(covariateSettings$isBinary){"Y"} else {"N"},
-                            missingMeansZero = if(covariateSettings$missingMeansZero){"Y"} else {"N"})
+                            isBinary = if (covariateSettings$isBinary) {"Y"} else {"N"},
+                            missingMeansZero = if (covariateSettings$missingMeansZero) {"Y"} else {"N"})
   delta <- Sys.time() - start
   writeLines(paste("Loading took", signif(delta, 3), attr(delta, "units")))
   
   result <- Andromeda::andromeda(covariates = covariates, 
-                 covariateRef = covariateRef, 
-                 analysisRef = analysisRef)
+                                 covariateRef = covariateRef, 
+                                 analysisRef = analysisRef)
   attr(result, "metaData") <- list()
   class(result) <- "CovariateData"
   return(result)

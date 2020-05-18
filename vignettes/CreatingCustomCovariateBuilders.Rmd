@@ -10,12 +10,12 @@ output:
     number_sections: yes
     toc: yes
 vignette: >
-%\VignetteIndexEntry{Creating custom covariate builders}
+  %\VignetteIndexEntry{Creating custom covariate builders}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-  ---
+---
   
-  ```{r echo=FALSE,message=FALSE,warning=FALSE,eval=TRUE}
+```{r echo=FALSE,message=FALSE,warning=FALSE,eval=TRUE}
 library(FeatureExtraction)
 ```
 

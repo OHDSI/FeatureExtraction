@@ -47,7 +47,7 @@ getDefaultTable1Specifications <- function() {
 #' @param showPercent      Show the percentage of cohort entries having the binary covariate?
 #' @param percentDigits    Number of digits to be used for percentages.
 #' @param stdDiffDigits    Number of digits to be used for the standardized differences.
-#' @param valueDigits    Number of digits to be used for the values of continuous variables.
+#' @param valueDigits      Number of digits to be used for the values of continuous variables.
 #' 
 #' @return
 #' A data frame, or, when \code{output = "list"} a list of two data frames.

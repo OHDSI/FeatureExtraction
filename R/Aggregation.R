@@ -101,7 +101,10 @@ aggregateCovariates <- function(covariateData) {
     Andromeda::groupApply("covariateId",  computeStats) %>%
     bind_rows()
   
-  result$covariatesContinuous <- bind_rows(covariatesContinuous1, covariatesContinuous2)
+  covariatesContinuous <- bind_rows(covariatesContinuous1, covariatesContinuous2)
+  if (nrow(covariatesContinuous) > 0) {
+    result$covariatesContinuous <- covariatesContinuous
+  }
   delta <- Sys.time() - start
   writeLines(paste("Aggregating covariates took", signif(delta, 3), attr(delta, "units")))
   return(result)

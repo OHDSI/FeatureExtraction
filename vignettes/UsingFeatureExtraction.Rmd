@@ -12,13 +12,13 @@ output:
     number_sections: yes
     toc: yes
 vignette: >
-%\VignetteIndexEntry{Using FeatureExtraction}
+  %\VignetteIndexEntry{Using FeatureExtraction}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
-  ---
+---
   
-  ```{r set-options,echo=FALSE,message=FALSE,warning=FALSE,eval=TRUE}
-options(width=200)
+```{r set-options,echo=FALSE,message=FALSE,warning=FALSE,eval=TRUE}
+options(width = 200)
 library(FeatureExtraction)
 vignetteFolder <- "s:/temp/vignetteFeatureExtraction"
 ```
@@ -263,7 +263,7 @@ sql <- translate(sql, targetDialect = connectionDetails$dbms)
 querySql(connection, sql)
 ```
 ```{r echo=FALSE,message=FALSE}
-data.frame(cohort_concept_id = c(1124300,1118084),count=c(240761,47293))
+data.frame(cohort_concept_id = c(1124300, 1118084), count = c(240761, 47293))
 ```
 
 ## Creating per-person covariates for a cohort of interest
@@ -284,7 +284,7 @@ covariateData <- getDbCovariateData(connectionDetails = connectionDetails,
 summary(covariateData)
 ```
 ```{r echo=FALSE,message=FALSE}
-if (file.exists(file.path(vignetteFolder, "covariatesPerPerson"))){
+if (file.exists(file.path(vignetteFolder, "covariatesPerPerson"))) {
   covariateData <- loadCovariateData(file.path(vignetteFolder, "covariatesPerPerson"))
   summary(covariateData)
 }
@@ -297,10 +297,9 @@ The main component of the `covariateData` object is `covariates`:
 covariateData$covariates
 ```
 ```{r echo=FALSE,message=FALSE}
-if (file.exists(file.path(vignetteFolder, "covariatesPerPerson"))){
-  cvs <- covariateData$covariates
-  cvs$rowId <- rep(1:nrow(cvs))
-  cvs
+if (file.exists(file.path(vignetteFolder, "covariatesPerPerson"))) {
+  covariateData$covariates %>%
+    mutate(rowId = row_number())
 }
 ```
 The columns are defined as follows:
@@ -337,11 +336,11 @@ tidyCovariates <- tidyCovariateData(covariateData,
 
 If we want to know how many infrequent covariates were removed we can query the `metaData` object:
 ```{r eval=FALSE}
-deletedCovariateIds <- tidyCovariates$metaData$deletedInfrequentCovariateIds
+deletedCovariateIds <- attr(tidyCovariates, "metaData")$deletedInfrequentCovariateIds
 head(deletedCovariateIds)
 ```
 ```{r echo=FALSE,message=FALSE}
-if (file.exists(file.path(vignetteFolder, "deletedInfrequentCovariateIds.rds"))){
+if (file.exists(file.path(vignetteFolder, "deletedInfrequentCovariateIds.rds"))) {
   deletedCovariateIds <- readRDS(file.path(vignetteFolder, "deletedInfrequentCovariateIds.rds"))
   head(deletedCovariateIds)
 }
@@ -349,7 +348,7 @@ if (file.exists(file.path(vignetteFolder, "deletedInfrequentCovariateIds.rds")))
 
 Similarly, if we want to know which redundant covariates were removed we can also query the `metaData` object:
 ```{r eval=FALSE}
-deletedCovariateIds <- tidyCovariates$metaData$deletedRedundantCovariateIds
+deletedCovariateIds <- attr(tidyCovariates, "metaData")$deletedRedundantCovariateIds
 head(deletedCovariateIds)
 ```
 ```{r echo=FALSE,message=FALSE}
@@ -359,7 +358,7 @@ if (file.exists(file.path(vignetteFolder, "deletedRedundantCovariateIds.rds"))){
 }
 ```
 
-If we want to know what these numbers mean, we can use the `covariateRef` object that is part of any `covariateData` object. Because `covariateRef`, like other parts of `covariateData`, uses the `Andromeda` package, it is advised to load the `Andromeda` package:
+If we want to know what these numbers mean, we can use the `covariateRef` object that is part of any `covariateData` object. Remember that the covariate data is stored in an `Andromeda` object, so we should use the proper syntax for querying these objects (see the `Andromeda` package documentation):
 
 ```{r eval=FALSE}
 library(Andromeda)
@@ -369,14 +368,14 @@ covariateData$covariateRef %>%
 ```
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
 library(Andromeda)
-if (file.exists(file.path(vignetteFolder, "deletedRedundantCovariateIds.rds"))){
+if (file.exists(file.path(vignetteFolder, "deletedRedundantCovariateIds.rds"))) {
   truncRight <- function(x, n) {
     nc <- nchar(x)
-    x[nc > (n-3)] <- paste('...',substr(x[nc > (n-3)], nc[nc > (n-3)]-n+1, nc[nc > (n-3)]),sep="")
+    x[nc > (n - 3)] <- paste('...',substr(x[nc > (n - 3)], nc[nc > (n - 3)] - n + 1, nc[nc > (n - 3)]), sep = "")
     x
   }
   cr <- covariateData$covariateRef %>%
-    filter(covariateId %in% deletedCovariateIds, ) %>%
+    filter(.data$covariateId %in% deletedCovariateIds, ) %>%
     collect()
   cr$covariateName <- truncRight(as.character(cr$covariateName), 30)
   cr
@@ -406,7 +405,7 @@ covariateData2 <- getDbCovariateData(connectionDetails = connectionDetails,
 summary(covariateData2)
 ```
 ```{r echo=FALSE,message=FALSE}
-if (file.exists(file.path(vignetteFolder, "aggregatedCovariates"))){
+if (file.exists(file.path(vignetteFolder, "aggregatedCovariates"))) {
   covariateData2 <- loadCovariateData(file.path(vignetteFolder, "aggregatedCovariates"))
   summary(covariateData2)
 }
@@ -420,7 +419,7 @@ The two main components of the aggregated `covariateData` object are `covariates
 covariateData2$covariates
 ```
 ```{r echo=FALSE,message=FALSE}
-if (file.exists(file.path(vignetteFolder, "aggregatedCovariates"))){
+if (file.exists(file.path(vignetteFolder, "aggregatedCovariates"))) {
   covariateData2$covariates
 }
 ```
@@ -428,7 +427,7 @@ if (file.exists(file.path(vignetteFolder, "aggregatedCovariates"))){
 covariateData2$covariatesContinuous
 ```
 ```{r echo=FALSE,message=FALSE}
-if (file.exists(file.path(vignetteFolder, "aggregatedCovariates"))){
+if (file.exists(file.path(vignetteFolder, "aggregatedCovariates"))) {
   covariateData2$covariatesContinuous
 }
 ```
@@ -455,7 +454,7 @@ print(result, row.names = FALSE, right = FALSE)
 \fontsize{6}{6}
 \selectfont
 ```{r comment=NA,echo=FALSE,message=FALSE}
-if (file.exists(file.path(vignetteFolder, "aggregatedCovariates"))){
+if (file.exists(file.path(vignetteFolder, "aggregatedCovariates"))) {
   result <- createTable1(covariateData2)
   print(result, row.names = FALSE, right = FALSE)
 }
@@ -482,7 +481,7 @@ covariateData2b <- getDbCovariateData(connectionDetails = connectionDetails,
 summary(covariateData2b)
 ```
 ```{r echo=FALSE,message=FALSE}
-if (file.exists(file.path(vignetteFolder, "table1Covariates"))){
+if (file.exists(file.path(vignetteFolder, "table1Covariates"))) {
   covariateData2b <- loadCovariateData(file.path(vignetteFolder, "table1Covariates"))
   summary(covariateData2b)
 }
@@ -523,13 +522,13 @@ head(std)
 \fontsize{7}{8}
 \selectfont
 ```{r echo=FALSE,message=FALSE}
-if (file.exists(file.path(vignetteFolder, "covDiclofenac"))){
+if (file.exists(file.path(vignetteFolder, "covDiclofenac"))) {
   covCelecoxib <- loadCovariateData(file.path(vignetteFolder, "covCelecoxib"))
   covDiclofenac <- loadCovariateData(file.path(vignetteFolder, "covDiclofenac"))
   std <- computeStandardizedDifference(covCelecoxib, covDiclofenac)
   truncRight <- function(x, n) {
     nc <- nchar(x)
-    x[nc > (n-3)] <- paste('...',substr(x[nc > (n-3)], nc[nc > (n-3)]-n+1, nc[nc > (n-3)]),sep="")
+    x[nc > (n - 3)] <- paste('...',substr(x[nc > (n - 3)], nc[nc > (n - 3)] - n + 1, nc[nc > (n - 3)]), sep = "")
     x
   }
   std$covariateName <- truncRight(as.character(std$covariateName), 30)
@@ -550,7 +549,7 @@ print(result, row.names = FALSE, right = FALSE)
 \fontsize{5}{5}
 \selectfont
 ```{r comment=NA,echo=FALSE,message=FALSE}
-if (file.exists(file.path(vignetteFolder, "covDiclofenac"))){
+if (file.exists(file.path(vignetteFolder, "covDiclofenac"))) {
   result <- createTable1(covCelecoxib, covDiclofenac)
   print(result, row.names = FALSE, right = FALSE)
 }

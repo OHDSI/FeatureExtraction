@@ -104,8 +104,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
                               oracleTempSchema = oracleTempSchema)
   populationSize <- DatabaseConnector::querySql(connection, sql)[1, 1]
   if (populationSize == 0) {
-    covariateData <- list(covariates = tibble::tibble(), covariateRef = tibble::tibble(), metaData = list())
-    class(covariateData) <- "covariateData"
+    covariateData <- createEmptyCovariateData(cohortId, aggregated, covariateSettings$temporal)
     warning("Population is empty. No covariates were constructed")
   } else {
     if (class(covariateSettings) == "covariateSettings") {
@@ -114,7 +113,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
     if (is.list(covariateSettings)) {
       covariateData <- NULL
       hasData <- function(data) {
-        return(!is.null(data) && (data %>% count() %>% collect())$n > 0)
+        return(!is.null(data) && (data %>% count() %>% pull()) > 0)
       }
       for (i in 1:length(covariateSettings)) {
         fun <- attr(covariateSettings[[i]], "fun")
@@ -158,8 +157,8 @@ getDbCovariateData <- function(connectionDetails = NULL,
         }
       }
     }
+    attr(covariateData, "metaData")$populationSize <- populationSize
+    attr(covariateData, "metaData")$cohortId <- cohortId
   }
-  attr(covariateData, "metaData")$populationSize <- populationSize
-  attr(covariateData, "metaData")$cohortId <- cohortId
   return(covariateData)
 }
