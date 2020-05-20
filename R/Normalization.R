@@ -25,7 +25,7 @@
 #' @param minFraction        Minimum fraction of the population that should have a non-zero value for a
 #'                           covariate for that covariate to be kept. Set to 0 to don't filter on
 #'                           frequency.
-#' @param normalize          Normalize the coviariates? (dividing by the max)
+#' @param normalize          Normalize the covariates? (dividing by the max).
 #' @param removeRedundancy   Should redundant covariates be removed?
 #'
 #' @export
@@ -171,6 +171,7 @@ tidyCovariateData <- function(covariateData,
   }
 
   class(newCovariateData) <- "CovariateData"
+  attr(class(newCovariateData), "package") <- "FeatureExtraction"
   attr(newCovariateData, "metaData") <- metaData
   
   delta <- Sys.time() - start

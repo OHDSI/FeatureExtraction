@@ -38,6 +38,7 @@ aggregateCovariates <- function(covariateData) {
                                  analysisRef = covariateData$analysisRef)
   attr(result, "metaData") <- attr(covariateData, "metaData")
   class(result) <- "CovariateData"
+  attr(class(result), "package") <- "FeatureExtraction"
   populationSize <-  attr(covariateData, "metaData")$populationSize
   
   # Aggregate binary variables
@@ -82,16 +83,16 @@ aggregateCovariates <- function(covariateData) {
     probs <- c(0, 0.1, 0.25, 0.5, 0.75, 0.9, 1)
     quants <- quantile(data$covariateValue, probs = probs, type = 1)
     result <- tibble::tibble(covariateId = data$covariateId[1],
-                         countValue = length(data$covariateValue),
-                         minValue = quants[1],
-                         maxValue = quants[7],
-                         averageValue = mean(data$covariateValue),
-                         standardDeviation = sd(data$covariateValue),
-                         medianValue = quants[4],
-                         p10Value = quants[2],
-                         p25Value = quants[3],
-                         p75Value = quants[5],
-                         p90Value = quants[6])
+                             countValue = length(data$covariateValue),
+                             minValue = quants[1],
+                             maxValue = quants[7],
+                             averageValue = mean(data$covariateValue),
+                             standardDeviation = sd(data$covariateValue),
+                             medianValue = quants[4],
+                             p10Value = quants[2],
+                             p25Value = quants[3],
+                             p75Value = quants[5],
+                             p90Value = quants[6])
   }
   
   covariatesContinuous2 <- covariateData$analysisRef %>%

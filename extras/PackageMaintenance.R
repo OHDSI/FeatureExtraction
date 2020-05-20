@@ -20,6 +20,7 @@
 OhdsiRTools::formatRFolder("./R")
 OhdsiRTools::checkUsagePackage("FeatureExtraction")
 OhdsiRTools::updateCopyrightYearFolder()
+OhdsiRTools::findNonAsciiStringsInFolder()
 devtools::spell_check()
 
 # Create manual and vignettes

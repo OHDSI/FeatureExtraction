@@ -29,7 +29,7 @@ vignetteFolder <- "s:/temp/vignetteFeatureExtraction"
 
 The `FeatureExtraction` package can be used to create features for a cohort, using the information stored in the Common Data Model. A cohort is defined a set of persons who satisfy one or more inclusion criteria for a duration of time. Features can for example be diagnoses observed prior to entering the cohort. Some people might also refer to such features as 'baseline characteristics', or to features in general as 'covariates', and we will use those terms interchangeably throughout this vignette.
 
-This vignette describes how features can be contructed using the default covariate definitions embeded in the package. Although these definitions allow quite some customization through predefined parameters, it is possible that someone needs more customization. In this case, the reader is referred to the other vignettes included in this package that deal with constructing completely custom covariates.
+This vignette describes how features can be constructed using the default covariate definitions embedded in the package. Although these definitions allow quite some customization through predefined parameters, it is possible that someone needs more customization. In this case, the reader is referred to the other vignettes included in this package that deal with constructing completely custom covariates.
 
 This vignette will first describe how to specify which features to construct. In many situations, for example when using `FeatureExtraction` as part of another package such as `CohortMethod` or `PatientLevelPrediction`, that is all one needs to know about the `FeatureExtraction` package, as the actual calling of the package is done by the other package. However, it is also possible to use this package on its own, for example to create a descriptive characterization of a cohort to include in a paper.
 
@@ -414,7 +414,7 @@ Note that we specified `aggregated = TRUE`. Also, we are no longer required to d
 
 ### Aggregated covariate output format
 
-The two main components of the aggregated `covariateData` object are `covariates` and `covariatesContinuous`, for binary and continous covariates respectively:
+The two main components of the aggregated `covariateData` object are `covariates` and `covariatesContinuous`, for binary and continuous covariates respectively:
 ```{r eval=FALSE}
 covariateData2$covariates
 ```

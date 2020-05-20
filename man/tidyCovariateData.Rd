@@ -19,7 +19,7 @@ function.}
 covariate for that covariate to be kept. Set to 0 to don't filter on
 frequency.}
 
-\item{normalize}{Normalize the coviariates? (dividing by the max)}
+\item{normalize}{Normalize the covariates? (dividing by the max).}
 
 \item{removeRedundancy}{Should redundant covariates be removed?}
 }

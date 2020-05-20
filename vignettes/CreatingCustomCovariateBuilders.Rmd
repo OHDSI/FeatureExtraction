@@ -65,7 +65,7 @@ The covariate construction function has to accept the following arguments:
 
 * `connection`: A connection to the server containing the schema as created using the `connect` function in the `DatabaseConnector` package.
 * `oracleTempSchema`: A schema where temp tables can be created in Oracle.
-* `cdmDatabaseSchema`: The name of the database schema that contains the OMOP CDM instance.  On SQL  Server, this will specifiy both the database and the schema, so for example 'cdm_instance.dbo'.
+* `cdmDatabaseSchema`: The name of the database schema that contains the OMOP CDM instance.  On SQL  Server, this will specify both the database and the schema, so for example 'cdm_instance.dbo'.
 * `cdmVersion`: Defines the OMOP CDM version used: currently supports "4" and "5".
 * `cohortTable`: Name of the table holding the cohort for which we want to construct covariates. This is a fully specified name, so either the name of a temp table (e.g. '#cohort_table'), or a permanent table including its database schema (e.g. 'cdm_schema.dbo.cohort').
 * `cohortId`: The cohort definition ID of the cohort. If set to -1, use all entries in the cohort table.

@@ -200,6 +200,7 @@ getDbDefaultCovariateData <- function(connection,
       warning("No data found")
     }
     class(covariateData) <- "CovariateData"
+    attr(class(covariateData), "package") <- "FeatureExtraction"
     return(covariateData)
   }
 }

@@ -92,6 +92,7 @@ loadCovariateData <- function(file, readOnly) {
     warning("readOnly argument has been deprecated")
   covariateData <- Andromeda::loadAndromeda(file)
   class(covariateData) <- "CovariateData"
+  attr(class(covariateData), "package") <- "FeatureExtraction"
   return(covariateData)
 }
 

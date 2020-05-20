@@ -95,6 +95,7 @@ getDbCohortAttrCovariatesData <- function(connection,
                                  analysisRef = analysisRef)
   attr(result, "metaData") <- list()
   class(result) <- "CovariateData"
+  attr(class(result), "package") <- "FeatureExtraction"
   return(result)
 }
 
