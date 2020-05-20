@@ -294,7 +294,7 @@ covariateData <- getDbCovariateData(connectionDetails = connectionDetails,
 summary(covariateData)
 ```
 ```{r echo=FALSE,message=FALSE}
-if (file.exists(file.path(vignetteFolder, "covariatesPerPerson"))){
+if (file.exists(file.path(vignetteFolder, "covariatesPerPerson"))) {
   covariateData <- loadCovariateData(file.path(vignetteFolder, "covariatesPerPerson"))
   summary(covariateData)
 }
@@ -308,10 +308,9 @@ covariateData 객체의 주요 구성 요소는 공변량이다.
 covariateData$covariates
 ```
 ```{r echo=FALSE,message=FALSE}
-if (file.exists(file.path(vignetteFolder, "covariatesPerPerson"))){
-  cvs <- covariateData$covariates
-  cvs$rowId <- ff::ff(1:nrow(cvs))
-  cvs
+if (file.exists(file.path(vignetteFolder, "covariatesPerPerson"))) {
+  covariateData$covariates %>%
+    mutate(rowId = row_number())
 }
 ```
 

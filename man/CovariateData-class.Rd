@@ -12,6 +12,9 @@
 
 \S4method{summary}{CovariateData}(object)
 }
+\arguments{
+\item{object}{An object of class `CovariateData`.}
+}
 \description{
 \code{CovariateData} is an S4 class that inherits from \code{\link[Andromeda]{Andromeda}}. It contains 
 information on covariates, which can be either captured on a per-person basis, or aggregated across

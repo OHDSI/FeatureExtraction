@@ -24,7 +24,7 @@ OhdsiRTools::findNonAsciiStringsInFolder()
 devtools::spell_check()
 
 # Create manual and vignettes
-shell("rm extras/FeatureExtraction.pdf")
+unlink("extras/FeatureExtraction.pdf")
 shell("R CMD Rd2pdf ./ --output=extras/FeatureExtraction.pdf")
 
 dir.create("inst/doc")

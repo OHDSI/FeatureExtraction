@@ -97,6 +97,8 @@ loadCovariateData <- function(file, readOnly) {
 }
 
 # show()
+#' @param object  An object of class `CovariateData`.
+#' 
 #' @export
 #' @rdname CovariateData-class
 setMethod("show", "CovariateData", function(object) {
@@ -116,6 +118,8 @@ setMethod("show", "CovariateData", function(object) {
 
 
 # summary()
+#' @param object  An object of class `CovariateData`.
+#' 
 #' @export
 #' @rdname CovariateData-class
 setMethod("summary", "CovariateData", function(object) {
