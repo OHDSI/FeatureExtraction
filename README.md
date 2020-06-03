@@ -29,6 +29,7 @@ Requires R (version 3.2.2 or higher). Installation on Windows requires [RTools](
 Getting Started
 ===============
 1. See the instructions [here](https://ohdsi.github.io/Hades/rSetup.html) for configuring your R environment, including RTools and Java.
+
 3. In R, use the following commands to download and install FeatureExtraction:
 
   ```r
