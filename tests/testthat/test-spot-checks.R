@@ -53,7 +53,7 @@ runSpotChecks <- function(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSch
                               cdmDatabaseSchema = cdmDatabaseSchema,
                               resultsDatabaseSchema = ohdsiDatabaseSchema)
   sql <- SqlRender::translate(sql, targetDialect = connectionDetails$dbms)
-  results <- tibble::as_tibble(DatabaseConnector::querySql(connection, sql))
+  results <- as_tibble(DatabaseConnector::querySql(connection, sql))
   colnames(results) <- c("rowId", "covariateId")
   results$covariateId <- results$covariateId*1000 + 1
   results$covariateValue <- 1
@@ -75,7 +75,7 @@ runSpotChecks <- function(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSch
                               cdmDatabaseSchema = cdmDatabaseSchema,
                               resultsDatabaseSchema = ohdsiDatabaseSchema)
   sql <- SqlRender::translate(sql, targetDialect = connectionDetails$dbms)
-  results <- tibble::as_tibble(DatabaseConnector::querySql(connection, sql))
+  results <- as_tibble(DatabaseConnector::querySql(connection, sql))
   colnames(results) <- c("rowId", "covariateValue")
   results$covariateId <- 1000 + 2
   results <- results[, c("rowId", "covariateId", "covariateValue")]

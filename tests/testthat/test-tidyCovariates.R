@@ -4,7 +4,7 @@ library(FeatureExtraction)
 test_that("tidyCovariates works", {
   # Generate some data:
   createCovariate <- function(i, analysisId) {
-    return(tibble::tibble(covariateId = rep(i * 1000 + analysisId, i),
+    return(tibble(covariateId = rep(i * 1000 + analysisId, i),
                           covariateValue = rep(1,i)))
   }
   covariates <- lapply(1:10, createCovariate, analysisId = 1)
@@ -17,7 +17,7 @@ test_that("tidyCovariates works", {
   infrequentCovariate$rowId <- sample.int(metaData$populationSize, nrow(infrequentCovariate), replace = FALSE)
   covariates <- rbind(covariates, frequentCovariate, infrequentCovariate)
   
-  covariateRef <- tibble::tibble(covariateId = c(1:10 * 1000 + 1, 40002, 1003),
+  covariateRef <- tibble(covariateId = c(1:10 * 1000 + 1, 40002, 1003),
                                  analysisId = c(rep(1, 10), 2, 3))
   
   covariateData <- Andromeda::andromeda(covariates = covariates,

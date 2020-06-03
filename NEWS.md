@@ -1,22 +1,18 @@
-FeatureExtraction 2.2.7
+FeatureExtraction 3.0.0
 =======================
 
 Changes:
 
-1. Adding option to createTable1 to (also) show absolute counts.
+1. Switching from ff to Andromeda for storage of large data objects.
 
-FeatureExtraction 2.2.6
-=======================
+2. Adding option to createTable1 to (also) show absolute counts.
 
-Changes:
-
-1. For analyses that restrict to inpatient diagnoses, the string '(inpatient)' is now appended to the covariate name.
+3. For analyses that restrict to inpatient diagnoses, the string '(inpatient)' is now appended to the covariate name.
 
 Bugfixes: 
 
-1. Preventing hard R crash due to ff issues in R version >= 3.6.0 (in machines with lots of RAM)
+1. Dropping spurious 'analysis_name' field in temporary covariate reference table.
 
-2. Dropping spurious 'analysis_name' field in temporary covariate reference table.
 
 FeatureExtraction 2.2.5
 =======================

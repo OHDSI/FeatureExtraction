@@ -65,8 +65,8 @@ rmarkdown::render("vignettes/CreatingCustomCovariateBuildersKorean.Rmd",
                   rmarkdown::pdf_document(number_sections = TRUE))
 unlink("inst/doc/CreatingCustomCovariateBuildersKorean.tex")
 
-
 pkgdown::build_site()
+OhdsiRTools::fixHadesLogo()
 
 # Store JAR checksum --------------------------------------------------------------
 checksum <- rJava::J("org.ohdsi.featureExtraction.JarChecksum", "computeJarChecksum")

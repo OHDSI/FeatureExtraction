@@ -190,8 +190,8 @@ isTemporalCovariateData <- function(x) {
 }
 
 createEmptyCovariateData <- function(cohortId, aggregated, temporal) {
-  dummy <- tibble::tibble(covariateId = 1,
-                          covariateValue = 1)
+  dummy <- tibble(covariateId = 1,
+                  covariateValue = 1)
   if (!aggregated) {
     dummy$rowId <- 1
   }
@@ -199,17 +199,17 @@ createEmptyCovariateData <- function(cohortId, aggregated, temporal) {
     dummy$timeId <- 1
   }
   covariateData <- Andromeda::andromeda(covariates = dummy[!1, ],
-                                        covariateRef = tibble::tibble(covariateId = 1, 
-                                                                      covariateName = "", 
-                                                                      analysisId = 1,
-                                                                      conceptId = 1)[!1, ],
-                                        analysisRef = tibble::tibble(analysisId = 1, 
-                                                                     analysisName = "",
-                                                                     domainId = "",
-                                                                     startDay = 1, 
-                                                                     endDay = 1, 
-                                                                     isBinary = "", 
-                                                                     missingMeansZero = "")[!1, ])
+                                        covariateRef = tibble(covariateId = 1, 
+                                                              covariateName = "", 
+                                                              analysisId = 1,
+                                                              conceptId = 1)[!1, ],
+                                        analysisRef = tibble(analysisId = 1, 
+                                                             analysisName = "",
+                                                             domainId = "",
+                                                             startDay = 1, 
+                                                             endDay = 1, 
+                                                             isBinary = "", 
+                                                             missingMeansZero = "")[!1, ])
   attr(covariateData, "metaData") <- list(populationSize = 0,
                                           cohortId = cohortId)
   class(covariateData) <- "CovariateData"

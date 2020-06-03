@@ -37,7 +37,7 @@ computeStandardizedDifference <- function(covariateData1, covariateData2) {
     stop("Covariate1 data is not aggregated")
   if (!isAggregatedCovariateData(covariateData2))
     stop("Covariate2 data is not aggregated")
-  result <- tibble::tibble()
+  result <- tibble()
   if (!is.null(covariateData1$covariates) && !is.null(covariateData1$covariates)) {
     covariates1 <- covariateData1$covariates %>%
       select(covariateId = "covariateId", 
@@ -74,7 +74,7 @@ computeStandardizedDifference <- function(covariateData1, covariateData2) {
              mean2 = "averageValue",
              sd2 = "standardDeviation") %>% 
       collect()
-
+    
     m <- merge(covariates1, covariates2, all = T)
     m$mean1[is.na(m$mean1)] <- 0
     m$sd1[is.na(m$sd1)] <- 0

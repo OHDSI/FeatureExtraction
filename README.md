@@ -4,7 +4,7 @@ FeatureExtraction
 [![Build Status](https://travis-ci.org/OHDSI/FeatureExtraction.svg?branch=master)](https://travis-ci.org/OHDSI/FeatureExtraction)
 [![codecov.io](https://codecov.io/github/OHDSI/FeatureExtraction/coverage.svg?branch=master)](https://codecov.io/github/OHDSI/FeatureExtraction?branch=master)
 
-FeatureExtraction is part of the [OHDSI Methods Library](https://ohdsi.github.io/MethodsLibrary).
+FeatureExtraction is part [HADES](https://ohdsi.github.io/Hades).
 
 Introduction
 ============
@@ -28,9 +28,7 @@ Requires R (version 3.2.2 or higher). Installation on Windows requires [RTools](
 
 Getting Started
 ===============
-1. On Windows, make sure [RTools](http://cran.r-project.org/bin/windows/Rtools/) is installed.
-2. FeatureExtraction as well as the DatabaseConnector and SqlRender packages require Java. Java can be downloaded from
-<a href="http://www.java.com" target="_blank">http://www.java.com</a>.
+1. See the instructions [here](https://ohdsi.github.io/Hades/rSetup.html) for configuring your R environment, including RTools and Java.
 3. In R, use the following commands to download and install FeatureExtraction:
 
   ```r
@@ -54,12 +52,15 @@ These vignettes are also available in Korean:
 * Vignette: [Creating custom covariate builders](https://raw.githubusercontent.com/OHDSI/FeatureExtraction/master/inst/doc/CreatingCustomCovariateBuildersKorean.pdf)
 
 
-
 Support
 =======
 * Developer questions/comments/feedback: <a href="http://forums.ohdsi.org/c/developers">OHDSI Forum</a>
 * We use the <a href="../../issues">GitHub issue tracker</a> for all bugs/issues/enhancements
- 
+
+Contributing
+============
+Read [here](https://ohdsi.github.io/Hades/contribute.html) how you can contribute to this package.
+
 License
 =======
 FeatureExtraction is licensed under Apache License 2.0

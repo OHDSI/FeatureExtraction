@@ -6,19 +6,19 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Creating custom covariate builders (Korean) • FeatureExtraction</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Creating custom covariate builders (Korean)">
-<meta property="og:description" content="">
-<meta name="twitter:card" content="summary">
+<meta property="og:description" content="FeatureExtraction">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
-<body>
+<body data-spy="scroll" data-target="#toc">
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">FeatureExtraction</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">3.0.0</span>
       </span>
     </div>
 
@@ -45,6 +45,9 @@
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -70,13 +73,13 @@
     </li>
   </ul>
 </li>
-<li>
-  <a href="../news/index.html">Changelog</a>
-</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/OHDSI/FeatureExtraction">
+  <a href="https://ohdsi.github.io/Hades"><img src='https://ohdsi.github.io/Hades/images/hadesMini.png' width=80 height=17 style='vertical-align: top;'></a>
+</li>
+<li>
+  <a href="https://github.com/OHDSI/FeatureExtraction/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -94,10 +97,10 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1>Creating custom covariate builders (Korean)</h1>
+      <h1 data-toc-skip>Creating custom covariate builders (Korean)</h1>
                         <h4 class="author">Jeon Ga Bin &amp; Martijn J. Schuemie</h4>
             
-            <h4 class="date">2019-08-28</h4>
+            <h4 class="date">2020-06-03</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/FeatureExtraction/blob/master/vignettes/CreatingCustomCovariateBuildersKorean.Rmd"><code>vignettes/CreatingCustomCovariateBuildersKorean.Rmd</code></a></small>
       <div class="hidden name"><code>CreatingCustomCovariateBuildersKorean.Rmd</code></div>
@@ -106,50 +109,50 @@
 
     
     
-<div id="section" class="section level1">
+<div id="서론" class="section level1">
 <h1 class="hasAnchor">
-<a href="#section" class="anchor"></a>서론</h1>
+<a href="#%EC%84%9C%EB%A1%A0" class="anchor"></a>서론</h1>
 <p>이 설명서는 사용자가 이미 특징추출 패키지을 사용하는 것에 익숙하다고 가정한다.</p>
 <p>특징추출 패키지는 condition_occurrence 테이블에서 발견된 각 조건에대해 공변량 1개와 같은 기본 공변량 집합을 생성 할 수 있다. 그러나 어떠한 이유로든지 기본 집합에 포함된 다른 공변량이 필요할 수도 있다. 때로는 표준 목록에 추가된 새로운 공변량을 쓰는것도 타당할 수 있지만, 다른 때에는 그것들을 안 써야 할 이유가 있을 수도 있다.</p>
 <p>특징추출 패키지에는 사용자 정의 공변량 빌더가 있어서 패키지에 포함된 공변량 빌더를 대체하거나 보완하는 메커니즘이 있다. 이 설명서는 그 메커니즘을 설명한다</p>
 <p>참고: 사용자 정의 공변량을 추가하는 또 다른 방법은 공통 데이터 모델의 cohort_atrribute 테이블을 사용하는 것이다. 이 방법은 creating covariates using cohort attributes라는 설명서에 설명되어 있고, 공변량이 한 번만 필요하거나 고급 R 프로그래밍에 익숙하지 않은 경우 좋은 방법이다. 이 설명서에는 사용자정의 공변량 빌더를 만드는 것을 설명하고 더 복잡하지만 더 많은 연구에서 쉽게 다시 사용할 수 있다.</p>
 </div>
-<div id="section-1" class="section level1">
+<div id="개요" class="section level1">
 <h1 class="hasAnchor">
-<a href="#section-1" class="anchor"></a>개요</h1>
+<a href="#%EA%B0%9C%EC%9A%94" class="anchor"></a>개요</h1>
 <p>사용자 지정 공변량 빌더를 추가하려면 다음 두가지를 구현해야 한다.</p>
 <ol style="list-style-type: decimal">
 <li>사용자 지정 공변량에 대한 covariateSettings 객체를 생성하는 함수.</li>
 <li>공변량 설정을 사용하여 새 공변량을 구성하는 함수.</li>
 </ol>
 </div>
-<div id="section-2" class="section level1">
+<div id="공변량-설정-함수" class="section level1">
 <h1 class="hasAnchor">
-<a href="#section-2" class="anchor"></a>공변량 설정 함수</h1>
+<a href="#%EA%B3%B5%EB%B3%80%EB%9F%89-%EC%84%A4%EC%A0%95-%ED%95%A8%EC%88%98" class="anchor"></a>공변량 설정 함수</h1>
 <p>공변량 설정 함수는 다음 두 가지 요구 사항을 충족하는 개체를 생성해야 한다.</p>
 <ol style="list-style-type: decimal">
 <li>객체의 클래스는 covariateSettings 클래스여야 한다.</li>
 <li>객체에는 공변량을 생성하는 함수의 이름을 지정하는 fun 속성이 있어야한다.</li>
 </ol>
-<div id="section-3" class="section level2">
+<div id="함수-예제" class="section level2">
 <h2 class="hasAnchor">
-<a href="#section-3" class="anchor"></a>함수 예제</h2>
+<a href="#%ED%95%A8%EC%88%98-%EC%98%88%EC%A0%9C" class="anchor"></a>함수 예제</h2>
 <p>아래에 공변량 설정 함수의 예가 있다.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>createLooCovariateSettings &lt;-<span class="st"> </span><span class="cf">function</span>(<span class="dt">useLengthOfObs =</span> <span class="ot">TRUE</span>) {</span>
-<span id="cb1-2"><a href="#cb1-2"></a>  covariateSettings &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">useLengthOfObs =</span> useLengthOfObs)</span>
-<span id="cb1-3"><a href="#cb1-3"></a>  <span class="kw"><a href="https://rdrr.io/r/base/attr.html">attr</a></span>(covariateSettings, <span class="st">"fun"</span>) &lt;-<span class="st"> "getDbLooCovariateData"</span></span>
-<span id="cb1-4"><a href="#cb1-4"></a>  <span class="kw"><a href="https://rdrr.io/r/base/class.html">class</a></span>(covariateSettings) &lt;-<span class="st"> "covariateSettings"</span></span>
-<span id="cb1-5"><a href="#cb1-5"></a>  <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span>(covariateSettings)</span>
-<span id="cb1-6"><a href="#cb1-6"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="no">createLooCovariateSettings</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">useLengthOfObs</span> <span class="kw">=</span> <span class="fl">TRUE</span>) {
+  <span class="no">covariateSettings</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">useLengthOfObs</span> <span class="kw">=</span> <span class="no">useLengthOfObs</span>)
+  <span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span>(<span class="no">covariateSettings</span>, <span class="st">"fun"</span>) <span class="kw">&lt;-</span> <span class="st">"getDbLooCovariateData"</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span>(<span class="no">covariateSettings</span>) <span class="kw">&lt;-</span> <span class="st">"covariateSettings"</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/function.html">return</a></span>(<span class="no">covariateSettings</span>)
+}</pre></body></html></div>
 <p>위의 예시의 함수는 useLengthOfObs라는 인자 하나밖에 없다. 이 인자값은 covariateSettings 객체에 저장되어 있다. 이러한 옵션에 해당하는 공변량을 구성하는 함수의 이름은 getDbLooCovariateData이다.</p>
 </div>
 </div>
-<div id="section-4" class="section level1">
+<div id="공변량-구성-함수" class="section level1">
 <h1 class="hasAnchor">
-<a href="#section-4" class="anchor"></a>공변량 구성 함수</h1>
-<div id="section-5" class="section level2">
+<a href="#%EA%B3%B5%EB%B3%80%EB%9F%89-%EA%B5%AC%EC%84%B1-%ED%95%A8%EC%88%98" class="anchor"></a>공변량 구성 함수</h1>
+<div id="함수-입력" class="section level2">
 <h2 class="hasAnchor">
-<a href="#section-5" class="anchor"></a>함수 입력</h2>
+<a href="#%ED%95%A8%EC%88%98-%EC%9E%85%EB%A0%A5" class="anchor"></a>함수 입력</h2>
 <p>공변량 생성 함수는 다음 인자 값들을 받는다:</p>
 <ul>
 <li>connection : DatabaseConnector 패키지의 connect 함수를 사용하여 생선된 스키마가 포함된 서버에 대한 연결이다.</li>
@@ -165,9 +168,9 @@
 </ul>
 <p>이 함수는 cohort 테이블 인자에 지정된 이름을 가진 테이블이 존재할 것으로 기대할 수 있다. 이 테이블은공변량을 생성하려는 사람과 인덱스날짜를 식별하며 다음 필드를 갖는다(subject_id,cohort_start_date, andcohort_definition_id). 1인당 인덱스 날짜(즉, cohort_start_date)가 두 개 이상일 수 있기 때문에 각 subject_id-cohort_start_date 조합에 대한 고유 식별자가 있는 추가 필드가 포함 될 수 있다. 이 필드의 이름은 rowIdField 인자에 저장된다.</p>
 </div>
-<div id="section-6" class="section level2">
+<div id="함수-출력" class="section level2">
 <h2 class="hasAnchor">
-<a href="#section-6" class="anchor"></a>함수 출력</h2>
+<a href="#%ED%95%A8%EC%88%98-%EC%B6%9C%EB%A0%A5" class="anchor"></a>함수 출력</h2>
 <p>이 함수는 covariateData 유형의 객체를 반환해야 한다. 이 객체는 다음 멤버 목록을 가진다.</p>
 <ul>
 <li>covariates : 행 ID 당 공변량을 나열하는 ffdf 객체이다. 공간절약을 위해 값 0인 변수를 생략했다. 공변량 객체는 세 개의 열이 있어야한다(rowId,covariateId, and covariateValue)</li>
@@ -176,135 +179,117 @@
 <li>metaData : covariateData 객체의 작성방법에 관한 정보를 가지는 객체의 리스트</li>
 </ul>
 </div>
-<div id="section-7" class="section level2">
+<div id="함수-예제-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#section-7" class="anchor"></a>함수 예제</h2>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>getDbLooCovariateData &lt;-<span class="st"> </span><span class="cf">function</span>(connection,</span>
-<span id="cb2-2"><a href="#cb2-2"></a>                                  <span class="dt">oracleTempSchema =</span> <span class="ot">NULL</span>,</span>
-<span id="cb2-3"><a href="#cb2-3"></a>                                  cdmDatabaseSchema,</span>
-<span id="cb2-4"><a href="#cb2-4"></a>                                  <span class="dt">cohortTable =</span> <span class="st">"#cohort_person"</span>,</span>
-<span id="cb2-5"><a href="#cb2-5"></a>                                  <span class="dt">cohortId =</span> <span class="dv">-1</span>,</span>
-<span id="cb2-6"><a href="#cb2-6"></a>                                  <span class="dt">cdmVersion =</span> <span class="st">"5"</span>,</span>
-<span id="cb2-7"><a href="#cb2-7"></a>                                  <span class="dt">rowIdField =</span> <span class="st">"subject_id"</span>,</span>
-<span id="cb2-8"><a href="#cb2-8"></a>                                  covariateSettings,</span>
-<span id="cb2-9"><a href="#cb2-9"></a>                                  <span class="dt">aggregated =</span> <span class="ot">FALSE</span>) {</span>
-<span id="cb2-10"><a href="#cb2-10"></a>  <span class="kw"><a href="https://rdrr.io/r/base/writeLines.html">writeLines</a></span>(<span class="st">"Constructing length of observation covariates"</span>)</span>
-<span id="cb2-11"><a href="#cb2-11"></a>  <span class="cf">if</span> (covariateSettings<span class="op">$</span>useLengthOfObs <span class="op">==</span><span class="st"> </span><span class="ot">FALSE</span>) {</span>
-<span id="cb2-12"><a href="#cb2-12"></a>    <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span>(<span class="ot">NULL</span>)</span>
-<span id="cb2-13"><a href="#cb2-13"></a>  }</span>
-<span id="cb2-14"><a href="#cb2-14"></a>  <span class="cf">if</span> (aggregated)</span>
-<span id="cb2-15"><a href="#cb2-15"></a>    <span class="kw"><a href="https://rdrr.io/r/base/stop.html">stop</a></span>(<span class="st">"Aggregation not supported"</span>)</span>
-<span id="cb2-16"><a href="#cb2-16"></a>  </span>
-<span id="cb2-17"><a href="#cb2-17"></a>  <span class="co"># Some SQL to construct the covariate:</span></span>
-<span id="cb2-18"><a href="#cb2-18"></a>  sql &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(<span class="st">"SELECT @row_id_field AS row_id, 1 AS covariate_id,"</span>,</span>
-<span id="cb2-19"><a href="#cb2-19"></a>               <span class="st">"DATEDIFF(DAY, observation_period_start_date, cohort_start_date)"</span>,</span>
-<span id="cb2-20"><a href="#cb2-20"></a>               <span class="st">"AS covariate_value"</span>,</span>
-<span id="cb2-21"><a href="#cb2-21"></a>               <span class="st">"FROM @cohort_table c"</span>,</span>
-<span id="cb2-22"><a href="#cb2-22"></a>               <span class="st">"INNER JOIN @cdm_database_schema.observation_period op"</span>,</span>
-<span id="cb2-23"><a href="#cb2-23"></a>               <span class="st">"ON op.person_id = c.subject_id"</span>,</span>
-<span id="cb2-24"><a href="#cb2-24"></a>               <span class="st">"WHERE cohort_start_date &gt;= observation_period_start_date"</span>,</span>
-<span id="cb2-25"><a href="#cb2-25"></a>               <span class="st">"AND cohort_start_date &lt;= observation_period_end_date"</span>,</span>
-<span id="cb2-26"><a href="#cb2-26"></a>               <span class="st">"{@cohort_id != -1} ? {AND cohort_definition_id = @cohort_id}"</span>)</span>
-<span id="cb2-27"><a href="#cb2-27"></a>  sql &lt;-<span class="st"> </span>SqlRender<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/SqlRender/man/render.html">render</a></span>(sql,</span>
-<span id="cb2-28"><a href="#cb2-28"></a>                              <span class="dt">cohort_table =</span> cohortTable,</span>
-<span id="cb2-29"><a href="#cb2-29"></a>                              <span class="dt">cohort_id =</span> cohortId,</span>
-<span id="cb2-30"><a href="#cb2-30"></a>                              <span class="dt">row_id_field =</span> rowIdField,</span>
-<span id="cb2-31"><a href="#cb2-31"></a>                              <span class="dt">cdm_database_schema =</span> cdmDatabaseSchema)</span>
-<span id="cb2-32"><a href="#cb2-32"></a>  sql &lt;-<span class="st"> </span>SqlRender<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/SqlRender/man/translate.html">translate</a></span>(sql, <span class="dt">targetDialect =</span> <span class="kw"><a href="https://rdrr.io/r/base/attr.html">attr</a></span>(connection, <span class="st">"dbms"</span>))</span>
-<span id="cb2-33"><a href="#cb2-33"></a>  </span>
-<span id="cb2-34"><a href="#cb2-34"></a>  <span class="co"># Retrieve the covariate:</span></span>
-<span id="cb2-35"><a href="#cb2-35"></a>  covariates &lt;-<span class="st"> </span>DatabaseConnector<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/DatabaseConnector/man/querySql.ffdf.html">querySql.ffdf</a></span>(connection, sql)</span>
-<span id="cb2-36"><a href="#cb2-36"></a>  </span>
-<span id="cb2-37"><a href="#cb2-37"></a>  <span class="co"># Convert colum names to camelCase:</span></span>
-<span id="cb2-38"><a href="#cb2-38"></a>  <span class="kw"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(covariates) &lt;-<span class="st"> </span>SqlRender<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/SqlRender/man/snakeCaseToCamelCase.html">snakeCaseToCamelCase</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(covariates))</span>
-<span id="cb2-39"><a href="#cb2-39"></a>  </span>
-<span id="cb2-40"><a href="#cb2-40"></a>  <span class="co"># Construct covariate reference:</span></span>
-<span id="cb2-41"><a href="#cb2-41"></a>  covariateRef &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">covariateId =</span> <span class="dv">1</span>,</span>
-<span id="cb2-42"><a href="#cb2-42"></a>                             <span class="dt">covariateName =</span> <span class="st">"Length of observation"</span>,</span>
-<span id="cb2-43"><a href="#cb2-43"></a>                             <span class="dt">analysisId =</span> <span class="dv">1</span>,</span>
-<span id="cb2-44"><a href="#cb2-44"></a>                             <span class="dt">conceptId =</span> <span class="dv">0</span>)</span>
-<span id="cb2-45"><a href="#cb2-45"></a>  covariateRef &lt;-<span class="st"> </span>ff<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/ff/man/as.ffdf.html">as.ffdf</a></span>(covariateRef)</span>
-<span id="cb2-46"><a href="#cb2-46"></a>  </span>
-<span id="cb2-47"><a href="#cb2-47"></a>  <span class="co"># Construct analysis reference:</span></span>
-<span id="cb2-48"><a href="#cb2-48"></a>  analysisRef &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">analysisId =</span> <span class="dv">1</span>,</span>
-<span id="cb2-49"><a href="#cb2-49"></a>                            <span class="dt">analysisName =</span> <span class="st">"Length of observation"</span>,</span>
-<span id="cb2-50"><a href="#cb2-50"></a>                            <span class="dt">domainId =</span> <span class="st">"Demographics"</span>,</span>
-<span id="cb2-51"><a href="#cb2-51"></a>                            <span class="dt">startDay =</span> <span class="dv">0</span>,</span>
-<span id="cb2-52"><a href="#cb2-52"></a>                            <span class="dt">endDay =</span> <span class="dv">0</span>,</span>
-<span id="cb2-53"><a href="#cb2-53"></a>                            <span class="dt">isBinary =</span> <span class="st">"N"</span>,</span>
-<span id="cb2-54"><a href="#cb2-54"></a>                            <span class="dt">missingMeansZero =</span> <span class="st">"Y"</span>)</span>
-<span id="cb2-55"><a href="#cb2-55"></a>  analysisRef &lt;-<span class="st"> </span>ff<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/ff/man/as.ffdf.html">as.ffdf</a></span>(analysisRef)</span>
-<span id="cb2-56"><a href="#cb2-56"></a>  </span>
-<span id="cb2-57"><a href="#cb2-57"></a>  <span class="co"># Construct analysis reference:</span></span>
-<span id="cb2-58"><a href="#cb2-58"></a>  metaData &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">sql =</span> sql, <span class="dt">call =</span> <span class="kw"><a href="https://rdrr.io/r/base/match.call.html">match.call</a></span>())</span>
-<span id="cb2-59"><a href="#cb2-59"></a>  result &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">covariates =</span> covariates, </span>
-<span id="cb2-60"><a href="#cb2-60"></a>                 <span class="dt">covariateRef =</span> covariateRef, </span>
-<span id="cb2-61"><a href="#cb2-61"></a>                 <span class="dt">analysisRef =</span> analysisRef,</span>
-<span id="cb2-62"><a href="#cb2-62"></a>                 <span class="dt">metaData =</span> metaData)</span>
-<span id="cb2-63"><a href="#cb2-63"></a>  <span class="kw"><a href="https://rdrr.io/r/base/class.html">class</a></span>(result) &lt;-<span class="st"> "covariateData"</span></span>
-<span id="cb2-64"><a href="#cb2-64"></a>  <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span>(result)</span>
-<span id="cb2-65"><a href="#cb2-65"></a>}</span></code></pre></div>
+<a href="#%ED%95%A8%EC%88%98-%EC%98%88%EC%A0%9C-1" class="anchor"></a>함수 예제</h2>
+<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">getDbLooCovariateData</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">connection</span>,
+                                  <span class="no">oracleTempSchema</span> <span class="kw">=</span> <span class="kw">NULL</span>,
+                                  <span class="no">cdmDatabaseSchema</span>,
+                                  <span class="no">cohortTable</span> <span class="kw">=</span> <span class="st">"#cohort_person"</span>,
+                                  <span class="no">cohortId</span> <span class="kw">=</span> -<span class="fl">1</span>,
+                                  <span class="no">cdmVersion</span> <span class="kw">=</span> <span class="st">"5"</span>,
+                                  <span class="no">rowIdField</span> <span class="kw">=</span> <span class="st">"subject_id"</span>,
+                                  <span class="no">covariateSettings</span>,
+                                  <span class="no">aggregated</span> <span class="kw">=</span> <span class="fl">FALSE</span>) {
+  <span class="fu"><a href="https://rdrr.io/r/base/writeLines.html">writeLines</a></span>(<span class="st">"Constructing length of observation covariates"</span>)
+  <span class="kw">if</span> (<span class="no">covariateSettings</span>$<span class="no">useLengthOfObs</span> <span class="kw">==</span> <span class="fl">FALSE</span>) {
+    <span class="fu"><a href="https://rdrr.io/r/base/function.html">return</a></span>(<span class="kw">NULL</span>)
+  }
+  <span class="kw">if</span> (<span class="no">aggregated</span>)
+    <span class="fu"><a href="https://rdrr.io/r/base/stop.html">stop</a></span>(<span class="st">"Aggregation not supported"</span>)
+
+  <span class="co"># Some SQL to construct the covariate:</span>
+  <span class="no">sql</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(<span class="st">"SELECT @row_id_field AS row_id, 1 AS covariate_id,"</span>,
+               <span class="st">"DATEDIFF(DAY, observation_period_start_date, cohort_start_date)"</span>,
+               <span class="st">"AS covariate_value"</span>,
+               <span class="st">"FROM @cohort_table c"</span>,
+               <span class="st">"INNER JOIN @cdm_database_schema.observation_period op"</span>,
+               <span class="st">"ON op.person_id = c.subject_id"</span>,
+               <span class="st">"WHERE cohort_start_date &gt;= observation_period_start_date"</span>,
+               <span class="st">"AND cohort_start_date &lt;= observation_period_end_date"</span>,
+               <span class="st">"{@cohort_id != -1} ? {AND cohort_definition_id = @cohort_id}"</span>)
+  <span class="no">sql</span> <span class="kw">&lt;-</span> <span class="kw pkg">SqlRender</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/SqlRender/man/render.html">render</a></span>(<span class="no">sql</span>,
+                              <span class="kw">cohort_table</span> <span class="kw">=</span> <span class="no">cohortTable</span>,
+                              <span class="kw">cohort_id</span> <span class="kw">=</span> <span class="no">cohortId</span>,
+                              <span class="kw">row_id_field</span> <span class="kw">=</span> <span class="no">rowIdField</span>,
+                              <span class="kw">cdm_database_schema</span> <span class="kw">=</span> <span class="no">cdmDatabaseSchema</span>)
+  <span class="no">sql</span> <span class="kw">&lt;-</span> <span class="kw pkg">SqlRender</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/SqlRender/man/translate.html">translate</a></span>(<span class="no">sql</span>, <span class="kw">targetDialect</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span>(<span class="no">connection</span>, <span class="st">"dbms"</span>))
+
+  <span class="co"># Retrieve the covariate:</span>
+  <span class="no">covariates</span> <span class="kw">&lt;-</span> <span class="kw pkg">DatabaseConnector</span><span class="kw ns">::</span><span class="fu">querySql.ffdf</span>(<span class="no">connection</span>, <span class="no">sql</span>)
+
+  <span class="co"># Convert colum names to camelCase:</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(<span class="no">covariates</span>) <span class="kw">&lt;-</span> <span class="kw pkg">SqlRender</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/SqlRender/man/snakeCaseToCamelCase.html">snakeCaseToCamelCase</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(<span class="no">covariates</span>))
+
+  <span class="co"># Construct covariate reference:</span>
+  <span class="no">covariateRef</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="kw">covariateId</span> <span class="kw">=</span> <span class="fl">1</span>,
+                             <span class="kw">covariateName</span> <span class="kw">=</span> <span class="st">"Length of observation"</span>,
+                             <span class="kw">analysisId</span> <span class="kw">=</span> <span class="fl">1</span>,
+                             <span class="kw">conceptId</span> <span class="kw">=</span> <span class="fl">0</span>)
+  <span class="no">covariateRef</span> <span class="kw">&lt;-</span> <span class="kw pkg">ff</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/ff/man/as.ffdf.html">as.ffdf</a></span>(<span class="no">covariateRef</span>)
+
+  <span class="co"># Construct analysis reference:</span>
+  <span class="no">analysisRef</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="kw">analysisId</span> <span class="kw">=</span> <span class="fl">1</span>,
+                            <span class="kw">analysisName</span> <span class="kw">=</span> <span class="st">"Length of observation"</span>,
+                            <span class="kw">domainId</span> <span class="kw">=</span> <span class="st">"Demographics"</span>,
+                            <span class="kw">startDay</span> <span class="kw">=</span> <span class="fl">0</span>,
+                            <span class="kw">endDay</span> <span class="kw">=</span> <span class="fl">0</span>,
+                            <span class="kw">isBinary</span> <span class="kw">=</span> <span class="st">"N"</span>,
+                            <span class="kw">missingMeansZero</span> <span class="kw">=</span> <span class="st">"Y"</span>)
+  <span class="no">analysisRef</span> <span class="kw">&lt;-</span> <span class="kw pkg">ff</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/ff/man/as.ffdf.html">as.ffdf</a></span>(<span class="no">analysisRef</span>)
+
+  <span class="co"># Construct analysis reference:</span>
+  <span class="no">metaData</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">sql</span> <span class="kw">=</span> <span class="no">sql</span>, <span class="kw">call</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/match.call.html">match.call</a></span>())
+  <span class="no">result</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">covariates</span> <span class="kw">=</span> <span class="no">covariates</span>,
+                 <span class="kw">covariateRef</span> <span class="kw">=</span> <span class="no">covariateRef</span>,
+                 <span class="kw">analysisRef</span> <span class="kw">=</span> <span class="no">analysisRef</span>,
+                 <span class="kw">metaData</span> <span class="kw">=</span> <span class="no">metaData</span>)
+  <span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span>(<span class="no">result</span>) <span class="kw">&lt;-</span> <span class="st">"covariateData"</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/function.html">return</a></span>(<span class="no">result</span>)
+}</pre></body></html></div>
 <p>이 예제 함수에서 observation_period_start_date와 인덱스 날짜 사이의 일 수인 ’관찰 길이’라는 단일 공변량을 구성한다. 우리는 매개 변수화 된 SQL과 SqlRender 패키지를 사용하여 우리가 연결된 데이터베이스에 적절한 SQL문을 생성한다. DatabaseConnector 패키지를 사용하면 결과가 ffdf 객체에 즉시 저장된다. 우리는 공변량 참조 및 분석 참조 객체를 생성하는데, 이 객체는 하나의 행을 가지며 우리의 공변량과 하나의 분석을 지정한다. 그런 다음 covariate, covariateRef 및 analysisRef 객체를 메타 데이터와 함께 단일 결과 객체로 만든다.</p>
 </div>
 </div>
-<div id="section-8" class="section level1">
+<div id="사용자-지정-공변량-빌더-사용" class="section level1">
 <h1 class="hasAnchor">
-<a href="#section-8" class="anchor"></a>사용자 지정 공변량 빌더 사용</h1>
+<a href="#%EC%82%AC%EC%9A%A9%EC%9E%90-%EC%A7%80%EC%A0%95-%EA%B3%B5%EB%B3%80%EB%9F%89-%EB%B9%8C%EB%8D%94-%EC%82%AC%EC%9A%A9" class="anchor"></a>사용자 지정 공변량 빌더 사용</h1>
 <p>PatientLevelPrediction 패키지의 사용자 정의 공변량 빌더와 cohortMethod 패키지와 같은 ReeatureExtraction 패키지에 의존하는 다른 패키지를 사용할 수 있다. 사용자 정의 공변량 빌더만 사용하려는 경우, 기존 공변량 설정을 자체 공변량 설정으로 간단히 대체할 수있다.</p>
 <p>예를들어:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>looCovSet &lt;-<span class="st"> </span><span class="kw">createLooCovariateSettings</span>(<span class="dt">useLengthOfObs =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb3-2"><a href="#cb3-2"></a></span>
-<span id="cb3-3"><a href="#cb3-3"></a>covariates &lt;-<span class="st"> </span><span class="kw"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span>(<span class="dt">connectionDetails =</span> connectionDetails,</span>
-<span id="cb3-4"><a href="#cb3-4"></a>                                 <span class="dt">cdmDatabaseSchema =</span> cdmDatabaseSchema,</span>
-<span id="cb3-5"><a href="#cb3-5"></a>                                 <span class="dt">cohortDatabaseSchema =</span> resultsDatabaseSchema,</span>
-<span id="cb3-6"><a href="#cb3-6"></a>                                 <span class="dt">cohortTable =</span> <span class="st">"rehospitalization"</span>,</span>
-<span id="cb3-7"><a href="#cb3-7"></a>                                 <span class="dt">cohortId =</span> <span class="dv">1</span>,</span>
-<span id="cb3-8"><a href="#cb3-8"></a>                                 <span class="dt">covariateSettings =</span> looCovSet)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">looCovSet</span> <span class="kw">&lt;-</span> <span class="fu">createLooCovariateSettings</span>(<span class="kw">useLengthOfObs</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
+
+<span class="no">covariates</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span>(<span class="kw">connectionDetails</span> <span class="kw">=</span> <span class="no">connectionDetails</span>,
+                                 <span class="kw">cdmDatabaseSchema</span> <span class="kw">=</span> <span class="no">cdmDatabaseSchema</span>,
+                                 <span class="kw">cohortDatabaseSchema</span> <span class="kw">=</span> <span class="no">resultsDatabaseSchema</span>,
+                                 <span class="kw">cohortTable</span> <span class="kw">=</span> <span class="st">"rehospitalization"</span>,
+                                 <span class="kw">cohortId</span> <span class="kw">=</span> <span class="fl">1</span>,
+                                 <span class="kw">covariateSettings</span> <span class="kw">=</span> <span class="no">looCovSet</span>)</pre></body></html></div>
 <p>이 경우 우리는 예측 모델인 관측 길이에 대한 공변량만 가질 것이다. 대부분의 경우, 우리는 기본 공변량 외에 우리의 맞춤 공변량을 원할 것이다. 공변량 설정 목록을 생성하여 이 작업을 수행할 수 있다.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>covariateSettings &lt;-<span class="st"> </span><span class="kw"><a href="../reference/createCovariateSettings.html">createCovariateSettings</a></span>(<span class="dt">useDemographicsGender =</span> <span class="ot">TRUE</span>,</span>
-<span id="cb4-2"><a href="#cb4-2"></a>                                             <span class="dt">useDemographicsAgeGroup =</span> <span class="ot">TRUE</span>,</span>
-<span id="cb4-3"><a href="#cb4-3"></a>                                             <span class="dt">useDemographicsRace =</span> <span class="ot">TRUE</span>,</span>
-<span id="cb4-4"><a href="#cb4-4"></a>                                             <span class="dt">useDemographicsEthnicity =</span> <span class="ot">TRUE</span>,</span>
-<span id="cb4-5"><a href="#cb4-5"></a>                                             <span class="dt">useDemographicsIndexYear =</span> <span class="ot">TRUE</span>,</span>
-<span id="cb4-6"><a href="#cb4-6"></a>                                             <span class="dt">useDemographicsIndexMonth =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb4-7"><a href="#cb4-7"></a></span>
-<span id="cb4-8"><a href="#cb4-8"></a>looCovSet &lt;-<span class="st"> </span><span class="kw">createLooCovariateSettings</span>(<span class="dt">useLengthOfObs =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb4-9"><a href="#cb4-9"></a></span>
-<span id="cb4-10"><a href="#cb4-10"></a>covariateSettingsList &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(covariateSettings, looCovSet)</span>
-<span id="cb4-11"><a href="#cb4-11"></a></span>
-<span id="cb4-12"><a href="#cb4-12"></a>covariates &lt;-<span class="st"> </span><span class="kw"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span>(<span class="dt">connectionDetails =</span> connectionDetails,</span>
-<span id="cb4-13"><a href="#cb4-13"></a>                                 <span class="dt">cdmDatabaseSchema =</span> cdmDatabaseSchema,</span>
-<span id="cb4-14"><a href="#cb4-14"></a>                                 <span class="dt">cohortDatabaseSchema =</span> resultsDatabaseSchema,</span>
-<span id="cb4-15"><a href="#cb4-15"></a>                                 <span class="dt">cohortTable =</span> <span class="st">"rehospitalization"</span>,</span>
-<span id="cb4-16"><a href="#cb4-16"></a>                                 <span class="dt">cohortId =</span> <span class="dv">1</span>,</span>
-<span id="cb4-17"><a href="#cb4-17"></a>                                 <span class="dt">covariateSettings =</span> covariateSettingsList)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">covariateSettings</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createCovariateSettings.html">createCovariateSettings</a></span>(<span class="kw">useDemographicsGender</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
+                                             <span class="kw">useDemographicsAgeGroup</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
+                                             <span class="kw">useDemographicsRace</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
+                                             <span class="kw">useDemographicsEthnicity</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
+                                             <span class="kw">useDemographicsIndexYear</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
+                                             <span class="kw">useDemographicsIndexMonth</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
+
+<span class="no">looCovSet</span> <span class="kw">&lt;-</span> <span class="fu">createLooCovariateSettings</span>(<span class="kw">useLengthOfObs</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
+
+<span class="no">covariateSettingsList</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">covariateSettings</span>, <span class="no">looCovSet</span>)
+
+<span class="no">covariates</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span>(<span class="kw">connectionDetails</span> <span class="kw">=</span> <span class="no">connectionDetails</span>,
+                                 <span class="kw">cdmDatabaseSchema</span> <span class="kw">=</span> <span class="no">cdmDatabaseSchema</span>,
+                                 <span class="kw">cohortDatabaseSchema</span> <span class="kw">=</span> <span class="no">resultsDatabaseSchema</span>,
+                                 <span class="kw">cohortTable</span> <span class="kw">=</span> <span class="st">"rehospitalization"</span>,
+                                 <span class="kw">cohortId</span> <span class="kw">=</span> <span class="fl">1</span>,
+                                 <span class="kw">covariateSettings</span> <span class="kw">=</span> <span class="no">covariateSettingsList</span>)</pre></body></html></div>
 <p>이 예에서 인구 통계학적 공변량과 관찰 공변량의 길이가 모두 생성되어 예측 모델에 사용될 수 있다.</p>
 </div>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-        <div id="tocnav">
-      <h2 class="hasAnchor">
-<a href="#tocnav" class="anchor"></a>Contents</h2>
-      <ul class="nav nav-pills nav-stacked">
-<li><a href="#section">서론</a></li>
-      <li><a href="#section-1">개요</a></li>
-      <li>
-<a href="#section-2">공변량 설정 함수</a><ul class="nav nav-pills nav-stacked">
-<li><a href="#section-3">함수 예제</a></li>
-      </ul>
-</li>
-      <li>
-<a href="#section-4">공변량 구성 함수</a><ul class="nav nav-pills nav-stacked">
-<li><a href="#section-5">함수 입력</a></li>
-      <li><a href="#section-6">함수 출력</a></li>
-      <li><a href="#section-7">함수 예제</a></li>
-      </ul>
-</li>
-      <li><a href="#section-8">사용자 지정 공변량 빌더 사용</a></li>
-      </ul>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+
+        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
+    </nav>
 </div>
-      </div>
 
 </div>
 
@@ -315,7 +300,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.9100.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

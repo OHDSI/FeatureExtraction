@@ -30,7 +30,7 @@ NULL
 .onLoad <- function(libname, pkgname) {
   
   rJava::.jpackage(pkgname, lib.loc = libname)
-
+  
   # Verify checksum of JAR:
   storedChecksum <- scan(file = system.file("csv", "jarChecksum.txt", package = "FeatureExtraction"), what = character(), quiet = TRUE)
   computedChecksum <- tryCatch(rJava::J("org.ohdsi.featureExtraction.JarChecksum","computeJarChecksum"),

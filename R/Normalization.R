@@ -169,7 +169,7 @@ tidyCovariateData <- function(covariateData,
     } 
     newCovariateData$covariates <- newCovariates
   }
-
+  
   class(newCovariateData) <- "CovariateData"
   attr(class(newCovariateData), "package") <- "FeatureExtraction"
   attr(newCovariateData, "metaData") <- metaData

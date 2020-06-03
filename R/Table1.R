@@ -215,12 +215,12 @@ createTable1 <- function(covariateData1,
     covariatesContinuous$stdDiff <- "  "
   }
   
-  binaryTable <- tibble::tibble()
-  continuousTable <- tibble::tibble()
+  binaryTable <- tibble()
+  continuousTable <- tibble()
   for (i in 1:nrow(specifications)) {
     if (is.na(specifications$analysisId[i])) {
       binaryTable <- bind_rows(binaryTable,
-                               tibble::tibble(Characteristic = specifications$label[i], value = ""))
+                               tibble(Characteristic = specifications$label[i], value = ""))
     } else {
       idx <- analysisRef$analysisId == specifications$analysisId[i]
       if (any(idx)) {
@@ -240,8 +240,8 @@ createTable1 <- function(covariateData1,
             if (is.null(covariateIds)) {
               covariatesSubset <- covariatesSubset[order(covariatesSubset$covariateId), ]
             } else {
-              covariatesSubset <- merge(covariatesSubset, tibble::tibble(covariateId = covariateIds,
-                                                                         rn = 1:length(covariateIds)))
+              covariatesSubset <- merge(covariatesSubset, tibble(covariateId = covariateIds,
+                                                                 rn = 1:length(covariateIds)))
               covariatesSubset <- covariatesSubset[order(covariatesSubset$rn,
                                                          covariatesSubset$covariateId), ]
             }
@@ -249,26 +249,26 @@ createTable1 <- function(covariateData1,
                                                            "",
                                                            covariatesSubset$covariateName))
             if (is.na(specifications$covariateIds[i]) || length(covariateIds) > 1) {
-              binaryTable <- bind_rows(binaryTable, tibble::tibble(Characteristic = specifications$label[i],
-                                                                   count1 = "",
-                                                                   percent1 = "",
-                                                                   count2 = "",
-                                                                   percent2 = "",
-                                                                   stdDiff = ""))
+              binaryTable <- bind_rows(binaryTable, tibble(Characteristic = specifications$label[i],
+                                                           count1 = "",
+                                                           percent1 = "",
+                                                           count2 = "",
+                                                           percent2 = "",
+                                                           stdDiff = ""))
               binaryTable <- bind_rows(binaryTable,
-                                       tibble::tibble(Characteristic = paste0("  ", covariatesSubset$covariateName),
-                                                      count1 = covariatesSubset$count1,
-                                                      percent1 = covariatesSubset$percent1,
-                                                      count2 = covariatesSubset$count2,
-                                                      percent2 = covariatesSubset$percent2,
-                                                      stdDiff = covariatesSubset$stdDiff))
+                                       tibble(Characteristic = paste0("  ", covariatesSubset$covariateName),
+                                              count1 = covariatesSubset$count1,
+                                              percent1 = covariatesSubset$percent1,
+                                              count2 = covariatesSubset$count2,
+                                              percent2 = covariatesSubset$percent2,
+                                              stdDiff = covariatesSubset$stdDiff))
             } else {
-              binaryTable <- bind_rows(binaryTable, tibble::tibble(Characteristic = specifications$label[i],
-                                                                   count1 = covariatesSubset$count1,
-                                                                   percent1 = covariatesSubset$percent1,
-                                                                   count2 = covariatesSubset$count2,
-                                                                   percent2 = covariatesSubset$percent2,
-                                                                   stdDiff = covariatesSubset$stdDiff))
+              binaryTable <- bind_rows(binaryTable, tibble(Characteristic = specifications$label[i],
+                                                           count1 = covariatesSubset$count1,
+                                                           percent1 = covariatesSubset$percent1,
+                                                           count2 = covariatesSubset$count2,
+                                                           percent2 = covariatesSubset$percent2,
+                                                           stdDiff = covariatesSubset$stdDiff))
             }
           }
         } else {
@@ -286,8 +286,8 @@ createTable1 <- function(covariateData1,
             if (is.null(covariateIds)) {
               covariatesSubset <- covariatesSubset[order(covariatesSubset$covariateId), ]
             } else {
-              covariatesSubset <- merge(covariatesSubset, tibble::tibble(covariateId = covariateIds,
-                                                                         rn = 1:length(covariateIds)))
+              covariatesSubset <- merge(covariatesSubset, tibble(covariateId = covariateIds,
+                                                                 rn = 1:length(covariateIds)))
               covariatesSubset <- covariatesSubset[order(covariatesSubset$rn,
                                                          covariatesSubset$covariateId), ]
             }
@@ -296,80 +296,80 @@ createTable1 <- function(covariateData1,
                                                            covariatesSubset$covariateName))
             if (is.na(specifications$covariateIds[i]) || length(covariateIds) > 1) {
               continuousTable <- bind_rows(continuousTable,
-                                           tibble::tibble(Characteristic = specifications$label[i],
-                                                          value1 = "",
-                                                          value2 = "",
-                                                          stdDiff = ""))
+                                           tibble(Characteristic = specifications$label[i],
+                                                  value1 = "",
+                                                  value2 = "",
+                                                  stdDiff = ""))
               for (j in 1:nrow(covariatesSubset)) {
                 continuousTable <- bind_rows(continuousTable,
-                                             tibble::tibble(Characteristic = paste0("  ", covariatesSubset$covariateName[j]),
-                                                            value1 = "",
-                                                            value2 = "",
-                                                            stdDiff = ""))
-                continuousTable <- bind_rows(continuousTable, tibble::tibble(Characteristic = c("    Mean",
-                                                                                                "    Std. deviation",
-                                                                                                "    Minimum",
-                                                                                                "    25th percentile",
-                                                                                                "    Median",
-                                                                                                "    75th percentile",
-                                                                                                "    Maximum"),
-                                                                             value1 = c(covariatesSubset$averageValue1[j],
-                                                                                        covariatesSubset$standardDeviation1[j],
-                                                                                        covariatesSubset$minValue1[j],
-                                                                                        covariatesSubset$p25Value1[j],
-                                                                                        covariatesSubset$medianValue1[j],
-                                                                                        covariatesSubset$p75Value1[j],
-                                                                                        covariatesSubset$maxValue1[j]),
-                                                                             value2 = c(covariatesSubset$averageValue2[j],
-                                                                                        covariatesSubset$standardDeviation2[j],
-                                                                                        covariatesSubset$minValue2[j],
-                                                                                        covariatesSubset$p25Value2[j],
-                                                                                        covariatesSubset$medianValue2[j],
-                                                                                        covariatesSubset$p75Value2[j],
-                                                                                        covariatesSubset$maxValue2[j]),
-                                                                             stdDiff = c(covariatesSubset$stdDiff[j],
-                                                                                         "  ",
-                                                                                         "  ",
-                                                                                         "  ",
-                                                                                         "  ",
-                                                                                         "  ",
-                                                                                         "  ")))
+                                             tibble(Characteristic = paste0("  ", covariatesSubset$covariateName[j]),
+                                                    value1 = "",
+                                                    value2 = "",
+                                                    stdDiff = ""))
+                continuousTable <- bind_rows(continuousTable, tibble(Characteristic = c("    Mean",
+                                                                                        "    Std. deviation",
+                                                                                        "    Minimum",
+                                                                                        "    25th percentile",
+                                                                                        "    Median",
+                                                                                        "    75th percentile",
+                                                                                        "    Maximum"),
+                                                                     value1 = c(covariatesSubset$averageValue1[j],
+                                                                                covariatesSubset$standardDeviation1[j],
+                                                                                covariatesSubset$minValue1[j],
+                                                                                covariatesSubset$p25Value1[j],
+                                                                                covariatesSubset$medianValue1[j],
+                                                                                covariatesSubset$p75Value1[j],
+                                                                                covariatesSubset$maxValue1[j]),
+                                                                     value2 = c(covariatesSubset$averageValue2[j],
+                                                                                covariatesSubset$standardDeviation2[j],
+                                                                                covariatesSubset$minValue2[j],
+                                                                                covariatesSubset$p25Value2[j],
+                                                                                covariatesSubset$medianValue2[j],
+                                                                                covariatesSubset$p75Value2[j],
+                                                                                covariatesSubset$maxValue2[j]),
+                                                                     stdDiff = c(covariatesSubset$stdDiff[j],
+                                                                                 "  ",
+                                                                                 "  ",
+                                                                                 "  ",
+                                                                                 "  ",
+                                                                                 "  ",
+                                                                                 "  ")))
                 
               }
             } else {
               continuousTable <- bind_rows(continuousTable,
-                                           tibble::tibble(Characteristic = specifications$label[i],
-                                                          value1 = "",
-                                                          value2 = "",
-                                                          stdDiff = ""))
-              continuousTable <- bind_rows(continuousTable, tibble::tibble(Characteristic = c("    Mean",
-                                                                                              "    Std. deviation",
-                                                                                              "    Minimum",
-                                                                                              "    25th percentile",
-                                                                                              "    Median",
-                                                                                              "    75th percentile",
-                                                                                              "    Maximum"),
-                                                                           value1 = c(covariatesSubset$averageValue1,
-                                                                                      covariatesSubset$standardDeviation1,
-                                                                                      covariatesSubset$minValue1,
-                                                                                      covariatesSubset$p25Value1,
-                                                                                      covariatesSubset$medianValue1,
-                                                                                      covariatesSubset$p75Value1,
-                                                                                      covariatesSubset$maxValue1),
-                                                                           value2 = c(covariatesSubset$averageValue2,
-                                                                                      covariatesSubset$standardDeviation2,
-                                                                                      covariatesSubset$minValue2,
-                                                                                      covariatesSubset$p25Value2,
-                                                                                      covariatesSubset$medianValue2,
-                                                                                      covariatesSubset$p75Value2,
-                                                                                      covariatesSubset$maxValue2),
-                                                                           stdDiff = c(covariatesSubset$stdDiff,
-                                                                                       "  ",
-                                                                                       "  ",
-                                                                                       "  ",
-                                                                                       "  ",
-                                                                                       "  ",
-                                                                                       "  ")))
+                                           tibble(Characteristic = specifications$label[i],
+                                                  value1 = "",
+                                                  value2 = "",
+                                                  stdDiff = ""))
+              continuousTable <- bind_rows(continuousTable, tibble(Characteristic = c("    Mean",
+                                                                                      "    Std. deviation",
+                                                                                      "    Minimum",
+                                                                                      "    25th percentile",
+                                                                                      "    Median",
+                                                                                      "    75th percentile",
+                                                                                      "    Maximum"),
+                                                                   value1 = c(covariatesSubset$averageValue1,
+                                                                              covariatesSubset$standardDeviation1,
+                                                                              covariatesSubset$minValue1,
+                                                                              covariatesSubset$p25Value1,
+                                                                              covariatesSubset$medianValue1,
+                                                                              covariatesSubset$p75Value1,
+                                                                              covariatesSubset$maxValue1),
+                                                                   value2 = c(covariatesSubset$averageValue2,
+                                                                              covariatesSubset$standardDeviation2,
+                                                                              covariatesSubset$minValue2,
+                                                                              covariatesSubset$p25Value2,
+                                                                              covariatesSubset$medianValue2,
+                                                                              covariatesSubset$p75Value2,
+                                                                              covariatesSubset$maxValue2),
+                                                                   stdDiff = c(covariatesSubset$stdDiff,
+                                                                               "  ",
+                                                                               "  ",
+                                                                               "  ",
+                                                                               "  ",
+                                                                               "  ",
+                                                                               "  ")))
             }
           }
         }

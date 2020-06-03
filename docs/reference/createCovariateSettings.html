@@ -8,23 +8,29 @@
 
 <title>Create covariate settings — createCovariateSettings • FeatureExtraction</title>
 
-<!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-<!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<!-- jquery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<!-- Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -32,10 +38,10 @@
 
 
 
-<meta property="og:title" content="Create covariate settings — createCovariateSettings" />
 
+<meta property="og:title" content="Create covariate settings — createCovariateSettings" />
 <meta property="og:description" content="Create covariate settings" />
-<meta name="twitter:card" content="summary" />
+
 
 
 
@@ -52,7 +58,7 @@
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -66,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">FeatureExtraction</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">3.0.0</span>
       </span>
     </div>
 
@@ -80,6 +86,9 @@
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -105,14 +114,13 @@
     </li>
   </ul>
 </li>
-<li>
-  <a href="../news/index.html">Changelog</a>
-</li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/OHDSI/FeatureExtraction">
+  <a href="https://ohdsi.github.io/Hades"><img src='https://ohdsi.github.io/Hades/images/hadesMini.png' width=80 height=17 style='vertical-align: top;'></a>
+</li>
+<li>
+  <a href="https://github.com/OHDSI/FeatureExtraction/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -136,15 +144,17 @@
     </div>
 
     <div class="ref-description">
-    
     <p>Create covariate settings</p>
-    
     </div>
 
-    <pre class="usage"><span class='fu'>createCovariateSettings</span>(<span class='kw'>useDemographicsGender</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>useDemographicsAge</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>useDemographicsAgeGroup</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>useDemographicsRace</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>useDemographicsEthnicity</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>useDemographicsIndexYear</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>useDemographicsIndexMonth</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+    <pre class="usage"><span class='fu'>createCovariateSettings</span>(
+  <span class='kw'>useDemographicsGender</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useDemographicsAge</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useDemographicsAgeGroup</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useDemographicsRace</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useDemographicsEthnicity</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useDemographicsIndexYear</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useDemographicsIndexMonth</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>useDemographicsPriorObservationTime</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>useDemographicsPostObservationTime</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>useDemographicsTimeInCohort</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
@@ -157,8 +167,10 @@
   <span class='kw'>useConditionOccurrencePrimaryInpatientLongTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>useConditionOccurrencePrimaryInpatientMediumTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>useConditionOccurrencePrimaryInpatientShortTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>useConditionEraAnyTimePrior</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>useConditionEraLongTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>useConditionEraMediumTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>useConditionEraShortTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useConditionEraAnyTimePrior</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useConditionEraLongTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useConditionEraMediumTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useConditionEraShortTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>useConditionEraOverlapping</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>useConditionEraStartLongTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>useConditionEraStartMediumTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
@@ -171,14 +183,22 @@
   <span class='kw'>useConditionGroupEraStartLongTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>useConditionGroupEraStartMediumTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>useConditionGroupEraStartShortTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>useDrugExposureAnyTimePrior</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>useDrugExposureLongTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>useDrugExposureMediumTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>useDrugExposureShortTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>useDrugEraAnyTimePrior</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>useDrugEraLongTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>useDrugEraMediumTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>useDrugEraShortTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>useDrugEraOverlapping</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>useDrugEraStartLongTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>useDrugEraStartMediumTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>useDrugEraStartShortTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>useDrugGroupEraAnyTimePrior</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>useDrugGroupEraLongTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>useDrugGroupEraMediumTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>useDrugGroupEraShortTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useDrugExposureAnyTimePrior</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useDrugExposureLongTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useDrugExposureMediumTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useDrugExposureShortTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useDrugEraAnyTimePrior</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useDrugEraLongTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useDrugEraMediumTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useDrugEraShortTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useDrugEraOverlapping</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useDrugEraStartLongTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useDrugEraStartMediumTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useDrugEraStartShortTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useDrugGroupEraAnyTimePrior</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useDrugGroupEraLongTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useDrugGroupEraMediumTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useDrugGroupEraShortTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>useDrugGroupEraOverlapping</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>useDrugGroupEraStartLongTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>useDrugGroupEraStartMediumTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
@@ -191,8 +211,10 @@
   <span class='kw'>useDeviceExposureLongTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>useDeviceExposureMediumTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>useDeviceExposureShortTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>useMeasurementAnyTimePrior</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>useMeasurementLongTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>useMeasurementMediumTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>useMeasurementShortTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useMeasurementAnyTimePrior</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useMeasurementLongTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useMeasurementMediumTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useMeasurementShortTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>useMeasurementValueAnyTimePrior</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>useMeasurementValueLongTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>useMeasurementValueMediumTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
@@ -201,10 +223,15 @@
   <span class='kw'>useMeasurementRangeGroupLongTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>useMeasurementRangeGroupMediumTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>useMeasurementRangeGroupShortTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>useObservationAnyTimePrior</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>useObservationLongTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>useObservationMediumTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>useObservationShortTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>useCharlsonIndex</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>useDcsi</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>useChads2</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>useChads2Vasc</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>useHfrs</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useObservationAnyTimePrior</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useObservationLongTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useObservationMediumTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useObservationShortTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useCharlsonIndex</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useDcsi</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useChads2</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useChads2Vasc</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useHfrs</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>useDistinctConditionCountLongTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>useDistinctConditionCountMediumTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>useDistinctConditionCountShortTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
@@ -220,15 +247,23 @@
   <span class='kw'>useDistinctObservationCountLongTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>useDistinctObservationCountMediumTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>useDistinctObservationCountShortTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>useVisitCountLongTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>useVisitCountMediumTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>useVisitCountShortTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>useVisitConceptCountLongTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useVisitCountLongTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useVisitCountMediumTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useVisitCountShortTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useVisitConceptCountLongTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>useVisitConceptCountMediumTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>useVisitConceptCountShortTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>longTermStartDays</span> <span class='kw'>=</span> -<span class='fl'>365</span>,
-  <span class='kw'>mediumTermStartDays</span> <span class='kw'>=</span> -<span class='fl'>180</span>, <span class='kw'>shortTermStartDays</span> <span class='kw'>=</span> -<span class='fl'>30</span>, <span class='kw'>endDays</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>includedCovariateConceptIds</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(), <span class='kw'>addDescendantsToInclude</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>excludedCovariateConceptIds</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(), <span class='kw'>addDescendantsToExclude</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>includedCovariateIds</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>())</pre>
-    
+  <span class='kw'>useVisitConceptCountShortTerm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>longTermStartDays</span> <span class='kw'>=</span> -<span class='fl'>365</span>,
+  <span class='kw'>mediumTermStartDays</span> <span class='kw'>=</span> -<span class='fl'>180</span>,
+  <span class='kw'>shortTermStartDays</span> <span class='kw'>=</span> -<span class='fl'>30</span>,
+  <span class='kw'>endDays</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>includedCovariateConceptIds</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  <span class='kw'>addDescendantsToInclude</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>excludedCovariateConceptIds</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  <span class='kw'>addDescendantsToExclude</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>includedCovariateIds</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>()
+)</pre>
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -924,15 +959,13 @@ to the list of concepts to exclude?</p></td>
 restricted to.</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>An object of type <code>covariateSettings</code>, to be used in other functions.</p>
-    
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>creates an object specifying how covariates should be contructed from data in the CDM model.</p>
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>settings</span> <span class='kw'>&lt;-</span> <span class='fu'>createCovariateSettings</span>(<span class='kw'>useDemographicsGender</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
@@ -1050,18 +1083,10 @@ restricted to.</p></td>
                                     <span class='kw'>addDescendantsToExclude</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
                                     <span class='kw'>includedCovariateIds</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>())</div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-
-      <li><a href="#details">Details</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
@@ -1072,7 +1097,7 @@ restricted to.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.9100.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

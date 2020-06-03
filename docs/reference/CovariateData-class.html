@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Filter covariates by row ID — filterByRowId • FeatureExtraction</title>
+<title>Covariate Data — CovariateData-class • FeatureExtraction</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,16 @@
 
 
 
-<meta property="og:title" content="Filter covariates by row ID — filterByRowId" />
-<meta property="og:description" content="Filter covariates by row ID" />
+<meta property="og:title" content="Covariate Data — CovariateData-class" />
+<meta property="og:description" content="CovariateData is an S4 class that inherits from Andromeda. It contains 
+information on covariates, which can be either captured on a per-person basis, or aggregated across
+the cohort(s).
+By default covariates refer to a specific time period, with for example different covariate IDs for 
+whether a diagnosis code was observed in the year before and month before index date. However, a
+CovariateData can also be temporal, meaning that next to a covariate ID there is also a time ID,
+which identifies the (user specified) time window the covariate was captured.
+A CovariateData object is typically created using getDbCovariateData, can only be saved using
+saveCovariateData, and loaded using loadCovariateData." />
 
 
 
@@ -138,33 +146,41 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Filter covariates by row ID</h1>
-    <small class="dont-index">Source: <a href='https://github.com/OHDSI/FeatureExtraction/blob/master/R/HelperFunctions.R'><code>R/HelperFunctions.R</code></a></small>
-    <div class="hidden name"><code>filterByRowId.Rd</code></div>
+    <h1>Covariate Data</h1>
+    <small class="dont-index">Source: <a href='https://github.com/OHDSI/FeatureExtraction/blob/master/R/CovariateData.R'><code>R/CovariateData.R</code></a></small>
+    <div class="hidden name"><code>CovariateData-class.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Filter covariates by row ID</p>
+    <p><code>CovariateData</code> is an S4 class that inherits from <code><a href='https://rdrr.io/pkg/Andromeda/man/Andromeda-class.html'>Andromeda</a></code>. It contains 
+information on covariates, which can be either captured on a per-person basis, or aggregated across
+the cohort(s).</p>
+<p>By default covariates refer to a specific time period, with for example different covariate IDs for 
+whether a diagnosis code was observed in the year before and month before index date. However, a
+<code>CovariateData</code> can also be temporal, meaning that next to a covariate ID there is also a time ID,
+which identifies the (user specified) time window the covariate was captured.</p>
+<p>A <code>CovariateData</code> object is typically created using <code><a href='getDbCovariateData.html'>getDbCovariateData</a></code>, can only be saved using
+<code><a href='saveCovariateData.html'>saveCovariateData</a></code>, and loaded using <code><a href='loadCovariateData.html'>loadCovariateData</a></code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>filterByRowId</span>(<span class='no'>covariateData</span>, <span class='no'>rowIds</span>)</pre>
+    <pre class="usage"><span class='co'># S4 method for CovariateData</span>
+<span class='fu'>show</span>(<span class='no'>object</span>)
+
+<span class='co'># S4 method for CovariateData</span>
+<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='no'>object</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>covariateData</th>
-      <td><p>An object of type <code>CovariateData</code></p></td>
-    </tr>
-    <tr>
-      <th>rowIds</th>
-      <td><p>A vector containing the rowIds to keep.</p></td>
+      <th>object</th>
+      <td><p>An object of class `CovariateData`.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <p>An object of type <code>covariateData</code>.</p>
+    <div class='dont-index'><p><code><a href='isCovariateData.html'>isCovariateData</a></code>, <code><a href='isAggregatedCovariateData.html'>isAggregatedCovariateData</a></code>, <code><a href='isTemporalCovariateData.html'>isTemporalCovariateData</a></code></p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
