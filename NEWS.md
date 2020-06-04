@@ -13,6 +13,8 @@ Bugfixes:
 
 1. Dropping spurious 'analysis_name' field in temporary covariate reference table.
 
+2. Fixed covariate name of age groups over 100 years old. 
+
 
 FeatureExtraction 2.2.5
 =======================

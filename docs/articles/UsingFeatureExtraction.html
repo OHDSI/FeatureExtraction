@@ -100,7 +100,7 @@
       <h1 data-toc-skip>Using FeatureExtraction</h1>
                         <h4 class="author">Martijn J. Schuemie</h4>
             
-            <h4 class="date">2020-06-03</h4>
+            <h4 class="date">2020-06-04</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/FeatureExtraction/blob/master/vignettes/UsingFeatureExtraction.Rmd"><code>vignettes/UsingFeatureExtraction.Rmd</code></a></small>
       <div class="hidden name"><code>UsingFeatureExtraction.Rmd</code></div>
@@ -374,7 +374,7 @@
 <p>The main component of the <code>covariateData</code> object is <code>covariates</code>:</p>
 <div class="sourceCode" id="cb20"><html><body><pre class="r"><span class="no">covariateData</span>$<span class="no">covariates</span></pre></body></html></div>
 <pre><code>## # Source:   lazy query [?? x 3]
-## # Database: sqlite 3.30.1 [C:\Users\mschuemi\AppData\Local\Temp\RtmpuICZf8\file483875491c97.sqlite]
+## # Database: sqlite 3.30.1 [C:\Users\mschuemi\AppData\Local\Temp\Rtmp6NO6MS\file2cdc54cfa77.sqlite]
 ##    rowId covariateId covariateValue
 ##    &lt;int&gt;       &lt;dbl&gt;          &lt;dbl&gt;
 ##  1     1  4181063212              1
@@ -477,7 +477,7 @@
 <p>The two main components of the aggregated <code>covariateData</code> object are <code>covariates</code> and <code>covariatesContinuous</code>, for binary and continuous covariates respectively:</p>
 <div class="sourceCode" id="cb33"><html><body><pre class="r"><span class="no">covariateData2</span>$<span class="no">covariates</span></pre></body></html></div>
 <pre><code>## # Source:   table&lt;covariates&gt; [?? x 3]
-## # Database: sqlite 3.30.1 [C:\Users\mschuemi\AppData\Local\Temp\RtmpuICZf8\file4838599a53a2.sqlite]
+## # Database: sqlite 3.30.1 [C:\Users\mschuemi\AppData\Local\Temp\Rtmp6NO6MS\file2cdc5d922e2f.sqlite]
 ##    covariateId sumValue averageValue
 ##          &lt;dbl&gt;    &lt;dbl&gt;        &lt;dbl&gt;
 ##  1   135496212       12    0.000254 
@@ -493,7 +493,7 @@
 ## # ... with more rows</code></pre>
 <div class="sourceCode" id="cb35"><html><body><pre class="r"><span class="no">covariateData2</span>$<span class="no">covariatesContinuous</span></pre></body></html></div>
 <pre><code>## # Source:   table&lt;covariatesContinuous&gt; [?? x 11]
-## # Database: sqlite 3.30.1 [C:\Users\mschuemi\AppData\Local\Temp\RtmpuICZf8\file4838599a53a2.sqlite]
+## # Database: sqlite 3.30.1 [C:\Users\mschuemi\AppData\Local\Temp\Rtmp6NO6MS\file2cdc5d922e2f.sqlite]
 ##   covariateId countValue minValue maxValue averageValue standardDeviation medianValue p10Value p25Value p75Value p90Value
 ##         &lt;dbl&gt;      &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;        &lt;dbl&gt;             &lt;dbl&gt;       &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
 ## 1        1901      33013        0       21         2.32              2.66           1        0        0        3        6
