@@ -57,7 +57,7 @@ tidyCovariateData <- function(covariateData,
     if (removeRedundancy || minFraction != 0) {
       covariateData$valueCounts <- covariateData$covariates %>% 
         group_by(.data$covariateId) %>% 
-        count()
+        summarise(n = count(), nDistinct = n_distinct(.data$covariateValue))
       on.exit(covariateData$valueCounts <- NULL, add = TRUE)
     }
     
@@ -65,7 +65,8 @@ tidyCovariateData <- function(covariateData,
     deleteCovariateIds <- c()
     if (removeRedundancy) {
       covariateData$binaryCovariateIds <- covariateData$maxValuePerCovariateId %>% 
-        filter(.data$maxValue == 1) %>% 
+        inner_join(covariateData$valueCounts, by = "covariateId") %>%
+        filter(.data$maxValue == 1 & .data$nDistinct == 1) %>%
         select(covariateId = .data$covariateId)
       on.exit(covariateData$binaryCovariateIds <- NULL, add = TRUE)
       
@@ -151,7 +152,7 @@ tidyCovariateData <- function(covariateData,
       
       metaData$deletedInfrequentCovariateIds <- toDelete$covariateId
       deleteCovariateIds <- c(deleteCovariateIds, toDelete$covariateId)
-      ParallelLogger::logInfo("Removing ", length(deleteCovariateIds), " infrequent covariates")
+      ParallelLogger::logInfo("Removing ", nrow(toDelete), " infrequent covariates")
     }
     if (length(deleteCovariateIds) > 0) {
       newCovariates <- newCovariates %>% 
