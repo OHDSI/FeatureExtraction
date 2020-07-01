@@ -79,10 +79,11 @@ public class FeatureExtraction {
 		//
 		// System.out.println(getDefaultPrespecAnalyses());
 		//
-		// System.out.println(getDefaultPrespecTemporalAnalyses());
-		// System.out.println(convertSettingsPrespecToDetails(getDefaultPrespecTemporalAnalyses()));
+		String settings = getDefaultPrespecTemporalAnalyses();
+		// String settings = convertSettingsPrespecToDetails(getDefaultPrespecTemporalAnalyses());
 		// System.out.println(convertSettingsPrespecToDetails(getDefaultPrespecAnalyses()));
-		String settings = "{\"temporal\":false,\"analyses\":[{\"analysisId\":301,\"sqlFileName\":\"DomainConcept.sql\",\"parameters\":{\"analysisId\":301,\"startDay\":-365,\"endDay\":0,\"inpatient\":\"\",\"domainTable\":\"drug_exposure\",\"domainConceptId\":\"drug_concept_id\",\"domainStartDate\":\"drug_exposure_start_date\",\"domainEndDate\":\"drug_exposure_start_date\"},\"addDescendantsToExclude\":true,\"includedCovariateConceptIds\":[1,2,21600537410],\"excludedCovariateConceptIds\":{},\"addDescendantsToInclude\":true,\"includedCovariateIds\":12301}]}";
+		// String settings =
+		// "{\"temporal\":false,\"analyses\":[{\"analysisId\":301,\"sqlFileName\":\"DomainConcept.sql\",\"parameters\":{\"analysisId\":301,\"startDay\":-365,\"endDay\":0,\"inpatient\":\"\",\"domainTable\":\"drug_exposure\",\"domainConceptId\":\"drug_concept_id\",\"domainStartDate\":\"drug_exposure_start_date\",\"domainEndDate\":\"drug_exposure_start_date\"},\"addDescendantsToExclude\":true,\"includedCovariateConceptIds\":[1,2,21600537410],\"excludedCovariateConceptIds\":{},\"addDescendantsToInclude\":true,\"includedCovariateIds\":12301}]}";
 		// String settings = convertSettingsPrespecToDetails(getDefaultPrespecAnalyses());
 		System.out.println(createSql(settings, true, "#temp_cohort", "row_id", -1, "cdm_synpuf"));
 		// System.out.println(createSql(getDefaultPrespecAnalyses(), true, "#temp_cohort", "row_id", -1, "cdm_synpuf"));
@@ -110,7 +111,7 @@ public class FeatureExtraction {
 					loadTemplateSql(packageFolder);
 					createCovRefTableSql = loadSqlFile(packageFolder, "CreateCovAnalysisRefTables.sql");
 				}
-			} catch(Exception e) {
+			} catch (Exception e) {
 				otherParameterNames = null;
 				nameToSql = null;
 				nameToPrespecAnalysis = null;
@@ -256,14 +257,14 @@ public class FeatureExtraction {
 		}
 		return nameToPrespecAnalysis;
 	}
-
+	
 	public static Map<String, PrespecAnalysis> getNameToPrespecAnalysis() {
 		if (nameToPrespecAnalysis == null) {
 			FeatureExtraction.init(null);
 		}
 		return nameToPrespecAnalysis;
 	}
-
+	
 	/**
 	 * Creates a default settings object
 	 * 
@@ -529,8 +530,13 @@ public class FeatureExtraction {
 		boolean hasFeature = false;
 		StringBuilder sql = new StringBuilder();
 		if (aggregated) {
-			sql.append(
-					"SELECT all_covariates.covariate_id,\n  all_covariates.sum_value,\n  CAST(all_covariates.sum_value / (1.0 * total.total_count) AS FLOAT) AS average_value\nFROM (");
+			if (temporal)
+				sql.append(
+						"SELECT all_covariates.covariate_id,\n  all_covariates.time_id,\n  all_covariates.sum_value,\n  CAST(all_covariates.sum_value / (1.0 * total.total_count) AS FLOAT) AS average_value\nFROM (");
+			else
+				sql.append(
+						"SELECT all_covariates.covariate_id,\n  all_covariates.sum_value,\n  CAST(all_covariates.sum_value / (1.0 * total.total_count) AS FLOAT) AS average_value\nFROM (");
+			
 		} else {
 			sql.append("SELECT *\nFROM (\n");
 		}

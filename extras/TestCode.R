@@ -72,7 +72,7 @@ sql <- "IF OBJECT_ID('@cohort_database_schema.@cohort_table', 'U') IS NOT NULL
 DROP TABLE @cohort_database_schema.@cohort_table;
 SELECT 1 AS cohort_definition_id, person_id AS subject_id, drug_era_start_date AS cohort_start_date, drug_era_end_date AS cohort_end_date, ROW_NUMBER() OVER (ORDER BY person_id, drug_era_start_date) AS row_id
 INTO @cohort_database_schema.@cohort_table FROM @cdm_database_schema.drug_era 
-WHERE drug_concept_id = 1118084;"
+WHERE drug_concept_id = 1125443;"
 sql <- SqlRender::render(sql, 
                             cdm_database_schema = cdmDatabaseSchema,
                             cohort_database_schema = cohortDatabaseSchema,
@@ -256,17 +256,19 @@ covs <- getDbCovariateData(connectionDetails = connectionDetails,
                            rowIdField = "row_id",
                            cohortTableIsTemp = FALSE,
                            covariateSettings = covariateSettings,
-                           aggregated = FALSE)
+                           aggregated = TRUE)
 saveCovariateData(covs, "c:/temp/tempCovs")
 covariateData <- loadCovariateData("c:/temp/tempCovs")
 tidyCovs <- tidyCovariateData(covariateData)
+
+agg <- aggregateCovariates(covs)
 
 saveCovariateData(tidyCovs, "c:/temp/tidyCovs.zip")
 
 
 # Aggregation ---------------------------------------------------------------------------------
 covariateSettings <- createCovariateSettings(useDemographicsAge = TRUE,
-                                             useDemographicsGender = TRUE)
+                                              = TRUE)
 
 covs <- getDbCovariateData(connectionDetails = connectionDetails,
                            oracleTempSchema = oracleTempSchema,

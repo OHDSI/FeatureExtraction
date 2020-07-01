@@ -1,3 +1,11 @@
+FeatureExtraction 3.0.1
+=======================
+
+Bugfixes: 
+
+1. Time ID is now retrieved when aggregating binary temporal covariates.
+
+
 FeatureExtraction 3.0.0
 =======================
 
