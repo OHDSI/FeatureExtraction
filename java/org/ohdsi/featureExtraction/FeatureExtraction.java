@@ -392,6 +392,7 @@ public class FeatureExtraction {
 	 * <li>sqlQueryContinuousFeatures: SQL for fetching the continuous features from the server.</li>
 	 * <li>sqlQueryFeatureRef: SQL for fetching the description of the features from the server.</li>
 	 * <li>sqlQueryAnalysisRef: SQL for fetching the description of the analyses from the server.</li>
+	 * <li>sqlQueryTimeRef: For temporal analyses: SQL for fetching the description of the time windows from the server.</li>
 	 * <li>sqlCleanup: SQL for deleting the temp tables created by sqlConstruction.</li>
 	 * </ol>
 	 * Note that all SQL is in the SQL Server dialect, and may need to be translated to the appropriate dialect using SqlRender's translateSql function.
@@ -478,6 +479,11 @@ public class FeatureExtraction {
 			jsonWriter.value("SELECT analysis_id, analysis_name, domain_id, is_binary, missing_means_zero FROM #analysis_ref");
 		} else {
 			jsonWriter.value("SELECT analysis_id, analysis_name, domain_id, start_day, end_day, is_binary, missing_means_zero FROM #analysis_ref");
+		}
+		
+		if (temporal) {
+			jsonWriter.key("sqlQueryTimeRef");
+			jsonWriter.value("SELECT time_id, start_day, end_day FROM #time_period");
 		}
 		
 		jsonWriter.key("sqlCleanup");

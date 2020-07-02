@@ -1,6 +1,10 @@
 FeatureExtraction 3.0.1
 =======================
 
+Changes;
+
+1. Adding timeRef table to CovariateData object for temporal covariates.
+
 Bugfixes: 
 
 1. Time ID is now retrieved when aggregating binary temporal covariates.

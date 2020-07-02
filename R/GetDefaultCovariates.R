@@ -133,6 +133,19 @@ getDbDefaultCovariateData <- function(connection,
                                            andromedaTableName = "analysisRef",
                                            snakeCaseToCamelCase = TRUE)
     
+    # Time reference
+    if (!is.null(todo$sqlQueryTimeRef)) {
+      sql <- SqlRender::translate(sql = todo$sqlQueryTimeRef,
+                                  targetDialect = attr(connection, "dbms"),
+                                  oracleTempSchema = oracleTempSchema)
+      DatabaseConnector::querySqlToAndromeda(connection = connection, 
+                                             sql = sql, 
+                                             andromeda = covariateData, 
+                                             andromedaTableName = "timeRef",
+                                             snakeCaseToCamelCase = TRUE)
+    }
+    
+    
     delta <- Sys.time() - start
     ParallelLogger::logInfo("Fetching data took ", signif(delta, 3), " ", attr(delta, "units"))
   } else {
