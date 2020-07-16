@@ -5,6 +5,8 @@ Changes;
 
 1. Adding timeRef table to CovariateData object for temporal covariates.
 
+2. Throw meaningfull error when `createCovariateSettings()` is called without specifying any covariates.
+
 Bugfixes: 
 
 1. Time ID is now retrieved when aggregating binary temporal covariates.

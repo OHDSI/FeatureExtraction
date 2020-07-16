@@ -4,7 +4,7 @@ FeatureExtraction
 [![Build Status](https://travis-ci.org/OHDSI/FeatureExtraction.svg?branch=master)](https://travis-ci.org/OHDSI/FeatureExtraction)
 [![codecov.io](https://codecov.io/github/OHDSI/FeatureExtraction/coverage.svg?branch=master)](https://codecov.io/github/OHDSI/FeatureExtraction?branch=master)
 
-FeatureExtraction is part [HADES](https://ohdsi.github.io/Hades).
+FeatureExtraction is part of [HADES](https://ohdsi.github.io/Hades).
 
 Introduction
 ============

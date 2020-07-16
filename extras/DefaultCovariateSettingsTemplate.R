@@ -33,6 +33,7 @@
 %functionName% <- function(%arguments%) {
   covariateSettings <- list(temporal = %temporal%)
   formalNames <- names(formals(%functionName%))
+  anyUseTrue <- FALSE
   for (name in formalNames) {
     value <- get(name)
     if (is.null(value)) {
@@ -41,10 +42,14 @@
     if (grepl("use.*", name)) {
        if (value) {
          covariateSettings[[sub("use", "", name)]] <- value
+         anyUseTrue <- TRUE
        }
     } else {
       covariateSettings[[name]] <- value
     }
+  }
+  if (!anyUseTrue) {
+    stop("No covariate analysis selected. Must select at least one") 
   }
   attr(covariateSettings, "fun") <- "getDbDefaultCovariateData"
   class(covariateSettings) <- "covariateSettings"

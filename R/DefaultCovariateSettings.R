@@ -607,6 +607,7 @@ createCovariateSettings <- function(useDemographicsGender = FALSE,
                                     includedCovariateIds = c()) {
   covariateSettings <- list(temporal = FALSE)
   formalNames <- names(formals(createCovariateSettings))
+  anyUseTrue <- FALSE
   for (name in formalNames) {
     value <- get(name)
     if (is.null(value)) {
@@ -615,10 +616,14 @@ createCovariateSettings <- function(useDemographicsGender = FALSE,
     if (grepl("use.*", name)) {
       if (value) {
         covariateSettings[[sub("use", "", name)]] <- value
+        anyUseTrue <- TRUE
       }
     } else {
       covariateSettings[[name]] <- value
     }
+  }
+  if (!anyUseTrue) {
+    stop("No covariate analysis selected. Must select at least one") 
   }
   attr(covariateSettings, "fun") <- "getDbDefaultCovariateData"
   class(covariateSettings) <- "covariateSettings"
