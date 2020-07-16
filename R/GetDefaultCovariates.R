@@ -48,6 +48,7 @@ getDbDefaultCovariateData <- function(connection,
                                       targetCovariateRefTable,
                                       targetAnalysisRefTable,
                                       aggregated = FALSE) {
+  ParallelLogger::logInfo("getDbDefaultCovariateData() is being called.")
   if (!is(covariateSettings, "covariateSettings")) {
     stop("Covariate settings object not of type covariateSettings")
   }

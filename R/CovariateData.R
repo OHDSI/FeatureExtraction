@@ -190,6 +190,7 @@ isTemporalCovariateData <- function(x) {
 }
 
 createEmptyCovariateData <- function(cohortId, aggregated, temporal) {
+  ParallelLogger::logInfo("createEmptyCovariateData() is being called")
   dummy <- tibble(covariateId = 1,
                   covariateValue = 1)
   if (!aggregated) {

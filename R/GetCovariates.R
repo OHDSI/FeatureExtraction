@@ -73,6 +73,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
                                rowIdField = "subject_id",
                                covariateSettings,
                                aggregated = FALSE) {
+  ParallelLogger::logInfo("getDbCovariateData() is being called.")
   if (is.null(connectionDetails) && is.null(connection)) {
     stop("Need to provide either connectionDetails or connection")
   }
@@ -103,6 +104,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
                               targetDialect = attr(connection, "dbms"),
                               oracleTempSchema = oracleTempSchema)
   populationSize <- DatabaseConnector::querySql(connection, sql)[1, 1]
+  ParallelLogger::logInfo("About to check for zero population size.")
   if (populationSize == 0) {
     covariateData <- createEmptyCovariateData(cohortId, aggregated, covariateSettings$temporal)
     warning("Population is empty. No covariates were constructed")
