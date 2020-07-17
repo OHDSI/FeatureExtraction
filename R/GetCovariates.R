@@ -118,6 +118,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
         return(!is.null(data) && (data %>% count() %>% pull()) > 0)
       }
       for (i in 1:length(covariateSettings)) {
+        print(covariateSettings[[i]])
         fun <- attr(covariateSettings[[i]], "fun")
         args <- list(connection = connection,
                      oracleTempSchema = oracleTempSchema,
