@@ -94,11 +94,13 @@ getDbDefaultCovariateData <- function(connection,
                                   targetDialect = attr(connection, "dbms"),
                                   oracleTempSchema = oracleTempSchema)
       
+      ParallelLogger::logInfo("About to query SQL to Andromeda.")
       DatabaseConnector::querySqlToAndromeda(connection = connection, 
                                              sql = sql, 
                                              andromeda = covariateData, 
                                              andromedaTableName = "covariates",
                                              snakeCaseToCamelCase = TRUE)
+      ParallelLogger::logInfo("Query finished.")
     } 
     
     # Continuous aggregated features
