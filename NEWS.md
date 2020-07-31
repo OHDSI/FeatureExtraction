@@ -5,7 +5,9 @@ Changes;
 
 1. Adding timeRef table to CovariateData object for temporal covariates.
 
-2. Throw meaningfull error when `createCovariateSettings()` is called without specifying any covariates.
+2. Throw meaningful error when `createCovariateSettings()` is called without specifying any covariates.
+
+3. `getDbCovariateData()` returns empty covariates instead of NULL covariates when no covariates are specified. 
 
 Bugfixes: 
 

@@ -139,7 +139,7 @@ settings <- createDetailedCovariateSettings(list(analysisDetails))
 
 ## Temporal covariates
 
-Ordinarily, covariates are created for just a few time windows of interest, for example the short, medium, and long term windows described earlier. However, sometimes a more fine-grained temporal resolution is required, for example creating covariates for each day separately, in the 365 days prior to cohort start. We will refer to this type of covariates as *temporal covariates*. Temporal covariates share the same covariate ID across the time windows, and use a separate time ID to distinguish between time windows. There currently aren't many applications that are able to handle temporal covariats. For example, the `CohortMethod` package will break when provided with temporal covariates. However, there are some machine learning algorithms in the `PatientLevelPrediction` package that require temporal covariates. 
+Ordinarily, covariates are created for just a few time windows of interest, for example the short, medium, and long term windows described earlier. However, sometimes a more fine-grained temporal resolution is required, for example creating covariates for each day separately, in the 365 days prior to cohort start. We will refer to this type of covariates as *temporal covariates*. Temporal covariates share the same covariate ID across the time windows, and use a separate time ID to distinguish between time windows. There currently aren't many applications that are able to handle temporal covariates. For example, the `CohortMethod` package will break when provided with temporal covariates. However, there are some machine learning algorithms in the `PatientLevelPrediction` package that require temporal covariates. 
 
 Again, we can just choose to use the default settings:
 
@@ -440,7 +440,7 @@ The columns of `covariates` are defined as follows:
 The columns of `covariatesContinuous` are defined as follows:
 
 - `covariateId` identifies the covariate, and definitions of covariates can be found in the `cohortData$covariateRef` object. 
-- `countValue` is the number of people that have a value (for continous variables).
+- `countValue` is the number of people that have a value (for continuous variables).
 - `minValue`, `maxValue`, `averageValue`, `standardDeviation`, `medianValue`, `p10Value`, `p25Value`, `p75Value`, and `p90Value` all inform on the distribution of covariate values. Note that for some covariates (such as the Charlson comorbidity index) a value of 0 is interpreted as the value 0, while for other covariates (Such as blood pressure) 0 is interpreted as missing, and the distribution statistics are only computed over non-missing values. To learn which continuous covariates fall into which category one can consult the `missingMeansZero` field in the `covariateData$analysisRef` object.
 
 

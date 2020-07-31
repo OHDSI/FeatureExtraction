@@ -210,7 +210,10 @@ getDbDefaultCovariateData <- function(connection,
   if (missing(targetCovariateTable) || is.null(targetCovariateTable)) {
     attr(covariateData, "metaData") <- list()
     if (is.null(covariateData$covariates) && is.null(covariateData$covariatesContinuous)) {
-      warning("No data found")
+      warning("No data found, probably because no covariates were specified.")
+      covariateData <- createEmptyCovariateData(cohortId = cohortId,
+                                                aggregated = aggregated,
+                                                temporal = covariateSettings$temporal)
     }
     class(covariateData) <- "CovariateData"
     attr(class(covariateData), "package") <- "FeatureExtraction"

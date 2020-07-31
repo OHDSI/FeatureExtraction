@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">FeatureExtraction</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">3.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">3.0.1</span>
       </span>
     </div>
 
@@ -141,6 +141,20 @@
       <small>Source: <a href='https://github.com/OHDSI/FeatureExtraction/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="featureextraction-301" class="section level1">
+<h1 class="page-header" data-toc-text="3.0.1">
+<a href="#featureextraction-301" class="anchor"></a>FeatureExtraction 3.0.1</h1>
+<p>Changes;</p>
+<ol>
+<li><p>Adding timeRef table to CovariateData object for temporal covariates.</p></li>
+<li><p>Throw meaningful error when <code><a href="../reference/createCovariateSettings.html">createCovariateSettings()</a></code> is called without specifying any covariates.</p></li>
+<li><p><code><a href="../reference/getDbCovariateData.html">getDbCovariateData()</a></code> returns empty covariates instead of NULL covariates when no covariates are specified.</p></li>
+</ol>
+<p>Bugfixes:</p>
+<ol>
+<li>Time ID is now retrieved when aggregating binary temporal covariates.</li>
+</ol>
+</div>
     <div id="featureextraction-300" class="section level1">
 <h1 class="page-header" data-toc-text="3.0.0">
 <a href="#featureextraction-300" class="anchor"></a>FeatureExtraction 3.0.0</h1>

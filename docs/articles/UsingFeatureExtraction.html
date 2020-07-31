@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">FeatureExtraction</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">3.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">3.0.1</span>
       </span>
     </div>
 
@@ -94,13 +94,13 @@
 
       
 
-      </header><div class="row">
+      </header><script src="UsingFeatureExtraction_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Using FeatureExtraction</h1>
                         <h4 class="author">Martijn J. Schuemie</h4>
             
-            <h4 class="date">2020-06-04</h4>
+            <h4 class="date">2020-07-31</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/FeatureExtraction/blob/master/vignettes/UsingFeatureExtraction.Rmd"><code>vignettes/UsingFeatureExtraction.Rmd</code></a></small>
       <div class="hidden name"><code>UsingFeatureExtraction.Rmd</code></div>
@@ -253,7 +253,7 @@
 <div id="temporal-covariates" class="section level2">
 <h2 class="hasAnchor">
 <a href="#temporal-covariates" class="anchor"></a>Temporal covariates</h2>
-<p>Ordinarily, covariates are created for just a few time windows of interest, for example the short, medium, and long term windows described earlier. However, sometimes a more fine-grained temporal resolution is required, for example creating covariates for each day separately, in the 365 days prior to cohort start. We will refer to this type of covariates as <em>temporal covariates</em>. Temporal covariates share the same covariate ID across the time windows, and use a separate time ID to distinguish between time windows. There currently aren’t many applications that are able to handle temporal covariats. For example, the <code>CohortMethod</code> package will break when provided with temporal covariates. However, there are some machine learning algorithms in the <code>PatientLevelPrediction</code> package that require temporal covariates.</p>
+<p>Ordinarily, covariates are created for just a few time windows of interest, for example the short, medium, and long term windows described earlier. However, sometimes a more fine-grained temporal resolution is required, for example creating covariates for each day separately, in the 365 days prior to cohort start. We will refer to this type of covariates as <em>temporal covariates</em>. Temporal covariates share the same covariate ID across the time windows, and use a separate time ID to distinguish between time windows. There currently aren’t many applications that are able to handle temporal covariates. For example, the <code>CohortMethod</code> package will break when provided with temporal covariates. However, there are some machine learning algorithms in the <code>PatientLevelPrediction</code> package that require temporal covariates.</p>
 <p>Again, we can just choose to use the default settings:</p>
 <div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">settings</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createDefaultTemporalCovariateSettings.html">createDefaultTemporalCovariateSettings</a></span>()</pre></body></html></div>
 <p>Or, we can choose from a set of prespecified temporal covariates:</p>
@@ -374,7 +374,7 @@
 <p>The main component of the <code>covariateData</code> object is <code>covariates</code>:</p>
 <div class="sourceCode" id="cb20"><html><body><pre class="r"><span class="no">covariateData</span>$<span class="no">covariates</span></pre></body></html></div>
 <pre><code>## # Source:   lazy query [?? x 3]
-## # Database: sqlite 3.30.1 [C:\Users\mschuemi\AppData\Local\Temp\Rtmp6NO6MS\file2cdc54cfa77.sqlite]
+## # Database: sqlite 3.30.1 [C:\Users\mschuemi\AppData\Local\Temp\RtmpKGkmne\file447c13de7e0c.sqlite]
 ##    rowId covariateId covariateValue
 ##    &lt;int&gt;       &lt;dbl&gt;          &lt;dbl&gt;
 ##  1     1  4181063212              1
@@ -477,7 +477,7 @@
 <p>The two main components of the aggregated <code>covariateData</code> object are <code>covariates</code> and <code>covariatesContinuous</code>, for binary and continuous covariates respectively:</p>
 <div class="sourceCode" id="cb33"><html><body><pre class="r"><span class="no">covariateData2</span>$<span class="no">covariates</span></pre></body></html></div>
 <pre><code>## # Source:   table&lt;covariates&gt; [?? x 3]
-## # Database: sqlite 3.30.1 [C:\Users\mschuemi\AppData\Local\Temp\Rtmp6NO6MS\file2cdc5d922e2f.sqlite]
+## # Database: sqlite 3.30.1 [C:\Users\mschuemi\AppData\Local\Temp\RtmpKGkmne\file447c13de20c6.sqlite]
 ##    covariateId sumValue averageValue
 ##          &lt;dbl&gt;    &lt;dbl&gt;        &lt;dbl&gt;
 ##  1   135496212       12    0.000254 
@@ -493,7 +493,7 @@
 ## # ... with more rows</code></pre>
 <div class="sourceCode" id="cb35"><html><body><pre class="r"><span class="no">covariateData2</span>$<span class="no">covariatesContinuous</span></pre></body></html></div>
 <pre><code>## # Source:   table&lt;covariatesContinuous&gt; [?? x 11]
-## # Database: sqlite 3.30.1 [C:\Users\mschuemi\AppData\Local\Temp\Rtmp6NO6MS\file2cdc5d922e2f.sqlite]
+## # Database: sqlite 3.30.1 [C:\Users\mschuemi\AppData\Local\Temp\RtmpKGkmne\file447c13de20c6.sqlite]
 ##   covariateId countValue minValue maxValue averageValue standardDeviation medianValue p10Value p25Value p75Value p90Value
 ##         &lt;dbl&gt;      &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;        &lt;dbl&gt;             &lt;dbl&gt;       &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
 ## 1        1901      33013        0       21         2.32              2.66           1        0        0        3        6
@@ -514,7 +514,7 @@
 <li>
 <code>covariateId</code> identifies the covariate, and definitions of covariates can be found in the <code>cohortData$covariateRef</code> object.</li>
 <li>
-<code>countValue</code> is the number of people that have a value (for continous variables).</li>
+<code>countValue</code> is the number of people that have a value (for continuous variables).</li>
 <li>
 <code>minValue</code>, <code>maxValue</code>, <code>averageValue</code>, <code>standardDeviation</code>, <code>medianValue</code>, <code>p10Value</code>, <code>p25Value</code>, <code>p75Value</code>, and <code>p90Value</code> all inform on the distribution of covariate values. Note that for some covariates (such as the Charlson comorbidity index) a value of 0 is interpreted as the value 0, while for other covariates (Such as blood pressure) 0 is interpreted as missing, and the distribution statistics are only computed over non-missing values. To learn which continuous covariates fall into which category one can consult the <code>missingMeansZero</code> field in the <code>covariateData$analysisRef</code> object.</li>
 </ul>
