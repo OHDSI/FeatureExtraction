@@ -75,6 +75,7 @@ SELECT
     time_id,
 }	
 {@aggregated} ? {
+	cohort_definition_id,
 	COUNT(*) AS sum_value
 } : {
 	row_id,
@@ -87,6 +88,7 @@ FROM (
 		time_id,
 }	
 {@aggregated} ? {
+		cohort_definition_id,
 		cohort.subject_id,
 		cohort.cohort_start_date
 } : {
@@ -109,10 +111,11 @@ FROM (
 }
 {@sub_type == 'inpatient'} ? {	AND condition_type_concept_id IN (38000183, 38000184, 38000199, 38000200)}
 {@included_cov_table != ''} ? {		AND CAST(ancestor_concept_id AS BIGINT) * 1000 + @analysis_id IN (SELECT id FROM @included_cov_table)}
-{@cohort_definition_id != -1} ? {		AND cohort.cohort_definition_id = @cohort_definition_id}
+{@cohort_definition_id != -1} ? {		AND cohort.cohort_definition_id IN (@cohort_definition_id)}
 ) temp
 {@aggregated} ? {		
-GROUP BY ancestor_concept_id
+GROUP BY cohort_definition_id,
+	ancestor_concept_id
 {@temporal} ? {
     ,time_id
 }	

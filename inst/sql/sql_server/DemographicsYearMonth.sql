@@ -4,6 +4,7 @@ SELECT CAST(YEAR(cohort_start_date)*100000 + MONTH(cohort_start_date)*1000 + @an
     CAST(NULL AS INT) AS time_id,
 }
 {@aggregated} ? {
+	cohort_definition_id,
 	COUNT(*) AS sum_value
 } : {
 	cohort.@row_id_field AS row_id,
@@ -15,10 +16,11 @@ INNER JOIN @cdm_database_schema.person
 	ON cohort.subject_id = person.person_id
 {@included_cov_table != ''} ? {WHERE YEAR(cohort_start_date)*100000 + MONTH(cohort_start_date)*1000 + @analysis_id IN (SELECT id FROM @included_cov_table)}
 {@cohort_definition_id != -1} ? {
-	{@included_cov_table != ''} ? {		AND} :{WHERE} cohort.cohort_definition_id = @cohort_definition_id
+	{@included_cov_table != ''} ? {		AND} :{WHERE} cohort.cohort_definition_id IN (@cohort_definition_id)
 }
 {@aggregated} ? {
-GROUP BY YEAR(cohort_start_date)*100000 + MONTH(cohort_start_date)*1000 + @analysis_id
+GROUP BY cohort_definition_id,
+	YEAR(cohort_start_date)*100000 + MONTH(cohort_start_date)*1000 + @analysis_id
 }
 ;
 

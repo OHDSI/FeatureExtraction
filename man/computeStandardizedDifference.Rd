@@ -4,12 +4,23 @@
 \alias{computeStandardizedDifference}
 \title{Compute standardized difference of mean for all covariates.}
 \usage{
-computeStandardizedDifference(covariateData1, covariateData2)
+computeStandardizedDifference(
+  covariateData1,
+  covariateData2,
+  cohortId1 = NULL,
+  cohortId2 = NULL
+)
 }
 \arguments{
 \item{covariateData1}{The covariate data of the first cohort. Needs to be in aggregated format.}
 
 \item{covariateData2}{The covariate data of the second cohort. Needs to be in aggregated format.}
+
+\item{cohortId1}{If provided, \code{covariateData1} will be restricted to this cohort. If not
+provided, \code{covariateData1} is assumed to contain data on only 1 cohort.}
+
+\item{cohortId2}{If provided, \code{covariateData2} will be restricted to this cohort. If not
+provided, \code{covariateData2} is assumed to contain data on only 1 cohort.}
 }
 \value{
 A data frame with means and standard deviations per cohort as well as the standardized difference

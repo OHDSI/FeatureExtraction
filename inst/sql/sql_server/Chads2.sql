@@ -112,7 +112,8 @@ IF OBJECT_ID('tempdb..#chads2_prep', 'U') IS NOT NULL
 IF OBJECT_ID('tempdb..#chads2_prep2', 'U') IS NOT NULL
 	DROP TABLE #chads2_prep2;
 
-SELECT subject_id,
+SELECT cohort_definition_id,
+	subject_id,
 	cohort_start_date,
 	SUM(weight) AS score
 INTO #chads2_data
@@ -129,6 +130,7 @@ FROM (
 	SELECT DISTINCT chads2_scoring.diag_category_id,
 		chads2_scoring.weight,
 {@aggregated} ? {
+		cohort_definition_id,
 		cohort.subject_id,
 		cohort.cohort_start_date
 } : {
@@ -146,13 +148,14 @@ FROM (
 } : {
 	WHERE condition_era_start_date <= DATEADD(DAY, @end_day, cohort.cohort_start_date)
 }
-{@cohort_definition_id != -1} ? {		AND cohort.cohort_definition_id = @cohort_definition_id}
+{@cohort_definition_id != -1} ? {		AND cohort.cohort_definition_id IN (@cohort_definition_id)}
 
 	UNION
 	
 	SELECT 3 AS diag_category_id,
 		CASE WHEN (YEAR(cohort_start_date) - year_of_birth) >= 75 THEN 1 ELSE 0 END AS weight,
 {@aggregated} ? {
+		cohort_definition_id,
 		cohort.subject_id,
 		cohort.cohort_start_date
 } : {
@@ -161,11 +164,12 @@ FROM (
 	FROM @cohort_table cohort
 	INNER JOIN @cdm_database_schema.person
 		ON cohort.subject_id = person.person_id
-{@cohort_definition_id != -1} ? {	WHERE cohort.cohort_definition_id = @cohort_definition_id}		
+{@cohort_definition_id != -1} ? {	WHERE cohort.cohort_definition_id IN (@cohort_definition_id)}
 	) temp
 {@aggregated} ? {
-GROUP BY subject_id,
-			cohort_start_date
+GROUP BY cohort_definition_id,
+	subject_id,
+	cohort_start_date
 } : {
 GROUP BY row_id
 }	
@@ -173,19 +177,24 @@ GROUP BY row_id
 
 {@aggregated} ? {
 WITH t1 AS (
-	SELECT COUNT(*) AS cnt 
+	SELECT cohort_definition_id,
+		COUNT(*) AS cnt 
 	FROM @cohort_table 
-{@cohort_definition_id != -1} ? {	WHERE cohort_definition_id = @cohort_definition_id}
+{@cohort_definition_id != -1} ? {	WHERE cohort_definition_id IN (@cohort_definition_id)}
+	GROUP BY cohort_definition_id
 	),
 t2 AS (
-	SELECT COUNT(*) AS cnt, 
+	SELECT cohort_definition_id,
+		COUNT(*) AS cnt, 
 		MIN(score) AS min_score, 
 		MAX(score) AS max_score, 
 		SUM(score) AS sum_score, 
 		SUM(score*score) AS squared_score 
 	FROM #chads2_data
+	GROUP BY cohort_definition_id
 	)
-SELECT CASE WHEN t2.cnt = t1.cnt THEN t2.min_score ELSE 0 END AS min_value,
+SELECT t1.cohort_definition_id,
+	CASE WHEN t2.cnt = t1.cnt THEN t2.min_score ELSE 0 END AS min_value,
 	t2.max_score AS max_value,
 	CAST(t2.sum_score / (1.0 * t1.cnt) AS FLOAT) AS average_value,
 	CAST(CASE WHEN t2.cnt = 1 THEN 0 ELSE SQRT((1.0 * t2.cnt*t2.squared_score - 1.0 * t2.sum_score*t2.sum_score) / (1.0 * t2.cnt*(1.0 * t2.cnt - 1))) END AS FLOAT) AS standard_deviation,
@@ -193,24 +202,32 @@ SELECT CASE WHEN t2.cnt = t1.cnt THEN t2.min_score ELSE 0 END AS min_value,
 	t1.cnt - t2.cnt AS count_no_value,
 	t1.cnt AS population_size
 INTO #chads2_stats
-FROM t1, t2;
+FROM t1
+INNER JOIN t2
+	ON t1.cohort_definition_id = t2.cohort_definition_id;
 
-SELECT score,
+SELECT cohort_definition_id,
+	score,
 	COUNT(*) AS total,
-	ROW_NUMBER() OVER (ORDER BY score) AS rn
+	ROW_NUMBER() OVER (PARTITION BY cohort_definition_id ORDER BY score) AS rn
 INTO #chads2_prep
 FROM #chads2_data
-GROUP BY score;
+GROUP BY cohort_definition_id,
+	score;
 	
-SELECT s.score,
+SELECT s.cohort_definition_id,
+	s.score,
 	SUM(p.total) AS accumulated
 INTO #chads2_prep2	
 FROM #chads2_prep s
 INNER JOIN #chads2_prep p
 	ON p.rn <= s.rn
-GROUP BY s.score;
+		AND p.cohort_definition_id = s.cohort_definition_id
+GROUP BY s.cohort_definition_id,
+	s.score;
 
-SELECT CAST(1000 + @analysis_id AS BIGINT) AS covariate_id,
+SELECT o.cohort_definition_id,
+	CAST(1000 + @analysis_id AS BIGINT) AS covariate_id,
 {@temporal} ? {
     CAST(NULL AS INT) AS time_id,
 }
@@ -241,7 +258,8 @@ SELECT CAST(1000 + @analysis_id AS BIGINT) AS covariate_id,
 		END AS p90_value		
 INTO @covariate_table
 FROM #chads2_prep2 p
-CROSS JOIN #chads2_stats o
+INNER JOIN #chads2_stats o
+	ON p.cohort_definition_id = o.cohort_definition_id
 {@included_cov_table != ''} ? {WHERE 1000 + @analysis_id IN (SELECT id FROM @included_cov_table)}
 GROUP BY o.count_value,
 	o.count_no_value,
@@ -249,7 +267,8 @@ GROUP BY o.count_value,
 	o.max_value,
 	o.average_value,
 	o.standard_deviation,
-	o.population_size;
+	o.population_size,
+	o.cohort_definition_id;
 	
 TRUNCATE TABLE #chads2_data;
 DROP TABLE #chads2_data;

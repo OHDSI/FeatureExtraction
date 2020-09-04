@@ -5,6 +5,7 @@ SELECT
     time_id,
 }	
 {@aggregated} ? {
+	cohort_definition_id,
 	COUNT(*) AS sum_value
 } : {
 	row_id,
@@ -17,6 +18,7 @@ FROM (
 		time_id,
 }	
 {@aggregated} ? {
+		cohort_definition_id,
 		cohort.subject_id,
 		cohort.cohort_start_date
 } : {
@@ -39,10 +41,11 @@ FROM (
 {@excluded_concept_table != ''} ? {		AND @domain_concept_id NOT IN (SELECT id FROM @excluded_concept_table)}
 {@included_concept_table != ''} ? {		AND @domain_concept_id IN (SELECT id FROM @included_concept_table)}
 {@included_cov_table != ''} ? {		AND CAST(@domain_concept_id AS BIGINT) * 1000 + @analysis_id IN (SELECT id FROM @included_cov_table)}
-{@cohort_definition_id != -1} ? {		AND cohort.cohort_definition_id = @cohort_definition_id}
+{@cohort_definition_id != -1} ? {		AND cohort.cohort_definition_id IN (@cohort_definition_id)}
 ) by_row_id
 {@aggregated} ? {		
-GROUP BY @domain_concept_id
+GROUP BY cohort_definition_id,
+	@domain_concept_id
 {@temporal} ? {
     ,time_id
 } 

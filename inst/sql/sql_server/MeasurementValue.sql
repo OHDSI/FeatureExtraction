@@ -18,6 +18,7 @@ IF OBJECT_ID('tempdb..#meas_val_data', 'U') IS NOT NULL
 	
 SELECT 
 {@aggregated} ? {
+		cohort_definition_id,
 		subject_id,
 		cohort_start_date,
 } : {
@@ -32,6 +33,7 @@ INTO #meas_val_data
 FROM (
 	SELECT 
 {@aggregated} ? {
+		cohort_definition_id,
 		subject_id,
 		cohort_start_date,
 {@temporal} ? {
@@ -68,7 +70,7 @@ FROM (
 		AND measurement.measurement_concept_id != 0
 }	
 		AND value_as_number IS NOT NULL 			
-{@cohort_definition_id != -1} ? {		AND cohort.cohort_definition_id = @cohort_definition_id}
+{@cohort_definition_id != -1} ? {		AND cohort.cohort_definition_id IN (@cohort_definition_id)}
 ) temp
 WHERE rn = 1;	
 
@@ -82,7 +84,8 @@ IF OBJECT_ID('tempdb..#meas_val_prep', 'U') IS NOT NULL
 IF OBJECT_ID('tempdb..#meas_val_prep2', 'U') IS NOT NULL
 	DROP TABLE #meas_val_prep2;
 
-SELECT covariate_id,
+SELECT cohort_definition_id,
+	covariate_id,
 {@temporal} ? {
 	time_id,
 }
@@ -93,28 +96,32 @@ SELECT covariate_id,
 	COUNT(*) AS count_value
 INTO #meas_val_stats
 FROM #meas_val_data
-GROUP BY covariate_id
+GROUP BY cohort_definition_id,
+	covariate_id
 {@temporal} ? {
 	,time_id
 }
 ;
 
-SELECT covariate_id,
+SELECT cohort_definition_id,
+	covariate_id,
 {@temporal} ? {
 	time_id,
 }	
 	value_as_number,
 	COUNT(*) AS total,
-	ROW_NUMBER() OVER (PARTITION BY covariate_id ORDER BY value_as_number) AS rn
+	ROW_NUMBER() OVER (PARTITION BY cohort_definition_id, covariate_id ORDER BY value_as_number) AS rn
 INTO #meas_val_prep
 FROM #meas_val_data
-GROUP BY value_as_number,
+GROUP BY cohort_definition_id,
+	value_as_number,
 {@temporal} ? {
 	time_id,
 }	
 	covariate_id;
 	
-SELECT s.covariate_id,
+SELECT s.cohort_definition_id,
+	s.covariate_id,
 {@temporal} ? {
 	s.time_id,
 }	
@@ -125,13 +132,16 @@ FROM #meas_val_prep s
 INNER JOIN #meas_val_prep p
 	ON p.rn <= s.rn
 		AND p.covariate_id = s.covariate_id
-GROUP BY s.covariate_id,
+		AND p.cohort_definition_id = s.cohort_definition_id
+GROUP BY s.cohort_definition_id,
+	s.covariate_id,
 {@temporal} ? {
 	s.time_id,
 }			
 	s.value_as_number;
 	
-SELECT o.covariate_id,
+SELECT o.cohort_definition_id,
+	o.covariate_id,
 {@temporal} ? {
     o.time_id,
 }
@@ -160,7 +170,8 @@ GROUP BY o.covariate_id,
 	o.min_value,
 	o.max_value,
 	o.average_value,
-	o.standard_deviation;
+	o.standard_deviation,
+	o.cohort_definition_id;
 } : {
 SELECT covariate_id,
 {@temporal} ? {

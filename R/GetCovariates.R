@@ -46,7 +46,7 @@
 #'                               specifiy both the database and the schema, so for example
 #'                               'cdm_instance.dbo'.
 #' @param cohortTableIsTemp      Is the cohort table a temp table?
-#' @param cohortId               For which cohort ID should covariates be constructed? If set to -1,
+#' @param cohortId               For which cohort ID(s) should covariates be constructed? If set to -1,
 #'                               covariates will be constructed for all cohorts in the specified cohort
 #'                               table.
 #' @param rowIdField             The name of the field in the cohort table that is to be used as the
@@ -95,15 +95,17 @@ getDbCovariateData <- function(connectionDetails = NULL,
   } else {
     cohortDatabaseSchemaTable <- paste(cohortDatabaseSchema, cohortTable, sep = ".")
   }
-  sql <- "SELECT COUNT_BIG(*) FROM @cohort_database_schema_table {@cohort_id != -1} ? {WHERE cohort_definition_id = @cohort_id} "
+  sql <- "SELECT cohort_definition_id, COUNT_BIG(*) AS size FROM @cohort_database_schema_table {@cohort_id != -1} ? {WHERE cohort_definition_id IN (@cohort_id)} GROUP BY cohort_definition_id;"
   sql <- SqlRender::render(sql = sql,
                            cohort_database_schema_table = cohortDatabaseSchemaTable,
                            cohort_id = cohortId)
   sql <- SqlRender::translate(sql = sql,
                               targetDialect = attr(connection, "dbms"),
                               oracleTempSchema = oracleTempSchema)
-  populationSize <- DatabaseConnector::querySql(connection, sql)[1, 1]
-  if (populationSize == 0) {
+  temp <- DatabaseConnector::querySql(connection, sql, snakeCaseToCamelCase = TRUE)
+  populationSize <- temp$size
+  names(populationSize) <- temp$cohortDefinitionId
+  if (sum(populationSize) == 0) {
     covariateData <- createEmptyCovariateData(cohortId, aggregated, covariateSettings$temporal)
     warning("Population is empty. No covariates were constructed")
   } else {

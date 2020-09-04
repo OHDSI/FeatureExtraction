@@ -5,6 +5,7 @@ SELECT
     time_id,
 }	
 {@aggregated} ? {
+	cohort_definition_id,
 	COUNT(*) AS sum_value
 } : {
 	row_id,
@@ -22,6 +23,7 @@ FROM (
 		time_id,
 }	
 {@aggregated} ? {
+		cohort_definition_id,
 		cohort.subject_id,
 		cohort.cohort_start_date
 } : {
@@ -44,12 +46,14 @@ FROM (
 		AND range_high IS NOT NULL
 {@excluded_concept_table != ''} ? {		AND measurement_concept_id NOT IN (SELECT id FROM @excluded_concept_table)}
 {@included_concept_table != ''} ? {		AND measurement_concept_id IN (SELECT id FROM @included_concept_table)}
-{@cohort_definition_id != -1} ? {		AND cohort.cohort_definition_id = @cohort_definition_id}
+{@cohort_definition_id != -1} ? {		AND cohort.cohort_definition_id IN (@cohort_definition_id)}
 ) by_row_id
 {@included_cov_table != ''} ? {WHERE (CAST(measurement_concept_id AS BIGINT) * 10000) + (range_group * 1000) + @analysis_id IN (SELECT id FROM @included_cov_table)}
 GROUP BY measurement_concept_id,
 	range_group
-{!@aggregated} ? {		
+{@aggregated} ? {		
+	,cohort_definition_id
+} : {
 	,row_id
 } 
 {@temporal} ? {

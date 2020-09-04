@@ -49,7 +49,7 @@ specifiy both the database and the schema, so for example
 
 \item{cohortTableIsTemp}{Is the cohort table a temp table?}
 
-\item{cohortId}{For which cohort ID should covariates be constructed? If set to -1,
+\item{cohortId}{For which cohort ID(s) should covariates be constructed? If set to -1,
 covariates will be constructed for all cohorts in the specified cohort
 table.}
 

@@ -1,7 +1,15 @@
+FeatureExtraction 3.1.0
+=======================
+
+Changes:
+
+1. Added ability to compute aggregated statistics for multiple cohorts at once.
+
+
 FeatureExtraction 3.0.1
 =======================
 
-Changes;
+Changes:
 
 1. Adding timeRef table to CovariateData object for temporal covariates.
 

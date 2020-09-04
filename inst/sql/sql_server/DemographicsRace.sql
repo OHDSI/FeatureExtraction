@@ -5,6 +5,7 @@ SELECT
     CAST(NULL AS INT) AS time_id,
 }		
 {@aggregated} ? {
+	cohort_definition_id,
 	COUNT(*) AS sum_value
 } : {
 	cohort.@row_id_field AS row_id,
@@ -22,9 +23,10 @@ WHERE race_concept_id IN (
 {@excluded_concept_table != ''} ? {	AND race_concept_id NOT IN (SELECT id FROM @excluded_concept_table)}
 {@included_concept_table != ''} ? {	AND race_concept_id IN (SELECT id FROM @included_concept_table)}	
 {@included_cov_table != ''} ? {	AND CAST(race_concept_id AS BIGINT) * 1000 + @analysis_id IN (SELECT id FROM @included_cov_table)}	
-{@cohort_definition_id != -1} ? {		AND cohort.cohort_definition_id = @cohort_definition_id}
+{@cohort_definition_id != -1} ? {		AND cohort.cohort_definition_id IN (@cohort_definition_id)}
 {@aggregated} ? {		
-GROUP BY race_concept_id
+GROUP BY cohort_definition_id,
+	race_concept_id
 }
 ;
 

@@ -16,7 +16,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Format and check code
+# Manually delete package from library. Avoids "Already in use" message when rebuilding
+unloadNamespace("FeatureExtraction")
+.rs.restartR()
+folder <- system.file(package = "FeatureExtraction")
+folder
+unlink(folder, recursive = TRUE, force = TRUE)
+file.exists(folder)
+devtools::install(upgrade = "never")
+
+3# Format and check code
 OhdsiRTools::formatRFolder("./R")
 OhdsiRTools::checkUsagePackage("FeatureExtraction")
 OhdsiRTools::updateCopyrightYearFolder()

@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -384,6 +385,8 @@ public class FeatureExtraction {
 	}
 	
 	/**
+	 * Included for backwards compatibility: using a cohortDefinitionId.
+	 * 
 	 * Construct the SQL for creating and retrieving the features. The output object consists of the following main components:
 	 * <ol>
 	 * <li>tempTables: a list of tables to insert as temp tables on the server.</li>
@@ -415,6 +418,42 @@ public class FeatureExtraction {
 	 * @return A JSON object.
 	 */
 	public static String createSql(String settings, boolean aggregated, String cohortTable, String rowIdField, int cohortDefinitionId,
+			String cdmDatabaseSchema) {
+		return createSql(settings, aggregated, cohortTable, rowIdField, new int[]{cohortDefinitionId}, cdmDatabaseSchema);
+	}
+	
+	/**
+	 * Construct the SQL for creating and retrieving the features. The output object consists of the following main components:
+	 * <ol>
+	 * <li>tempTables: a list of tables to insert as temp tables on the server.</li>
+	 * <li>sqlConstruction: SQL for constructing the features on the server.</li>
+	 * <li>sqlQueryFeatures: SQL for fetching the features from the server. (limited to binary features when aggregated)</li>
+	 * <li>sqlQueryContinuousFeatures: SQL for fetching the continuous features from the server.</li>
+	 * <li>sqlQueryFeatureRef: SQL for fetching the description of the features from the server.</li>
+	 * <li>sqlQueryAnalysisRef: SQL for fetching the description of the analyses from the server.</li>
+	 * <li>sqlQueryTimeRef: For temporal analyses: SQL for fetching the description of the time windows from the server.</li>
+	 * <li>sqlCleanup: SQL for deleting the temp tables created by sqlConstruction.</li>
+	 * </ol>
+	 * Note that all SQL is in the SQL Server dialect, and may need to be translated to the appropriate dialect using SqlRender's translateSql function.
+	 * 
+	 * @param settings
+	 *            A JSON object with detailed settings.
+	 * @param aggregated
+	 *            Should features be constructed per person or aggregated across the cohort?
+	 * @param cohortTable
+	 *            The name of the cohort table. Can be a temp table (e.g. "#cohort_temp"). If it is a permanent table provide the full path, e.g.
+	 *            "cdm_synpuf.dbo.cohort".
+	 * @param rowIdField
+	 *            The name of the field in the cohort table that will be used as the row_id field in the output (if not aggregated). Could be "subject_id"
+	 *            unless subjects can appear in a cohort more than once.
+	 * @param cohortDefinitionIds
+	 *            The IDs of the cohorts to characterize. If set to -1, all entries in the cohort table will be used.
+	 * @param cdmDatabaseSchema
+	 *            The name of the database schema that contains the OMOP CDM instance. Requires read permissions to this database. On SQL Server, this should
+	 *            specify both the database and the schema, so for example 'cdm_instance.dbo'.
+	 * @return A JSON object.
+	 */
+	public static String createSql(String settings, boolean aggregated, String cohortTable, String rowIdField, int[] cohortDefinitionIds,
 			String cdmDatabaseSchema) {
 		JSONObject jsonObject = new JSONObject(settings);
 		
@@ -455,9 +494,9 @@ public class FeatureExtraction {
 		jsonWriter.endObject();
 		
 		jsonWriter.key("sqlConstruction");
-		jsonWriter.value(createConstructionSql(jsonObject, idSetToName, temporal, aggregated, cohortTable, rowIdField, cohortDefinitionId, cdmDatabaseSchema));
+		jsonWriter.value(createConstructionSql(jsonObject, idSetToName, temporal, aggregated, cohortTable, rowIdField, cohortDefinitionIds, cdmDatabaseSchema));
 		
-		String sqlQueryFeatures = createQuerySql(jsonObject, cohortTable, cohortDefinitionId, aggregated, temporal);
+		String sqlQueryFeatures = createQuerySql(jsonObject, cohortTable, cohortDefinitionIds, aggregated, temporal);
 		if (sqlQueryFeatures != null) {
 			jsonWriter.key("sqlQueryFeatures");
 			jsonWriter.value(sqlQueryFeatures);
@@ -523,10 +562,10 @@ public class FeatureExtraction {
 		return sql.toString();
 	}
 	
-	private static String createQuerySql(JSONObject jsonObject, String cohortTable, int cohortDefinitionId, boolean aggregated, boolean temporal) {
+	private static String createQuerySql(JSONObject jsonObject, String cohortTable, int[] cohortDefinitionIds, boolean aggregated, boolean temporal) {
 		StringBuilder fields = new StringBuilder();
 		if (aggregated) {
-			fields.append("covariate_id, sum_value");
+			fields.append("cohort_definition_id, covariate_id, sum_value");
 		} else {
 			fields.append("row_id, covariate_id, covariate_value");
 		}
@@ -538,10 +577,10 @@ public class FeatureExtraction {
 		if (aggregated) {
 			if (temporal)
 				sql.append(
-						"SELECT all_covariates.covariate_id,\n  all_covariates.time_id,\n  all_covariates.sum_value,\n  CAST(all_covariates.sum_value / (1.0 * total.total_count) AS FLOAT) AS average_value\nFROM (");
+						"SELECT all_covariates.cohort_definition_id\n  all_covariates.covariate_id,\n  all_covariates.time_id,\n  all_covariates.sum_value,\n  CAST(all_covariates.sum_value / (1.0 * total.total_count) AS FLOAT) AS average_value\nFROM (");
 			else
 				sql.append(
-						"SELECT all_covariates.covariate_id,\n  all_covariates.sum_value,\n  CAST(all_covariates.sum_value / (1.0 * total.total_count) AS FLOAT) AS average_value\nFROM (");
+						"SELECT all_covariates.cohort_definition_id,\n  all_covariates.covariate_id,\n  all_covariates.sum_value,\n  CAST(all_covariates.sum_value / (1.0 * total.total_count) AS FLOAT) AS average_value\nFROM (");
 			
 		} else {
 			sql.append("SELECT *\nFROM (\n");
@@ -560,18 +599,23 @@ public class FeatureExtraction {
 			return null;
 		if (aggregated) {
 			sql.append(
-					"\n) all_covariates, (\nSELECT COUNT(*) AS total_count\nFROM @cohort_table {@cohort_definition_id != -1} ? {\nWHERE cohort_definition_id = @cohort_definition_id}\n) total;");
+					"\n) all_covariates\nINNER JOIN (\nSELECT cohort_definition_id, COUNT(*) AS total_count\nFROM @cohort_table {@cohort_definition_id != -1} ? {\nWHERE cohort_definition_id IN (@cohort_definition_id)} GROUP BY cohort_definition_id\n) total\n  ON all_covariates.cohort_definition_id = total.cohort_definition_id;");
 		} else {
 			sql.append("\n) all_covariates;");
 		}
 		return SqlRender.renderSql(sql.toString(), new String[] { "cohort_table", "cohort_definition_id" },
-				new String[] { cohortTable, Integer.toString(cohortDefinitionId) });
+				new String[] { cohortTable, intsToString(cohortDefinitionIds)});
+	}
+	
+	private static String intsToString(int[] values) {
+	  return Arrays.toString(values).replaceAll("^\\[|\\]$", "");
+	
 	}
 	
 	private static String createQueryContinuousFeaturesSql(JSONObject jsonObject, boolean temporal) {
 		StringBuilder fields = new StringBuilder();
 		fields.append(
-				"covariate_id, count_value, min_value, max_value, average_value, standard_deviation, median_value, p10_value, p25_value, p75_value, p90_value");
+				"cohort_definition_id, covariate_id, count_value, min_value, max_value, average_value, standard_deviation, median_value, p10_value, p25_value, p75_value, p90_value");
 		if (temporal) {
 			fields.append(", time_id");
 		}
@@ -595,7 +639,7 @@ public class FeatureExtraction {
 	}
 	
 	private static String createConstructionSql(JSONObject jsonObject, Map<IdSet, String> idSetToName, boolean temporal, boolean aggregated, String cohortTable,
-			String rowIdField, int cohortDefinitionId, String cdmDatabaseSchema) {
+			String rowIdField, int[] cohortDefinitionIds, String cdmDatabaseSchema) {
 		StringBuilder sql = new StringBuilder();
 		
 		// Add descendants to ID sets if needed:
@@ -636,7 +680,7 @@ public class FeatureExtraction {
 				values[i] = rowIdField;
 				i++;
 				keys[i] = "cohort_definition_id";
-				values[i] = Integer.toString(cohortDefinitionId);
+				values[i] = intsToString(cohortDefinitionIds);
 				i++;
 				keys[i] = "cdm_database_schema";
 				values[i] = cdmDatabaseSchema;

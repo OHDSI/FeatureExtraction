@@ -40,6 +40,10 @@ getDefaultTable1Specifications <- function() {
 #' @param covariateData1   The covariate data of the cohort to be included in the table.
 #' @param covariateData2   The covariate data of the cohort to also be included, when comparing two
 #'                         cohorts.
+#' @param cohortId1        If provided, \code{covariateData1} will be restricted to this cohort. If not
+#'                         provided, \code{covariateData1} is assumed to contain data on only 1 cohort.
+#' @param cohortId2        If provided, \code{covariateData2} will be restricted to this cohort. If not
+#'                         provided, \code{covariateData2} is assumed to contain data on only 1 cohort.
 #' @param specifications   Specifications of which covariates to display, and how.
 #' @param output           The output format for the table. Options are \code{output = "two columns"},
 #'                         \code{output = "one column"}, or \code{output = "list"}.
@@ -55,6 +59,8 @@ getDefaultTable1Specifications <- function() {
 #' @export
 createTable1 <- function(covariateData1,
                          covariateData2 = NULL,
+                         cohortId1 = NULL,
+                         cohortId2 = NULL,
                          specifications = getDefaultTable1Specifications(),
                          output = "two columns",
                          showCounts = FALSE,
@@ -111,7 +117,12 @@ createTable1 <- function(covariateData1,
   if (is.null(covariateData1$covariates)) {
     covariates <- NULL
   } else {
-    covariates <- covariateData1$covariates %>% 
+    covariates <- covariateData1$covariates
+    if (!is.null(cohortId1)) {
+      covariates <- covariates %>%
+        filter(.data$cohortDefinitionId == cohortId1)
+    }
+    covariates <- covariates %>% 
       select(covariateId = "covariateId", 
              count1 = "sumValue", 
              percent1 = "averageValue") %>%
@@ -122,7 +133,12 @@ createTable1 <- function(covariateData1,
   if (is.null(covariateData1$covariatesContinuous)) {
     covariatesContinuous <- NULL
   } else {
-    covariatesContinuous <- covariateData1$covariatesContinuous %>% 
+    covariatesContinuous <- covariateData1$covariatesContinuous
+    if (!is.null(cohortId1)) {
+      covariatesContinuous <- covariatesContinuous %>%
+        filter(.data$cohortDefinitionId == cohortId1)
+    }
+    covariatesContinuous <- covariatesContinuous %>% 
       select(covariateId = "covariateId",
              averageValue1 = "averageValue",
              standardDeviation1 = "standardDeviation",
@@ -146,9 +162,17 @@ createTable1 <- function(covariateData1,
   analysisRef <- covariateData1$analysisRef %>%
     collect()
   if (comparison) {
-    stdDiff <- computeStandardizedDifference(covariateData1, covariateData2)
+    stdDiff <- computeStandardizedDifference(covariateData1 = covariateData1, 
+                                             covariateData2 = covariateData2, 
+                                             cohortId1 = cohortId1,
+                                             cohortId2 = cohortId2)
     if (!is.null(covariateData1$covariates) && !is.null(covariateData2$covariates)) {
-      tempCovariates <- covariateData2$covariates %>%
+	tempCovariates <- covariateData2$covariates 
+	if (!is.null(cohortId2)) {
+      tempCovariates <- tempCovariates %>%
+        filter(.data$cohortDefinitionId == cohortId2)
+    }
+      tempCovariates <- tempCovariates %>%
         select(covariateId = "covariateId", 
                count2 = "sumValue", 
                percent2 = "averageValue") %>%
@@ -164,7 +188,13 @@ createTable1 <- function(covariateData1,
       covariates$stdDiff <- formatStdDiff(covariates$stdDiff)
     }
     if (!is.null(covariatesContinuous)) {
-      tempCovariates <- covariateData2$covariatesContinuous %>% 
+	tempCovariates <- covariateData2$covariatesContinuous
+	if (!is.null(cohortId2)) {
+      tempCovariates <- tempCovariates %>%
+        filter(.data$cohortDefinitionId == cohortId2)
+    }
+	
+      tempCovariates <- tempCovariates %>% 
         select(covariateId = "covariateId",
                averageValue2 = "averageValue",
                standardDeviation2 = "standardDeviation",

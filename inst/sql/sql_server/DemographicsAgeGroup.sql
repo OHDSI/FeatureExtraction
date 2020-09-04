@@ -4,6 +4,7 @@ SELECT CAST(FLOOR((YEAR(cohort_start_date) - year_of_birth) / 5) * 1000 + @analy
     CAST(NULL AS INT) AS time_id,
 }	
 {@aggregated} ? {
+	cohort_definition_id,
 	COUNT(*) AS sum_value
 } : {
 	cohort.@row_id_field AS row_id,
@@ -15,10 +16,11 @@ INNER JOIN @cdm_database_schema.person
 	ON cohort.subject_id = person.person_id
 {@included_cov_table != ''} ? {WHERE FLOOR((YEAR(cohort_start_date) - year_of_birth) / 5) * 1000 + @analysis_id IN (SELECT id FROM @included_cov_table)}
 {@cohort_definition_id != -1} ? {
-	{@included_cov_table != ''} ? {		AND} :{WHERE} cohort.cohort_definition_id = @cohort_definition_id
+	{@included_cov_table != ''} ? {		AND} :{WHERE} cohort.cohort_definition_id IN (@cohort_definition_id)
 }
 {@aggregated} ? {		
-GROUP BY FLOOR((YEAR(cohort_start_date) - year_of_birth) / 5)
+GROUP BY cohort_definition_id,
+	FLOOR((YEAR(cohort_start_date) - year_of_birth) / 5)
 }
 ;
 

@@ -7,6 +7,8 @@
 createTable1(
   covariateData1,
   covariateData2 = NULL,
+  cohortId1 = NULL,
+  cohortId2 = NULL,
   specifications = getDefaultTable1Specifications(),
   output = "two columns",
   showCounts = FALSE,
@@ -21,6 +23,12 @@ createTable1(
 
 \item{covariateData2}{The covariate data of the cohort to also be included, when comparing two
 cohorts.}
+
+\item{cohortId1}{If provided, \code{covariateData1} will be restricted to this cohort. If not
+provided, \code{covariateData1} is assumed to contain data on only 1 cohort.}
+
+\item{cohortId2}{If provided, \code{covariateData2} will be restricted to this cohort. If not
+provided, \code{covariateData2} is assumed to contain data on only 1 cohort.}
 
 \item{specifications}{Specifications of which covariates to display, and how.}
 

@@ -22,13 +22,17 @@
 #'
 #' @param covariateData1   The covariate data of the first cohort. Needs to be in aggregated format.
 #' @param covariateData2   The covariate data of the second cohort. Needs to be in aggregated format.
+#' @param cohortId1        If provided, \code{covariateData1} will be restricted to this cohort. If not
+#'                         provided, \code{covariateData1} is assumed to contain data on only 1 cohort.
+#' @param cohortId2        If provided, \code{covariateData2} will be restricted to this cohort. If not
+#'                         provided, \code{covariateData2} is assumed to contain data on only 1 cohort.
 #'
 #' @return
 #' A data frame with means and standard deviations per cohort as well as the standardized difference
 #' of mean.
 #'
 #' @export
-computeStandardizedDifference <- function(covariateData1, covariateData2) {
+computeStandardizedDifference <- function(covariateData1, covariateData2, cohortId1 = NULL, cohortId2 = NULL) {
   if (!isCovariateData(covariateData1))
     stop("covariateData1 is not of type 'covariateData'")
   if (!isCovariateData(covariateData1))
@@ -38,19 +42,35 @@ computeStandardizedDifference <- function(covariateData1, covariateData2) {
   if (!isAggregatedCovariateData(covariateData2))
     stop("Covariate2 data is not aggregated")
   result <- tibble()
-  if (!is.null(covariateData1$covariates) && !is.null(covariateData1$covariates)) {
-    covariates1 <- covariateData1$covariates %>%
+  if (!is.null(covariateData1$covariates) && !is.null(covariateData2$covariates)) {
+    covariates1 <- covariateData1$covariates
+    if (!is.null(cohortId1)) {
+      covariates1 <- covariates1 %>%
+        filter(.data$cohortDefinitionId == cohortId1)
+    }
+    covariates1 <- covariates1 %>% 
       select(covariateId = "covariateId", 
              count1 = "sumValue") %>% 
       collect()
     
-    covariates2 <- covariateData2$covariates %>%
+    covariates2 <- covariateData2$covariates
+    if (!is.null(cohortId2)) {
+      covariates2 <- covariates2 %>%
+        filter(.data$cohortDefinitionId == cohortId2)
+    }
+    covariates2 <- covariates2 %>% 
       select(covariateId = "covariateId", 
              count2 = "sumValue") %>% 
       collect()
     
     n1 <- attr(covariateData1, "metaData")$populationSize
+    if (!is.null(cohortId1)) {
+      n1 <- n1[as.character(cohortId1)]
+    }
     n2 <- attr(covariateData2, "metaData")$populationSize
+    if (!is.null(cohortId2)) {
+      n2 <- n2[as.character(cohortId2)]
+    }
     m <- merge(covariates1, covariates2, all = T)
     m$count1[is.na(m$count1)] <- 0
     m$count2[is.na(m$count2)] <- 0
@@ -63,13 +83,23 @@ computeStandardizedDifference <- function(covariateData1, covariateData2) {
     result <- bind_rows(result, m[, c("covariateId", "mean1", "sd1", "mean2", "sd2", "sd", "stdDiff")])
   }
   if (!is.null(covariateData1$covariatesContinuous) && !is.null(covariateData1$covariatesContinuous)) {
-    covariates1 <- covariateData1$covariatesContinuous %>%
+    covariates1 <- covariateData1$covariatesContinuous
+    if (!is.null(cohortId1)) {
+      covariates1 <- covariates1 %>%
+        filter(.data$cohortDefinitionId == cohortId1)
+    }
+    covariates1 <- covariates1 %>%
       select(covariateId = "covariateId", 
              mean1 = "averageValue",
              sd1 = "standardDeviation") %>% 
       collect()
     
-    covariates2 <- covariateData2$covariatesContinuous %>%
+    covariates2 <- covariateData2$covariatesContinuous
+    if (!is.null(cohortId2)) {
+      covariates2 <- covariates2 %>%
+        filter(.data$cohortDefinitionId == cohortId2)
+    }
+    covariates2 <- covariates2 %>%
       select(covariateId = "covariateId", 
              mean2 = "averageValue",
              sd2 = "standardDeviation") %>% 

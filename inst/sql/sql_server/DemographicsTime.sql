@@ -13,6 +13,7 @@ IF OBJECT_ID('tempdb..#dem_time_prep2', 'U') IS NOT NULL
 	DROP TABLE #dem_time_prep2;
 
 SELECT subject_id,
+	cohort_definition_id,
 	cohort_start_date,
 	days
 INTO #dem_time_data
@@ -28,6 +29,7 @@ INTO @covariate_table
 FROM (
 	SELECT 
 {@aggregated} ? {
+		cohort_definition_id,
 		subject_id,
 		cohort_start_date,	
 } : {
@@ -49,24 +51,29 @@ FROM (
 		AND observation_period_start_date <= cohort_start_date
 		AND observation_period_end_date >= cohort_start_date
 }
-{@cohort_definition_id != -1} ? {	WHERE cohort.cohort_definition_id = @cohort_definition_id}
+{@cohort_definition_id != -1} ? {	WHERE cohort.cohort_definition_id IN (@cohort_definition_id)}
 	) raw_data;
 
 {@aggregated} ? {
 WITH t1 AS (
-	SELECT COUNT(*) AS cnt 
+	SELECT cohort_definition_id,
+		COUNT(*) AS cnt 
 	FROM @cohort_table 
-{@cohort_definition_id != -1} ? {	WHERE cohort_definition_id = @cohort_definition_id}
+{@cohort_definition_id != -1} ? {	WHERE cohort_definition_id IN(@cohort_definition_id)}
+	GROUP BY cohort_definition_id
 	),
 t2 AS (
-	SELECT COUNT(*) AS cnt, 
+	SELECT cohort_definition_id,
+		COUNT(*) AS cnt, 
 		MIN(days) AS min_days, 
 		MAX(days) AS max_days, 
 		SUM(CAST(days AS BIGINT)) AS sum_days, 
 		SUM(CAST(days AS BIGINT) * CAST(days AS BIGINT)) AS squared_days 
 	FROM #dem_time_data
+	GROUP BY cohort_definition_id
 	)
-SELECT CASE WHEN t2.cnt = t1.cnt THEN t2.min_days ELSE 0 END AS min_value,
+SELECT t1.cohort_definition_id,
+	CASE WHEN t2.cnt = t1.cnt THEN t2.min_days ELSE 0 END AS min_value,
 	t2.max_days AS max_value,
 	CAST(t2.sum_days / (1.0 * t1.cnt) AS FLOAT) AS average_value,
 	CAST(CASE WHEN t2.cnt = 1 THEN 0 ELSE SQRT((1.0 * t2.cnt*t2.squared_days - 1.0 * t2.sum_days*t2.sum_days) / (1.0 * t2.cnt*(1.0 * t2.cnt - 1))) END AS FLOAT) AS standard_deviation,
@@ -74,24 +81,32 @@ SELECT CASE WHEN t2.cnt = t1.cnt THEN t2.min_days ELSE 0 END AS min_value,
 	t1.cnt - t2.cnt AS count_no_value,
 	t1.cnt AS population_size
 INTO #dem_time_stats
-FROM t1, t2;
+FROM t1
+INNER JOIN t2
+	ON t1.cohort_definition_id = t2.cohort_definition_id;
 
-SELECT days,
+SELECT cohort_definition_id,
+	days,
 	COUNT(*) AS total,
-	ROW_NUMBER() OVER (ORDER BY days) AS rn
+	ROW_NUMBER() OVER (PARTITION BY cohort_definition_id ORDER BY days) AS rn
 INTO #dem_time_prep
 FROM #dem_time_data
-GROUP BY days;
+GROUP BY cohort_definition_id,
+	days;
 	
-SELECT s.days,
+SELECT s.cohort_definition_id,
+	s.days,
 	SUM(p.total) AS accumulated
 INTO #dem_time_prep2	
 FROM #dem_time_prep s
 INNER JOIN #dem_time_prep p
 	ON p.rn <= s.rn
-GROUP BY s.days;
+		AND p.cohort_definition_id = s.cohort_definition_id
+GROUP BY s.cohort_definition_id,
+	s.days;
 
-SELECT CAST(1000 + @analysis_id AS BIGINT) AS covariate_id,
+SELECT o.cohort_definition_id,
+	CAST(1000 + @analysis_id AS BIGINT) AS covariate_id,
 {@temporal} ? {
     CAST(NULL AS INT) AS time_id,
 }
@@ -122,7 +137,8 @@ SELECT CAST(1000 + @analysis_id AS BIGINT) AS covariate_id,
 		END AS p90_value		
 INTO @covariate_table
 FROM #dem_time_prep2 p
-CROSS JOIN #dem_time_stats o
+INNER JOIN #dem_time_stats o
+	ON p.cohort_definition_id = o.cohort_definition_id
 {@included_cov_table != ''} ? {WHERE 1000 + @analysis_id IN (SELECT id FROM @included_cov_table)}
 GROUP BY o.count_value,
 	o.count_no_value,
@@ -130,7 +146,8 @@ GROUP BY o.count_value,
 	o.max_value,
 	o.average_value,
 	o.standard_deviation,
-	o.population_size;
+	o.population_size,
+	o.cohort_definition_id;
 	
 TRUNCATE TABLE #dem_time_data;
 DROP TABLE #dem_time_data;
