@@ -110,8 +110,7 @@ t2 AS (
 	FROM #concept_count_data
 	GROUP BY cohort_definition_id
 {@sub_type == 'stratified'} ? {
-	GROUP BY cohort_definition_id,
-		covariate_id
+		,covariate_id
 } 
 	)
 SELECT t1.cohort_definition_id,

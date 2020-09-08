@@ -25,7 +25,7 @@ unlink(folder, recursive = TRUE, force = TRUE)
 file.exists(folder)
 devtools::install(upgrade = "never")
 
-3# Format and check code
+# Format and check code
 OhdsiRTools::formatRFolder("./R")
 OhdsiRTools::checkUsagePackage("FeatureExtraction")
 OhdsiRTools::updateCopyrightYearFolder()

@@ -38,17 +38,17 @@ FROM (
 		cohort_start_date,
 {@temporal} ? {
 		time_id,
-		ROW_NUMBER() OVER (PARTITION BY subject_id, cohort_start_date, measurement.measurement_concept_id, time_id ORDER BY measurement_date DESC) AS rn,
+		ROW_NUMBER() OVER (PARTITION BY cohort_definition_id, subject_id, cohort_start_date, measurement.measurement_concept_id, time_id ORDER BY measurement_date DESC, measurement.unit_concept_id, value_as_number) AS rn,
 } : {
-		ROW_NUMBER() OVER (PARTITION BY subject_id, cohort_start_date, measurement.measurement_concept_id ORDER BY measurement_date DESC) AS rn,
+		ROW_NUMBER() OVER (PARTITION BY cohort_definition_id, subject_id, cohort_start_date, measurement.measurement_concept_id ORDER BY measurement_date DESC, measurement.unit_concept_id, value_as_number) AS rn,
 }
 } : {
 		cohort.@row_id_field AS row_id,
 {@temporal} ? {
 		time_id,
-		ROW_NUMBER() OVER (PARTITION BY cohort.@row_id_field, measurement.measurement_concept_id, time_id ORDER BY measurement_date DESC) AS rn,
+		ROW_NUMBER() OVER (PARTITION BY cohort.@row_id_field, measurement.measurement_concept_id, time_id ORDER BY measurement_date DESC, measurement.unit_concept_id, value_as_number) AS rn,
 } : {
-		ROW_NUMBER() OVER (PARTITION BY cohort.@row_id_field, measurement.measurement_concept_id ORDER BY measurement_date DESC) AS rn,
+		ROW_NUMBER() OVER (PARTITION BY cohort.@row_id_field, measurement.measurement_concept_id ORDER BY measurement_date DESC, measurement.unit_concept_id, value_as_number) AS rn,
 }
 }
 		covariate_id,
@@ -97,11 +97,10 @@ SELECT cohort_definition_id,
 INTO #meas_val_stats
 FROM #meas_val_data
 GROUP BY cohort_definition_id,
-	covariate_id
 {@temporal} ? {
-	,time_id
+	time_id,
 }
-;
+	covariate_id;
 
 SELECT cohort_definition_id,
 	covariate_id,
@@ -159,6 +158,7 @@ INTO @covariate_table
 FROM #meas_val_prep2 p
 INNER JOIN #meas_val_stats o
 	ON o.covariate_id = p.covariate_id
+		AND o.cohort_definition_id = p.cohort_definition_id
 {@temporal} ? {
 		AND	o.time_id = p.time_id
 }		

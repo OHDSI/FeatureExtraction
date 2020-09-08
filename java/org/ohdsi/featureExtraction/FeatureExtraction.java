@@ -577,7 +577,7 @@ public class FeatureExtraction {
 		if (aggregated) {
 			if (temporal)
 				sql.append(
-						"SELECT all_covariates.cohort_definition_id\n  all_covariates.covariate_id,\n  all_covariates.time_id,\n  all_covariates.sum_value,\n  CAST(all_covariates.sum_value / (1.0 * total.total_count) AS FLOAT) AS average_value\nFROM (");
+						"SELECT all_covariates.cohort_definition_id,\n  all_covariates.covariate_id,\n  all_covariates.time_id,\n  all_covariates.sum_value,\n  CAST(all_covariates.sum_value / (1.0 * total.total_count) AS FLOAT) AS average_value\nFROM (");
 			else
 				sql.append(
 						"SELECT all_covariates.cohort_definition_id,\n  all_covariates.covariate_id,\n  all_covariates.sum_value,\n  CAST(all_covariates.sum_value / (1.0 * total.total_count) AS FLOAT) AS average_value\nFROM (");

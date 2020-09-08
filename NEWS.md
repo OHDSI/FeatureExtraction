@@ -3,7 +3,13 @@ FeatureExtraction 3.1.0
 
 Changes:
 
-1. Added ability to compute aggregated statistics for multiple cohorts at once.
+1. Added ability to compute aggregated statistics for multiple cohorts at once: The `cohortId` argument of the `getDbCovariateData()` function now accepts a vector of IDs. The aggregated statistics now contains a new field called `cohortDefinitionId` that can be used to distinguish between the various cohorts.
+
+2. Added `filterByCohortDefinitionId()` function to select covariates of one cohort from a `covariateData` object containing multiple.
+
+Bugfixes:
+
+1. If a person has multiple measurements with the same `measurement_concept_id`, the selection of which measurement value to include is now deterministic.
 
 
 FeatureExtraction 3.0.1

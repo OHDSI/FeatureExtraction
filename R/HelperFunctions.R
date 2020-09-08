@@ -41,3 +41,42 @@ filterByRowId <- function(covariateData, rowIds) {
   class(result) <- "CovariateData"
   return(result)
 }
+
+#' Filter covariates by cohort definition ID
+#'
+#' @param covariateData  An object of type \code{CovariateData}
+#' @param cohortId       The cohort definition ID to keep.
+#'
+#' @return
+#' An object of type \code{covariateData}.
+#' @export
+filterByCohortDefinitionId <- function(covariateData, cohortId) {
+  if (!isCovariateData(covariateData))
+    stop("Data not of class CovariateData")
+  if (!Andromeda::isValidAndromeda(covariateData)) 
+    stop("CovariateData object is closed")
+  if (!isAggregatedCovariateData(covariateData))
+    stop("Can only filter aggregated data by rowId")
+  if (is.null(covariateData$covariates)) {
+    covariates <- NULL
+  } else {
+    covariates <- covariateData$covariates %>%
+      filter(.data$cohortDefinitionId %in% cohortId)
+  }
+  if (is.null(covariateData$covariatesContinuous)) {
+    covariatesContinuous <- NULL
+  } else {
+    covariatesContinuous <- covariateData$covariatesContinuous %>%
+      filter(.data$cohortDefinitionId %in% cohortId)
+  }
+  result <- Andromeda::andromeda(covariates = covariates,
+                                 covariatesContinuous = covariatesContinuous,
+                                 covariateRef = covariateData$covariateRef,
+                                 analysisRef = covariateData$analysisRef)
+  metaData <- attr(covariateData, "metaData")
+  metaData$populationSize <- metaData$populationSize[as.numeric(names(metaData$populationSize)) %in% cohortId]
+  attr(result, "metaData") <- metaData
+  class(result) <- "CovariateData"
+  attr(class(result), "package") <- "FeatureExtraction"
+  return(result)
+}

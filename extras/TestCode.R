@@ -1,20 +1,12 @@
 library(FeatureExtraction)
 
-# For debugging purposes. This shouldn't be needed in real use:
-options(andromedaTempFolder = "c:/andromedaTemp")
-library(Andromeda)
+options(andromedaTempFolder = "s:/andromedaTemp")
 
 # Pdw ---------------------------------------------------------------------
-dbms <- "pdw"
-user <- NULL
-pw <- NULL
-server <- Sys.getenv("PDW_SERVER")
-port <- Sys.getenv("PDW_PORT")
-connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = dbms,
-                                                                server = server,
-                                                                user = user,
-                                                                password = pw,
-                                                                port = port)
+
+connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "pdw",
+                                                                server = keyring::key_get("pdwServer"),
+                                                                port = keyring::key_get("pdwPort"))
 cdmDatabaseSchema <- "CDM_IBM_MDCR_V1192.dbo"
 cohortDatabaseSchema <- "scratch.dbo"
 cohortTable <- "ohdsi_celecoxib_prediction"
@@ -558,6 +550,54 @@ collect(covs$covariates)
 collect(covs$covariateRef) %>% filter(covariateId %% 1000 == 3)
 x <- collect(covs$covariateRef) 
 View(x)
+
+settings <- createTemporalCovariateSettings(useDemographicsGender = TRUE,
+                                            useDemographicsAge = TRUE,
+                                            useDemographicsAgeGroup = TRUE,
+                                            useDemographicsRace = TRUE,
+                                            useDemographicsEthnicity = TRUE,
+                                            useDemographicsIndexYear = TRUE,
+                                            useDemographicsIndexMonth = TRUE,
+                                            useDemographicsPriorObservationTime = TRUE,
+                                            useDemographicsPostObservationTime = TRUE,
+                                            useDemographicsTimeInCohort = TRUE,
+                                            useDemographicsIndexYearMonth = TRUE,
+                                            useConditionOccurrence = TRUE,
+                                            useConditionOccurrencePrimaryInpatient = TRUE,
+                                            useConditionEraStart = TRUE,
+                                            useConditionEraOverlap = TRUE,
+                                            useConditionEraGroupStart = TRUE,
+                                            useConditionEraGroupOverlap = TRUE,
+                                            useDrugExposure = TRUE,
+                                            useDrugEraStart = TRUE,
+                                            useDrugEraOverlap = TRUE,
+                                            useDrugEraGroupStart = TRUE,
+                                            useDrugEraGroupOverlap = TRUE,
+                                            useProcedureOccurrence = TRUE,
+                                            useDeviceExposure = TRUE,
+                                            useMeasurement = TRUE,
+                                            useMeasurementValue = TRUE,
+                                            useMeasurementRangeGroup = TRUE,
+                                            useObservation = TRUE,
+                                            useCharlsonIndex = TRUE,
+                                            useDcsi = TRUE,
+                                            useChads2 = TRUE,
+                                            useChads2Vasc = TRUE,
+                                            useHfrs = TRUE,
+                                            useDistinctConditionCount = TRUE,
+                                            useDistinctIngredientCount = TRUE,
+                                            useDistinctProcedureCount = TRUE,
+                                            useDistinctMeasurementCount = TRUE,
+                                            useDistinctObservationCount = TRUE,
+                                            useVisitCount = TRUE,
+                                            useVisitConceptCount = TRUE)
+covs <- getDbCovariateData(connectionDetails = connectionDetails,
+                           cdmDatabaseSchema = "main",
+                           cohortDatabaseSchema = "main",
+                           cohortTable = "cohort",
+                           cohortId = c(1,2),
+                           covariateSettings = settings,
+                           aggregated = TRUE)
 
 connection <- connect(connectionDetails)
 querySql(connection, "SELECT * FROM main.cohort LIMIT 100")
