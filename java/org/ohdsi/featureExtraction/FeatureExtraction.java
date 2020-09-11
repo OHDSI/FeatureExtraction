@@ -420,10 +420,10 @@ public class FeatureExtraction {
 	public static String createSql(String settings, boolean aggregated, String cohortTable, String rowIdField, String[] cohortDefinitionIds,
 			String cdmDatabaseSchema) {
 		
-		int[] idsAsInts = new int[cohortDefinitionIds.length];
+		long[] idsAsLongs = new long[cohortDefinitionIds.length];
 		for (int i = 0; i < cohortDefinitionIds.length; i++)
-			idsAsInts[i] = Integer.valueOf(cohortDefinitionIds[i]);
-		return createSql(settings, aggregated, cohortTable, rowIdField, idsAsInts, cdmDatabaseSchema);
+			idsAsLongs[i] = Long.valueOf(cohortDefinitionIds[i]);
+		return createSql(settings, aggregated, cohortTable, rowIdField, idsAsLongs, cdmDatabaseSchema);
 	}
 	
 	
@@ -462,7 +462,7 @@ public class FeatureExtraction {
 	 */
 	public static String createSql(String settings, boolean aggregated, String cohortTable, String rowIdField, int cohortDefinitionId,
 			String cdmDatabaseSchema) {
-		return createSql(settings, aggregated, cohortTable, rowIdField, new int[]{cohortDefinitionId}, cdmDatabaseSchema);
+		return createSql(settings, aggregated, cohortTable, rowIdField, new long[]{cohortDefinitionId}, cdmDatabaseSchema);
 	}
 	
 	/**
@@ -496,7 +496,7 @@ public class FeatureExtraction {
 	 *            specify both the database and the schema, so for example 'cdm_instance.dbo'.
 	 * @return A JSON object.
 	 */
-	public static String createSql(String settings, boolean aggregated, String cohortTable, String rowIdField, int[] cohortDefinitionIds,
+	public static String createSql(String settings, boolean aggregated, String cohortTable, String rowIdField, long[] cohortDefinitionIds,
 			String cdmDatabaseSchema) {
 		JSONObject jsonObject = new JSONObject(settings);
 		
@@ -605,7 +605,7 @@ public class FeatureExtraction {
 		return sql.toString();
 	}
 	
-	private static String createQuerySql(JSONObject jsonObject, String cohortTable, int[] cohortDefinitionIds, boolean aggregated, boolean temporal) {
+	private static String createQuerySql(JSONObject jsonObject, String cohortTable, long[] cohortDefinitionIds, boolean aggregated, boolean temporal) {
 		StringBuilder fields = new StringBuilder();
 		if (aggregated) {
 			fields.append("cohort_definition_id, covariate_id, sum_value");
@@ -647,10 +647,10 @@ public class FeatureExtraction {
 			sql.append("\n) all_covariates;");
 		}
 		return SqlRender.renderSql(sql.toString(), new String[] { "cohort_table", "cohort_definition_id" },
-				new String[] { cohortTable, intsToString(cohortDefinitionIds)});
+				new String[] { cohortTable, longsToString(cohortDefinitionIds)});
 	}
 	
-	private static String intsToString(int[] values) {
+	private static String longsToString(long[] values) {
 	  return Arrays.toString(values).replaceAll("^\\[|\\]$", "");
 	
 	}
@@ -682,7 +682,7 @@ public class FeatureExtraction {
 	}
 	
 	private static String createConstructionSql(JSONObject jsonObject, Map<IdSet, String> idSetToName, boolean temporal, boolean aggregated, String cohortTable,
-			String rowIdField, int[] cohortDefinitionIds, String cdmDatabaseSchema) {
+			String rowIdField, long[] cohortDefinitionIds, String cdmDatabaseSchema) {
 		StringBuilder sql = new StringBuilder();
 		
 		// Add descendants to ID sets if needed:
@@ -723,7 +723,7 @@ public class FeatureExtraction {
 				values[i] = rowIdField;
 				i++;
 				keys[i] = "cohort_definition_id";
-				values[i] = intsToString(cohortDefinitionIds);
+				values[i] = longsToString(cohortDefinitionIds);
 				i++;
 				keys[i] = "cdm_database_schema";
 				values[i] = cdmDatabaseSchema;
