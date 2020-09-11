@@ -7,6 +7,8 @@ Changes:
 
 2. Added `filterByCohortDefinitionId()` function to select covariates of one cohort from a `covariateData` object containing multiple.
 
+3. The `cohortId` argument now also supports integers greater than 32-bits.
+
 Bugfixes:
 
 1. If a person has multiple measurements with the same `measurement_concept_id`, the selection of which measurement value to include is now deterministic.

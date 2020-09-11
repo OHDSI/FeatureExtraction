@@ -385,6 +385,49 @@ public class FeatureExtraction {
 	}
 	
 	/**
+	 * Included because R doesn't natively support 64-bit integers, but we want to use those for cohortDefinitionIds.
+	 * 
+	 * Construct the SQL for creating and retrieving the features. The output object consists of the following main components:
+	 * <ol>
+	 * <li>tempTables: a list of tables to insert as temp tables on the server.</li>
+	 * <li>sqlConstruction: SQL for constructing the features on the server.</li>
+	 * <li>sqlQueryFeatures: SQL for fetching the features from the server. (limited to binary features when aggregated)</li>
+	 * <li>sqlQueryContinuousFeatures: SQL for fetching the continuous features from the server.</li>
+	 * <li>sqlQueryFeatureRef: SQL for fetching the description of the features from the server.</li>
+	 * <li>sqlQueryAnalysisRef: SQL for fetching the description of the analyses from the server.</li>
+	 * <li>sqlQueryTimeRef: For temporal analyses: SQL for fetching the description of the time windows from the server.</li>
+	 * <li>sqlCleanup: SQL for deleting the temp tables created by sqlConstruction.</li>
+	 * </ol>
+	 * Note that all SQL is in the SQL Server dialect, and may need to be translated to the appropriate dialect using SqlRender's translateSql function.
+	 * 
+	 * @param settings
+	 *            A JSON object with detailed settings.
+	 * @param aggregated
+	 *            Should features be constructed per person or aggregated across the cohort?
+	 * @param cohortTable
+	 *            The name of the cohort table. Can be a temp table (e.g. "#cohort_temp"). If it is a permanent table provide the full path, e.g.
+	 *            "cdm_synpuf.dbo.cohort".
+	 * @param rowIdField
+	 *            The name of the field in the cohort table that will be used as the row_id field in the output (if not aggregated). Could be "subject_id"
+	 *            unless subjects can appear in a cohort more than once.
+	 * @param cohortDefinitionIds
+	 *            The IDs of the cohorts to characterize. If set to -1, all entries in the cohort table will be used.
+	 * @param cdmDatabaseSchema
+	 *            The name of the database schema that contains the OMOP CDM instance. Requires read permissions to this database. On SQL Server, this should
+	 *            specify both the database and the schema, so for example 'cdm_instance.dbo'.
+	 * @return A JSON object.
+	 */
+	public static String createSql(String settings, boolean aggregated, String cohortTable, String rowIdField, String[] cohortDefinitionIds,
+			String cdmDatabaseSchema) {
+		
+		int[] idsAsInts = new int[cohortDefinitionIds.length];
+		for (int i = 0; i < cohortDefinitionIds.length; i++)
+			idsAsInts[i] = Integer.valueOf(cohortDefinitionIds[i]);
+		return createSql(settings, aggregated, cohortTable, rowIdField, idsAsInts, cdmDatabaseSchema);
+	}
+	
+	
+	/**
 	 * Included for backwards compatibility: using a cohortDefinitionId.
 	 * 
 	 * Construct the SQL for creating and retrieving the features. The output object consists of the following main components:
