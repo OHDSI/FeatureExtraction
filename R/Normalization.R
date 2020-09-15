@@ -44,7 +44,10 @@ tidyCovariateData <- function(covariateData,
   newCovariateData <- Andromeda::andromeda(covariateRef = covariateData$covariateRef,
                                            analysisRef = covariateData$analysisRef)
   metaData <- attr(covariateData, "metaData")
-  populationSize <- metaData$populationSize 
+  populationSize <- metaData$populationSize
+  if (length(populationSize) > 1)
+    stop("CovariateData contains more than 1 cohort, but tidyCovariateData can only process one at a time.")
+  names(populationSize) <- NULL
   if (covariateData$covariates %>% count() %>% pull() == 0) {
     newCovariateData$covariates <- covariateData$covariates
   } else {

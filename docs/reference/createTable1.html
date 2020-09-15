@@ -73,7 +73,7 @@ Allows for creating a table describing a single cohort, or a table comparing two
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">FeatureExtraction</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">3.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">3.1.0</span>
       </span>
     </div>
 
@@ -152,6 +152,8 @@ Allows for creating a table describing a single cohort, or a table comparing two
     <pre class="usage"><span class='fu'>createTable1</span>(
   <span class='no'>covariateData1</span>,
   <span class='kw'>covariateData2</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>cohortId1</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>cohortId2</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>specifications</span> <span class='kw'>=</span> <span class='fu'><a href='getDefaultTable1Specifications.html'>getDefaultTable1Specifications</a></span>(),
   <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"two columns"</span>,
   <span class='kw'>showCounts</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
@@ -172,6 +174,16 @@ Allows for creating a table describing a single cohort, or a table comparing two
       <th>covariateData2</th>
       <td><p>The covariate data of the cohort to also be included, when comparing two
 cohorts.</p></td>
+    </tr>
+    <tr>
+      <th>cohortId1</th>
+      <td><p>If provided, <code>covariateData1</code> will be restricted to this cohort. If not
+provided, <code>covariateData1</code> is assumed to contain data on only 1 cohort.</p></td>
+    </tr>
+    <tr>
+      <th>cohortId2</th>
+      <td><p>If provided, <code>covariateData2</code> will be restricted to this cohort. If not
+provided, <code>covariateData2</code> is assumed to contain data on only 1 cohort.</p></td>
     </tr>
     <tr>
       <th>specifications</th>
