@@ -40,9 +40,6 @@ aggregateCovariates <- function(covariateData) {
   class(result) <- "CovariateData"
   attr(class(result), "package") <- "FeatureExtraction"
   populationSize <-  attr(covariateData, "metaData")$populationSize
-  if (length(populationSize) > 1)
-    stop("CovariateData contains more than 1 cohort, but can only aggregate 1 at a time.")
-  names(populationSize) <- NULL
   
   # Aggregate binary variables
   result$covariates <- covariateData$analysisRef %>%

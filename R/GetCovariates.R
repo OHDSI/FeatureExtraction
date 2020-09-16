@@ -103,8 +103,12 @@ getDbCovariateData <- function(connectionDetails = NULL,
                               targetDialect = attr(connection, "dbms"),
                               oracleTempSchema = oracleTempSchema)
   temp <- DatabaseConnector::querySql(connection, sql, snakeCaseToCamelCase = TRUE)
-  populationSize <- temp$size
-  names(populationSize) <- temp$cohortDefinitionId
+  if (aggregated) {
+    populationSize <- temp$size
+    names(populationSize) <- temp$cohortDefinitionId
+  } else {
+    populationSize <- sum(temp$size)
+  }
   if (sum(populationSize) == 0) {
     covariateData <- createEmptyCovariateData(cohortId, aggregated, covariateSettings$temporal)
     warning("Population is empty. No covariates were constructed")
