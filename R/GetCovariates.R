@@ -95,7 +95,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
   } else {
     cohortDatabaseSchemaTable <- paste(cohortDatabaseSchema, cohortTable, sep = ".")
   }
-  sql <- "SELECT cohort_definition_id, COUNT_BIG(*) AS size FROM @cohort_database_schema_table {@cohort_id != -1} ? {WHERE cohort_definition_id IN (@cohort_id)} GROUP BY cohort_definition_id;"
+  sql <- "SELECT cohort_definition_id, COUNT_BIG(*) AS population_size FROM @cohort_database_schema_table {@cohort_id != -1} ? {WHERE cohort_definition_id IN (@cohort_id)} GROUP BY cohort_definition_id;"
   sql <- SqlRender::render(sql = sql,
                            cohort_database_schema_table = cohortDatabaseSchemaTable,
                            cohort_id = cohortId)
@@ -104,10 +104,10 @@ getDbCovariateData <- function(connectionDetails = NULL,
                               oracleTempSchema = oracleTempSchema)
   temp <- DatabaseConnector::querySql(connection, sql, snakeCaseToCamelCase = TRUE)
   if (aggregated) {
-    populationSize <- temp$size
+    populationSize <- temp$populationSize
     names(populationSize) <- temp$cohortDefinitionId
   } else {
-    populationSize <- sum(temp$size)
+    populationSize <- sum(temp$populationSize)
   }
   if (sum(populationSize) == 0) {
     covariateData <- createEmptyCovariateData(cohortId, aggregated, covariateSettings$temporal)
