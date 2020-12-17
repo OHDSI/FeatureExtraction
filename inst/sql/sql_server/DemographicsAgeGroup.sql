@@ -2,13 +2,13 @@
 SELECT CAST(FLOOR((YEAR(cohort_start_date) - year_of_birth) / 5) * 1000 + @analysis_id AS BIGINT) AS covariate_id,
 {@temporal} ? {
     CAST(NULL AS INT) AS time_id,
-}	
+}
 {@aggregated} ? {
 	cohort_definition_id,
 	COUNT(*) AS sum_value
 } : {
 	cohort.@row_id_field AS row_id,
-	1 AS covariate_value 
+	1 AS covariate_value
 }
 INTO @covariate_table
 FROM @cohort_table cohort
@@ -18,7 +18,7 @@ INNER JOIN @cdm_database_schema.person
 {@cohort_definition_id != -1} ? {
 	{@included_cov_table != ''} ? {		AND} :{WHERE} cohort.cohort_definition_id IN (@cohort_definition_id)
 }
-{@aggregated} ? {		
+{@aggregated} ? {
 GROUP BY cohort_definition_id,
 	FLOOR((YEAR(cohort_start_date) - year_of_birth) / 5)
 }
@@ -34,9 +34,9 @@ INSERT INTO #cov_ref (
 SELECT covariate_id,
 	CAST(CONCAT (
 		'age group: ',
-		RIGHT(CONCAT('   ', CAST(5 * (covariate_id - @analysis_id) / 1000 AS VARCHAR)), 3),
+		RIGHT(CONCAT('   ', CAST(CAST(5 * (covariate_id - @analysis_id) / 1000 AS INTEGER) AS VARCHAR)), 3),
 		' - ',
-		RIGHT(CONCAT('   ', CAST((5 * (covariate_id - @analysis_id) / 1000) + 4 AS VARCHAR)), 3)
+		RIGHT(CONCAT('   ', CAST((CAST(5 * (covariate_id - @analysis_id) / 1000 AS INTEGER)) + 4 AS VARCHAR)), 3)
 		) AS VARCHAR(512)) AS covariate_name,
 	@analysis_id AS analysis_id,
 	0 AS concept_id
@@ -44,7 +44,7 @@ FROM (
 	SELECT DISTINCT covariate_id
 	FROM @covariate_table
 	) t1;
-	
+
 INSERT INTO #analysis_ref (
 	analysis_id,
 	analysis_name,
@@ -64,4 +64,4 @@ SELECT @analysis_id AS analysis_id,
 	CAST(NULL AS INT) AS end_day,
 }
 	CAST('Y' AS VARCHAR(1)) AS is_binary,
-	CAST(NULL AS VARCHAR(1)) AS missing_means_zero;	
+	CAST(NULL AS VARCHAR(1)) AS missing_means_zero;
