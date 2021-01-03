@@ -11,7 +11,7 @@ INNER JOIN @cdm_database_schema.concept
 WHERE ((vocabulary_id = 'ATC'
 		AND LEN(concept_code) IN (1, 3, 4, 5))
 	OR (standard_concept = 'S' 
-{@domain_table == 'drug_era'} ? {		AND concept_class_id = 'Ingredient'}
+{@domain_table == 'drug_era'} ? {		AND concept_class_id in ('Ingredient', 'CVX')}
 		AND domain_id = 'Drug'))
 	AND concept_id != 0
 {@excluded_concept_table != ''} ? {	AND descendant_concept_id NOT IN (SELECT id FROM @excluded_concept_table)}
