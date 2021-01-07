@@ -244,7 +244,7 @@ INSERT INTO #charlson_concepts (
 SELECT 11,
 	descendant_concept_id
 FROM @cdm_database_schema.concept_ancestor
-WHERE ancestor_concept_id IN (4192279, 443767, 442793);
+WHERE ancestor_concept_id IN (443767, 442793);
 
 --Hemoplegia or paralegia
 INSERT INTO #charlson_scoring (
