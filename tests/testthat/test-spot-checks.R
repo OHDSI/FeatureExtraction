@@ -42,7 +42,7 @@ runSpotChecks <- function(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSch
                                                        rowIdField = "subject_id",
                                                        covariateSettings = settings,
                                                        aggregated = TRUE))
-  if (nrow(covariateData$covariates) == 0)
+  if (covariateData$covariates %>% count() %>% pull() == 0)
     return(TRUE)
   
   connection <- DatabaseConnector::connect(connectionDetails)

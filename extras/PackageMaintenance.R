@@ -23,7 +23,6 @@ folder <- system.file(package = "FeatureExtraction")
 folder
 unlink(folder, recursive = TRUE, force = TRUE)
 file.exists(folder)
-devtools::install(upgrade = "never")
 
 # Format and check code
 OhdsiRTools::formatRFolder("./R")
