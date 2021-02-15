@@ -105,7 +105,9 @@ setMethod("show", "CovariateData", function(object) {
   cli::cat_line(pillar::style_subtle("# CovariateData object"))
   cli::cat_line("")
   cohortId <- attr(object, "metaData")$cohortId
-  if (cohortId == -1) {
+  if (length(cohortId) > 1) {
+    cli::cat_line(paste("Cohorts of interest IDs:", paste(cohortId, collapse = ", ")))
+  } else if (cohortId == -1) {
     cli::cat_line("All cohorts")
   } else {
     cli::cat_line(paste("Cohort of interest ID:", cohortId))

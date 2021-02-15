@@ -1,3 +1,11 @@
+FeatureExtraction 3.1.1
+=======================
+
+Bugfixes:
+
+1. Correct output of multiple cohort IDs in `print()` function.
+
+
 FeatureExtraction 3.1.0
 =======================
 

@@ -7,7 +7,7 @@ man-roxygen
 ^\.Rproj\.user$
 .classpath
 .project
-.travis.yml
+.github
 ^\.travis\.yml$
 deploy.sh
 ^\.git
