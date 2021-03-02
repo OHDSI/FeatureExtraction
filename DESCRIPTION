@@ -29,7 +29,9 @@ Imports:
   cli,
   pillar,
   readr,
-  rlang
+  rlang,
+  RSQLite,
+  DBI
 Suggests:
   testthat,
   knitr,

@@ -34,6 +34,8 @@
 #' @aliases CovariateData
 #' @export
 #' @import Andromeda
+#' @importClassesFrom RSQLite SQLiteConnection
+#' @importClassesFrom DBI DBIObject DBIConnection
 setClass("CovariateData", contains = "Andromeda")
 
 
