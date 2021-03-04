@@ -82,7 +82,7 @@ computeStandardizedDifference <- function(covariateData1, covariateData2, cohort
     m$stdDiff <- (m$mean2 - m$mean1)/m$sd
     result <- bind_rows(result, m[, c("covariateId", "mean1", "sd1", "mean2", "sd2", "sd", "stdDiff")])
   }
-  if (!is.null(covariateData1$covariatesContinuous) && !is.null(covariateData1$covariatesContinuous)) {
+  if (!is.null(covariateData1$covariatesContinuous) && !is.null(covariateData2$covariatesContinuous)) {
     covariates1 <- covariateData1$covariatesContinuous
     if (!is.null(cohortId1)) {
       covariates1 <- covariates1 %>%
