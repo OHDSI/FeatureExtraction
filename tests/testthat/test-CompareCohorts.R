@@ -73,6 +73,7 @@ test_that("Test stdDiff binary variable computation", {
   expect_equal(singleCovariate$sd1, testBinaryData$sd1, tolerance = 0.001, scale = 1)
   expect_equal(singleCovariate$mean2, testBinaryData$mean2, tolerance = 0.001, scale = 1)
   expect_equal(singleCovariate$sd2, testBinaryData$sd2, tolerance = 0.001, scale = 1)
+  expect_equal(singleCovariate$sd, testBinaryData$sd, tolerance = 0.001, scale = 1)
   expect_equal(singleCovariate$stdDiff, testBinaryData$stdDiff, tolerance = 0.001, scale = 1)
 })
 
