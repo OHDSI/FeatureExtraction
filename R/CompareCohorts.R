@@ -76,13 +76,13 @@ computeStandardizedDifference <- function(covariateData1, covariateData2, cohort
     m$count2[is.na(m$count2)] <- 0
     m$mean1 <- m$count1/n1
     m$mean2 <- m$count2/n2
-    m$sd1 <- sqrt((n1 * m$count1 + m$count1)/(n1^2))
-    m$sd2 <- sqrt((n2 * m$count2 + m$count2)/(n2^2))
-    m$sd <- sqrt(m$sd1^2 + m$sd2^2)
+    m$sd1 <- sqrt(m$mean1 * (1 - m$mean1))
+    m$sd2 <- sqrt(m$mean2 * (1 - m$mean2))
+    m$sd <- sqrt((m$sd1^2 + m$sd2^2) / 2)
     m$stdDiff <- (m$mean2 - m$mean1)/m$sd
     result <- bind_rows(result, m[, c("covariateId", "mean1", "sd1", "mean2", "sd2", "sd", "stdDiff")])
   }
-  if (!is.null(covariateData1$covariatesContinuous) && !is.null(covariateData1$covariatesContinuous)) {
+  if (!is.null(covariateData1$covariatesContinuous) && !is.null(covariateData2$covariatesContinuous)) {
     covariates1 <- covariateData1$covariatesContinuous
     if (!is.null(cohortId1)) {
       covariates1 <- covariates1 %>%
