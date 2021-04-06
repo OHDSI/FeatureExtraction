@@ -13,6 +13,17 @@ SELECT
 }
 INTO @covariate_table
 FROM (
+{@aggregated} ? {
+	SELECT DISTINCT measurement_concept_id,
+		range_group,		
+{@temporal} ? {
+		time_id,
+}	
+		cohort_definition_id,
+		subject_id,
+		cohort_start_date
+    FROM (      
+}
 	SELECT measurement_concept_id,
 		CASE 
 			WHEN value_as_number < range_low THEN 1
@@ -47,7 +58,10 @@ FROM (
 {@excluded_concept_table != ''} ? {		AND measurement_concept_id NOT IN (SELECT id FROM @excluded_concept_table)}
 {@included_concept_table != ''} ? {		AND measurement_concept_id IN (SELECT id FROM @included_concept_table)}
 {@cohort_definition_id != -1} ? {		AND cohort.cohort_definition_id IN (@cohort_definition_id)}
-) by_row_id
+{@aggregated} ? {
+	)  grouped_1
+}
+) grouped_2
 {@included_cov_table != ''} ? {WHERE (CAST(measurement_concept_id AS BIGINT) * 10000) + (range_group * 1000) + @analysis_id IN (SELECT id FROM @included_cov_table)}
 GROUP BY measurement_concept_id,
 	range_group
