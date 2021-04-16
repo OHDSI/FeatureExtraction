@@ -5,6 +5,8 @@ Bugfixes:
 
 1. Correct output of multiple cohort IDs in `print()` function.
 
+2. Fixing duplicates in counts when generating server-side aggregated measurement-range-group covariates.
+
 
 FeatureExtraction 3.1.0
 =======================
