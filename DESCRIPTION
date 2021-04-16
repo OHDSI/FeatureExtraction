@@ -31,7 +31,8 @@ Imports:
   readr,
   rlang,
   RSQLite,
-  DBI
+  DBI,
+  Eunomia
 Suggests:
   testthat,
   knitr,

@@ -1,0 +1,5 @@
+library(testthat)
+library(FeatureExtraction)
+options(dbms = "Eunomia")
+options(test = "temporalAggregated")
+test_check("FeatureExtraction")
