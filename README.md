@@ -24,7 +24,7 @@ FeatureExtraction is an R package, with some functions implemented in C++.
 
 System Requirements
 ===================
-Requires R (version 3.2.2 or higher). Installation on Windows requires [RTools](http://cran.r-project.org/bin/windows/Rtools/). FeatureExtraction require Java.
+Requires R (version 3.2.2 or higher). Installation on Windows requires [RTools](https://cran.r-project.org/bin/windows/Rtools/). FeatureExtraction require Java.
 
 Getting Started
 ===============
@@ -40,7 +40,7 @@ Getting Started
 
 User Documentation
 ==================
-The documentation website can be found at [http://ohdsi.github.io/FeatureExtraction/](http://ohdsi.github.io/FeatureExtraction/). PDF versions of the vignettes and package manual are here:
+The documentation website can be found at [https://ohdsi.github.io/FeatureExtraction/](https://ohdsi.github.io/FeatureExtraction/). PDF versions of the vignettes and package manual are here:
 
 * Vignette: [Using FeatureExtraction](https://raw.githubusercontent.com/OHDSI/FeatureExtraction/master/inst/doc/UsingFeatureExtraction.pdf)
 * Vignette: [Creating covariates using cohort attributes](https://raw.githubusercontent.com/OHDSI/FeatureExtraction/master/inst/doc/CreatingCovariatesUsingCohortAttributes.pdf)

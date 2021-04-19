@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Covariate Data — CovariateData-class • FeatureExtraction</title>
+<title>NA • FeatureExtraction</title>
 
 
 <!-- jquery -->
@@ -18,8 +18,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
 <!-- bootstrap-toc -->
-<link rel="stylesheet" href="../bootstrap-toc.css">
-<script src="../bootstrap-toc.js"></script>
+<link rel="stylesheet" href="bootstrap-toc.css">
+<script src="bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
@@ -33,22 +33,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
-<link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script>
+<link href="pkgdown.css" rel="stylesheet">
+<script src="pkgdown.js"></script>
 
 
 
 
-<meta property="og:title" content="Covariate Data — CovariateData-class" />
-<meta property="og:description" content="CovariateData is an S4 class that inherits from Andromeda. It contains 
-information on covariates, which can be either captured on a per-person basis, or aggregated across
-the cohort(s).
-By default covariates refer to a specific time period, with for example different covariate IDs for 
-whether a diagnosis code was observed in the year before and month before index date. However, a
-CovariateData can also be temporal, meaning that next to a covariate ID there is also a time ID,
-which identifies the (user specified) time window the covariate was captured.
-A CovariateData object is typically created using getDbCovariateData, can only be saved using
-saveCovariateData, and loaded using loadCovariateData." />
+<meta property="og:title" content="NA" />
 
 
 
@@ -67,7 +58,7 @@ saveCovariateData, and loaded using loadCovariateData." />
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-topic">
+    <div class="container template-title-body">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -79,7 +70,7 @@ saveCovariateData, and loaded using loadCovariateData." />
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">FeatureExtraction</a>
+        <a class="navbar-link" href="index.html">FeatureExtraction</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">3.1.1</span>
       </span>
     </div>
@@ -87,16 +78,16 @@ saveCovariateData, and loaded using loadCovariateData." />
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
+  <a href="index.html">
     <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="reference/index.html">Reference</a>
 </li>
 <li>
-  <a href="../news/index.html">Changelog</a>
+  <a href="news/index.html">Changelog</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -106,19 +97,19 @@ saveCovariateData, and loaded using loadCovariateData." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/CreatingCovariatesUsingCohortAttributes.html">Creating covariates using cohort attributes</a>
+      <a href="articles/CreatingCovariatesUsingCohortAttributes.html">Creating covariates using cohort attributes</a>
     </li>
     <li>
-      <a href="../articles/CreatingCustomCovariateBuilders.html">Creating custom covariate builders</a>
+      <a href="articles/CreatingCustomCovariateBuilders.html">Creating custom covariate builders</a>
     </li>
     <li>
-      <a href="../articles/CreatingCustomCovariateBuildersKorean.html">Creating custom covariate builders (Korean)</a>
+      <a href="articles/CreatingCustomCovariateBuildersKorean.html">Creating custom covariate builders (Korean)</a>
     </li>
     <li>
-      <a href="../articles/UsingFeatureExtraction.html">Using FeatureExtraction</a>
+      <a href="articles/UsingFeatureExtraction.html">Using FeatureExtraction</a>
     </li>
     <li>
-      <a href="../articles/UsingFeatureExtractionKorean.html">Using FeatureExtraction (Korean)</a>
+      <a href="articles/UsingFeatureExtractionKorean.html">Using FeatureExtraction (Korean)</a>
     </li>
   </ul>
 </li>
@@ -144,51 +135,33 @@ saveCovariateData, and loaded using loadCovariateData." />
       </header>
 
 <div class="row">
-  <div class="col-md-9 contents">
+  <div class="contents col-md-9">
     <div class="page-header">
-    <h1>Covariate Data</h1>
-    <small class="dont-index">Source: <a href='https://github.com/OHDSI/FeatureExtraction/blob/master/R/CovariateData.R'><code>R/CovariateData.R</code></a></small>
-    <div class="hidden name"><code>CovariateData-class.Rd</code></div>
+      <h1>NA</h1>
     </div>
 
-    <div class="ref-description">
-    <p><code>CovariateData</code> is an S4 class that inherits from <code><a href='https://ohdsi.github.io/Andromeda/reference/Andromeda-class.html'>Andromeda</a></code>. It contains 
-information on covariates, which can be either captured on a per-person basis, or aggregated across
-the cohort(s).</p>
-<p>By default covariates refer to a specific time period, with for example different covariate IDs for 
-whether a diagnosis code was observed in the year before and month before index date. However, a
-<code>CovariateData</code> can also be temporal, meaning that next to a covariate ID there is also a time ID,
-which identifies the (user specified) time window the covariate was captured.</p>
-<p>A <code>CovariateData</code> object is typically created using <code><a href='getDbCovariateData.html'>getDbCovariateData</a></code>, can only be saved using
-<code><a href='saveCovariateData.html'>saveCovariateData</a></code>, and loaded using <code><a href='loadCovariateData.html'>loadCovariateData</a></code>.</p>
-    </div>
 
-    <pre class="usage"><span class='co'># S4 method for CovariateData</span>
-<span class='fu'>show</span><span class='op'>(</span><span class='va'>object</span><span class='op'>)</span>
+<p>Before you do a pull request, you should always <strong>file an issue</strong> and make sure the package maintainer agrees that it’s a problem, and is happy with your basic proposal for fixing it. We don’t want you to spend a bunch of time on something that we don’t think is a good idea.</p>
+<p>Additional requirements for pull requests:</p>
+<ul>
+<li><p>Adhere to the <a href="https://ohdsi.github.io/MethodsLibrary/developerGuidelines.html">Developer Guidelines</a> as well as the <a href="https://ohdsi.github.io/MethodsLibrary/codeStyle.html">OHDSI Code Style</a>.</p></li>
+<li><p>If possible, add unit tests for new functionality you add.</p></li>
+<li><p>Restrict your pull request to solving the issue at hand. Do not try to ‘improve’ parts of the code that are not related to the issue. If you feel other parts of the code need better organization, create a separate issue for that.</p></li>
+<li><p>Make sure you pass R check without errors and warnings before submitting.</p></li>
+<li><p>Always target the <code>develop</code> branch, and make sure you are up-to-date with the develop branch.</p></li>
+</ul>
 
-<span class='co'># S4 method for CovariateData</span>
-<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>object</span><span class='op'>)</span></pre>
-
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>object</th>
-      <td><p>An object of class `CovariateData`.</p></td>
-    </tr>
-    </table>
-
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='isCovariateData.html'>isCovariateData</a></code>, <code><a href='isAggregatedCovariateData.html'>isAggregatedCovariateData</a></code>, <code><a href='isTemporalCovariateData.html'>isTemporalCovariateData</a></code></p></div>
 
   </div>
+
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>
     </nav>
   </div>
+
 </div>
+
 
 
       <footer>

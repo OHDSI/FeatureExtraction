@@ -3,9 +3,19 @@ FeatureExtraction 3.1.1
 
 Bugfixes:
 
-1. Correct output of multiple cohort IDs in `print()` function.
+1. Removes 'size' column name since this is a reserved keyword for Oracle.
 
-2. Fixing duplicates in counts when generating server-side aggregated measurement-range-group covariates.
+2. Age group covariate name fix for Spark SQL
+
+3. Removes extraneous concepts from CCI score
+
+4. Correct output of multiple cohort IDs in `print()` function.
+
+5. Fix external class caching issue
+
+6. Fix standardized difference calc
+
+7. Fixing duplicates in counts when generating server-side aggregated measurement-range-group covariates.
 
 
 FeatureExtraction 3.1.0

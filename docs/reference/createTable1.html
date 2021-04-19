@@ -73,7 +73,7 @@ Allows for creating a table describing a single cohort, or a table comparing two
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">FeatureExtraction</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">3.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">3.1.1</span>
       </span>
     </div>
 
@@ -81,7 +81,7 @@ Allows for creating a table describing a single cohort, or a table comparing two
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -122,7 +122,7 @@ Allows for creating a table describing a single cohort, or a table comparing two
 </li>
 <li>
   <a href="https://github.com/OHDSI/FeatureExtraction/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -149,19 +149,19 @@ Allows for creating a table describing a single cohort, or a table comparing two
 Allows for creating a table describing a single cohort, or a table comparing two cohorts.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>createTable1</span>(
-  <span class='no'>covariateData1</span>,
-  <span class='kw'>covariateData2</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>cohortId1</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>cohortId2</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>specifications</span> <span class='kw'>=</span> <span class='fu'><a href='getDefaultTable1Specifications.html'>getDefaultTable1Specifications</a></span>(),
-  <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"two columns"</span>,
-  <span class='kw'>showCounts</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>showPercent</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>percentDigits</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>valueDigits</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>stdDiffDigits</span> <span class='kw'>=</span> <span class='fl'>2</span>
-)</pre>
+    <pre class="usage"><span class='fu'>createTable1</span><span class='op'>(</span>
+  <span class='va'>covariateData1</span>,
+  covariateData2 <span class='op'>=</span> <span class='cn'>NULL</span>,
+  cohortId1 <span class='op'>=</span> <span class='cn'>NULL</span>,
+  cohortId2 <span class='op'>=</span> <span class='cn'>NULL</span>,
+  specifications <span class='op'>=</span> <span class='fu'><a href='getDefaultTable1Specifications.html'>getDefaultTable1Specifications</a></span><span class='op'>(</span><span class='op'>)</span>,
+  output <span class='op'>=</span> <span class='st'>"two columns"</span>,
+  showCounts <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  showPercent <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  percentDigits <span class='op'>=</span> <span class='fl'>1</span>,
+  valueDigits <span class='op'>=</span> <span class='fl'>1</span>,
+  stdDiffDigits <span class='op'>=</span> <span class='fl'>2</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -231,11 +231,11 @@ provided, <code>covariateData2</code> is assumed to contain data on only 1 cohor
 
       <footer>
       <div class="copyright">
-  <p>Developed by Martijn Schuemie, Marc Suchard, Patrick Ryan, Jenna Reps.</p>
+  <p>Developed by Martijn Schuemie, Marc Suchard, Patrick Ryan, Jenna Reps, Anthony Sena.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

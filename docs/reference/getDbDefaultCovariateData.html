@@ -74,7 +74,7 @@ observations, etc." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">FeatureExtraction</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">3.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">3.1.1</span>
       </span>
     </div>
 
@@ -82,7 +82,7 @@ observations, etc." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -123,7 +123,7 @@ observations, etc." />
 </li>
 <li>
   <a href="https://github.com/OHDSI/FeatureExtraction/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -151,21 +151,21 @@ Includes covariates for all drugs, drug classes, condition, condition classes, p
 observations, etc.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>getDbDefaultCovariateData</span>(
-  <span class='no'>connection</span>,
-  <span class='kw'>oracleTempSchema</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>cdmDatabaseSchema</span>,
-  <span class='kw'>cohortTable</span> <span class='kw'>=</span> <span class='st'>"#cohort_person"</span>,
-  <span class='kw'>cohortId</span> <span class='kw'>=</span> -<span class='fl'>1</span>,
-  <span class='kw'>cdmVersion</span> <span class='kw'>=</span> <span class='st'>"5"</span>,
-  <span class='kw'>rowIdField</span> <span class='kw'>=</span> <span class='st'>"subject_id"</span>,
-  <span class='no'>covariateSettings</span>,
-  <span class='no'>targetDatabaseSchema</span>,
-  <span class='no'>targetCovariateTable</span>,
-  <span class='no'>targetCovariateRefTable</span>,
-  <span class='no'>targetAnalysisRefTable</span>,
-  <span class='kw'>aggregated</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
-)</pre>
+    <pre class="usage"><span class='fu'>getDbDefaultCovariateData</span><span class='op'>(</span>
+  <span class='va'>connection</span>,
+  oracleTempSchema <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>cdmDatabaseSchema</span>,
+  cohortTable <span class='op'>=</span> <span class='st'>"#cohort_person"</span>,
+  cohortId <span class='op'>=</span> <span class='op'>-</span><span class='fl'>1</span>,
+  cdmVersion <span class='op'>=</span> <span class='st'>"5"</span>,
+  rowIdField <span class='op'>=</span> <span class='st'>"subject_id"</span>,
+  <span class='va'>covariateSettings</span>,
+  <span class='va'>targetDatabaseSchema</span>,
+  <span class='va'>targetCovariateTable</span>,
+  <span class='va'>targetCovariateRefTable</span>,
+  <span class='va'>targetAnalysisRefTable</span>,
+  aggregated <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -246,7 +246,7 @@ cohort entry?</p></td>
 
     <p>Returns an object of type <code>CovariateData</code>, which is an Andromeda object containing information on the baseline covariates.
 Information about multiple outcomes can be captured at once for efficiency reasons. This object is
-a list with the following components:</p><dl'>
+a list with the following components:</p><dl>
 <dt>covariates</dt><dd><p>An ffdf object listing the
 baseline covariates per person in the cohorts. This is done using a sparse representation:
 covariates with a value of 0 are omitted to save space. The covariates object will have three
@@ -274,11 +274,11 @@ function directly but rather use the <code><a href='getDbCovariateData.html'>get
 
       <footer>
       <div class="copyright">
-  <p>Developed by Martijn Schuemie, Marc Suchard, Patrick Ryan, Jenna Reps.</p>
+  <p>Developed by Martijn Schuemie, Marc Suchard, Patrick Ryan, Jenna Reps, Anthony Sena.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

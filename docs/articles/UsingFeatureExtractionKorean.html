@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">FeatureExtraction</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">3.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">3.1.1</span>
       </span>
     </div>
 
@@ -39,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -80,7 +80,7 @@
 </li>
 <li>
   <a href="https://github.com/OHDSI/FeatureExtraction/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -94,13 +94,13 @@
 
       
 
-      </header><script src="UsingFeatureExtractionKorean_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="UsingFeatureExtractionKorean_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Using FeatureExtraction (Korean)</h1>
                         <h4 class="author">Jeon Ga Bin &amp; Martijn J. Schuemie</h4>
             
-            <h4 class="date">2020-09-15</h4>
+            <h4 class="date">2021-04-19</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/FeatureExtraction/blob/master/vignettes/UsingFeatureExtractionKorean.Rmd"><code>vignettes/UsingFeatureExtractionKorean.Rmd</code></a></small>
       <div class="hidden name"><code>UsingFeatureExtractionKorean.Rmd</code></div>
@@ -132,12 +132,14 @@
 <h2 class="hasAnchor">
 <a href="#%EA%B8%B0%EB%B3%B8-%EA%B3%B5%EB%B3%80%EB%9F%89-%EC%A7%91%ED%95%A9-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0" class="anchor"></a>기본 공변량 집합 사용하기</h2>
 <p>기본 공변량 집합을 사용하는 것은 간단하다:</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="no">settings</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createDefaultCovariateSettings.html">createDefaultCovariateSettings</a></span>()</pre></body></html></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDefaultCovariateSettings.html">createDefaultCovariateSettings</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p>이것은 인구통계학에서부터 조건과 약물을 통한 여러 위험 점수까지 다양한 특징들을 만들어 낼 것이다.</p>
 <p>공변량을 생성하는데 사용해서는 안되는 개념집합을 지정할 수도 있다</p>
 <p>예를들어:</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">settings</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createDefaultCovariateSettings.html">createDefaultCovariateSettings</a></span>(<span class="kw">excludedCovariateConceptIds</span> <span class="kw">=</span> <span class="fl">1124300</span>,
-                                           <span class="kw">addDescendantsToExclude</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDefaultCovariateSettings.html">createDefaultCovariateSettings</a></span><span class="op">(</span>excludedCovariateConceptIds <span class="op">=</span> <span class="fl">1124300</span>, 
+                                           addDescendantsToExclude <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p>이것은 개념 1124300(성분 디클로페낙)과 그 후손들(즉, 디클로페낙 성분을 함유한 모든 약물)에서 파생된 것을 제외하고 기본 공변량 집합을 생성한다.</p>
 </div>
 <div id="사전-지정된-분석-사용" class="section level2">
@@ -146,9 +148,10 @@
 <p>createCovariateSettings 기능은 사용자가 미리 정의된 공변량 집합에서 선택 할 수 있도록 한다.</p>
 <p>사용 가능한 옵션에 대한 개요를 보려면 createCovariateSettings를 사용한다</p>
 <p>예를들어:</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">settings</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createCovariateSettings.html">createCovariateSettings</a></span>(<span class="kw">useDemographicsGender</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
-                                    <span class="kw">useDemographicsAgeGroup</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
-                                    <span class="kw">useConditionOccurrenceAnyTimePrior</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCovariateSettings.html">createCovariateSettings</a></span><span class="op">(</span>useDemographicsGender <span class="op">=</span> <span class="cn">TRUE</span>,
+                                    useDemographicsAgeGroup <span class="op">=</span> <span class="cn">TRUE</span>,
+                                    useConditionOccurrenceAnyTimePrior <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p>이렇게 하면 성별, 연령(5세 그룹) 및 코호트 시작 날짜 이전의(그리고 포함하는) 조건_발생가능에서 관찰된 각 개념에 대한 이진 공변량이 생성된다.</p>
 <p>사전 지정된 분석 중 많은 부분이 단기, 중기 또는 장기 기간을 나타낸다. 기본적으로 밑에와 같이 정의 된다</p>
 <ul>
@@ -158,32 +161,35 @@
 </ul>
 <p>그러나 사용자는 이러한 값을 변경 할 수 있다.</p>
 <p>예를들어:</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">settings</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createCovariateSettings.html">createCovariateSettings</a></span>(<span class="kw">useConditionEraLongTerm</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
-                                    <span class="kw">useConditionEraShortTerm</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
-                                    <span class="kw">useDrugEraLongTerm</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
-                                    <span class="kw">useDrugEraShortTerm</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
-                                    <span class="kw">longTermStartDays</span> <span class="kw">=</span> -<span class="fl">180</span>,
-                                    <span class="kw">shortTermStartDays</span> <span class="kw">=</span> -<span class="fl">14</span>,
-                                    <span class="kw">endDays</span> <span class="kw">=</span> -<span class="fl">1</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCovariateSettings.html">createCovariateSettings</a></span><span class="op">(</span>useConditionEraLongTerm <span class="op">=</span> <span class="cn">TRUE</span>,
+                                    useConditionEraShortTerm <span class="op">=</span> <span class="cn">TRUE</span>,
+                                    useDrugEraLongTerm <span class="op">=</span> <span class="cn">TRUE</span>,
+                                    useDrugEraShortTerm <span class="op">=</span> <span class="cn">TRUE</span>,
+                                    longTermStartDays <span class="op">=</span> <span class="op">-</span><span class="fl">180</span>,
+                                    shortTermStartDays <span class="op">=</span> <span class="op">-</span><span class="fl">14</span>,
+                                    endDays <span class="op">=</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span></code></pre></div>
 <p>이것은 코호트 시작일로부터 180일 전(포함하지않음)까지 장기를 재정의하고 코호트 시작일로부터 14일 전(포함하지 않음)까지 단기를 재정의 한다.</p>
 <p>또한 공변량 구성에 사용해야 하는 개념ID를 지정할 수도 안할 수도 있다.</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">settings</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createCovariateSettings.html">createCovariateSettings</a></span>(<span class="kw">useConditionEraLongTerm</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
-                                    <span class="kw">useConditionEraShortTerm</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
-                                    <span class="kw">useDrugEraLongTerm</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
-                                    <span class="kw">useDrugEraShortTerm</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
-                                    <span class="kw">longTermStartDays</span> <span class="kw">=</span> -<span class="fl">180</span>,
-                                    <span class="kw">shortTermStartDays</span> <span class="kw">=</span> -<span class="fl">14</span>,
-                                    <span class="kw">endDays</span> <span class="kw">=</span> -<span class="fl">1</span>,
-                                    <span class="kw">excludedCovariateConceptIds</span> <span class="kw">=</span> <span class="fl">1124300</span>,
-                                    <span class="kw">addDescendantsToExclude</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCovariateSettings.html">createCovariateSettings</a></span><span class="op">(</span>useConditionEraLongTerm <span class="op">=</span> <span class="cn">TRUE</span>,
+                                    useConditionEraShortTerm <span class="op">=</span> <span class="cn">TRUE</span>,
+                                    useDrugEraLongTerm <span class="op">=</span> <span class="cn">TRUE</span>,
+                                    useDrugEraShortTerm <span class="op">=</span> <span class="cn">TRUE</span>,
+                                    longTermStartDays <span class="op">=</span> <span class="op">-</span><span class="fl">180</span>,
+                                    shortTermStartDays <span class="op">=</span> <span class="op">-</span><span class="fl">14</span>,
+                                    endDays <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>,
+                                    excludedCovariateConceptIds <span class="op">=</span> <span class="fl">1124300</span>, 
+                                    addDescendantsToExclude <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="사용자-공변량-집합을-생성" class="section level2">
 <h2 class="hasAnchor">
 <a href="#%EC%82%AC%EC%9A%A9%EC%9E%90-%EA%B3%B5%EB%B3%80%EB%9F%89-%EC%A7%91%ED%95%A9%EC%9D%84-%EC%83%9D%EC%84%B1" class="anchor"></a>사용자 공변량 집합을 생성</h2>
 <p>이 옵션은 <strong>고급 사용자</strong>만 사용해야 한다. 구현 레벨에서 분석은 고도로 매개 변수화 된 SQL과 매개 변수 값의 스펙을 결합한 것임을 이해해야한다. 사용 가능한 옵션을 이해하는가장 좋은방법은 사전 지정된 분석을 시작점으로 잡고 그것을 상세한 설정 객체로 바꾸는 것이다</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">settings</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createCovariateSettings.html">createCovariateSettings</a></span>(<span class="kw">useConditionEraLongTerm</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
-<span class="no">settings2</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/convertPrespecSettingsToDetailedSettings.html">convertPrespecSettingsToDetailedSettings</a></span>(<span class="no">settings</span>)
-<span class="no">settings2</span>$<span class="no">analyses</span><span class="kw">[[</span><span class="fl">1</span>]]</pre></body></html></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCovariateSettings.html">createCovariateSettings</a></span><span class="op">(</span>useConditionEraLongTerm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="va">settings2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/convertPrespecSettingsToDetailedSettings.html">convertPrespecSettingsToDetailedSettings</a></span><span class="op">(</span><span class="va">settings</span><span class="op">)</span>
+<span class="va">settings2</span><span class="op">$</span><span class="va">analyses</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></code></pre></div>
 <pre><code>## $analysisId
 ## [1] 202
 ## 
@@ -240,18 +246,19 @@
 ## $addDescendantsToExclude
 ## [1] FALSE</code></pre>
 <p>상세 분석 설정 객체를 처음부터 만들 수 있고 이것을 사용하여 세부 설정 객체를 생성한다</p>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">analysisDetails</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createAnalysisDetails.html">createAnalysisDetails</a></span>(<span class="kw">analysisId</span> <span class="kw">=</span> <span class="fl">1</span>,
-                                         <span class="kw">sqlFileName</span> <span class="kw">=</span> <span class="st">"DemographicsGender.sql"</span>,
-                                         <span class="kw">parameters</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">analysisId</span> <span class="kw">=</span> <span class="fl">1</span>,
-                                                           <span class="kw">analysisName</span> <span class="kw">=</span> <span class="st">"Gender"</span>,
-                                                           <span class="kw">domainId</span> <span class="kw">=</span> <span class="st">"Demographics"</span>),
-                                         <span class="kw">includedCovariateConceptIds</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(),
-                                         <span class="kw">addDescendantsToInclude</span> <span class="kw">=</span> <span class="fl">FALSE</span>,
-                                         <span class="kw">excludedCovariateConceptIds</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(),
-                                         <span class="kw">addDescendantsToExclude</span> <span class="kw">=</span> <span class="fl">FALSE</span>,
-                                         <span class="kw">includedCovariateIds</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>())
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">analysisDetails</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createAnalysisDetails.html">createAnalysisDetails</a></span><span class="op">(</span>analysisId <span class="op">=</span> <span class="fl">1</span>,
+                                         sqlFileName <span class="op">=</span> <span class="st">"DemographicsGender.sql"</span>,
+                                         parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>analysisId <span class="op">=</span> <span class="fl">1</span>,
+                                                           analysisName <span class="op">=</span> <span class="st">"Gender"</span>,
+                                                           domainId <span class="op">=</span> <span class="st">"Demographics"</span><span class="op">)</span>,
+                                         includedCovariateConceptIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span>,
+                                         addDescendantsToInclude <span class="op">=</span> <span class="cn">FALSE</span>,
+                                         excludedCovariateConceptIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span>,
+                                         addDescendantsToExclude <span class="op">=</span> <span class="cn">FALSE</span>,
+                                         includedCovariateIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 
-<span class="no">settings</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createDetailedCovariateSettings.html">createDetailedCovariateSettings</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">analysisDetails</span>))</pre></body></html></div>
+<span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDetailedCovariateSettings.html">createDetailedCovariateSettings</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">analysisDetails</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="시간-공변량" class="section level2">
 <h2 class="hasAnchor">
@@ -260,28 +267,32 @@
 <p>그러나 때로는 더 세세하게 시간을 분해하는 것이 필요할 때도 있다. 예를 들어, 코호트 시작 365일 전에 각 날짜에 대한 공변량을 별도로 작성한다. 우리는 이런 종류의 공변량을 시간 공변량이라고 한다.</p>
 <p>시간 공변량은 시간대에서 동일한 공변량 ID 공유하며 별도의 시간 ID를 사용하여 시간대를 구별합니다. 현재는 시간 공변량을 처리할 수 있는 많은 어플리케이션이 없다. 예를들어 CohortMethod 패키지는 시간 공변량을 제공할 때 깨진다. 그러나 PatientLevelPrediction 패키지에는 시간 공변량이 필요한 기계 학습 알고리즘이 있다.</p>
 <p>다시 기본설정을 사용하도록 선택할 수 있음</p>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">settings</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createDefaultTemporalCovariateSettings.html">createDefaultTemporalCovariateSettings</a></span>()</pre></body></html></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDefaultTemporalCovariateSettings.html">createDefaultTemporalCovariateSettings</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p>또는, 미리 정해진 시간 공변량 중에서 선택할 수 있다.</p>
-<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="no">settings</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createTemporalCovariateSettings.html">createTemporalCovariateSettings</a></span>(<span class="kw">useConditionOccurrence</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
-                                            <span class="kw">useMeasurementValue</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createTemporalCovariateSettings.html">createTemporalCovariateSettings</a></span><span class="op">(</span>useConditionOccurrence <span class="op">=</span> <span class="cn">TRUE</span>,
+                                            useMeasurementValue <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p>이 경우 우리는 condition_occurrence 테이블의 각 개념에 대해 이진 공변량을 생성하기로 선택하였고, CDM의 measurement 테이블에 있는 각 측정 조합에 대해 연속 공변량을 생성하기로 했다. 기본적으로 시간 공변량은 코호트 시작일 365일 전(포함하지 않음)에 개별적으로 각 날에 대해 생성된다. 다른 시간대를 지정할수도 있수도 있는데 예를 들면 밑에 코드처럼 7일간격으로 만들 수 있다</p>
-<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="no">settings</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createTemporalCovariateSettings.html">createTemporalCovariateSettings</a></span>(<span class="kw">useConditionOccurrence</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
-                                            <span class="kw">useMeasurementValue</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
-                                            <span class="kw">temporalStartDays</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(-<span class="fl">364</span>, -<span class="fl">7</span>, <span class="kw">by</span> <span class="kw">=</span> <span class="fl">7</span>),
-                                            <span class="kw">temporalEndDays</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(-<span class="fl">358</span>, -<span class="fl">1</span>, <span class="kw">by</span> <span class="kw">=</span> <span class="fl">7</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createTemporalCovariateSettings.html">createTemporalCovariateSettings</a></span><span class="op">(</span>useConditionOccurrence <span class="op">=</span> <span class="cn">TRUE</span>,
+                                            useMeasurementValue <span class="op">=</span> <span class="cn">TRUE</span>,
+                                            temporalStartDays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">364</span>, <span class="op">-</span><span class="fl">7</span>, by <span class="op">=</span> <span class="fl">7</span><span class="op">)</span>,
+                                            temporalEndDays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">358</span>, <span class="op">-</span><span class="fl">1</span>, by <span class="op">=</span> <span class="fl">7</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>각 시간대는 지정된 시작일과 종료일을 포함한다. 일반 공변량과 유사하게 <strong>고급 사용자</strong>도 사용자 정의 분석을 정의할 수 있다.</p>
-<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="no">analysisDetails</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createAnalysisDetails.html">createAnalysisDetails</a></span>(<span class="kw">analysisId</span> <span class="kw">=</span> <span class="fl">1</span>,
-                                         <span class="kw">sqlFileName</span> <span class="kw">=</span> <span class="st">"MeasurementValue.sql"</span>,
-                                         <span class="kw">parameters</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">analysisId</span> <span class="kw">=</span> <span class="fl">1</span>,
-                                                           <span class="kw">analysisName</span> <span class="kw">=</span> <span class="st">"MeasurementValue"</span>,
-                                                           <span class="kw">domainId</span> <span class="kw">=</span> <span class="st">"Measurement"</span>),
-                                         <span class="kw">includedCovariateConceptIds</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(),
-                                         <span class="kw">addDescendantsToInclude</span> <span class="kw">=</span> <span class="fl">FALSE</span>,
-                                         <span class="kw">excludedCovariateConceptIds</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(),
-                                         <span class="kw">addDescendantsToExclude</span> <span class="kw">=</span> <span class="fl">FALSE</span>,
-                                         <span class="kw">includedCovariateIds</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>())
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">analysisDetails</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createAnalysisDetails.html">createAnalysisDetails</a></span><span class="op">(</span>analysisId <span class="op">=</span> <span class="fl">1</span>,
+                                         sqlFileName <span class="op">=</span> <span class="st">"MeasurementValue.sql"</span>,
+                                         parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>analysisId <span class="op">=</span> <span class="fl">1</span>,
+                                                           analysisName <span class="op">=</span> <span class="st">"MeasurementValue"</span>,
+                                                           domainId <span class="op">=</span> <span class="st">"Measurement"</span><span class="op">)</span>,
+                                         includedCovariateConceptIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span>,
+                                         addDescendantsToInclude <span class="op">=</span> <span class="cn">FALSE</span>,
+                                         excludedCovariateConceptIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span>,
+                                         addDescendantsToExclude <span class="op">=</span> <span class="cn">FALSE</span>,
+                                         includedCovariateIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 
-<span class="no">settings</span> <span class="kw">&lt;-</span>  <span class="fu"><a href="../reference/createDetailedTemporalCovariateSettings.html">createDetailedTemporalCovariateSettings</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">analysisDetails</span>))</pre></body></html></div>
+<span class="va">settings</span> <span class="op">&lt;-</span>  <span class="fu"><a href="../reference/createDetailedTemporalCovariateSettings.html">createDetailedTemporalCovariateSettings</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">analysisDetails</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
 <div id="관심-코호트에-대한-공변량-구성" class="section level1">
@@ -293,63 +304,66 @@
 <a href="#%EC%84%9C%EB%B2%84-%EC%97%B0%EA%B2%B0-%EC%84%A4%EC%A0%95" class="anchor"></a>서버 연결 설정</h2>
 <p>우리는 R언어로 데이터가 있는 서버와 연결하는 방법을 알아야 한다. CohortMethod는 createConnectionDetails 함수를 제공하는 DatabaseConnector 패키지를 사용한다</p>
 <p>다양한 데이터베이스 관리 시스템 (DBMS)에 필요한 특정 설정을 위한 createConnectionDetails을 사용한다. 예를들어 이 코드를 사용하여 PostgreSQL 데이터베이스에 연결할 수 있다.</p>
-<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="no">connectionDetails</span> <span class="kw">&lt;-</span> <span class="fu">createConnectionDetails</span>(<span class="kw">dbms</span> <span class="kw">=</span> <span class="st">"postgresql"</span>,
-                                             <span class="kw">server</span> <span class="kw">=</span> <span class="st">"localhost/ohdsi"</span>,
-                                             <span class="kw">user</span> <span class="kw">=</span> <span class="st">"joe"</span>,
-                                             <span class="kw">password</span> <span class="kw">=</span> <span class="st">"supersecret"</span>)
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">connectionDetails</span> <span class="op">&lt;-</span> <span class="fu">createConnectionDetails</span><span class="op">(</span>dbms <span class="op">=</span> <span class="st">"postgresql"</span>, 
+                                             server <span class="op">=</span> <span class="st">"localhost/ohdsi"</span>, 
+                                             user <span class="op">=</span> <span class="st">"joe"</span>, 
+                                             password <span class="op">=</span> <span class="st">"supersecret"</span><span class="op">)</span>
 
-<span class="no">cdmDatabaseSchema</span> <span class="kw">&lt;-</span> <span class="st">"my_cdm_data"</span>
-<span class="no">resultsDatabaseSchema</span> <span class="kw">&lt;-</span> <span class="st">"my_results"</span></pre></body></html></div>
+<span class="va">cdmDatabaseSchema</span> <span class="op">&lt;-</span> <span class="st">"my_cdm_data"</span>
+<span class="va">resultsDatabaseSchema</span> <span class="op">&lt;-</span> <span class="st">"my_results"</span></code></pre></div>
 <p>마지막 두 라인은 cdmDatabaseSchema 변수와 resultsDatabaseSchema 변수를 정의했다. 나중에 CDM 형식의 데이터가 어디에 있는지, 중간 및 결과 표를 작성하려는 위치를 R언어로 접근하기 위해 이러한 변수를 사용한다. Microsoft SQL Server의 경우 데이터베이스 스키마는 데이터베이스와 스키마를 모두 지정해야하므로 예를 들어 cdmDatabaseSchema &lt;- “my_cdm_data.dbo” 이런식이다.</p>
 </div>
 <div id="관심-코호트-생성" class="section level2">
 <h2 class="hasAnchor">
 <a href="#%EA%B4%80%EC%8B%AC-%EC%BD%94%ED%98%B8%ED%8A%B8-%EC%83%9D%EC%84%B1" class="anchor"></a>관심 코호트 생성</h2>
 <p>FeatureExtraction을 사용하려면 공통 데이터 모델의 코호트 테이블 또는 코호트 테이블과 동일한 구조를 갖는 테이블에서 코호트를 인스턴스화 해야한다. 코호트 정의 툴로 코호트를 만들 수 있지만 여기서는 간단한 SQL을 사용하여 1인당 첫번째 약물시기를 찾는다. 코호트를 시작하기 전에 공변량을 생성하기 때문에 첫번째 노출 전에 365일 간의 관찰이 필요하다. FeatureExtraction가 지정된 기간 동안 피사체가 관찰되는지 여부를 확인하지 않는다.</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb14-1"><a href="#cb14-1"></a><span class="co">/***********************************</span></span>
-<span id="cb14-2"><a href="#cb14-2"></a><span class="co">File cohortsOfInterest.sql</span></span>
-<span id="cb14-3"><a href="#cb14-3"></a><span class="co">***********************************/</span></span>
-<span id="cb14-4"><a href="#cb14-4"></a></span>
-<span id="cb14-5"><a href="#cb14-5"></a><span class="cf">IF</span> OBJECT_ID(<span class="st">'@resultsDatabaseSchema.cohorts_of_interest'</span>, <span class="st">'U'</span>) <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span></span>
-<span id="cb14-6"><a href="#cb14-6"></a>  <span class="kw">DROP</span> <span class="kw">TABLE</span> @resultsDatabaseSchema.cohorts_of_interest;</span>
-<span id="cb14-7"><a href="#cb14-7"></a></span>
-<span id="cb14-8"><a href="#cb14-8"></a><span class="kw">SELECT</span> first_use.<span class="op">*</span></span>
-<span id="cb14-9"><a href="#cb14-9"></a><span class="kw">INTO</span> @resultsDatabaseSchema.cohorts_of_interest</span>
-<span id="cb14-10"><a href="#cb14-10"></a><span class="kw">FROM</span> (</span>
-<span id="cb14-11"><a href="#cb14-11"></a>  <span class="kw">SELECT</span> drug_concept_id <span class="kw">AS</span> cohort_definition_id,</span>
-<span id="cb14-12"><a href="#cb14-12"></a>    <span class="fu">MIN</span>(drug_era_start_date) <span class="kw">AS</span> cohort_start_date,</span>
-<span id="cb14-13"><a href="#cb14-13"></a>    <span class="fu">MIN</span>(drug_era_end_date) <span class="kw">AS</span> cohort_end_date,</span>
-<span id="cb14-14"><a href="#cb14-14"></a>    person_id </span>
-<span id="cb14-15"><a href="#cb14-15"></a>  <span class="kw">FROM</span> @cdmDatabaseSchema.drug_era</span>
-<span id="cb14-16"><a href="#cb14-16"></a>  <span class="kw">WHERE</span> drug_concept_id <span class="op">=</span> <span class="dv">1118084</span><span class="co">-- celecoxib</span></span>
-<span id="cb14-17"><a href="#cb14-17"></a>    <span class="kw">OR</span> drug_concept_id <span class="op">=</span> <span class="dv">1124300</span> <span class="co">--diclofenac</span></span>
-<span id="cb14-18"><a href="#cb14-18"></a>  <span class="kw">GROUP</span> <span class="kw">BY</span> drug_concept_id, </span>
-<span id="cb14-19"><a href="#cb14-19"></a>    person_id</span>
-<span id="cb14-20"><a href="#cb14-20"></a>) first_use </span>
-<span id="cb14-21"><a href="#cb14-21"></a><span class="kw">INNER</span> <span class="kw">JOIN</span> @cdmDatabaseSchema.observation_period</span>
-<span id="cb14-22"><a href="#cb14-22"></a>  <span class="kw">ON</span> first_use.person_id <span class="op">=</span> observation_period.person_id</span>
-<span id="cb14-23"><a href="#cb14-23"></a>  <span class="kw">AND</span> cohort_start_date <span class="op">&gt;=</span> observation_period_start_date</span>
-<span id="cb14-24"><a href="#cb14-24"></a>  <span class="kw">AND</span> cohort_end_date <span class="op">&lt;=</span> observation_period_end_date</span>
-<span id="cb14-25"><a href="#cb14-25"></a><span class="kw">WHERE</span> DATEDIFF(<span class="dt">DAY</span>, observation_period_start_date, cohort_start_date) <span class="op">&gt;=</span> <span class="dv">365</span>;</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">/***********************************</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co">File cohortsOfInterest.sql</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co">***********************************/</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="cf">IF</span> OBJECT_ID(<span class="st">'@resultsDatabaseSchema.cohorts_of_interest'</span>, <span class="st">'U'</span>) <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">DROP</span> <span class="kw">TABLE</span> @resultsDatabaseSchema.cohorts_of_interest;</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> first_use.<span class="op">*</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="kw">INTO</span> @resultsDatabaseSchema.cohorts_of_interest</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> (</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="kw">SELECT</span> drug_concept_id <span class="kw">AS</span> cohort_definition_id,</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">MIN</span>(drug_era_start_date) <span class="kw">AS</span> cohort_start_date,</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">MIN</span>(drug_era_end_date) <span class="kw">AS</span> cohort_end_date,</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>    person_id </span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  <span class="kw">FROM</span> @cdmDatabaseSchema.drug_era</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  <span class="kw">WHERE</span> drug_concept_id <span class="op">=</span> <span class="dv">1118084</span><span class="co">-- celecoxib</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">OR</span> drug_concept_id <span class="op">=</span> <span class="dv">1124300</span> <span class="co">--diclofenac</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  <span class="kw">GROUP</span> <span class="kw">BY</span> drug_concept_id, </span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>    person_id</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>) first_use </span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a><span class="kw">INNER</span> <span class="kw">JOIN</span> @cdmDatabaseSchema.observation_period</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>  <span class="kw">ON</span> first_use.person_id <span class="op">=</span> observation_period.person_id</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>  <span class="kw">AND</span> cohort_start_date <span class="op">&gt;=</span> observation_period_start_date</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>  <span class="kw">AND</span> cohort_end_date <span class="op">&lt;=</span> observation_period_end_date</span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> DATEDIFF(<span class="dt">DAY</span>, observation_period_start_date, cohort_start_date) <span class="op">&gt;=</span> <span class="dv">365</span>;</span></code></pre></div>
 <p>이 Sql은 SqlRender 패키지에서 사용할 수 있는 매개변수화된 SQL이다. 매개 변수가 있는 SQL을 사용하므로 CDM 및 결과 스키마의 이름을 미리 지정할 필요가 없다. 그런 식으로 다른 스키마에서 SQL을 실행하려면 매개 변수 값만 변경하면 된다. 우리는 SQL 코드를 변경할 필요가 없다. 또한 SqlRender의 번역 기능을 사용하여 다양한 환경에서 SQL 코드를 실행할 수 있다.</p>
-<div class="sourceCode" id="cb15"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">SqlRender</span>)
-<span class="no">sql</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SqlRender/man/readSql.html">readSql</a></span>(<span class="st">"cohortsOfInterest.sql"</span>)
-<span class="no">sql</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SqlRender/man/render.html">render</a></span>(<span class="no">sql</span>,
-              <span class="kw">cdmDatabaseSchema</span> <span class="kw">=</span> <span class="no">cdmDatabaseSchema</span>,
-              <span class="kw">resultsDatabaseSchema</span> <span class="kw">=</span> <span class="no">resultsDatabaseSchema</span>)
-<span class="no">sql</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SqlRender/man/translate.html">translate</a></span>(<span class="no">sql</span>, <span class="kw">targetDialect</span> <span class="kw">=</span> <span class="no">connectionDetails</span>$<span class="no">dbms</span>)
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ohdsi.github.io/SqlRender/">SqlRender</a></span><span class="op">)</span>
+<span class="va">sql</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ohdsi.github.io/SqlRender/reference/readSql.html">readSql</a></span><span class="op">(</span><span class="st">"cohortsOfInterest.sql"</span><span class="op">)</span>
+<span class="va">sql</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ohdsi.github.io/SqlRender/reference/render.html">render</a></span><span class="op">(</span><span class="va">sql</span>,
+              cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>, 
+              resultsDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span><span class="op">)</span>
+<span class="va">sql</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ohdsi.github.io/SqlRender/reference/translate.html">translate</a></span><span class="op">(</span><span class="va">sql</span>, targetDialect <span class="op">=</span> <span class="va">connectionDetails</span><span class="op">$</span><span class="va">dbms</span><span class="op">)</span>
 
-<span class="no">connection</span> <span class="kw">&lt;-</span> <span class="fu">connect</span>(<span class="no">connectionDetails</span>)
-<span class="fu">executeSql</span>(<span class="no">connection</span>, <span class="no">sql</span>)</pre></body></html></div>
+<span class="va">connection</span> <span class="op">&lt;-</span> <span class="fu">connect</span><span class="op">(</span><span class="va">connectionDetails</span><span class="op">)</span>
+<span class="fu">executeSql</span><span class="op">(</span><span class="va">connection</span>, <span class="va">sql</span><span class="op">)</span></code></pre></div>
 <p>이 코드에서는 먼저 파일에서 메모리로 SQL을 읽는다. 다음 줄에서는 두 개의 매개 변수 이름을 실제 값으로 대체한다. 그런 다음 SQL을 연결 세부 정보에서 이미 지정되어있는 DBMS에 적합한 방언으로 변환한다. 다음으로, 우리는 서버에 연결하고 렌더링되고 번역 된 SQL을 제출한다.</p>
 <p>지금까지 잘했다면, 우리는 이제 관심 코호트의 테이블을 만들었다. 우리는 한 종류당 얼마나 많은 이벤트를 볼 수 있는 지 알 수 있다.</p>
-<div class="sourceCode" id="cb16"><html><body><pre class="r"><span class="no">sql</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(<span class="st">"SELECT cohort_definition_id, COUNT(*) AS count"</span>,
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">sql</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"SELECT cohort_definition_id, COUNT(*) AS count"</span>,
              <span class="st">"FROM @resultsDatabaseSchema.cohorts_of_interest"</span>,
-             <span class="st">"GROUP BY cohort_definition_id"</span>)
-<span class="no">sql</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SqlRender/man/render.html">render</a></span>(<span class="no">sql</span>, <span class="kw">resultsDatabaseSchema</span> <span class="kw">=</span> <span class="no">resultsDatabaseSchema</span>)
-<span class="no">sql</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SqlRender/man/translate.html">translate</a></span>(<span class="no">sql</span>, <span class="kw">targetDialect</span> <span class="kw">=</span> <span class="no">connectionDetails</span>$<span class="no">dbms</span>)
+             <span class="st">"GROUP BY cohort_definition_id"</span><span class="op">)</span>
+<span class="va">sql</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ohdsi.github.io/SqlRender/reference/render.html">render</a></span><span class="op">(</span><span class="va">sql</span>, resultsDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span><span class="op">)</span>
+<span class="va">sql</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ohdsi.github.io/SqlRender/reference/translate.html">translate</a></span><span class="op">(</span><span class="va">sql</span>, targetDialect <span class="op">=</span> <span class="va">connectionDetails</span><span class="op">$</span><span class="va">dbms</span><span class="op">)</span>
 
-<span class="fu">querySql</span>(<span class="no">connection</span>, <span class="no">sql</span>)</pre></body></html></div>
+<span class="fu">querySql</span><span class="op">(</span><span class="va">connection</span>, <span class="va">sql</span><span class="op">)</span></code></pre></div>
 <pre><code>##   cohort_concept_id  count
 ## 1           1124300 240761
 ## 2           1118084  47293</code></pre>
@@ -358,41 +372,24 @@
 <h2 class="hasAnchor">
 <a href="#%EA%B4%80%EC%8B%AC-%EC%BD%94%ED%98%B8%ED%8A%B8%EC%97%90-%EB%8C%80%ED%95%9C-1%EC%9D%B8%EB%8B%B9-%EA%B3%B5%EB%B3%80%EB%9F%89-%EC%83%9D%EC%84%B1" class="anchor"></a>관심 코호트에 대한 1인당 공변량 생성</h2>
 <p>예를 들어 기본 설정을 사용하여 관심 코호트 중 하나에 대한 1인당 공변량을 생성 할 수 있다.</p>
-<div class="sourceCode" id="cb18"><html><body><pre class="r"><span class="no">covariateSettings</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createDefaultCovariateSettings.html">createDefaultCovariateSettings</a></span>()
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">covariateSettings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDefaultCovariateSettings.html">createDefaultCovariateSettings</a></span><span class="op">(</span><span class="op">)</span>
 
-<span class="no">covariateData</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span>(<span class="kw">connectionDetails</span> <span class="kw">=</span> <span class="no">connectionDetails</span>,
-                                    <span class="kw">cdmDatabaseSchema</span> <span class="kw">=</span> <span class="no">cdmDatabaseSchema</span>,
-                                    <span class="kw">cohortDatabaseSchema</span> <span class="kw">=</span> <span class="no">resultsDatabaseSchema</span>,
-                                    <span class="kw">cohortTable</span> <span class="kw">=</span> <span class="st">"cohorts_of_interest"</span>,
-                                    <span class="kw">cohortId</span> <span class="kw">=</span> <span class="fl">1118084</span>,
-                                    <span class="kw">rowIdField</span> <span class="kw">=</span> <span class="st">"subject_id"</span>,
-                                    <span class="kw">covariateSettings</span> <span class="kw">=</span> <span class="no">covariateSettings</span>)
+<span class="va">covariateData</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span><span class="op">(</span>connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>,
+                                    cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>,
+                                    cohortDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span>,
+                                    cohortTable <span class="op">=</span> <span class="st">"cohorts_of_interest"</span>,
+                                    cohortId <span class="op">=</span> <span class="fl">1118084</span>,
+                                    rowIdField <span class="op">=</span> <span class="st">"subject_id"</span>,
+                                    covariateSettings <span class="op">=</span> <span class="va">covariateSettings</span><span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(<span class="no">covariateData</span>)</pre></body></html></div>
-<pre><code>## CovariateData object summary
-## 
-## Number of covariates: 41330
-## Number of non-zero covariate values: 25925017</code></pre>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">covariateData</span><span class="op">)</span></code></pre></div>
 <div id="사용자-공변량-출력-형식" class="section level3">
 <h3 class="hasAnchor">
 <a href="#%EC%82%AC%EC%9A%A9%EC%9E%90-%EA%B3%B5%EB%B3%80%EB%9F%89-%EC%B6%9C%EB%A0%A5-%ED%98%95%EC%8B%9D" class="anchor"></a>사용자 공변량 출력 형식</h3>
 <p>covariateData 객체의 주요 구성 요소는 공변량이다.</p>
-<div class="sourceCode" id="cb20"><html><body><pre class="r"><span class="no">covariateData</span>$<span class="no">covariates</span></pre></body></html></div>
-<pre><code>## # Source:   lazy query [?? x 3]
-## # Database: sqlite 3.31.1 [C:\Users\mschuemi\AppData\Local\Temp\RtmpyQhXWU\file2e582f6c514d.sqlite]
-##    rowId covariateId covariateValue
-##    &lt;int&gt;       &lt;dbl&gt;          &lt;dbl&gt;
-##  1     1  4181063212              1
-##  2     2   194133212              1
-##  3     3    73553212              1
-##  4     4  4002014212              1
-##  5     5  4181063212              1
-##  6     6   434894212              1
-##  7     7   432739212              1
-##  8     8  4344497212              1
-##  9     9   432867212              1
-## 10    10   197950212              1
-## # ... with more rows</code></pre>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">covariateData</span><span class="op">$</span><span class="va">covariates</span></code></pre></div>
 <p>컬럼들은 다음과 같이 정의된다</p>
 <ul>
 <li>rowId 고유하게 코호트 항목을 식별한다. getDbCovariateData를 호출 할 때 rowIdField = “subject_id”를 정의 했으므로 이 경우 rowId는 코호트 테이블의 subject_id와 동일하다. 하나의 주제가 한 번 이상 코호트에 나타날 수있는 경우 각 코호트 항목을 고유하게 식별하는 필드를 코호트 테이블에 작성하고 이를 rowId 필드로 사용하는 것은 사용자에게 달려있다.</li>
@@ -404,7 +401,8 @@
 <h3 class="hasAnchor">
 <a href="#%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%A5%BC-%ED%8C%8C%EC%9D%BC%EB%A1%9C-%EC%A0%80%EC%9E%A5" class="anchor"></a>데이터를 파일로 저장</h3>
 <p>공변량을 생성하는 것은 상당한 컴퓨팅 시간이 들고, 미래를 대비하여 향후 세션을 위해 공변량을 저장하는 것이 좋을 것이다. covariateDataobjects는 ff를 사용하므로 R의 일반 저장 함수를 사용할 수 없다. 대신 saveCovariateData () 함수를 사용해야한다.</p>
-<div class="sourceCode" id="cb22"><html><body><pre class="r"><span class="fu"><a href="../reference/saveCovariateData.html">saveCovariateData</a></span>(<span class="no">covariateData</span>, <span class="st">"covariates"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/saveCovariateData.html">saveCovariateData</a></span><span class="op">(</span><span class="va">covariateData</span>, <span class="st">"covariates"</span><span class="op">)</span></code></pre></div>
 <p>loadCovariateData() 함수를 사용하여 향후 세션에 데이터를 로드할 수 있다.</p>
 </div>
 <div id="간헐적인-공변량-제거-정규화-및-중복-제거" class="section level3">
@@ -420,18 +418,19 @@
 <li>
 <strong>중복 제거</strong> : 코호트의 모든 사람이 공변량에 대해 동일한 값을 갖는 경우(예: 여성에게 제한된 코호트는 모두에 대해 동일한 성별 공변량값을 가짐)에는 공변량이 중복된다. 중복된 공변량은 일부 기계학습 알고리즘에 문제를 유발한다. 예를 들어 단순 회귀 분석에서 더 이상 단일의 답이 되지 않는다. 마찬가지로 공변량 그룹도 중복될 수 있다.(예: 모든 사람은 적어도 한 연령 그룹에 속할 것이고,하나의 그룹은 다른 그룹의 부재로 정의 될 수 있으므로 중복된다.)</li>
 </ol>
-<div class="sourceCode" id="cb23"><html><body><pre class="r"><span class="no">tidyCovariates</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/tidyCovariateData.html">tidyCovariateData</a></span>(<span class="no">covariateData</span>,
-                                    <span class="kw">minFraction</span> <span class="kw">=</span> <span class="fl">0.001</span>,
-                                    <span class="kw">normalize</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
-                                    <span class="kw">removeRedundancy</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">tidyCovariates</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tidyCovariateData.html">tidyCovariateData</a></span><span class="op">(</span><span class="va">covariateData</span>,
+                                    minFraction <span class="op">=</span> <span class="fl">0.001</span>,
+                                    normalize <span class="op">=</span> <span class="cn">TRUE</span>,
+                                    removeRedundancy <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p>몇 개의 간헐적인 공변량이 제거되었는지 알고 싶다면 metaData 객체를 쓰면 된다</p>
-<div class="sourceCode" id="cb24"><html><body><pre class="r"><span class="no">deletedCovariateIds</span> <span class="kw">&lt;-</span> <span class="no">tidyCovariates</span>$<span class="no">metaData</span>$<span class="no">deletedInfrequentCovariateIds</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">deletedCovariateIds</span>)</pre></body></html></div>
-<pre><code>## [1] 22274210 22274212 22288210 22340212 22350210 22350212</code></pre>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">deletedCovariateIds</span> <span class="op">&lt;-</span> <span class="va">tidyCovariates</span><span class="op">$</span><span class="va">metaData</span><span class="op">$</span><span class="va">deletedInfrequentCovariateIds</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">deletedCovariateIds</span><span class="op">)</span></code></pre></div>
 <p>비슷하게, 중복된 공변량이 제거되었는지 알고 싶으면 metaData 객체를 쓰면 된다.</p>
-<div class="sourceCode" id="cb26"><html><body><pre class="r"><span class="no">deletedCovariateIds</span> <span class="kw">&lt;-</span> <span class="no">tidyCovariates</span>$<span class="no">metaData</span>$<span class="no">deletedRedundantCovariateIds</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">deletedCovariateIds</span>)</pre></body></html></div>
-<pre><code>## [1]  1118084410  1118084412  1118084413 21603931410 21603931412 21603931413</code></pre>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">deletedCovariateIds</span> <span class="op">&lt;-</span> <span class="va">tidyCovariates</span><span class="op">$</span><span class="va">metaData</span><span class="op">$</span><span class="va">deletedRedundantCovariateIds</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">deletedCovariateIds</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
 <div id="코호트에-대한-집계-공변량-생성" class="section level2">
@@ -439,52 +438,29 @@
 <a href="#%EC%BD%94%ED%98%B8%ED%8A%B8%EC%97%90-%EB%8C%80%ED%95%9C-%EC%A7%91%EA%B3%84-%EA%B3%B5%EB%B3%80%EB%9F%89-%EC%83%9D%EC%84%B1" class="anchor"></a>코호트에 대한 집계 공변량 생성</h2>
 <p>종종 우리는 1인당 공변량을 만들 필요는 없지만, 대신에 우리는 통합 통계을 만들어야 할 수도 있다. 예를 들어, 우리는 어떤 사람이 남자인지 알 필요가 없을 수도 있지만, 코호트의 비율이 남자인지 알고 싶을수도 있다.</p>
 <p>밑에 코드로 1인당 공변량을 집계할 수 있다.</p>
-<div class="sourceCode" id="cb28"><html><body><pre class="r"><span class="no">covariateData2</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/aggregateCovariates.html">aggregateCovariates</a></span>(<span class="no">covariateData</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">covariateData2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/aggregateCovariates.html">aggregateCovariates</a></span><span class="op">(</span><span class="va">covariateData</span><span class="op">)</span></code></pre></div>
 <p>물론 우리가 원하는 모든 것이 집계된 통계였다면, 생성 과정에서 그것들을 종합하는게 더 효율적일 것이다.</p>
-<div class="sourceCode" id="cb29"><html><body><pre class="r"><span class="no">covariateSettings</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createDefaultCovariateSettings.html">createDefaultCovariateSettings</a></span>()
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">covariateSettings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDefaultCovariateSettings.html">createDefaultCovariateSettings</a></span><span class="op">(</span><span class="op">)</span>
 
-<span class="no">covariateData2</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span>(<span class="kw">connectionDetails</span> <span class="kw">=</span> <span class="no">connectionDetails</span>,
-                                     <span class="kw">cdmDatabaseSchema</span> <span class="kw">=</span> <span class="no">cdmDatabaseSchema</span>,
-                                     <span class="kw">cohortDatabaseSchema</span> <span class="kw">=</span> <span class="no">resultsDatabaseSchema</span>,
-                                     <span class="kw">cohortTable</span> <span class="kw">=</span> <span class="st">"cohorts_of_interest"</span>,
-                                     <span class="kw">cohortId</span> <span class="kw">=</span> <span class="fl">1118084</span>,
-                                     <span class="kw">covariateSettings</span> <span class="kw">=</span> <span class="no">covariateSettings</span>,
-                                     <span class="kw">aggregated</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(<span class="no">covariateData2</span>)</pre></body></html></div>
-<pre><code>## CovariateData object summary
-## 
-## Number of covariates: 41330
-## Number of non-zero covariate values: 41330</code></pre>
+<span class="va">covariateData2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span><span class="op">(</span>connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>,
+                                     cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>,
+                                     cohortDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span>,
+                                     cohortTable <span class="op">=</span> <span class="st">"cohorts_of_interest"</span>,
+                                     cohortId <span class="op">=</span> <span class="fl">1118084</span>,
+                                     covariateSettings <span class="op">=</span> <span class="va">covariateSettings</span>,
+                                     aggregated <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">covariateData2</span><span class="op">)</span></code></pre></div>
 <p>aggregated = TRUE로 지정했다. 또한 더 이상 personId 데이터를 받지 않기 때문에 더 이상 rowIdField를 정의 할 필요가 없다.</p>
 <div id="집계-공변량-출력-형식" class="section level3">
 <h3 class="hasAnchor">
 <a href="#%EC%A7%91%EA%B3%84-%EA%B3%B5%EB%B3%80%EB%9F%89-%EC%B6%9C%EB%A0%A5-%ED%98%95%EC%8B%9D" class="anchor"></a>집계 공변량 출력 형식</h3>
 <p>집합 된 covariateData 객체의 두 가지 주요 구성 요소는 각각 이진 및 연속 공변량에 대한 공변량 및 공변 연속이다.</p>
-<div class="sourceCode" id="cb31"><html><body><pre class="r"><span class="no">covariateData2</span>$<span class="no">covariates</span></pre></body></html></div>
-<pre><code>## # Source:   table&lt;covariates&gt; [?? x 4]
-## # Database: sqlite 3.31.1 [C:\Users\mschuemi\AppData\Local\Temp\RtmpyQhXWU\file2e5820d566bd.sqlite]
-##    cohortDefinitionId covariateId sumValue averageValue
-##                 &lt;dbl&gt;       &lt;dbl&gt;    &lt;dbl&gt;        &lt;dbl&gt;
-##  1            1118084  4146124212        5    0.000106 
-##  2            1118084   312931212        1    0.0000211
-##  3            1118084   439294212       12    0.000254 
-##  4            1118084  4266653212        2    0.0000423
-##  5            1118084  4045586212        1    0.0000211
-##  6            1118084   437308212        1    0.0000211
-##  7            1118084 45767051212        3    0.0000634
-##  8            1118084   434005212      964    0.0204   
-##  9            1118084  4065618212        1    0.0000211
-## 10            1118084  4214408212      104    0.00220  
-## # ... with more rows</code></pre>
-<div class="sourceCode" id="cb33"><html><body><pre class="r"><span class="no">covariateData2</span>$<span class="no">covariatesContinuous</span></pre></body></html></div>
-<pre><code>## # Source:   table&lt;covariatesContinuous&gt; [?? x 12]
-## # Database: sqlite 3.31.1 [C:\Users\mschuemi\AppData\Local\Temp\RtmpyQhXWU\file2e5820d566bd.sqlite]
-##   cohortDefinitionId covariateId countValue minValue maxValue averageValue standardDeviation medianValue p10Value p25Value p75Value p90Value
-##                &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;        &lt;dbl&gt;             &lt;dbl&gt;       &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
-## 1            1118084        1901      33013        0       21         2.32              2.66           1        0        0        3        6
-## 2            1118084        1904      47293        0        9         2.30              1.57           2        1        1        3        4
-## 3            1118084        1902      27951        0       13         2.65              2.72           1        0        0        5        7
-## 4            1118084        1903      47293        0        6         1.32              1.28           1        0        0        2        3</code></pre>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">covariateData2</span><span class="op">$</span><span class="va">covariates</span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">covariateData2</span><span class="op">$</span><span class="va">covariatesContinuous</span></code></pre></div>
 <p>covariates의 컬럼은 다음과 같이 정의된다</p>
 <ul>
 <li>covariateId는 공변량을 식별하며, 공변량의 정의는 cohortData$covariateRef 객체에서 찾을 수 있다</li>
@@ -503,192 +479,56 @@
 <h2 class="hasAnchor">
 <a href="#%ED%85%8C%EC%9D%B4%EB%B8%94-%EB%A7%8C%EB%93%A4%EA%B8%B0-1" class="anchor"></a>테이블 만들기 1</h2>
 <p>특징추출 패키지가 지원하는 한 가지 과제는 논문에 포함시킬 수 있는 전체 학습 인구 특성 테이블을 만드는 것이다. 이것은 일반적으로 첫 번째 테이블이므로 테이블를 ’테이블1’이라고 합니다. 특징추출 패키지에서 기본 테이블 1을 사용 할 수 있다.</p>
-<div class="sourceCode" id="cb35"><html><body><pre class="r"><span class="no">result</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createTable1.html">createTable1</a></span>(<span class="no">covariateData2</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">result</span>, <span class="kw">row.names</span> <span class="kw">=</span> <span class="fl">FALSE</span>, <span class="kw">right</span> <span class="kw">=</span> <span class="fl">FALSE</span>)</pre></body></html></div>
-
-<pre><code> Characteristic                             % (n = 47,293) Characteristic                                          % (n = 47,293)
- Age group                                                   Ischemic heart disease                                  7.0         
-     0 -   4                                  0.1            Peripheral vascular disease                            13.3         
-     5 -   9                                  0.2            Pulmonary embolism                                      1.2         
-    10 -  14                                  0.7            Venous thrombosis                                       3.2         
-    15 -  19                                  2.4          Medical history: Neoplasms                                            
-    20 -  24                                  2.0            Hematologic neoplasm                                    1.2         
-    25 -  29                                  3.8            Malignant lymphoma                                      0.4         
-    30 -  34                                  5.8            Malignant neoplasm of anorectum                         0.2         
-    35 -  39                                  7.1            Malignant neoplastic disease                            6.3         
-    40 -  44                                  9.2            Malignant tumor of breast                               1.7         
-    45 -  49                                 11.5            Malignant tumor of colon                                0.4         
-    50 -  54                                 14.2            Malignant tumor of lung                                 0.4         
-    55 -  59                                 13.0            Malignant tumor of urinary bladder                      0.2         
-    60 -  64                                 11.4            Primary malignant neoplasm of prostate                  0.3         
-    65 -  69                                  5.6          Medication use                                                        
-    70 -  74                                  4.3            Agents acting on the renin-angiotensin system          47.0         
-    75 -  79                                  3.4            Antibacterials for systemic use                        82.6         
-    80 -  84                                  3.0            Antidepressants                                        63.9         
-    85 -  89                                  2.2            Antiepileptics                                         77.1         
-    90 -  94                                  0.1            Antiinflammatory and antirheumatic products           100.0         
- Gender: female                              72.4            Antineoplastic agents                                  27.4         
- Race                                                        Antipsoriatics                                          9.2         
-   race = Black or African American          18.6            Antithrombotic agents                                  21.7         
-   race = Other Race                         18.9            Beta blocking agents                                   54.0         
-   race = White                              62.4            Calcium channel blockers                               47.8         
- Ethnicity                                                   Diuretics                                              62.6         
-   ethnicity = Hispanic or Latino             1.5            Drugs for acid related disorders                       83.2         
-   ethnicity = Not Hispanic or Latino        17.4            Drugs for obstructive airway diseases                  59.6         
- Medical history: General                                    Drugs used in diabetes                                 31.3         
-   Acute respiratory disease                 37.0            Immunosuppressants                                      3.7         
-   Attention deficit hyperactivity disorder   2.4            Lipid modifying agents                                 55.0         
-   Chronic liver disease                      5.0            Opioids                                                79.8         
-   Chronic obstructive lung disease          19.1            Psycholeptics                                          85.6         
-   Crohn's disease                            0.6            Psychostimulants, agents used for adhd and nootropics  77.7         
-   Dementia                                   2.0                                                                                
-   Depressive disorder                       34.4          Characteristic                                          Value         
-   Diabetes mellitus                         25.2          Charlson comorbidity index                                            
-   Gastroesophageal reflux disease           25.1              Mean                                                2.3           
-   Gastrointestinal hemorrhage                4.3              Std. deviation                                      2.7           
-   Human immunodeficiency virus infection     0.7              Minimum                                             0.0           
-   Hyperlipidemia                            35.8              25th percentile                                     0.0           
-   Hypertensive disorder                     50.4              Median                                              1.0           
-   Lesion of liver                            0.7              75th percentile                                     3.0           
-   Obesity                                   17.2              Maximum                                             21.0          
-   Osteoarthritis                            44.9          CHADS2Vasc                                                            
-   Pneumonia                                  6.2              Mean                                                2.3           
-   Psoriasis                                  1.0              Std. deviation                                      1.6           
-   Renal impairment                           4.6              Minimum                                             0.0           
-   Rheumatoid arthritis                       4.7              25th percentile                                     1.0           
-   Schizophrenia                              3.5              Median                                              2.0           
-   Ulcerative colitis                         0.4              75th percentile                                     3.0           
-   Urinary tract infectious disease          15.2              Maximum                                              9.0          
-   Viral hepatitis C                          3.6          DCSI                                                                  
-   Visual system disorder                    35.7              Mean                                                2.6           
- Medical history: Cardiovascular disease                       Std. deviation                                      2.7           
-   Atrial fibrillation                        2.6              Minimum                                             0.0           
-   Cerebrovascular disease                    5.7              25th percentile                                     0.0           
-   Coronary arteriosclerosis                  9.8              Median                                              1.0           
-   Heart disease                             26.2              75th percentile                                     5.0           
-   Heart failure                              6.9              Maximum                                             13.0          </code></pre>
-
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createTable1.html">createTable1</a></span><span class="op">(</span><span class="va">covariateData2</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">result</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span>, right <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 <p>적용 가능한 경우, 이러한 특성은 긴 시간대와 관련된 분석에 도출되며, 코호트 시작 날짜부터 365일까지의 관찰된 개념을 포함했다. createTable1 함수는 테이블에 포함 할 변수를 간단하게 지정해야 한다. 패키지에 포함 된 기본 스펙은 getDefaultTable1Specifications 함수를 호출하여 볼 수 있다. 스펙 참조 분석 ID 와 공변량 ID 및 기본 스펙 ID는 기본 공변량 설정의 ID를 참조한다. 대신에 사용자 지정 테이블 1 스펙을 만들어서 사용할 수 있다.</p>
 <p>여기서는 테이블에 공변량의 작은 부분 만 사용 되더라도 모든 기본 공변량을 포함하는 covariateData 객체에 대해 테이블 1을 기반으로 한다. 테이블에 필요한 공변량 만 추출하려는 경우 createTable1CovariateSettings 함수를 사용할 수 있다.</p>
-<div class="sourceCode" id="cb37"><html><body><pre class="r"><span class="no">covariateSettings</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createTable1CovariateSettings.html">createTable1CovariateSettings</a></span>()
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">covariateSettings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createTable1CovariateSettings.html">createTable1CovariateSettings</a></span><span class="op">(</span><span class="op">)</span>
 
-<span class="no">covariateData2b</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span>(<span class="kw">connectionDetails</span> <span class="kw">=</span> <span class="no">connectionDetails</span>,
-                                      <span class="kw">cdmDatabaseSchema</span> <span class="kw">=</span> <span class="no">cdmDatabaseSchema</span>,
-                                      <span class="kw">cohortDatabaseSchema</span> <span class="kw">=</span> <span class="no">resultsDatabaseSchema</span>,
-                                      <span class="kw">cohortTable</span> <span class="kw">=</span> <span class="st">"cohorts_of_interest"</span>,
-                                      <span class="kw">cohortId</span> <span class="kw">=</span> <span class="fl">1118084</span>,
-                                      <span class="kw">covariateSettings</span> <span class="kw">=</span> <span class="no">covariateSettings</span>,
-                                      <span class="kw">aggregated</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(<span class="no">covariateData2b</span>)</pre></body></html></div>
-<pre><code>## CovariateData object summary
-## 
-## Number of covariates: 90
-## Number of non-zero covariate values: 90</code></pre>
+<span class="va">covariateData2b</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span><span class="op">(</span>connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>,
+                                      cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>,
+                                      cohortDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span>,
+                                      cohortTable <span class="op">=</span> <span class="st">"cohorts_of_interest"</span>,
+                                      cohortId <span class="op">=</span> <span class="fl">1118084</span>,
+                                      covariateSettings <span class="op">=</span> <span class="va">covariateSettings</span>,
+                                      aggregated <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">covariateData2b</span><span class="op">)</span></code></pre></div>
 <ol start="4" style="list-style-type: decimal">
 <li>두 개의 코호트 비교</li>
 </ol>
 <p>특징추출 패키지가 지원하는 또 다른 기능 두 가지 관심 코호트를 비교하는 것이다.</p>
 <p>기본 테이블 1에 포함된 변수에만 두 개의 코호트를 비교하려는 경우를 가정해보자</p>
-<div class="sourceCode" id="cb39"><html><body><pre class="r"><span class="no">settings</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createTable1CovariateSettings.html">createTable1CovariateSettings</a></span>(<span class="kw">excludedCovariateConceptIds</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1118084</span>, <span class="fl">1124300</span>),
-                                          <span class="kw">addDescendantsToExclude</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createTable1CovariateSettings.html">createTable1CovariateSettings</a></span><span class="op">(</span>excludedCovariateConceptIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1118084</span>, <span class="fl">1124300</span><span class="op">)</span>,
+                                          addDescendantsToExclude <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 
-<span class="no">covCelecoxib</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span>(<span class="kw">connectionDetails</span> <span class="kw">=</span> <span class="no">connectionDetails</span>,
-                                   <span class="kw">cdmDatabaseSchema</span> <span class="kw">=</span> <span class="no">cdmDatabaseSchema</span>,
-                                   <span class="kw">cohortDatabaseSchema</span> <span class="kw">=</span> <span class="no">resultsDatabaseSchema</span>,
-                                   <span class="kw">cohortTable</span> <span class="kw">=</span> <span class="st">"cohorts_of_interest"</span>,
-                                   <span class="kw">cohortId</span> <span class="kw">=</span> <span class="fl">1118084</span>,
-                                   <span class="kw">covariateSettings</span> <span class="kw">=</span> <span class="no">settings</span>,
-                                   <span class="kw">aggregated</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
+<span class="va">covCelecoxib</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span><span class="op">(</span>connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>,
+                                   cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>,
+                                   cohortDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span>,
+                                   cohortTable <span class="op">=</span> <span class="st">"cohorts_of_interest"</span>,
+                                   cohortId <span class="op">=</span> <span class="fl">1118084</span>,
+                                   covariateSettings <span class="op">=</span> <span class="va">settings</span>,
+                                   aggregated <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 
-<span class="no">covDiclofenac</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span>(<span class="kw">connectionDetails</span> <span class="kw">=</span> <span class="no">connectionDetails</span>,
-                                    <span class="kw">cdmDatabaseSchema</span> <span class="kw">=</span> <span class="no">cdmDatabaseSchema</span>,
-                                    <span class="kw">cohortDatabaseSchema</span> <span class="kw">=</span> <span class="no">resultsDatabaseSchema</span>,
-                                    <span class="kw">cohortTable</span> <span class="kw">=</span> <span class="st">"cohorts_of_interest"</span>,
-                                    <span class="kw">cohortId</span> <span class="kw">=</span> <span class="fl">1124300</span>,
-                                    <span class="kw">covariateSettings</span> <span class="kw">=</span> <span class="no">settings</span>,
-                                    <span class="kw">aggregated</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
+<span class="va">covDiclofenac</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span><span class="op">(</span>connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>,
+                                    cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>,
+                                    cohortDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span>,
+                                    cohortTable <span class="op">=</span> <span class="st">"cohorts_of_interest"</span>,
+                                    cohortId <span class="op">=</span> <span class="fl">1124300</span>,
+                                    covariateSettings <span class="op">=</span> <span class="va">settings</span>,
+                                    aggregated <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 
-<span class="no">std</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/computeStandardizedDifference.html">computeStandardizedDifference</a></span>(<span class="no">covCelecoxib</span>, <span class="no">covDiclofenac</span>)</pre></body></html></div>
+<span class="va">std</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/computeStandardizedDifference.html">computeStandardizedDifference</a></span><span class="op">(</span><span class="va">covCelecoxib</span>, <span class="va">covDiclofenac</span><span class="op">)</span></code></pre></div>
 <p>위의 예에서는 celecoxib (1118084)와 diclofenac (1124300)의 두 가지 코호트를 정의하는 데 사용 된 두 가지 개념에서 파생 된 공변량을 제외하기로 하였다. 나머지 공변량 간의 표준화 된 차이를 계산한다.</p>
-<div class="sourceCode" id="cb40"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">std</span>)</pre></body></html></div>
-
-<pre><code>## # A tibble: 6 x 8
-##   covariateId  mean1   sd1 mean2   sd2    sd stdDiff covariateName                    
-##         &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;                            
-## 1        1904 2.30   1.57  1.74  1.39  2.10   -0.267 CHADS2VASc                       
-## 2        3003 0.0240 0.155 0.118 0.344 0.377   0.250 age group:  15 -  19             
-## 3    80180210 0.449  0.670 0.262 0.512 0.843  -0.222 ...ative to index: Osteoarthritis
-## 4        1902 2.65   2.72  1.83  2.68  3.82   -0.214 ...orbidity Severity Index (DCSI)
-## 5        1901 2.32   2.66  1.62  2.52  3.66   -0.191 ...lson index - Romano adaptation
-## 6 21601853410 0.484  0.696 0.318 0.564 0.896  -0.185 ... index: LIPID MODIFYING AGENTS</code></pre>
-
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">std</span><span class="op">)</span></code></pre></div>
 <p>stdDiff 열에는 표준화 된 차이가 있습니다. 기본적으로데이터는 표준화된 차이의 절대 값을 기준으로 내림차순으로 정렬되며, 가장 큰 차이가 있는 공변량이 먼저 표시 됩니다.</p>
 <p>우리는 또한 비교를 표준 테이블 1로 보여줄 수 있다.</p>
-<div class="sourceCode" id="cb42"><html><body><pre class="r"><span class="no">result</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createTable1.html">createTable1</a></span>(<span class="no">covCelecoxib</span>, <span class="no">covDiclofenac</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">result</span>, <span class="kw">row.names</span> <span class="kw">=</span> <span class="fl">FALSE</span>, <span class="kw">right</span> <span class="kw">=</span> <span class="fl">FALSE</span>)</pre></body></html></div>
-
-<pre><code> Characteristic                             % (n = 47,293) % (n = 240,761) Std.Diff Characteristic                                          % (n = 47,293) % (n = 240,761) Std.Diff
- Age group                                                                            Ischemic heart disease                                 7.0            4.0            -0.09   
-     0 -   4                                 0.1            0.0            -0.01      Peripheral vascular disease                           13.3            7.8            -0.12   
-     5 -   9                                 0.2            0.2             0.00      Pulmonary embolism                                     1.2            0.5            -0.05   
-    10 -  14                                 0.7            2.5             0.11      Venous thrombosis                                      3.2            1.9            -0.06   
-    15 -  19                                 2.4           11.8             0.25    Medical history: Neoplasms                                                                     
-    20 -  24                                 2.0            5.8             0.14      Hematologic neoplasm                                   1.2            0.6            -0.04   
-    25 -  29                                 3.8            8.8             0.14      Malignant lymphoma                                     0.4            0.2            -0.02   
-    30 -  34                                 5.8           10.1             0.11      Malignant neoplasm of anorectum                        0.2            0.1            -0.02   
-    35 -  39                                 7.1           10.0             0.07      Malignant neoplastic disease                           6.3            3.7            -0.08   
-    40 -  44                                 9.2            9.2             0.00      Malignant tumor of breast                              1.7            1.0            -0.04   
-    45 -  49                                11.5            9.4            -0.05      Malignant tumor of colon                               0.4            0.2            -0.02   
-    50 -  54                                14.2            9.9            -0.09      Malignant tumor of lung                                0.4            0.2            -0.03   
-    55 -  59                                13.0            8.7            -0.09      Malignant tumor of urinary bladder                     0.2            0.1            -0.02   
-    60 -  64                                11.4            6.1            -0.13      Primary malignant neoplasm of prostate                 0.3            0.2            -0.02   
-    65 -  69                                 5.6            2.2            -0.12    Medication use                                                                                 
-    70 -  74                                 4.3            1.7            -0.11      Agents acting on the renin-angiotensin system         47.0           32.5            -0.16   
-    75 -  79                                 3.4            1.3            -0.10      Antibacterials for systemic use                       81.0           80.4             0.00   
-    80 -  84                                 3.0            1.1            -0.10      Antidepressants                                       63.9           53.2            -0.10   
-    85 -  89                                 2.2            0.9            -0.07      Antiepileptics                                        77.1           73.9            -0.03   
-    90 -  94                                 0.1            0.1            -0.01      Antiinflammatory and antirheumatic products           73.1           71.7            -0.01   
- Gender: female                             72.4           72.8             0.00      Antineoplastic agents                                 17.1           12.7            -0.08   
- Race                                                                                 Antipsoriatics                                         9.2            7.3            -0.05   
-   race = Black or African American         18.6           28.1             0.14      Antithrombotic agents                                 21.7           11.4            -0.18   
-   race = Other Race                        18.9           15.3            -0.06      Beta blocking agents                                  54.0           39.6            -0.15   
-   race = White                             62.4           56.6            -0.05      Calcium channel blockers                              47.8           32.4            -0.17   
- Ethnicity                                                                            Diuretics                                             62.6           47.8            -0.14   
-   ethnicity = Hispanic or Latino            1.5            2.1             0.03      Drugs for acid related disorders                      83.2           79.9            -0.03   
-   ethnicity = Not Hispanic or Latino       17.4           13.2            -0.08      Drugs for obstructive airway diseases                 59.6           57.0            -0.02   
- Medical history: General                                                             Drugs used in diabetes                                31.3           21.0            -0.14   
-   Acute respiratory disease                37.0           39.4             0.03      Immunosuppressants                                     3.7            2.1            -0.07   
-   Attention deficit hyperactivity disorder  2.4            4.4             0.07      Lipid modifying agents                                48.4           31.8            -0.19   
-   Chronic liver disease                     5.0            3.7            -0.05      Opioids                                               79.8           79.3             0.00   
-   Chronic obstructive lung disease         19.1           11.3            -0.14      Psycholeptics                                         85.6           81.0            -0.04   
-   Crohn's disease                           0.6            0.5            -0.02      Psychostimulants, agents used for adhd and nootropics 77.7           77.8             0.00   
-   Dementia                                  2.0            1.0            -0.06                                                                                                   
-   Depressive disorder                      34.4           29.3            -0.06    Characteristic                                          Value          Value           Std.Diff
-   Diabetes mellitus                        25.2           17.4            -0.12    Charlson comorbidity index                                                                     
-   Gastroesophageal reflux disease          25.1           19.1            -0.09        Mean                                                2.3            1.6             -0.19   
-   Gastrointestinal hemorrhage               4.3            3.2            -0.04        Std. deviation                                      2.7            2.5                     
-   Human immunodeficiency virus infection    0.7            0.8             0.01        Minimum                                             0.0            0.0                     
-   Hyperlipidemia                           35.8           25.2            -0.14        25th percentile                                     0.0            0.0                     
-   Hypertensive disorder                    50.4           37.4            -0.14        Median                                              1.0            1.0                     
-   Lesion of liver                           0.7            0.5            -0.02        75th percentile                                     3.0            2.0                     
-   Obesity                                  17.2           16.6            -0.01        Maximum                                             21.0           27.0                    
-   Osteoarthritis                           44.9           26.2            -0.22    CHADS2Vasc                                                                                     
-   Pneumonia                                 6.2            4.0            -0.07        Mean                                                2.3            1.7             -0.27   
-   Psoriasis                                 1.0            0.8            -0.02        Std. deviation                                      1.6            1.4                     
-   Renal impairment                          4.6            3.3            -0.05        Minimum                                             0.0            0.0                     
-   Rheumatoid arthritis                      4.7            2.4            -0.09        25th percentile                                     1.0            1.0                     
-   Schizophrenia                             3.5            2.5            -0.04        Median                                              2.0            1.0                     
-   Ulcerative colitis                        0.4            0.2            -0.02        75th percentile                                     3.0            2.0                     
-   Urinary tract infectious disease         15.2           16.0             0.01        Maximum                                              9.0            9.0                    
-   Viral hepatitis C                         3.6            2.6            -0.04    DCSI                                                                                           
-   Visual system disorder                   35.7           31.2            -0.06        Mean                                                2.6            1.8             -0.21   
- Medical history: Cardiovascular disease                                                Std. deviation                                      2.7            2.7                     
-   Atrial fibrillation                       2.6            1.4            -0.06        Minimum                                             0.0            0.0                     
-   Cerebrovascular disease                   5.7            3.7            -0.06        25th percentile                                     0.0            0.0                     
-   Coronary arteriosclerosis                 9.8            5.5            -0.11        Median                                              1.0            0.0                     
-   Heart disease                            26.2           16.6            -0.15        75th percentile                                     5.0            3.0                     
-   Heart failure                             6.9            4.1            -0.09        Maximum                                             13.0           13.0                    </code></pre>
-
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createTable1.html">createTable1</a></span><span class="op">(</span><span class="va">covCelecoxib</span>, <span class="va">covDiclofenac</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">result</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span>, right <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
   </div>
@@ -704,11 +544,11 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Martijn Schuemie, Marc Suchard, Patrick Ryan, Jenna Reps.</p>
+  <p>Developed by Martijn Schuemie, Marc Suchard, Patrick Ryan, Jenna Reps, Anthony Sena.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">FeatureExtraction</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">3.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">3.1.1</span>
       </span>
     </div>
 
@@ -80,7 +80,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -121,7 +121,7 @@
 </li>
 <li>
   <a href="https://github.com/OHDSI/FeatureExtraction/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -147,16 +147,16 @@
     <p>Create detailed covariate settings</p>
     </div>
 
-    <pre class="usage"><span class='fu'>createAnalysisDetails</span>(
-  <span class='no'>analysisId</span>,
-  <span class='no'>sqlFileName</span>,
-  <span class='no'>parameters</span>,
-  <span class='kw'>includedCovariateConceptIds</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>addDescendantsToInclude</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>excludedCovariateConceptIds</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>addDescendantsToExclude</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>includedCovariateIds</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>()
-)</pre>
+    <pre class="usage"><span class='fu'>createAnalysisDetails</span><span class='op'>(</span>
+  <span class='va'>analysisId</span>,
+  <span class='va'>sqlFileName</span>,
+  <span class='va'>parameters</span>,
+  includedCovariateConceptIds <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>)</span>,
+  addDescendantsToInclude <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  excludedCovariateConceptIds <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>)</span>,
+  addDescendantsToExclude <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  includedCovariateIds <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>)</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -212,16 +212,19 @@ to exclude?</p></td>
 model. Warning: this function is for advanced users only.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>analysisDetails</span> <span class='kw'>&lt;-</span> <span class='fu'>createAnalysisDetails</span>(<span class='kw'>analysisId</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-                                         <span class='kw'>sqlFileName</span> <span class='kw'>=</span> <span class='st'>"DemographicsGender.sql"</span>,
-                                         <span class='kw'>parameters</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>analysisId</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-                                                           <span class='kw'>analysisName</span> <span class='kw'>=</span> <span class='st'>"Gender"</span>,
-                                                           <span class='kw'>domainId</span> <span class='kw'>=</span> <span class='st'>"Demographics"</span>),
-                                         <span class='kw'>includedCovariateConceptIds</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-                                         <span class='kw'>addDescendantsToInclude</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-                                         <span class='kw'>excludedCovariateConceptIds</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-                                         <span class='kw'>addDescendantsToExclude</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-                                         <span class='kw'>includedCovariateIds</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>())</div></pre>
+    <pre class="examples"><div class='input'><span class='va'>analysisDetails</span> <span class='op'>&lt;-</span> <span class='fu'>createAnalysisDetails</span><span class='op'>(</span>analysisId <span class='op'>=</span> <span class='fl'>1</span>,
+                                         sqlFileName <span class='op'>=</span> <span class='st'>"DemographicsGender.sql"</span>,
+                                         parameters <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>analysisId <span class='op'>=</span> <span class='fl'>1</span>,
+                                                           analysisName <span class='op'>=</span> <span class='st'>"Gender"</span>,
+                                                           domainId <span class='op'>=</span> <span class='st'>"Demographics"</span><span class='op'>)</span>,
+                                         includedCovariateConceptIds <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>)</span>,
+                                         addDescendantsToInclude <span class='op'>=</span> <span class='cn'>FALSE</span>,
+                                         excludedCovariateConceptIds <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>)</span>,
+                                         addDescendantsToExclude <span class='op'>=</span> <span class='cn'>FALSE</span>,
+                                         includedCovariateIds <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -233,11 +236,11 @@ model. Warning: this function is for advanced users only.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Martijn Schuemie, Marc Suchard, Patrick Ryan, Jenna Reps.</p>
+  <p>Developed by Martijn Schuemie, Marc Suchard, Patrick Ryan, Jenna Reps, Anthony Sena.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

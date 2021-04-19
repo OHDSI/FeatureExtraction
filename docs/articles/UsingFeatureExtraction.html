@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">FeatureExtraction</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">3.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">3.1.1</span>
       </span>
     </div>
 
@@ -39,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -80,7 +80,7 @@
 </li>
 <li>
   <a href="https://github.com/OHDSI/FeatureExtraction/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -94,13 +94,13 @@
 
       
 
-      </header><script src="UsingFeatureExtraction_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="UsingFeatureExtraction_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Using FeatureExtraction</h1>
                         <h4 class="author">Martijn J. Schuemie</h4>
             
-            <h4 class="date">2020-09-15</h4>
+            <h4 class="date">2021-04-19</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/FeatureExtraction/blob/master/vignettes/UsingFeatureExtraction.Rmd"><code>vignettes/UsingFeatureExtraction.Rmd</code></a></small>
       <div class="hidden name"><code>UsingFeatureExtraction.Rmd</code></div>
@@ -109,7 +109,6 @@
 
     
     
-
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
@@ -133,20 +132,23 @@
 <h2 class="hasAnchor">
 <a href="#using-the-default-set-of-covariates" class="anchor"></a>Using the default set of covariates</h2>
 <p>Using the default set of covariates is straightforward:</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="no">settings</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createDefaultCovariateSettings.html">createDefaultCovariateSettings</a></span>()</pre></body></html></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDefaultCovariateSettings.html">createDefaultCovariateSettings</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p>This will create a wide array of features, ranging from demographics, through conditions and drugs, to several risk scores.</p>
 <p>Note that we could specify a set of concepts that should not be used to create covariates, for example:</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">settings</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createDefaultCovariateSettings.html">createDefaultCovariateSettings</a></span>(<span class="kw">excludedCovariateConceptIds</span> <span class="kw">=</span> <span class="fl">1124300</span>,
-                                           <span class="kw">addDescendantsToExclude</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDefaultCovariateSettings.html">createDefaultCovariateSettings</a></span><span class="op">(</span>excludedCovariateConceptIds <span class="op">=</span> <span class="fl">1124300</span>, 
+                                           addDescendantsToExclude <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p>This will create the default set of covariates, except those derived from concept 1124300 (the ingredient diclofenac) and any of its descendants (ie. all drugs containing the ingredient diclofenac).</p>
 </div>
 <div id="using-prespecified-analyses" class="section level2">
 <h2 class="hasAnchor">
 <a href="#using-prespecified-analyses" class="anchor"></a>Using prespecified analyses</h2>
 <p>The function <code>createCovariateSettings</code> allow the user to choose from a large set of predefined covariates. Type <code><a href="../reference/createCovariateSettings.html">?createCovariateSettings</a></code> to get an overview of the available options. For example:</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">settings</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createCovariateSettings.html">createCovariateSettings</a></span>(<span class="kw">useDemographicsGender</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
-                                    <span class="kw">useDemographicsAgeGroup</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
-                                    <span class="kw">useConditionOccurrenceAnyTimePrior</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCovariateSettings.html">createCovariateSettings</a></span><span class="op">(</span>useDemographicsGender <span class="op">=</span> <span class="cn">TRUE</span>,
+                                    useDemographicsAgeGroup <span class="op">=</span> <span class="cn">TRUE</span>,
+                                    useConditionOccurrenceAnyTimePrior <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p>This will create binary covariates for gender, age (in 5 year age groups), and each concept observed in the <code>condition_occurrence</code> table any time prior to (and including) the cohort start date.</p>
 <p>Many of the prespecified analyses refer to a short, medium, or long term time window. By default, these windows are defined as:</p>
 <ul>
@@ -155,32 +157,35 @@
 <li>Short term: 30 days prior up to and including the cohort start date.</li>
 </ul>
 <p>However, the user can change these values. For example:</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">settings</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createCovariateSettings.html">createCovariateSettings</a></span>(<span class="kw">useConditionEraLongTerm</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
-                                    <span class="kw">useConditionEraShortTerm</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
-                                    <span class="kw">useDrugEraLongTerm</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
-                                    <span class="kw">useDrugEraShortTerm</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
-                                    <span class="kw">longTermStartDays</span> <span class="kw">=</span> -<span class="fl">180</span>,
-                                    <span class="kw">shortTermStartDays</span> <span class="kw">=</span> -<span class="fl">14</span>,
-                                    <span class="kw">endDays</span> <span class="kw">=</span> -<span class="fl">1</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCovariateSettings.html">createCovariateSettings</a></span><span class="op">(</span>useConditionEraLongTerm <span class="op">=</span> <span class="cn">TRUE</span>,
+                                    useConditionEraShortTerm <span class="op">=</span> <span class="cn">TRUE</span>,
+                                    useDrugEraLongTerm <span class="op">=</span> <span class="cn">TRUE</span>,
+                                    useDrugEraShortTerm <span class="op">=</span> <span class="cn">TRUE</span>,
+                                    longTermStartDays <span class="op">=</span> <span class="op">-</span><span class="fl">180</span>,
+                                    shortTermStartDays <span class="op">=</span> <span class="op">-</span><span class="fl">14</span>,
+                                    endDays <span class="op">=</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span></code></pre></div>
 <p>This redefines the long term window as 180 days prior up to (but not including) the cohort start date, and redefines the short term window as 14 days prior up to (but not including) the cohort start date.</p>
 <p>Again, we can also specify which concept IDs should or should not be used to construct covariates:</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">settings</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createCovariateSettings.html">createCovariateSettings</a></span>(<span class="kw">useConditionEraLongTerm</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
-                                    <span class="kw">useConditionEraShortTerm</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
-                                    <span class="kw">useDrugEraLongTerm</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
-                                    <span class="kw">useDrugEraShortTerm</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
-                                    <span class="kw">longTermStartDays</span> <span class="kw">=</span> -<span class="fl">180</span>,
-                                    <span class="kw">shortTermStartDays</span> <span class="kw">=</span> -<span class="fl">14</span>,
-                                    <span class="kw">endDays</span> <span class="kw">=</span> -<span class="fl">1</span>,
-                                    <span class="kw">excludedCovariateConceptIds</span> <span class="kw">=</span> <span class="fl">1124300</span>,
-                                    <span class="kw">addDescendantsToExclude</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCovariateSettings.html">createCovariateSettings</a></span><span class="op">(</span>useConditionEraLongTerm <span class="op">=</span> <span class="cn">TRUE</span>,
+                                    useConditionEraShortTerm <span class="op">=</span> <span class="cn">TRUE</span>,
+                                    useDrugEraLongTerm <span class="op">=</span> <span class="cn">TRUE</span>,
+                                    useDrugEraShortTerm <span class="op">=</span> <span class="cn">TRUE</span>,
+                                    longTermStartDays <span class="op">=</span> <span class="op">-</span><span class="fl">180</span>,
+                                    shortTermStartDays <span class="op">=</span> <span class="op">-</span><span class="fl">14</span>,
+                                    endDays <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>,
+                                    excludedCovariateConceptIds <span class="op">=</span> <span class="fl">1124300</span>, 
+                                    addDescendantsToExclude <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="creating-a-set-of-custom-covariates" class="section level2">
 <h2 class="hasAnchor">
 <a href="#creating-a-set-of-custom-covariates" class="anchor"></a>Creating a set of custom covariates</h2>
 <p>This option should only be used by <strong>advanced users</strong>. It requires one to understand that at the implementation level, an analysis is a combination of a piece of highly parameterized SQL together with a specification of the parameter values. The best way to understand the available options is to take a prespecified analysis as starting point, and convert it to a detailed setting object:</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">settings</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createCovariateSettings.html">createCovariateSettings</a></span>(<span class="kw">useConditionEraLongTerm</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
-<span class="no">settings2</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/convertPrespecSettingsToDetailedSettings.html">convertPrespecSettingsToDetailedSettings</a></span>(<span class="no">settings</span>)
-<span class="no">settings2</span>$<span class="no">analyses</span><span class="kw">[[</span><span class="fl">1</span>]]</pre></body></html></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCovariateSettings.html">createCovariateSettings</a></span><span class="op">(</span>useConditionEraLongTerm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="va">settings2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/convertPrespecSettingsToDetailedSettings.html">convertPrespecSettingsToDetailedSettings</a></span><span class="op">(</span><span class="va">settings</span><span class="op">)</span>
+<span class="va">settings2</span><span class="op">$</span><span class="va">analyses</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></code></pre></div>
 <pre><code>## $analysisId
 ## [1] 202
 ## 
@@ -237,47 +242,52 @@
 ## $addDescendantsToExclude
 ## [1] FALSE</code></pre>
 <p>One can create a detailed analysis settings object from scratch, and use it to create a detailed settings object:</p>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">analysisDetails</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createAnalysisDetails.html">createAnalysisDetails</a></span>(<span class="kw">analysisId</span> <span class="kw">=</span> <span class="fl">1</span>,
-                                         <span class="kw">sqlFileName</span> <span class="kw">=</span> <span class="st">"DemographicsGender.sql"</span>,
-                                         <span class="kw">parameters</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">analysisId</span> <span class="kw">=</span> <span class="fl">1</span>,
-                                                           <span class="kw">analysisName</span> <span class="kw">=</span> <span class="st">"Gender"</span>,
-                                                           <span class="kw">domainId</span> <span class="kw">=</span> <span class="st">"Demographics"</span>),
-                                         <span class="kw">includedCovariateConceptIds</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(),
-                                         <span class="kw">addDescendantsToInclude</span> <span class="kw">=</span> <span class="fl">FALSE</span>,
-                                         <span class="kw">excludedCovariateConceptIds</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(),
-                                         <span class="kw">addDescendantsToExclude</span> <span class="kw">=</span> <span class="fl">FALSE</span>,
-                                         <span class="kw">includedCovariateIds</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>())
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">analysisDetails</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createAnalysisDetails.html">createAnalysisDetails</a></span><span class="op">(</span>analysisId <span class="op">=</span> <span class="fl">1</span>,
+                                         sqlFileName <span class="op">=</span> <span class="st">"DemographicsGender.sql"</span>,
+                                         parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>analysisId <span class="op">=</span> <span class="fl">1</span>,
+                                                           analysisName <span class="op">=</span> <span class="st">"Gender"</span>,
+                                                           domainId <span class="op">=</span> <span class="st">"Demographics"</span><span class="op">)</span>,
+                                         includedCovariateConceptIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span>,
+                                         addDescendantsToInclude <span class="op">=</span> <span class="cn">FALSE</span>,
+                                         excludedCovariateConceptIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span>,
+                                         addDescendantsToExclude <span class="op">=</span> <span class="cn">FALSE</span>,
+                                         includedCovariateIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 
-<span class="no">settings</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createDetailedCovariateSettings.html">createDetailedCovariateSettings</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">analysisDetails</span>))</pre></body></html></div>
+<span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDetailedCovariateSettings.html">createDetailedCovariateSettings</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">analysisDetails</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="temporal-covariates" class="section level2">
 <h2 class="hasAnchor">
 <a href="#temporal-covariates" class="anchor"></a>Temporal covariates</h2>
 <p>Ordinarily, covariates are created for just a few time windows of interest, for example the short, medium, and long term windows described earlier. However, sometimes a more fine-grained temporal resolution is required, for example creating covariates for each day separately, in the 365 days prior to cohort start. We will refer to this type of covariates as <em>temporal covariates</em>. Temporal covariates share the same covariate ID across the time windows, and use a separate time ID to distinguish between time windows. There currently aren’t many applications that are able to handle temporal covariates. For example, the <code>CohortMethod</code> package will break when provided with temporal covariates. However, there are some machine learning algorithms in the <code>PatientLevelPrediction</code> package that require temporal covariates.</p>
 <p>Again, we can just choose to use the default settings:</p>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">settings</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createDefaultTemporalCovariateSettings.html">createDefaultTemporalCovariateSettings</a></span>()</pre></body></html></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDefaultTemporalCovariateSettings.html">createDefaultTemporalCovariateSettings</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p>Or, we can choose from a set of prespecified temporal covariates:</p>
-<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="no">settings</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createTemporalCovariateSettings.html">createTemporalCovariateSettings</a></span>(<span class="kw">useConditionOccurrence</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
-                                            <span class="kw">useMeasurementValue</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createTemporalCovariateSettings.html">createTemporalCovariateSettings</a></span><span class="op">(</span>useConditionOccurrence <span class="op">=</span> <span class="cn">TRUE</span>,
+                                            useMeasurementValue <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p>In this case we’ve chosen to create binary covariates for each concept in the <code>condition_occurrence</code> table, and continuous covariates for each measurement - unit combination in the <code>measurement</code> table in the CDM. By default, temporal covariates are created for each day separately in the 365 days before (but not including) the cohort start date. Different time windows can also be specified, for example creating 7 day intervals instead:</p>
-<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="no">settings</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createTemporalCovariateSettings.html">createTemporalCovariateSettings</a></span>(<span class="kw">useConditionOccurrence</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
-                                            <span class="kw">useMeasurementValue</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
-                                            <span class="kw">temporalStartDays</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(-<span class="fl">364</span>, -<span class="fl">7</span>, <span class="kw">by</span> <span class="kw">=</span> <span class="fl">7</span>),
-                                            <span class="kw">temporalEndDays</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(-<span class="fl">358</span>, -<span class="fl">1</span>, <span class="kw">by</span> <span class="kw">=</span> <span class="fl">7</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createTemporalCovariateSettings.html">createTemporalCovariateSettings</a></span><span class="op">(</span>useConditionOccurrence <span class="op">=</span> <span class="cn">TRUE</span>,
+                                            useMeasurementValue <span class="op">=</span> <span class="cn">TRUE</span>,
+                                            temporalStartDays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">364</span>, <span class="op">-</span><span class="fl">7</span>, by <span class="op">=</span> <span class="fl">7</span><span class="op">)</span>,
+                                            temporalEndDays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">358</span>, <span class="op">-</span><span class="fl">1</span>, by <span class="op">=</span> <span class="fl">7</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>Each time window includes the specified start and end day.</p>
 <p>Similar to ordinary covariates, <strong>advanced users</strong> can also define custom analyses:</p>
-<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="no">analysisDetails</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createAnalysisDetails.html">createAnalysisDetails</a></span>(<span class="kw">analysisId</span> <span class="kw">=</span> <span class="fl">1</span>,
-                                         <span class="kw">sqlFileName</span> <span class="kw">=</span> <span class="st">"MeasurementValue.sql"</span>,
-                                         <span class="kw">parameters</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">analysisId</span> <span class="kw">=</span> <span class="fl">1</span>,
-                                                           <span class="kw">analysisName</span> <span class="kw">=</span> <span class="st">"MeasurementValue"</span>,
-                                                           <span class="kw">domainId</span> <span class="kw">=</span> <span class="st">"Measurement"</span>),
-                                         <span class="kw">includedCovariateConceptIds</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(),
-                                         <span class="kw">addDescendantsToInclude</span> <span class="kw">=</span> <span class="fl">FALSE</span>,
-                                         <span class="kw">excludedCovariateConceptIds</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(),
-                                         <span class="kw">addDescendantsToExclude</span> <span class="kw">=</span> <span class="fl">FALSE</span>,
-                                         <span class="kw">includedCovariateIds</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>())
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">analysisDetails</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createAnalysisDetails.html">createAnalysisDetails</a></span><span class="op">(</span>analysisId <span class="op">=</span> <span class="fl">1</span>,
+                                         sqlFileName <span class="op">=</span> <span class="st">"MeasurementValue.sql"</span>,
+                                         parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>analysisId <span class="op">=</span> <span class="fl">1</span>,
+                                                           analysisName <span class="op">=</span> <span class="st">"MeasurementValue"</span>,
+                                                           domainId <span class="op">=</span> <span class="st">"Measurement"</span><span class="op">)</span>,
+                                         includedCovariateConceptIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span>,
+                                         addDescendantsToInclude <span class="op">=</span> <span class="cn">FALSE</span>,
+                                         excludedCovariateConceptIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span>,
+                                         addDescendantsToExclude <span class="op">=</span> <span class="cn">FALSE</span>,
+                                         includedCovariateIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 
-<span class="no">settings</span> <span class="kw">&lt;-</span>  <span class="fu"><a href="../reference/createDetailedTemporalCovariateSettings.html">createDetailedTemporalCovariateSettings</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">analysisDetails</span>))</pre></body></html></div>
+<span class="va">settings</span> <span class="op">&lt;-</span>  <span class="fu"><a href="../reference/createDetailedTemporalCovariateSettings.html">createDetailedTemporalCovariateSettings</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">analysisDetails</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
 <div id="constructing-covariates-for-a-cohort-of-interest" class="section level1">
@@ -288,63 +298,66 @@
 <h2 class="hasAnchor">
 <a href="#configuring-the-connection-to-the-server" class="anchor"></a>Configuring the connection to the server</h2>
 <p>We need to tell R how to connect to the server where the data are. <code>CohortMethod</code> uses the <code>DatabaseConnector</code> package, which provides the <code>createConnectionDetails</code> function. Type <code>?createConnectionDetails</code> for the specific settings required for the various database management systems (DBMS). For example, one might connect to a PostgreSQL database using this code:</p>
-<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="no">connectionDetails</span> <span class="kw">&lt;-</span> <span class="fu">createConnectionDetails</span>(<span class="kw">dbms</span> <span class="kw">=</span> <span class="st">"postgresql"</span>,
-                                             <span class="kw">server</span> <span class="kw">=</span> <span class="st">"localhost/ohdsi"</span>,
-                                             <span class="kw">user</span> <span class="kw">=</span> <span class="st">"joe"</span>,
-                                             <span class="kw">password</span> <span class="kw">=</span> <span class="st">"supersecret"</span>)
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">connectionDetails</span> <span class="op">&lt;-</span> <span class="fu">createConnectionDetails</span><span class="op">(</span>dbms <span class="op">=</span> <span class="st">"postgresql"</span>, 
+                                             server <span class="op">=</span> <span class="st">"localhost/ohdsi"</span>, 
+                                             user <span class="op">=</span> <span class="st">"joe"</span>, 
+                                             password <span class="op">=</span> <span class="st">"supersecret"</span><span class="op">)</span>
 
-<span class="no">cdmDatabaseSchema</span> <span class="kw">&lt;-</span> <span class="st">"my_cdm_data"</span>
-<span class="no">resultsDatabaseSchema</span> <span class="kw">&lt;-</span> <span class="st">"my_results"</span></pre></body></html></div>
+<span class="va">cdmDatabaseSchema</span> <span class="op">&lt;-</span> <span class="st">"my_cdm_data"</span>
+<span class="va">resultsDatabaseSchema</span> <span class="op">&lt;-</span> <span class="st">"my_results"</span></code></pre></div>
 <p>The last two lines define the <code>cdmDatabaseSchema</code> and <code>resultSchema</code> variables. We’ll use these later to tell R where the data in CDM format live, and where we want to write intermediate and result tables. Note that for Microsoft SQL Server, databaseschemas need to specify both the database and the schema, so for example <code>cdmDatabaseSchema &lt;- "my_cdm_data.dbo"</code>.</p>
 </div>
 <div id="creating-a-cohort-of-interest" class="section level2">
 <h2 class="hasAnchor">
 <a href="#creating-a-cohort-of-interest" class="anchor"></a>Creating a cohort of interest</h2>
 <p>FeatureExtraction requires the cohorts to be instantiated in the <code>cohort</code> table in the Common Data Model, or in a table that has the same structure as the <code>cohort</code> table. We could create cohorts using a cohort definition tool, but here we’ll just use some simple SQL to find the first drug era per person. Note that because we will be creating covariates based on data before cohort start, we are requiring 365 days of observation before the first exposure. FeatureExtraction will not check if a subject is observed during the specified time windows.</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb14-1"><a href="#cb14-1"></a><span class="co">/***********************************</span></span>
-<span id="cb14-2"><a href="#cb14-2"></a><span class="co">File cohortsOfInterest.sql</span></span>
-<span id="cb14-3"><a href="#cb14-3"></a><span class="co">***********************************/</span></span>
-<span id="cb14-4"><a href="#cb14-4"></a></span>
-<span id="cb14-5"><a href="#cb14-5"></a><span class="cf">IF</span> OBJECT_ID(<span class="st">'@resultsDatabaseSchema.cohorts_of_interest'</span>, <span class="st">'U'</span>) <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span></span>
-<span id="cb14-6"><a href="#cb14-6"></a><span class="kw">DROP</span> <span class="kw">TABLE</span> @resultsDatabaseSchema.cohorts_of_interest;</span>
-<span id="cb14-7"><a href="#cb14-7"></a></span>
-<span id="cb14-8"><a href="#cb14-8"></a><span class="kw">SELECT</span> first_use.<span class="op">*</span></span>
-<span id="cb14-9"><a href="#cb14-9"></a><span class="kw">INTO</span> @resultsDatabaseSchema.cohorts_of_interest</span>
-<span id="cb14-10"><a href="#cb14-10"></a><span class="kw">FROM</span> (</span>
-<span id="cb14-11"><a href="#cb14-11"></a><span class="kw">SELECT</span> drug_concept_id <span class="kw">AS</span> cohort_definition_id,</span>
-<span id="cb14-12"><a href="#cb14-12"></a><span class="fu">MIN</span>(drug_era_start_date) <span class="kw">AS</span> cohort_start_date,</span>
-<span id="cb14-13"><a href="#cb14-13"></a><span class="fu">MIN</span>(drug_era_end_date) <span class="kw">AS</span> cohort_end_date,</span>
-<span id="cb14-14"><a href="#cb14-14"></a>person_id </span>
-<span id="cb14-15"><a href="#cb14-15"></a><span class="kw">FROM</span> @cdmDatabaseSchema.drug_era</span>
-<span id="cb14-16"><a href="#cb14-16"></a><span class="kw">WHERE</span> drug_concept_id <span class="op">=</span> <span class="dv">1118084</span><span class="co">-- celecoxib</span></span>
-<span id="cb14-17"><a href="#cb14-17"></a><span class="kw">OR</span> drug_concept_id <span class="op">=</span> <span class="dv">1124300</span> <span class="co">--diclofenac</span></span>
-<span id="cb14-18"><a href="#cb14-18"></a><span class="kw">GROUP</span> <span class="kw">BY</span> drug_concept_id, </span>
-<span id="cb14-19"><a href="#cb14-19"></a>person_id</span>
-<span id="cb14-20"><a href="#cb14-20"></a>) first_use </span>
-<span id="cb14-21"><a href="#cb14-21"></a><span class="kw">INNER</span> <span class="kw">JOIN</span> @cdmDatabaseSchema.observation_period</span>
-<span id="cb14-22"><a href="#cb14-22"></a><span class="kw">ON</span> first_use.person_id <span class="op">=</span> observation_period.person_id</span>
-<span id="cb14-23"><a href="#cb14-23"></a><span class="kw">AND</span> cohort_start_date <span class="op">&gt;=</span> observation_period_start_date</span>
-<span id="cb14-24"><a href="#cb14-24"></a><span class="kw">AND</span> cohort_end_date <span class="op">&lt;=</span> observation_period_end_date</span>
-<span id="cb14-25"><a href="#cb14-25"></a><span class="kw">WHERE</span> DATEDIFF(<span class="dt">DAY</span>, observation_period_start_date, cohort_start_date) <span class="op">&gt;=</span> <span class="dv">365</span>;</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">/***********************************</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co">File cohortsOfInterest.sql</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co">***********************************/</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="cf">IF</span> OBJECT_ID(<span class="st">'@resultsDatabaseSchema.cohorts_of_interest'</span>, <span class="st">'U'</span>) <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="kw">DROP</span> <span class="kw">TABLE</span> @resultsDatabaseSchema.cohorts_of_interest;</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> first_use.<span class="op">*</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="kw">INTO</span> @resultsDatabaseSchema.cohorts_of_interest</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> (</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> drug_concept_id <span class="kw">AS</span> cohort_definition_id,</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="fu">MIN</span>(drug_era_start_date) <span class="kw">AS</span> cohort_start_date,</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="fu">MIN</span>(drug_era_end_date) <span class="kw">AS</span> cohort_end_date,</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>person_id </span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> @cdmDatabaseSchema.drug_era</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> drug_concept_id <span class="op">=</span> <span class="dv">1118084</span><span class="co">-- celecoxib</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="kw">OR</span> drug_concept_id <span class="op">=</span> <span class="dv">1124300</span> <span class="co">--diclofenac</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span> drug_concept_id, </span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>person_id</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>) first_use </span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a><span class="kw">INNER</span> <span class="kw">JOIN</span> @cdmDatabaseSchema.observation_period</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a><span class="kw">ON</span> first_use.person_id <span class="op">=</span> observation_period.person_id</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a><span class="kw">AND</span> cohort_start_date <span class="op">&gt;=</span> observation_period_start_date</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a><span class="kw">AND</span> cohort_end_date <span class="op">&lt;=</span> observation_period_end_date</span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> DATEDIFF(<span class="dt">DAY</span>, observation_period_start_date, cohort_start_date) <span class="op">&gt;=</span> <span class="dv">365</span>;</span></code></pre></div>
 <p>This is parameterized SQL which can be used by the <code>SqlRender</code> package. We use parameterized SQL so we do not have to pre-specify the names of the CDM and result schemas. That way, if we want to run the SQL on a different schema, we only need to change the parameter values; we do not have to change the SQL code. By also making use of translation functionality in <code>SqlRender</code>, we can make sure the SQL code can be run in many different environments.</p>
-<div class="sourceCode" id="cb15"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">SqlRender</span>)
-<span class="no">sql</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SqlRender/man/readSql.html">readSql</a></span>(<span class="st">"cohortsOfInterest.sql"</span>)
-<span class="no">sql</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SqlRender/man/render.html">render</a></span>(<span class="no">sql</span>,
-              <span class="kw">cdmDatabaseSchema</span> <span class="kw">=</span> <span class="no">cdmDatabaseSchema</span>,
-              <span class="kw">resultsDatabaseSchema</span> <span class="kw">=</span> <span class="no">resultsDatabaseSchema</span>)
-<span class="no">sql</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SqlRender/man/translate.html">translate</a></span>(<span class="no">sql</span>, <span class="kw">targetDialect</span> <span class="kw">=</span> <span class="no">connectionDetails</span>$<span class="no">dbms</span>)
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ohdsi.github.io/SqlRender/">SqlRender</a></span><span class="op">)</span>
+<span class="va">sql</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ohdsi.github.io/SqlRender/reference/readSql.html">readSql</a></span><span class="op">(</span><span class="st">"cohortsOfInterest.sql"</span><span class="op">)</span>
+<span class="va">sql</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ohdsi.github.io/SqlRender/reference/render.html">render</a></span><span class="op">(</span><span class="va">sql</span>,
+              cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>, 
+              resultsDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span><span class="op">)</span>
+<span class="va">sql</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ohdsi.github.io/SqlRender/reference/translate.html">translate</a></span><span class="op">(</span><span class="va">sql</span>, targetDialect <span class="op">=</span> <span class="va">connectionDetails</span><span class="op">$</span><span class="va">dbms</span><span class="op">)</span>
 
-<span class="no">connection</span> <span class="kw">&lt;-</span> <span class="fu">connect</span>(<span class="no">connectionDetails</span>)
-<span class="fu">executeSql</span>(<span class="no">connection</span>, <span class="no">sql</span>)</pre></body></html></div>
+<span class="va">connection</span> <span class="op">&lt;-</span> <span class="fu">connect</span><span class="op">(</span><span class="va">connectionDetails</span><span class="op">)</span>
+<span class="fu">executeSql</span><span class="op">(</span><span class="va">connection</span>, <span class="va">sql</span><span class="op">)</span></code></pre></div>
 <p>In this code, we first read the SQL from the file into memory. In the next line, we replace the two parameter names with the actual values. We then translate the SQL into the dialect appropriate for the DBMS we already specified in the <code>connectionDetails</code>. Next, we connect to the server, and submit the rendered and translated SQL.</p>
 <p>If all went well, we now have a table with the cohorts of interest. We can see how many events per type:</p>
-<div class="sourceCode" id="cb16"><html><body><pre class="r"><span class="no">sql</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(<span class="st">"SELECT cohort_definition_id, COUNT(*) AS count"</span>,
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">sql</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"SELECT cohort_definition_id, COUNT(*) AS count"</span>,
              <span class="st">"FROM @resultsDatabaseSchema.cohorts_of_interest"</span>,
-             <span class="st">"GROUP BY cohort_definition_id"</span>)
-<span class="no">sql</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SqlRender/man/render.html">render</a></span>(<span class="no">sql</span>, <span class="kw">resultsDatabaseSchema</span> <span class="kw">=</span> <span class="no">resultsDatabaseSchema</span>)
-<span class="no">sql</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SqlRender/man/translate.html">translate</a></span>(<span class="no">sql</span>, <span class="kw">targetDialect</span> <span class="kw">=</span> <span class="no">connectionDetails</span>$<span class="no">dbms</span>)
+             <span class="st">"GROUP BY cohort_definition_id"</span><span class="op">)</span>
+<span class="va">sql</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ohdsi.github.io/SqlRender/reference/render.html">render</a></span><span class="op">(</span><span class="va">sql</span>, resultsDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span><span class="op">)</span>
+<span class="va">sql</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ohdsi.github.io/SqlRender/reference/translate.html">translate</a></span><span class="op">(</span><span class="va">sql</span>, targetDialect <span class="op">=</span> <span class="va">connectionDetails</span><span class="op">$</span><span class="va">dbms</span><span class="op">)</span>
 
-<span class="fu">querySql</span>(<span class="no">connection</span>, <span class="no">sql</span>)</pre></body></html></div>
+<span class="fu">querySql</span><span class="op">(</span><span class="va">connection</span>, <span class="va">sql</span><span class="op">)</span></code></pre></div>
 <pre><code>##   cohort_concept_id  count
 ## 1           1124300 240761
 ## 2           1118084  47293</code></pre>
@@ -353,41 +366,24 @@
 <h2 class="hasAnchor">
 <a href="#creating-per-person-covariates-for-a-cohort-of-interest" class="anchor"></a>Creating per-person covariates for a cohort of interest</h2>
 <p>We can create per-person covariates for one of the cohorts of interest, for example using the default settings:</p>
-<div class="sourceCode" id="cb18"><html><body><pre class="r"><span class="no">covariateSettings</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createDefaultCovariateSettings.html">createDefaultCovariateSettings</a></span>()
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">covariateSettings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDefaultCovariateSettings.html">createDefaultCovariateSettings</a></span><span class="op">(</span><span class="op">)</span>
 
-<span class="no">covariateData</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span>(<span class="kw">connectionDetails</span> <span class="kw">=</span> <span class="no">connectionDetails</span>,
-                                    <span class="kw">cdmDatabaseSchema</span> <span class="kw">=</span> <span class="no">cdmDatabaseSchema</span>,
-                                    <span class="kw">cohortDatabaseSchema</span> <span class="kw">=</span> <span class="no">resultsDatabaseSchema</span>,
-                                    <span class="kw">cohortTable</span> <span class="kw">=</span> <span class="st">"cohorts_of_interest"</span>,
-                                    <span class="kw">cohortId</span> <span class="kw">=</span> <span class="fl">1118084</span>,
-                                    <span class="kw">rowIdField</span> <span class="kw">=</span> <span class="st">"subject_id"</span>,
-                                    <span class="kw">covariateSettings</span> <span class="kw">=</span> <span class="no">covariateSettings</span>)
+<span class="va">covariateData</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span><span class="op">(</span>connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>,
+                                    cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>,
+                                    cohortDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span>,
+                                    cohortTable <span class="op">=</span> <span class="st">"cohorts_of_interest"</span>,
+                                    cohortId <span class="op">=</span> <span class="fl">1118084</span>,
+                                    rowIdField <span class="op">=</span> <span class="st">"subject_id"</span>,
+                                    covariateSettings <span class="op">=</span> <span class="va">covariateSettings</span><span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(<span class="no">covariateData</span>)</pre></body></html></div>
-<pre><code>## CovariateData object summary
-## 
-## Number of covariates: 41330
-## Number of non-zero covariate values: 25925017</code></pre>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">covariateData</span><span class="op">)</span></code></pre></div>
 <div id="per-person-covariate-output-format" class="section level3">
 <h3 class="hasAnchor">
 <a href="#per-person-covariate-output-format" class="anchor"></a>Per-person covariate output format</h3>
 <p>The main component of the <code>covariateData</code> object is <code>covariates</code>:</p>
-<div class="sourceCode" id="cb20"><html><body><pre class="r"><span class="no">covariateData</span>$<span class="no">covariates</span></pre></body></html></div>
-<pre><code>## # Source:   lazy query [?? x 3]
-## # Database: sqlite 3.31.1 [C:\Users\mschuemi\AppData\Local\Temp\Rtmpqa3O3z\file3dfc57f21e0f.sqlite]
-##    rowId covariateId covariateValue
-##    &lt;int&gt;       &lt;dbl&gt;          &lt;dbl&gt;
-##  1     1  4181063212              1
-##  2     2   194133212              1
-##  3     3    73553212              1
-##  4     4  4002014212              1
-##  5     5  4181063212              1
-##  6     6   434894212              1
-##  7     7   432739212              1
-##  8     8  4344497212              1
-##  9     9   432867212              1
-## 10    10   197950212              1
-## # ... with more rows</code></pre>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">covariateData</span><span class="op">$</span><span class="va">covariates</span></code></pre></div>
 <p>The columns are defined as follows:</p>
 <ul>
 <li>
@@ -402,7 +398,8 @@
 <h3 class="hasAnchor">
 <a href="#saving-the-data-to-file" class="anchor"></a>Saving the data to file</h3>
 <p>Creating covariates can take considerable computing time, and it is probably a good idea to save them for future sessions. Because <code>covariateData</code> objects use <code>Andromeda</code>, we cannot use R’s regular save function. Instead, we’ll have to use the <code><a href="../reference/saveCovariateData.html">saveCovariateData()</a></code> function:</p>
-<div class="sourceCode" id="cb22"><html><body><pre class="r"><span class="fu"><a href="../reference/saveCovariateData.html">saveCovariateData</a></span>(<span class="no">covariateData</span>, <span class="st">"covariates"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/saveCovariateData.html">saveCovariateData</a></span><span class="op">(</span><span class="va">covariateData</span>, <span class="st">"covariates"</span><span class="op">)</span></code></pre></div>
 <p>We can use the <code><a href="../reference/loadCovariateData.html">loadCovariateData()</a></code> function to load the data in a future session.</p>
 </div>
 <div id="removing-infrequent-covariates-normalizing-and-removing-redundancy" class="section level3">
@@ -417,89 +414,54 @@
 <li>
 <strong>Removal of redundancy</strong>: If every person in the cohort has the same value for a covariate (e.g. a cohort that is restricted to women will have the same gender covariate value for all) that covariate is redundant. Redundant covariates may pose a problem for some machine learning algorithms, for example causing a simple regression to no longer have a single solution. Similarly, groups of covariates may be redundant (e.g. every person will belong to at least one age group, making one group redundant as it can be defined as the absence of the other groups).</li>
 </ol>
-<div class="sourceCode" id="cb23"><html><body><pre class="r"><span class="no">tidyCovariates</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/tidyCovariateData.html">tidyCovariateData</a></span>(<span class="no">covariateData</span>,
-                                    <span class="kw">minFraction</span> <span class="kw">=</span> <span class="fl">0.001</span>,
-                                    <span class="kw">normalize</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
-                                    <span class="kw">removeRedundancy</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">tidyCovariates</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tidyCovariateData.html">tidyCovariateData</a></span><span class="op">(</span><span class="va">covariateData</span>,
+                                    minFraction <span class="op">=</span> <span class="fl">0.001</span>,
+                                    normalize <span class="op">=</span> <span class="cn">TRUE</span>,
+                                    removeRedundancy <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p>If we want to know how many infrequent covariates were removed we can query the <code>metaData</code> object:</p>
-<div class="sourceCode" id="cb24"><html><body><pre class="r"><span class="no">deletedCovariateIds</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span>(<span class="no">tidyCovariates</span>, <span class="st">"metaData"</span>)$<span class="no">deletedInfrequentCovariateIds</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">deletedCovariateIds</span>)</pre></body></html></div>
-<pre><code>## [1] 22274210 22274212 22288210 22340212 22350210 22350212</code></pre>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">deletedCovariateIds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">tidyCovariates</span>, <span class="st">"metaData"</span><span class="op">)</span><span class="op">$</span><span class="va">deletedInfrequentCovariateIds</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">deletedCovariateIds</span><span class="op">)</span></code></pre></div>
 <p>Similarly, if we want to know which redundant covariates were removed we can also query the <code>metaData</code> object:</p>
-<div class="sourceCode" id="cb26"><html><body><pre class="r"><span class="no">deletedCovariateIds</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span>(<span class="no">tidyCovariates</span>, <span class="st">"metaData"</span>)$<span class="no">deletedRedundantCovariateIds</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">deletedCovariateIds</span>)</pre></body></html></div>
-<pre><code>## [1]  1118084410  1118084412  1118084413 21603931410 21603931412 21603931413</code></pre>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">deletedCovariateIds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">tidyCovariates</span>, <span class="st">"metaData"</span><span class="op">)</span><span class="op">$</span><span class="va">deletedRedundantCovariateIds</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">deletedCovariateIds</span><span class="op">)</span></code></pre></div>
 <p>If we want to know what these numbers mean, we can use the <code>covariateRef</code> object that is part of any <code>covariateData</code> object. Remember that the covariate data is stored in an <code>Andromeda</code> object, so we should use the proper syntax for querying these objects (see the <code>Andromeda</code> package documentation):</p>
-<div class="sourceCode" id="cb28"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">Andromeda</span>)
-<span class="no">covariateData</span>$<span class="no">covariateRef</span> <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span>(<span class="no">covariateId</span> <span class="kw">%in%</span> <span class="no">deletedCovariateIds</span>, ) <span class="kw">%&gt;%</span>
-  <span class="fu">collect</span>()</pre></body></html></div>
-<pre><code>## # A tibble: 21 x 4
-##     covariateId covariateName                     analysisId conceptId
-##           &lt;dbl&gt; &lt;chr&gt;                                  &lt;dbl&gt;     &lt;dbl&gt;
-##  1      8527004 race = White                               4      8527
-##  2      8532001 gender = FEMALE                            1      8532
-##  3      2015006 index year: 2015                           6         0
-##  4         1007 index month: 1                             7         0
-##  5        10003 age group:  50 -  54                       3         0
-##  6 900000010802 ...tance Abuse Coverage Indicator        802 900000010
-##  7  21603933412 ...EUMATIC PRODUCTS, NON-STEROIDS        412  21603933
-##  8   1118084412 ...s relative to index: celecoxib        412   1118084
-##  9  21603932410 ...ORY AND ANTIRHEUMATIC PRODUCTS        410  21603932
-## 10  21603932412 ...ORY AND ANTIRHEUMATIC PRODUCTS        412  21603932
-## # ... with 11 more rows</code></pre>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ohdsi.github.io/Andromeda/">Andromeda</a></span><span class="op">)</span>
+<span class="va">covariateData</span><span class="op">$</span><span class="va">covariateRef</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">covariateId</span> <span class="op">%in%</span> <span class="va">deletedCovariateIds</span>, <span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">collect</span><span class="op">(</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
 <div id="creating-aggregated-covariates-for-a-cohort-of-interest" class="section level2">
 <h2 class="hasAnchor">
 <a href="#creating-aggregated-covariates-for-a-cohort-of-interest" class="anchor"></a>Creating aggregated covariates for a cohort of interest</h2>
 <p>Often we do not need to have per-person covariates, but instead we are interested in aggregated statistics instead. For example, we may not need to know which persons are male, but would like to know what proportion of the cohort is male. We can aggregate per-person covariates:</p>
-<div class="sourceCode" id="cb30"><html><body><pre class="r"><span class="no">covariateData2</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/aggregateCovariates.html">aggregateCovariates</a></span>(<span class="no">covariateData</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">covariateData2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/aggregateCovariates.html">aggregateCovariates</a></span><span class="op">(</span><span class="va">covariateData</span><span class="op">)</span></code></pre></div>
 <p>Of course, if all we wanted was aggregated statistics it would have been more efficient to aggregate them during creation:</p>
-<div class="sourceCode" id="cb31"><html><body><pre class="r"><span class="no">covariateSettings</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createDefaultCovariateSettings.html">createDefaultCovariateSettings</a></span>()
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">covariateSettings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDefaultCovariateSettings.html">createDefaultCovariateSettings</a></span><span class="op">(</span><span class="op">)</span>
 
-<span class="no">covariateData2</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span>(<span class="kw">connectionDetails</span> <span class="kw">=</span> <span class="no">connectionDetails</span>,
-                                     <span class="kw">cdmDatabaseSchema</span> <span class="kw">=</span> <span class="no">cdmDatabaseSchema</span>,
-                                     <span class="kw">cohortDatabaseSchema</span> <span class="kw">=</span> <span class="no">resultsDatabaseSchema</span>,
-                                     <span class="kw">cohortTable</span> <span class="kw">=</span> <span class="st">"cohorts_of_interest"</span>,
-                                     <span class="kw">cohortId</span> <span class="kw">=</span> <span class="fl">1118084</span>,
-                                     <span class="kw">covariateSettings</span> <span class="kw">=</span> <span class="no">covariateSettings</span>,
-                                     <span class="kw">aggregated</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(<span class="no">covariateData2</span>)</pre></body></html></div>
-<pre><code>## CovariateData object summary
-## 
-## Number of covariates: 41330
-## Number of non-zero covariate values: 41330</code></pre>
+<span class="va">covariateData2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span><span class="op">(</span>connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>,
+                                     cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>,
+                                     cohortDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span>,
+                                     cohortTable <span class="op">=</span> <span class="st">"cohorts_of_interest"</span>,
+                                     cohortId <span class="op">=</span> <span class="fl">1118084</span>,
+                                     covariateSettings <span class="op">=</span> <span class="va">covariateSettings</span>,
+                                     aggregated <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">covariateData2</span><span class="op">)</span></code></pre></div>
 <p>Note that we specified <code>aggregated = TRUE</code>. Also, we are no longer required to define a <code>rowIdField</code> because we will no longer receive per-person data.</p>
 <div id="aggregated-covariate-output-format" class="section level3">
 <h3 class="hasAnchor">
 <a href="#aggregated-covariate-output-format" class="anchor"></a>Aggregated covariate output format</h3>
 <p>The two main components of the aggregated <code>covariateData</code> object are <code>covariates</code> and <code>covariatesContinuous</code>, for binary and continuous covariates respectively:</p>
-<div class="sourceCode" id="cb33"><html><body><pre class="r"><span class="no">covariateData2</span>$<span class="no">covariates</span></pre></body></html></div>
-<pre><code>## # Source:   table&lt;covariates&gt; [?? x 4]
-## # Database: sqlite 3.31.1 [C:\Users\mschuemi\AppData\Local\Temp\Rtmpqa3O3z\file3dfc68ae35e8.sqlite]
-##    cohortDefinitionId covariateId sumValue averageValue
-##                 &lt;dbl&gt;       &lt;dbl&gt;    &lt;dbl&gt;        &lt;dbl&gt;
-##  1            1118084  4146124212        5    0.000106 
-##  2            1118084   312931212        1    0.0000211
-##  3            1118084   439294212       12    0.000254 
-##  4            1118084  4266653212        2    0.0000423
-##  5            1118084  4045586212        1    0.0000211
-##  6            1118084   437308212        1    0.0000211
-##  7            1118084 45767051212        3    0.0000634
-##  8            1118084   434005212      964    0.0204   
-##  9            1118084  4065618212        1    0.0000211
-## 10            1118084  4214408212      104    0.00220  
-## # ... with more rows</code></pre>
-<div class="sourceCode" id="cb35"><html><body><pre class="r"><span class="no">covariateData2</span>$<span class="no">covariatesContinuous</span></pre></body></html></div>
-<pre><code>## # Source:   table&lt;covariatesContinuous&gt; [?? x 12]
-## # Database: sqlite 3.31.1 [C:\Users\mschuemi\AppData\Local\Temp\Rtmpqa3O3z\file3dfc68ae35e8.sqlite]
-##   cohortDefinitionId covariateId countValue minValue maxValue averageValue standardDeviation medianValue p10Value p25Value p75Value p90Value
-##                &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;        &lt;dbl&gt;             &lt;dbl&gt;       &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
-## 1            1118084        1901      33013        0       21         2.32              2.66           1        0        0        3        6
-## 2            1118084        1904      47293        0        9         2.30              1.57           2        1        1        3        4
-## 3            1118084        1902      27951        0       13         2.65              2.72           1        0        0        5        7
-## 4            1118084        1903      47293        0        6         1.32              1.28           1        0        0        2        3</code></pre>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">covariateData2</span><span class="op">$</span><span class="va">covariates</span></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">covariateData2</span><span class="op">$</span><span class="va">covariatesContinuous</span></code></pre></div>
 <p>The columns of <code>covariates</code> are defined as follows:</p>
 <ul>
 <li>
@@ -524,194 +486,58 @@
 <h2 class="hasAnchor">
 <a href="#creating-a-table-1" class="anchor"></a>Creating a table 1</h2>
 <p>One task supported by the <code>FeatureExtraction</code> package is creating a table of overall study population characteristics that can be include in a paper. Since this is typically the first table in a paper we refer to such a table as ‘table 1’. A default table 1 is available in the <code>FeatureExtraction</code> package:</p>
-<div class="sourceCode" id="cb37"><html><body><pre class="r"><span class="no">result</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createTable1.html">createTable1</a></span>(<span class="no">covariateData2</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">result</span>, <span class="kw">row.names</span> <span class="kw">=</span> <span class="fl">FALSE</span>, <span class="kw">right</span> <span class="kw">=</span> <span class="fl">FALSE</span>)</pre></body></html></div>
-
-<pre><code> Characteristic                             % (n = 47,293) Characteristic                                          % (n = 47,293)
- Age group                                                   Ischemic heart disease                                  7.0         
-     0 -   4                                  0.1            Peripheral vascular disease                            13.3         
-     5 -   9                                  0.2            Pulmonary embolism                                      1.2         
-    10 -  14                                  0.7            Venous thrombosis                                       3.2         
-    15 -  19                                  2.4          Medical history: Neoplasms                                            
-    20 -  24                                  2.0            Hematologic neoplasm                                    1.2         
-    25 -  29                                  3.8            Malignant lymphoma                                      0.4         
-    30 -  34                                  5.8            Malignant neoplasm of anorectum                         0.2         
-    35 -  39                                  7.1            Malignant neoplastic disease                            6.3         
-    40 -  44                                  9.2            Malignant tumor of breast                               1.7         
-    45 -  49                                 11.5            Malignant tumor of colon                                0.4         
-    50 -  54                                 14.2            Malignant tumor of lung                                 0.4         
-    55 -  59                                 13.0            Malignant tumor of urinary bladder                      0.2         
-    60 -  64                                 11.4            Primary malignant neoplasm of prostate                  0.3         
-    65 -  69                                  5.6          Medication use                                                        
-    70 -  74                                  4.3            Agents acting on the renin-angiotensin system          47.0         
-    75 -  79                                  3.4            Antibacterials for systemic use                        82.6         
-    80 -  84                                  3.0            Antidepressants                                        63.9         
-    85 -  89                                  2.2            Antiepileptics                                         77.1         
-    90 -  94                                  0.1            Antiinflammatory and antirheumatic products           100.0         
- Gender: female                              72.4            Antineoplastic agents                                  27.4         
- Race                                                        Antipsoriatics                                          9.2         
-   race = Black or African American          18.6            Antithrombotic agents                                  21.7         
-   race = Other Race                         18.9            Beta blocking agents                                   54.0         
-   race = White                              62.4            Calcium channel blockers                               47.8         
- Ethnicity                                                   Diuretics                                              62.6         
-   ethnicity = Hispanic or Latino             1.5            Drugs for acid related disorders                       83.2         
-   ethnicity = Not Hispanic or Latino        17.4            Drugs for obstructive airway diseases                  59.6         
- Medical history: General                                    Drugs used in diabetes                                 31.3         
-   Acute respiratory disease                 37.0            Immunosuppressants                                      3.7         
-   Attention deficit hyperactivity disorder   2.4            Lipid modifying agents                                 55.0         
-   Chronic liver disease                      5.0            Opioids                                                79.8         
-   Chronic obstructive lung disease          19.1            Psycholeptics                                          85.6         
-   Crohn's disease                            0.6            Psychostimulants, agents used for adhd and nootropics  77.7         
-   Dementia                                   2.0                                                                                
-   Depressive disorder                       34.4          Characteristic                                          Value         
-   Diabetes mellitus                         25.2          Charlson comorbidity index                                            
-   Gastroesophageal reflux disease           25.1              Mean                                                2.3           
-   Gastrointestinal hemorrhage                4.3              Std. deviation                                      2.7           
-   Human immunodeficiency virus infection     0.7              Minimum                                             0.0           
-   Hyperlipidemia                            35.8              25th percentile                                     0.0           
-   Hypertensive disorder                     50.4              Median                                              1.0           
-   Lesion of liver                            0.7              75th percentile                                     3.0           
-   Obesity                                   17.2              Maximum                                             21.0          
-   Osteoarthritis                            44.9          CHADS2Vasc                                                            
-   Pneumonia                                  6.2              Mean                                                2.3           
-   Psoriasis                                  1.0              Std. deviation                                      1.6           
-   Renal impairment                           4.6              Minimum                                             0.0           
-   Rheumatoid arthritis                       4.7              25th percentile                                     1.0           
-   Schizophrenia                              3.5              Median                                              2.0           
-   Ulcerative colitis                         0.4              75th percentile                                     3.0           
-   Urinary tract infectious disease          15.2              Maximum                                              9.0          
-   Viral hepatitis C                          3.6          DCSI                                                                  
-   Visual system disorder                    35.7              Mean                                                2.6           
- Medical history: Cardiovascular disease                       Std. deviation                                      2.7           
-   Atrial fibrillation                        2.6              Minimum                                             0.0           
-   Cerebrovascular disease                    5.7              25th percentile                                     0.0           
-   Coronary arteriosclerosis                  9.8              Median                                              1.0           
-   Heart disease                             26.2              75th percentile                                     5.0           
-   Heart failure                              6.9              Maximum                                             13.0          </code></pre>
-
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createTable1.html">createTable1</a></span><span class="op">(</span><span class="va">covariateData2</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">result</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span>, right <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 <p>Where applicable, these characteristics are drawn from analyses pertaining the ‘long-term’ windows, so concepts observed in the 365 days before up to and included the cohort start date.</p>
 <p>The <code>createTable1</code> function requires a simple specification of what variables to include in the table. The default specifications included in the package can be reviewed by calling the <code>getDefaultTable1Specifications</code> function. The specification reference analysis IDs and covariate IDs, and in the default specification these IDs refer to those in the default covariate settings. It is possible to create custom table 1 specifications and use those instead.</p>
 <p>Here we based table 1 on a <code>covariateData</code> object containing all default covariates, even though only a small fraction of covariates are used in the table. If we only want to extract those covariates needed for the table, we can use the <code>createTable1CovariateSettings</code> function:</p>
-<div class="sourceCode" id="cb39"><html><body><pre class="r"><span class="no">covariateSettings</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createTable1CovariateSettings.html">createTable1CovariateSettings</a></span>()
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">covariateSettings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createTable1CovariateSettings.html">createTable1CovariateSettings</a></span><span class="op">(</span><span class="op">)</span>
 
-<span class="no">covariateData2b</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span>(<span class="kw">connectionDetails</span> <span class="kw">=</span> <span class="no">connectionDetails</span>,
-                                      <span class="kw">cdmDatabaseSchema</span> <span class="kw">=</span> <span class="no">cdmDatabaseSchema</span>,
-                                      <span class="kw">cohortDatabaseSchema</span> <span class="kw">=</span> <span class="no">resultsDatabaseSchema</span>,
-                                      <span class="kw">cohortTable</span> <span class="kw">=</span> <span class="st">"cohorts_of_interest"</span>,
-                                      <span class="kw">cohortId</span> <span class="kw">=</span> <span class="fl">1118084</span>,
-                                      <span class="kw">covariateSettings</span> <span class="kw">=</span> <span class="no">covariateSettings</span>,
-                                      <span class="kw">aggregated</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(<span class="no">covariateData2b</span>)</pre></body></html></div>
-<pre><code>## CovariateData object summary
-## 
-## Number of covariates: 90
-## Number of non-zero covariate values: 90</code></pre>
+<span class="va">covariateData2b</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span><span class="op">(</span>connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>,
+                                      cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>,
+                                      cohortDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span>,
+                                      cohortTable <span class="op">=</span> <span class="st">"cohorts_of_interest"</span>,
+                                      cohortId <span class="op">=</span> <span class="fl">1118084</span>,
+                                      covariateSettings <span class="op">=</span> <span class="va">covariateSettings</span>,
+                                      aggregated <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">covariateData2b</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
 <div id="comparing-two-cohorts" class="section level1">
 <h1 class="hasAnchor">
 <a href="#comparing-two-cohorts" class="anchor"></a>Comparing two cohorts</h1>
 <p>Another task supported by the <code>FeatureExtraction</code> package is comparing two cohorts of interest. Suppose we want to compare two cohorts only on the variables included in the default table 1:</p>
-<div class="sourceCode" id="cb41"><html><body><pre class="r"><span class="no">settings</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createTable1CovariateSettings.html">createTable1CovariateSettings</a></span>(<span class="kw">excludedCovariateConceptIds</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1118084</span>, <span class="fl">1124300</span>),
-                                          <span class="kw">addDescendantsToExclude</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createTable1CovariateSettings.html">createTable1CovariateSettings</a></span><span class="op">(</span>excludedCovariateConceptIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1118084</span>, <span class="fl">1124300</span><span class="op">)</span>,
+                                          addDescendantsToExclude <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 
-<span class="no">covCelecoxib</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span>(<span class="kw">connectionDetails</span> <span class="kw">=</span> <span class="no">connectionDetails</span>,
-                                   <span class="kw">cdmDatabaseSchema</span> <span class="kw">=</span> <span class="no">cdmDatabaseSchema</span>,
-                                   <span class="kw">cohortDatabaseSchema</span> <span class="kw">=</span> <span class="no">resultsDatabaseSchema</span>,
-                                   <span class="kw">cohortTable</span> <span class="kw">=</span> <span class="st">"cohorts_of_interest"</span>,
-                                   <span class="kw">cohortId</span> <span class="kw">=</span> <span class="fl">1118084</span>,
-                                   <span class="kw">covariateSettings</span> <span class="kw">=</span> <span class="no">settings</span>,
-                                   <span class="kw">aggregated</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
+<span class="va">covCelecoxib</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span><span class="op">(</span>connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>,
+                                   cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>,
+                                   cohortDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span>,
+                                   cohortTable <span class="op">=</span> <span class="st">"cohorts_of_interest"</span>,
+                                   cohortId <span class="op">=</span> <span class="fl">1118084</span>,
+                                   covariateSettings <span class="op">=</span> <span class="va">settings</span>,
+                                   aggregated <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 
-<span class="no">covDiclofenac</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span>(<span class="kw">connectionDetails</span> <span class="kw">=</span> <span class="no">connectionDetails</span>,
-                                    <span class="kw">cdmDatabaseSchema</span> <span class="kw">=</span> <span class="no">cdmDatabaseSchema</span>,
-                                    <span class="kw">cohortDatabaseSchema</span> <span class="kw">=</span> <span class="no">resultsDatabaseSchema</span>,
-                                    <span class="kw">cohortTable</span> <span class="kw">=</span> <span class="st">"cohorts_of_interest"</span>,
-                                    <span class="kw">cohortId</span> <span class="kw">=</span> <span class="fl">1124300</span>,
-                                    <span class="kw">covariateSettings</span> <span class="kw">=</span> <span class="no">settings</span>,
-                                    <span class="kw">aggregated</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
+<span class="va">covDiclofenac</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span><span class="op">(</span>connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>,
+                                    cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>,
+                                    cohortDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span>,
+                                    cohortTable <span class="op">=</span> <span class="st">"cohorts_of_interest"</span>,
+                                    cohortId <span class="op">=</span> <span class="fl">1124300</span>,
+                                    covariateSettings <span class="op">=</span> <span class="va">settings</span>,
+                                    aggregated <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 
-<span class="no">std</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/computeStandardizedDifference.html">computeStandardizedDifference</a></span>(<span class="no">covCelecoxib</span>, <span class="no">covDiclofenac</span>)</pre></body></html></div>
+<span class="va">std</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/computeStandardizedDifference.html">computeStandardizedDifference</a></span><span class="op">(</span><span class="va">covCelecoxib</span>, <span class="va">covDiclofenac</span><span class="op">)</span></code></pre></div>
 <p>In this example we have chosen to exclude any covariates derived from the two concepts that were used to define the two cohorts: celecoxib (1118084), and diclofenac (1124300). We compute the standardized difference between the remaining covariates.</p>
-<div class="sourceCode" id="cb42"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">std</span>)</pre></body></html></div>
-
-<pre><code>## # A tibble: 6 x 8
-##   covariateId  mean1   sd1 mean2   sd2    sd stdDiff covariateName                    
-##         &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;                            
-## 1        1904 2.30   1.57  1.74  1.39  2.10   -0.267 CHADS2VASc                       
-## 2        3003 0.0240 0.155 0.118 0.344 0.377   0.250 age group:  15 -  19             
-## 3    80180210 0.449  0.670 0.262 0.512 0.843  -0.222 ...ative to index: Osteoarthritis
-## 4        1902 2.65   2.72  1.83  2.68  3.82   -0.214 ...orbidity Severity Index (DCSI)
-## 5        1901 2.32   2.66  1.62  2.52  3.66   -0.191 ...lson index - Romano adaptation
-## 6 21601853410 0.484  0.696 0.318 0.564 0.896  -0.185 ... index: LIPID MODIFYING AGENTS</code></pre>
-
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">std</span><span class="op">)</span></code></pre></div>
 <p>The <code>stdDiff</code> column contains the standardized difference. By default the data is ranked in descending order of the absolute value of the standardized difference, showing the covariate with the largest difference first.</p>
 <p>We can also show the comparison as a standard table 1:</p>
-<div class="sourceCode" id="cb44"><html><body><pre class="r"><span class="no">result</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/createTable1.html">createTable1</a></span>(<span class="no">covCelecoxib</span>, <span class="no">covDiclofenac</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">result</span>, <span class="kw">row.names</span> <span class="kw">=</span> <span class="fl">FALSE</span>, <span class="kw">right</span> <span class="kw">=</span> <span class="fl">FALSE</span>)</pre></body></html></div>
-
-<pre><code> Characteristic                             % (n = 47,293) % (n = 240,761) Std.Diff Characteristic                                          % (n = 47,293) % (n = 240,761) Std.Diff
- Age group                                                                            Ischemic heart disease                                 7.0            4.0            -0.09   
-     0 -   4                                 0.1            0.0            -0.01      Peripheral vascular disease                           13.3            7.8            -0.12   
-     5 -   9                                 0.2            0.2             0.00      Pulmonary embolism                                     1.2            0.5            -0.05   
-    10 -  14                                 0.7            2.5             0.11      Venous thrombosis                                      3.2            1.9            -0.06   
-    15 -  19                                 2.4           11.8             0.25    Medical history: Neoplasms                                                                     
-    20 -  24                                 2.0            5.8             0.14      Hematologic neoplasm                                   1.2            0.6            -0.04   
-    25 -  29                                 3.8            8.8             0.14      Malignant lymphoma                                     0.4            0.2            -0.02   
-    30 -  34                                 5.8           10.1             0.11      Malignant neoplasm of anorectum                        0.2            0.1            -0.02   
-    35 -  39                                 7.1           10.0             0.07      Malignant neoplastic disease                           6.3            3.7            -0.08   
-    40 -  44                                 9.2            9.2             0.00      Malignant tumor of breast                              1.7            1.0            -0.04   
-    45 -  49                                11.5            9.4            -0.05      Malignant tumor of colon                               0.4            0.2            -0.02   
-    50 -  54                                14.2            9.9            -0.09      Malignant tumor of lung                                0.4            0.2            -0.03   
-    55 -  59                                13.0            8.7            -0.09      Malignant tumor of urinary bladder                     0.2            0.1            -0.02   
-    60 -  64                                11.4            6.1            -0.13      Primary malignant neoplasm of prostate                 0.3            0.2            -0.02   
-    65 -  69                                 5.6            2.2            -0.12    Medication use                                                                                 
-    70 -  74                                 4.3            1.7            -0.11      Agents acting on the renin-angiotensin system         47.0           32.5            -0.16   
-    75 -  79                                 3.4            1.3            -0.10      Antibacterials for systemic use                       81.0           80.4             0.00   
-    80 -  84                                 3.0            1.1            -0.10      Antidepressants                                       63.9           53.2            -0.10   
-    85 -  89                                 2.2            0.9            -0.07      Antiepileptics                                        77.1           73.9            -0.03   
-    90 -  94                                 0.1            0.1            -0.01      Antiinflammatory and antirheumatic products           73.1           71.7            -0.01   
- Gender: female                             72.4           72.8             0.00      Antineoplastic agents                                 17.1           12.7            -0.08   
- Race                                                                                 Antipsoriatics                                         9.2            7.3            -0.05   
-   race = Black or African American         18.6           28.1             0.14      Antithrombotic agents                                 21.7           11.4            -0.18   
-   race = Other Race                        18.9           15.3            -0.06      Beta blocking agents                                  54.0           39.6            -0.15   
-   race = White                             62.4           56.6            -0.05      Calcium channel blockers                              47.8           32.4            -0.17   
- Ethnicity                                                                            Diuretics                                             62.6           47.8            -0.14   
-   ethnicity = Hispanic or Latino            1.5            2.1             0.03      Drugs for acid related disorders                      83.2           79.9            -0.03   
-   ethnicity = Not Hispanic or Latino       17.4           13.2            -0.08      Drugs for obstructive airway diseases                 59.6           57.0            -0.02   
- Medical history: General                                                             Drugs used in diabetes                                31.3           21.0            -0.14   
-   Acute respiratory disease                37.0           39.4             0.03      Immunosuppressants                                     3.7            2.1            -0.07   
-   Attention deficit hyperactivity disorder  2.4            4.4             0.07      Lipid modifying agents                                48.4           31.8            -0.19   
-   Chronic liver disease                     5.0            3.7            -0.05      Opioids                                               79.8           79.3             0.00   
-   Chronic obstructive lung disease         19.1           11.3            -0.14      Psycholeptics                                         85.6           81.0            -0.04   
-   Crohn's disease                           0.6            0.5            -0.02      Psychostimulants, agents used for adhd and nootropics 77.7           77.8             0.00   
-   Dementia                                  2.0            1.0            -0.06                                                                                                   
-   Depressive disorder                      34.4           29.3            -0.06    Characteristic                                          Value          Value           Std.Diff
-   Diabetes mellitus                        25.2           17.4            -0.12    Charlson comorbidity index                                                                     
-   Gastroesophageal reflux disease          25.1           19.1            -0.09        Mean                                                2.3            1.6             -0.19   
-   Gastrointestinal hemorrhage               4.3            3.2            -0.04        Std. deviation                                      2.7            2.5                     
-   Human immunodeficiency virus infection    0.7            0.8             0.01        Minimum                                             0.0            0.0                     
-   Hyperlipidemia                           35.8           25.2            -0.14        25th percentile                                     0.0            0.0                     
-   Hypertensive disorder                    50.4           37.4            -0.14        Median                                              1.0            1.0                     
-   Lesion of liver                           0.7            0.5            -0.02        75th percentile                                     3.0            2.0                     
-   Obesity                                  17.2           16.6            -0.01        Maximum                                             21.0           27.0                    
-   Osteoarthritis                           44.9           26.2            -0.22    CHADS2Vasc                                                                                     
-   Pneumonia                                 6.2            4.0            -0.07        Mean                                                2.3            1.7             -0.27   
-   Psoriasis                                 1.0            0.8            -0.02        Std. deviation                                      1.6            1.4                     
-   Renal impairment                          4.6            3.3            -0.05        Minimum                                             0.0            0.0                     
-   Rheumatoid arthritis                      4.7            2.4            -0.09        25th percentile                                     1.0            1.0                     
-   Schizophrenia                             3.5            2.5            -0.04        Median                                              2.0            1.0                     
-   Ulcerative colitis                        0.4            0.2            -0.02        75th percentile                                     3.0            2.0                     
-   Urinary tract infectious disease         15.2           16.0             0.01        Maximum                                              9.0            9.0                    
-   Viral hepatitis C                         3.6            2.6            -0.04    DCSI                                                                                           
-   Visual system disorder                   35.7           31.2            -0.06        Mean                                                2.6            1.8             -0.21   
- Medical history: Cardiovascular disease                                                Std. deviation                                      2.7            2.7                     
-   Atrial fibrillation                       2.6            1.4            -0.06        Minimum                                             0.0            0.0                     
-   Cerebrovascular disease                   5.7            3.7            -0.06        25th percentile                                     0.0            0.0                     
-   Coronary arteriosclerosis                 9.8            5.5            -0.11        Median                                              1.0            0.0                     
-   Heart disease                            26.2           16.6            -0.15        75th percentile                                     5.0            3.0                     
-   Heart failure                             6.9            4.1            -0.09        Maximum                                             13.0           13.0                    </code></pre>
-
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createTable1.html">createTable1</a></span><span class="op">(</span><span class="va">covCelecoxib</span>, <span class="va">covDiclofenac</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">result</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span>, right <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 </div>
   </div>
 
@@ -726,11 +552,11 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Martijn Schuemie, Marc Suchard, Patrick Ryan, Jenna Reps.</p>
+  <p>Developed by Martijn Schuemie, Marc Suchard, Patrick Ryan, Jenna Reps, Anthony Sena.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

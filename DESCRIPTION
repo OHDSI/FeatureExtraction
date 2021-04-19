@@ -2,14 +2,15 @@ Package: FeatureExtraction
 Type: Package
 Title: Generating Features for a Cohort
 Version: 3.1.1
-Date: 2021-02-15
+Date: 2021-04-19
 Authors@R: c(
-  person("Martijn", "Schuemie", , "schuemie@ohdsi.org", role = c("aut", "cre")),
+  person("Martijn", "Schuemie", , "schuemie@ohdsi.org", role = c("aut")),
   person("Marc", "Suchard", role = c("aut")),
   person("Patrick", "Ryan", role = c("aut")),
-	person("Jenna", "Reps", role = c("aut"))
+  person("Jenna", "Reps", role = c("aut")),
+  person("Anthony", "Sena", , "sena@ohdsi.org", role = c("aut", "cre"))
   )
-Maintainer: Martijn J. Schuemie <schuemie@ohdsi.org>
+Maintainer: Anthony Sena <sena@ohdsi.org>
 Description: An R package for generating features (covariates) for a cohort using data in the Common Data Model.
 License: Apache License 2.0
 VignetteBuilder: knitr
