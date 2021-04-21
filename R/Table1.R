@@ -488,7 +488,8 @@ createTable1 <- function(covariateData1,
       }
       result <- cbind(column1, column2)
     } else {
-      stop("Don't know what to do when there are more rows in the table of continuous covariates than there are in the table of binary covariates.")
+      rlang::abort(paste("createTable1 cannot display the output in two columns because there are more rows in the table of continuous covariates than there are in the table of binary covariates.",
+                         '\nTry using `output = "one column"` when calling createTable1()'))
     }
   } else if (output == "one column") {
     ct <- continuousTable
