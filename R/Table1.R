@@ -79,6 +79,8 @@ createTable1 <- function(covariateData1,
     stop("Covariate2 data is not aggregated")
   if (!showCounts && !showPercent)
     stop("Must show counts or percent, or both")
+  if (!(output %in% c("one column", "two columns", "list")))
+    stop("output must be 'one column', 'two columns', or 'list'")
   
   fixCase <- function(label) {
     idx <- (toupper(label) == label)
