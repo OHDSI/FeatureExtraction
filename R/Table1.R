@@ -71,7 +71,7 @@ createTable1 <- function(covariateData1,
   comparison <- !is.null(covariateData2)
   if (!isCovariateData(covariateData1))
     stop("covariateData1 is not of type 'covariateData'")
-  if (comparison && !isCovariateData(covariateData1))
+  if (comparison && !isCovariateData(covariateData2))
     stop("covariateData2 is not of type 'covariateData'")
   if (!isAggregatedCovariateData(covariateData1))
     stop("Covariate1 data is not aggregated")
