@@ -49,15 +49,30 @@ tidyCovariateData <- function(covariateData,
     newCovariateData$covariates <- covariateData$covariates
   } else {
     newCovariates <- covariateData$covariates
+    
     covariateData$maxValuePerCovariateId <- covariateData$covariates %>% 
       group_by(.data$covariateId) %>% 
-      summarise(maxValue = max(.data$covariateValue, na.rm = TRUE))
+      summarise(maxValue = max(.data$covariateValue, na.rm = TRUE)) %>%
+      collect() # added
+    
+    Andromeda::createIndex(covariateData$maxValuePerCovariateId, c('covariateId'),
+                           indexName = 'maxValuePerCovariateId_covariateId')
+    #RSQLite::dbExecute(covariateData, 
+    #                   "CREATE INDEX maxValuePerCovariateId_covariateId ON maxValuePerCovariateId(covariateId)")
     on.exit(covariateData$maxValuePerCovariateId <- NULL)
     
     if (removeRedundancy || minFraction != 0) {
       covariateData$valueCounts <- covariateData$covariates %>% 
         group_by(.data$covariateId) %>% 
-        summarise(n = count(), nDistinct = n_distinct(.data$covariateValue))
+        summarise(n = count(), nDistinct = n_distinct(.data$covariateValue)) %>%
+        collect() # added
+      
+      Andromeda::createIndex(covariateData$valueCounts, c('covariateId'),
+                             indexName = 'valueCounts_covariateId')
+      
+      #RSQLite::dbExecute(covariateData, 
+      #                   "CREATE INDEX valueCounts_covariateId ON valueCounts(covariateId)")
+      
       on.exit(covariateData$valueCounts <- NULL, add = TRUE)
     }
     
@@ -155,20 +170,44 @@ tidyCovariateData <- function(covariateData,
       ParallelLogger::logInfo("Removing ", nrow(toDelete), " infrequent covariates")
     }
     if (length(deleteCovariateIds) > 0) {
+      
+      temp <- covariateData$covariateRef %>% collect()
+      allCovariateIds <- temp$covariateId
+      includeCovariateIds <- allCovariateIds[!allCovariateIds%in%deleteCovariateIds]
+      
+      covariateData$deleteCovariates <- data.frame(covariateId = includeCovariateIds)
+      Andromeda::createIndex(covariateData$deleteCovariates, c('covariateId'),
+                             indexName = 'deleteCovariates_covariateIds')
+      
+      #RSQLite::dbExecute(covariateData, 
+      #                   "CREATE INDEX deleteCovariates_covariateIds ON deleteCovariates(covariateId)")
+      on.exit(covariateData$deleteCovariates <- NULL, add = TRUE)
+      
+      # edit
       newCovariates <- newCovariates %>% 
-        filter(!.data$covariateId %in% deleteCovariateIds)
+        inner_join(covariateData$deleteCovariates, by = 'covariateId')
+        ##left_join(covariateData$deleteCovariates, by = 'covariateId') %>%
+        ##filter(is.null(.data$include))
+      #end edit
+      
+      #newCovariates <- newCovariates %>% 
+      #  filter(!.data$covariateId %in% deleteCovariateIds)
     }
     
     if (normalize) {
       ParallelLogger::logInfo("Normalizing covariates")
+      
       newCovariates <- newCovariates %>% 
         inner_join(covariateData$maxValuePerCovariateId, by = "covariateId") %>%
         mutate(covariateValue = .data$covariateValue / .data$maxValue) %>%
         select(-.data$maxValue)
+      
       metaData$normFactors <- covariateData$maxValuePerCovariateId %>%
         collect()
     } 
+    
     newCovariateData$covariates <- newCovariates
+    
   }
   
   class(newCovariateData) <- "CovariateData"
