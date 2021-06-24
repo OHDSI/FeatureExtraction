@@ -56,7 +56,7 @@ filterByCohortDefinitionId <- function(covariateData, cohortId) {
   if (!Andromeda::isValidAndromeda(covariateData)) 
     stop("CovariateData object is closed")
   if (!isAggregatedCovariateData(covariateData))
-    stop("Can only filter aggregated data by rowId")
+    stop("Can only filter aggregated data by cohortId")
   if (is.null(covariateData$covariates)) {
     covariates <- NULL
   } else {
