@@ -32,12 +32,12 @@ Imports:
   readr,
   rlang,
   RSQLite,
-  DBI,
-  Eunomia
+  DBI
 Suggests:
   testthat,
   knitr,
-  rmarkdown
+  rmarkdown,
+  Eunomia
 NeedsCompilation: no
 RoxygenNote: 7.1.1
 Encoding: UTF-8
