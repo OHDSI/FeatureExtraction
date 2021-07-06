@@ -28,14 +28,14 @@ test_that("tidyCovariates works", {
   tidy <- tidyCovariateData(covariateData, minFraction = 0.1, normalize = TRUE, removeRedundancy = TRUE)
   
   # Test: most prevalent covariate in analysis 1 is dropped:
-  expect_true(nrow(tidy$covariates %>% filter(covariateId == 10001)) == 0)
+  expect_true(nrow(filter(tidy$covariates, covariateId == 10001) %>% collect()) == 0)
   
   # Test: infrequent covariate in analysis 1 isn't dropped:
-  expect_true(nrow(tidy$covariates %>% filter(covariateId == 1001)) != 0)
+  expect_true(nrow(filter(tidy$covariates, covariateId == 1001) %>% collect()) != 0)
   
   # Test: infrequent covariate is dropped:
-  expect_true(nrow(tidy$covariates %>% filter(covariateId == 1003)) == 0)
+  expect_true(nrow(filter(tidy$covariates, covariateId == 1003) %>% collect()) == 0)
 
   # Test: frequent covariate isn't dropped:
-  expect_true(nrow(tidy$covariates %>% filter(covariateId == 40002)) != 0)
+  expect_true(nrow(filter(tidy$covariates, covariateId == 40002) %>% collect()) != 0)
 })
