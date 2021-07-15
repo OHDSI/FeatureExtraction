@@ -85,17 +85,16 @@ getDbCohortAttrCovariatesData <- function(connection,
                             domainId = "Cohort",
                             startDay = as.numeric(NA),
                             endDay = as.numeric(NA),
-                            isBinary = if (covariateSettings$isBinary) {"Y"} else {"N"},
-                            missingMeansZero = if (covariateSettings$missingMeansZero) {"Y"} else {"N"})
+                            isBinary = ifelse(covariateSettings$isBinary, "Y", "N"),
+                            missingMeansZero = ifelse(covariateSettings$missingMeansZero, "Y", "N"))
   delta <- Sys.time() - start
   writeLines(paste("Loading took", signif(delta, 3), attr(delta, "units")))
   
-  result <- Andromeda::andromeda(covariates = covariates, 
-                                 covariateRef = covariateRef, 
-                                 analysisRef = analysisRef)
-  attr(result, "metaData") <- list()
-  class(result) <- "CovariateData"
-  attr(class(result), "package") <- "FeatureExtraction"
+  result <- createEmptyCovariateData(cohortId, aggregated, covariateSettings$temporal)
+  result$covariates = covariates
+  result$covariateRef = covariateRef
+  result$analysisRef = analysisRef
+  
   return(result)
 }
 
