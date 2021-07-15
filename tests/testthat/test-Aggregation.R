@@ -38,3 +38,6 @@ test_that("aggregateCovariates handles temporalCovariates", {
                                       covariateSettings = settings)
   expect_error(aggregateCovariates(covariateData), "temporal covariates")
 })
+
+# Remove the Eunomia database:
+unlink(connectionDetails$server())
