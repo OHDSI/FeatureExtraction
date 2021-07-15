@@ -1,6 +1,5 @@
 # This file covers the code in CovariateData.R. View coverage for this file using
 #library(testthat); library(FeatureExtraction)
-covr::file_report(covr::file_coverage("R/CovariateData.R", "tests/testthat/test-CovariateData.R"))
 
 
 test_that("test CovariateData Class on Empty", {
@@ -40,11 +39,12 @@ test_that("test CovariateData Class on Empty", {
   expect_false(isTemporalCovariateData(covData))
   expect_false(isTemporalCovariateData(aggCovData))
   expect_true(isTemporalCovariateData(tempCovData))
-  
-  covData
 
+  Andromeda::close(covData)
+  Andromeda::close(aggCovData)
+  Andromeda::close(tempCovData)
 })
-# 
+
 connectionDetails <- Eunomia::getEunomiaConnectionDetails()
 Eunomia::createCohorts(connectionDetails)
 
@@ -65,6 +65,7 @@ test_that("test saveCovariateData", {
   expect_error(saveCovariateData(errCovData, file = saveFileTest)) #non covariateData class error
   expect_message(saveCovariateData(covariateData, file = saveFileTest),
                         "Disconnected Andromeda. This data object can no longer be used")
+  Andromeda::close(covariateData)
   unlink(saveFileTest)
 })
 
@@ -76,9 +77,15 @@ test_that("test summary call for covariateData class", {
                                       cohortId = 1,
                                       covariateSettings = settings,
                                       aggregated = FALSE)
-  
+
   sumOut <- summary(covariateData)
-  
+  Andromeda::close(covariateData)
   expect_equal(sumOut$metaData$cohortId, 1L)
 })
 
+
+test_that("test loadCovariateData", {
+  covDatLoadTest <- loadCovariateData("resources/continuousCovariateData.zip")
+  expect_s4_class(covDatLoadTest, "CovariateData")
+  expect_error(loadCovariateData("errorPath"))
+})

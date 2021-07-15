@@ -1,6 +1,6 @@
 # This file covers the code in DetailedCovariateData.R. View coverage for this file using
-#library(testthat); library(FeatureExtraction)
-#covr::file_report(covr::file_coverage("R/DetailedCovariateSettings.R", "tests/testthat/test-DetailedCovariateSettings.R"))
+library(testthat); library(FeatureExtraction)
+
 
 test_that("test createDetailedCovariateSettings", {
   analysisDetails <- createAnalysisDetails(analysisId = 1,
@@ -46,4 +46,14 @@ test_that("test convertPrespecSettingsToDetailedSettings", {
   expect_s3_class(convertedSettings, "covariateSettings")
   expect_equal(names(convertedSettings), c("temporal", "analyses"))
   expect_equal(convertedSettings$analyses[[1]]$sqlFileName, "DemographicsAgeGroup.sql")
+})
+
+test_that("test createDefaultCovariateSettings", {
+  settings <- createDefaultCovariateSettings()
+  expect_s3_class(settings, "covariateSettings")
+})
+
+test_that("test createDefaultTemporalCovariateSettings", {
+  settings <- createDefaultTemporalCovariateSettings()
+  expect_s3_class(settings, "covariateSettings")
 })
