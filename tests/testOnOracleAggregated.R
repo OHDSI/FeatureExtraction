@@ -1,5 +1,0 @@
-library(testthat)
-library(FeatureExtraction)
-options(dbms = "oracle")
-options(test = "aggregated")
-test_check("FeatureExtraction")

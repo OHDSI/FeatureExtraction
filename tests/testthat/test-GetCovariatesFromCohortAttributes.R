@@ -11,16 +11,15 @@ Eunomia::createCohorts(connectionDetails)
 
 # Helper function
 createCohortAttribute <- function(connectionDetails, cohortDefinitionIds = c(1), cohortDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable) {
-  sql <- SqlRender::loadRenderTranslateSql(sqlFilename = "LengthOfObsCohortAttr.sql",
-                                           packageName = "FeatureExtraction",
-                                           dbms = connectionDetails$dbms,
-                                           cdm_database_schema = cohortDatabaseSchema,
-                                           cohort_database_schema = cohortDatabaseSchema,
-                                           cohort_attribute_table = cohortAttributeTable,
-                                           attribute_definition_table = attributeDefinitionTable,
-                                           cohort_table = cohortTable,
-                                           cohort_definition_ids = cohortDefinitionIds,
-                                           tempEmulationSchema = cohortDatabaseSchema)
+  sql <- SqlRender::readSql(system.file("sql/sql_server/LengthOfObsCohortAttr.sql", package = "FeatureExtraction"))
+  sql <- SqlRender::render(sql = sql,
+                           cdm_database_schema = cohortDatabaseSchema,
+                           cohort_database_schema = cohortDatabaseSchema,
+                           cohort_attribute_table = cohortAttributeTable,
+                           attribute_definition_table = attributeDefinitionTable,
+                           cohort_table = cohortTable,
+                           cohort_definition_ids = cohortDefinitionIds)
+  sql <- SqlRender::translate(sql = sql, targetDialect = connectionDetails$dbms, tempEmulationSchema = cohortDatabaseSchema)
   connection <- DatabaseConnector::connect(connectionDetails)
   DatabaseConnector::executeSql(connection, sql = sql)
   on.exit(DatabaseConnector::disconnect(connection))

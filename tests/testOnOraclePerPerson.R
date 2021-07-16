@@ -1,5 +1,0 @@
-library(testthat)
-library(FeatureExtraction)
-options(dbms = "oracle")
-options(test = "perPerson")
-test_check("FeatureExtraction")

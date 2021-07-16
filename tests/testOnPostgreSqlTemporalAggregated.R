@@ -1,5 +1,0 @@
-library(testthat)
-library(FeatureExtraction)
-options(dbms = "postgresql")
-options(test = "temporalAggregated")
-test_check("FeatureExtraction")

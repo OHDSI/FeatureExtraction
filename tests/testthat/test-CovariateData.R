@@ -85,7 +85,5 @@ test_that("test summary call for covariateData class", {
 
 
 test_that("test loadCovariateData", {
-  covDatLoadTest <- loadCovariateData("resources/continuousCovariateData.zip")
-  expect_s4_class(covDatLoadTest, "CovariateData")
   expect_error(loadCovariateData("errorPath"))
 })
