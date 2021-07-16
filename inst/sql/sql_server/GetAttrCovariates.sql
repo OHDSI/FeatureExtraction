@@ -26,8 +26,8 @@ limitations under the License.
 {DEFAULT @has_include_attr_ids = FALSE} 
 
 SELECT cohort.@row_id_field AS row_id,
-  attribute_definition_id AS covariate_id,
-  value_as_number AS covariate_value
+  cohort_attribute.attribute_definition_id AS covariate_id,
+  cohort_attribute.value_as_number AS covariate_value
 FROM @attr_database_schema.@cohort_attribute_table cohort_attribute
 INNER JOIN @cohort_table cohort
 ON cohort_attribute.subject_id = cohort.subject_id
