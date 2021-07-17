@@ -35,20 +35,13 @@ test_that("Test stdDiff continuous variable computation", {
 })
 
 test_that("Test stdDiff binary variable computation", {
-  # NOTE: Data stored in "resources/binaryCovariateData.zip" created by this code:
-  # ------------------------------------------------------------------------------
-  # connectionDetails <- Eunomia::getEunomiaConnectionDetails()
-  # Eunomia::createCohorts(connectionDetails)
-  # data <- FeatureExtraction::getDbCovariateData(connectionDetails = connectionDetails,
-  #                                               cdmDatabaseSchema = "main",
-  #                                               cohortTable = "cohort",
-  #                                               aggregated = TRUE,
-  #                                               covariateSettings = FeatureExtraction::createCovariateSettings(useConditionOccurrenceLongTerm = TRUE))
-  # FeatureExtraction::saveCovariateData(data, "inst/testdata/binaryCovariateData.zip")
-  # ------------------------------------------------------------------------------
-  
-  
-  data <- loadCovariateData(getTestResourceFilePath("binaryCovariateData.zip"))
+  connectionDetails <- Eunomia::getEunomiaConnectionDetails()
+  Eunomia::createCohorts(connectionDetails)
+  data <- FeatureExtraction::getDbCovariateData(connectionDetails = connectionDetails,
+                                                cdmDatabaseSchema = "main",
+                                                cohortTable = "cohort",
+                                                aggregated = TRUE,
+                                                covariateSettings = FeatureExtraction::createCovariateSettings(useConditionOccurrenceLongTerm = TRUE))
   output <- computeStandardizedDifference(covariateData1 = data,
                                           covariateData2 = data,
                                           cohortId1 = 1,
