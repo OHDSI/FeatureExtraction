@@ -1,6 +1,9 @@
 # This file covers the code in CovariateData.R. View coverage for this file using
 #library(testthat); library(FeatureExtraction)
+#covr::file_report(covr::file_coverage("R/CovariateData.R", "tests/testthat/test-CovariateData.R"))
 
+connectionDetails <- Eunomia::getEunomiaConnectionDetails()
+Eunomia::createCohorts(connectionDetails)
 
 test_that("test CovariateData Class on Empty", {
 
@@ -45,9 +48,6 @@ test_that("test CovariateData Class on Empty", {
   Andromeda::close(tempCovData)
 })
 
-connectionDetails <- Eunomia::getEunomiaConnectionDetails()
-Eunomia::createCohorts(connectionDetails)
-
 test_that("test saveCovariateData", {
   saveFileTest <- tempfile("covDatSave")
   settings <- createDefaultCovariateSettings()
@@ -83,7 +83,30 @@ test_that("test summary call for covariateData class", {
   expect_equal(sumOut$metaData$cohortId, 1L)
 })
 
-
 test_that("test loadCovariateData", {
   expect_error(loadCovariateData("errorPath"))
 })
+
+test_that("Test exit/warning conditions", {
+  # Empty Directory test
+  tempDir <- tempdir()
+  expect_error(loadCovariateData(file = tempDir))
+  on.exit(unlink(tempDir))
+  
+  # ReadOnly parameter depreciated  
+  cvData <- FeatureExtraction:::createEmptyCovariateData(cohortId = 1, aggregated = FALSE, temporal = FALSE)
+  tempFile <- tempfile()
+  tempFileName <- paste0(tempFile, ".zip")
+  saveCovariateData(cvData, tempFileName)
+  expect_warning(loadCovariateData(file = tempFileName, readOnly = TRUE))
+  on.exit(unlink(tempFileName))
+  on.exit(rm(cvData))
+})
+
+test_that("Test show method", {
+  cvData <- FeatureExtraction:::createEmptyCovariateData(cohortId = 1, aggregated = FALSE, temporal = FALSE)
+  expect_invisible(show(cvData))
+  on.exit(rm(cvData))
+})
+
+unlink(connectionDetails$server())

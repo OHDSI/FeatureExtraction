@@ -47,6 +47,12 @@ test_that("getDbCovariateData enforces specification of database details", {
                                   connection = connection,
                                   cdmDatabaseSchema = "main",
                                   covariateSettings = getCovariateSettings()))
+  
+  # Only database connection details provided
+  result <- getDbCovariateData(connectionDetails = connectionDetails,
+                               cdmDatabaseSchema = "main",
+                               covariateSettings = getCovariateSettings())
+  
   on.exit(DatabaseConnector::disconnect(connection))
 })
 
@@ -58,43 +64,58 @@ test_that("getDbCovariateData CDM v4 not supported", {
                                   covariateSettings = getCovariateSettings()))
 })
 
-# AGS: The following tests are problematic - taking them out for now
-# until there is more time to debug
-# -----------------------
-#
-# test_that("getDbCovariateData cohortTableIsTemp tests when table name lacks # symbol", {
-#   connection <- DatabaseConnector::connect(connectionDetails)
-#   insertTempCohortData(connection, connectionDetails$dbms)
-#   result <- getDbCovariateData(connection = connection,
-#                                cdmDatabaseSchema = "main",
-#                                cohortTableIsTemp = TRUE,
-#                                cohortTable = "cohort",
-#                                covariateSettings = getCovariateSettings())
-#   expect_true(is(result, "CovariateData"))
-#   on.exit(DatabaseConnector::disconnect(connection))
-# })
-# 
-# test_that("getDbCovariateData cohortTableIsTemp tests when table name contains # symbol", {
-#   connection <- DatabaseConnector::connect(connectionDetails)
-#   insertTempCohortData(connection, connectionDetails$dbms)
-#   result <- getDbCovariateData(connection = connection,
-#                                cdmDatabaseSchema = "main",
-#                                cohortTableIsTemp = TRUE,
-#                                cohortTable = "#cohort",
-#                                covariateSettings = getCovariateSettings())
-#   expect_true(is(result, "CovariateData"))
-#   on.exit(DatabaseConnector::disconnect(connection))
-# })
-# 
-# test_that("getDbCovariateData populationSize == 0 tests", {
-#   connection <- DatabaseConnector::connect(connectionDetails)
-#   expect_warning(getDbCovariateData(connection = connection,
-#                                cdmDatabaseSchema = "main",
-#                                cohortTableIsTemp = FALSE,
-#                                cohortTable = "cohort",
-#                                cohortId = 0, # This is a cohort that is not created in Eunomia
-#                                covariateSettings = getCovariateSettings()))
-#   on.exit(DatabaseConnector::disconnect(connection))
-# })
+test_that("getDbCovariateData cohortTableIsTemp tests when table name lacks # symbol", {
+  connection <- DatabaseConnector::connect(connectionDetails)
+  insertTempCohortData(connection, connectionDetails$dbms)
+  result <- getDbCovariateData(connection = connection,
+                               cdmDatabaseSchema = "main",
+                               cohortTableIsTemp = TRUE,
+                               cohortTable = "cohort",
+                               covariateSettings = getCovariateSettings())
+  expect_true(is(result, "CovariateData"))
+  on.exit(DatabaseConnector::disconnect(connection))
+})
+
+test_that("getDbCovariateData cohortTableIsTemp tests when table name contains # symbol", {
+  connection <- DatabaseConnector::connect(connectionDetails)
+  insertTempCohortData(connection, connectionDetails$dbms)
+  result <- getDbCovariateData(connection = connection,
+                               cdmDatabaseSchema = "main",
+                               cohortTableIsTemp = TRUE,
+                               cohortTable = "#cohort",
+                               covariateSettings = getCovariateSettings())
+  expect_true(is(result, "CovariateData"))
+  on.exit(DatabaseConnector::disconnect(connection))
+})
+
+test_that("getDbCovariateData populationSize == 0 tests", {
+  connection <- DatabaseConnector::connect(connectionDetails)
+  expect_warning(getDbCovariateData(connection = connection,
+                                    cdmDatabaseSchema = "main",
+                                    cohortTableIsTemp = FALSE,
+                                    cohortTable = "cohort",
+                                    cohortId = 0, # This is a cohort that is not created in Eunomia
+                                    covariateSettings = getCovariateSettings()))
+  on.exit(DatabaseConnector::disconnect(connection))
+})
+
+test_that("Custom covariate builder", {
+  connection <- DatabaseConnector::connect(connectionDetails)
+  Eunomia::createCohorts(connectionDetails)  
+  covariateSettings <- createCovariateSettings(useDemographicsGender = TRUE,
+                                               useDemographicsAgeGroup = TRUE,
+                                               useDemographicsRace = TRUE,
+                                               useDemographicsEthnicity = TRUE,
+                                               useDemographicsIndexYear = TRUE,
+                                               useDemographicsIndexMonth = TRUE)
+  looCovSet <- FeatureExtraction:::.createLooCovariateSettings(useLengthOfObs = TRUE)
+  covariateSettingsList <- list(covariateSettings, looCovSet)
+  covariates <- getDbCovariateData(connection = connection,
+                                   cdmDatabaseSchema = "main",
+                                   cohortTable = "cohort",
+                                   cohortId = -1,
+                                   covariateSettings = covariateSettingsList)
+  on.exit(DatabaseConnector::disconnect(connection))
+})
 
 unlink(connectionDetails$server())

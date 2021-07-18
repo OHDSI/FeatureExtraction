@@ -355,17 +355,17 @@ test_that("Run all analysis at aggregated level on SQL Server", {
   expect_true(is(covariateData, "CovariateData"))
 })
 
-# test_that("Run all analysis at aggregated level on Oracle", {
-#   skip_if_not(runTestsOnOracle)
-#   connectionDetails <- createConnectionDetails(dbms = "oracle",
-#                                                user = Sys.getenv("CDM5_ORACLE_USER"),
-#                                                password = URLdecode(Sys.getenv("CDM5_ORACLE_PASSWORD")),
-#                                                server = Sys.getenv("CDM5_ORACLE_SERVER"))
-#   cdmDatabaseSchema <- Sys.getenv("CDM5_ORACLE_CDM_SCHEMA")
-#   ohdsiDatabaseSchema <- Sys.getenv("CDM5_ORACLE_OHDSI_SCHEMA")
-#   covariateData <- runExtractionAggregated(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
-#   expect_true(is(covariateData, "CovariateData"))
-# })
+test_that("Run all analysis at aggregated level on Oracle", {
+  skip_if_not(runTestsOnOracle)
+  connectionDetails <- createConnectionDetails(dbms = "oracle",
+                                               user = Sys.getenv("CDM5_ORACLE_USER"),
+                                               password = URLdecode(Sys.getenv("CDM5_ORACLE_PASSWORD")),
+                                               server = Sys.getenv("CDM5_ORACLE_SERVER"))
+  cdmDatabaseSchema <- Sys.getenv("CDM5_ORACLE_CDM_SCHEMA")
+  ohdsiDatabaseSchema <- Sys.getenv("CDM5_ORACLE_OHDSI_SCHEMA")
+  covariateData <- runExtractionAggregated(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+  expect_true(is(covariateData, "CovariateData"))
+})
 
 test_that("Run all analysis at aggregated level on Impala", {
   skip_if_not(runTestsOnImpala)
@@ -481,17 +481,17 @@ test_that("Run all temporalanalysis at per-person level on SQL Server", {
   expect_true(is(covariateData, "CovariateData"))
 })
 
-# test_that("Run all temporalanalysis at per-person level on Oracle", {
-#   skip_if_not(runTestsOnOracle)
-#   connectionDetails <- createConnectionDetails(dbms = "oracle",
-#                                                user = Sys.getenv("CDM5_ORACLE_USER"),
-#                                                password = URLdecode(Sys.getenv("CDM5_ORACLE_PASSWORD")),
-#                                                server = Sys.getenv("CDM5_ORACLE_SERVER"))
-#   cdmDatabaseSchema <- Sys.getenv("CDM5_ORACLE_CDM_SCHEMA")
-#   ohdsiDatabaseSchema <- Sys.getenv("CDM5_ORACLE_OHDSI_SCHEMA")
-#   covariateData <- runExtractionTemporalPerPerson(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
-#   expect_true(is(covariateData, "CovariateData"))
-# })
+test_that("Run all temporalanalysis at per-person level on Oracle", {
+  skip_if_not(runTestsOnOracle)
+  connectionDetails <- createConnectionDetails(dbms = "oracle",
+                                               user = Sys.getenv("CDM5_ORACLE_USER"),
+                                               password = URLdecode(Sys.getenv("CDM5_ORACLE_PASSWORD")),
+                                               server = Sys.getenv("CDM5_ORACLE_SERVER"))
+  cdmDatabaseSchema <- Sys.getenv("CDM5_ORACLE_CDM_SCHEMA")
+  ohdsiDatabaseSchema <- Sys.getenv("CDM5_ORACLE_OHDSI_SCHEMA")
+  covariateData <- runExtractionTemporalPerPerson(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+  expect_true(is(covariateData, "CovariateData"))
+})
 
 test_that("Run all temporalanalysis at per-person level on Impala", {
   skip_if_not(runTestsOnImpala)
@@ -608,17 +608,17 @@ test_that("Run all temporalanalysis at aggregated level on SQL Server", {
   expect_true(is(covariateData, "CovariateData"))
 })
 
-# test_that("Run all temporalanalysis at aggregated level on Oracle", {
-#   skip_if_not(runTestsOnOracle)
-#   connectionDetails <- createConnectionDetails(dbms = "oracle",
-#                                                user = Sys.getenv("CDM5_ORACLE_USER"),
-#                                                password = URLdecode(Sys.getenv("CDM5_ORACLE_PASSWORD")),
-#                                                server = Sys.getenv("CDM5_ORACLE_SERVER"))
-#   cdmDatabaseSchema <- Sys.getenv("CDM5_ORACLE_CDM_SCHEMA")
-#   ohdsiDatabaseSchema <- Sys.getenv("CDM5_ORACLE_OHDSI_SCHEMA")
-#   covariateData <- runExtractionTemporalAggregated(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
-#   expect_true(is(covariateData, "CovariateData"))
-# })
+test_that("Run all temporalanalysis at aggregated level on Oracle", {
+  skip_if_not(runTestsOnOracle)
+  connectionDetails <- createConnectionDetails(dbms = "oracle",
+                                               user = Sys.getenv("CDM5_ORACLE_USER"),
+                                               password = URLdecode(Sys.getenv("CDM5_ORACLE_PASSWORD")),
+                                               server = Sys.getenv("CDM5_ORACLE_SERVER"))
+  cdmDatabaseSchema <- Sys.getenv("CDM5_ORACLE_CDM_SCHEMA")
+  ohdsiDatabaseSchema <- Sys.getenv("CDM5_ORACLE_OHDSI_SCHEMA")
+  covariateData <- runExtractionTemporalAggregated(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+  expect_true(is(covariateData, "CovariateData"))
+})
 
 test_that("Run all temporalanalysis at aggregated level on Impala", {
   skip_if_not(runTestsOnImpala)
