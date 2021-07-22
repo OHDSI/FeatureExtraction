@@ -24,7 +24,7 @@ SELECT
 } : {
 		row_id,
 }
-{@temporal} ? {
+{@temporal | @temporal_sequence} ? {
     time_id,
 }	
 	covariate_id,
@@ -48,7 +48,16 @@ FROM (
 		time_id,
 		ROW_NUMBER() OVER (PARTITION BY cohort.@row_id_field, measurement.measurement_concept_id, time_id ORDER BY measurement_date DESC, measurement.unit_concept_id, value_as_number) AS rn,
 } : {
+
+{@temporal_sequence} ? {
+
+FLOOR(DATEDIFF(@time_part, measurement_date, cohort.cohort_start_date)*1.0/@time_interval ) as time_id
+ROW_NUMBER() OVER (PARTITION BY cohort.@row_id_field, measurement.measurement_concept_id, FLOOR(DATEDIFF(@time_part, measurement_date, cohort.cohort_start_date)*1.0/@time_interval ) ORDER BY measurement_date DESC, measurement.unit_concept_id, value_as_number) AS rn,
+
+} : {
 		ROW_NUMBER() OVER (PARTITION BY cohort.@row_id_field, measurement.measurement_concept_id ORDER BY measurement_date DESC, measurement.unit_concept_id, value_as_number) AS rn,
+}
+
 }
 }
 		covariate_id,
@@ -65,8 +74,8 @@ FROM (
 		AND measurement_date >= DATEADD(DAY, time_period.start_day, cohort.cohort_start_date)
 	WHERE measurement.measurement_concept_id != 0 
 } : {
-	WHERE measurement_date <= DATEADD(DAY, @end_day, cohort.cohort_start_date)
-{@start_day != 'anyTimePrior'} ? {				AND measurement_date >= DATEADD(DAY, @start_day, cohort.cohort_start_date)}
+	WHERE measurement_date <= DATEADD(DAY, {@temporal_sequence} ? {@sequence_end_day} : {@end_day}, cohort.cohort_start_date)
+{@start_day != 'anyTimePrior'} ? {	AND measurement_date >= DATEADD(DAY, {@temporal_sequence} ? {@sequence_start_day} : {@start_day}, cohort.cohort_start_date)}
 		AND measurement.measurement_concept_id != 0
 }	
 		AND value_as_number IS NOT NULL 			
@@ -86,7 +95,7 @@ IF OBJECT_ID('tempdb..#meas_val_prep2', 'U') IS NOT NULL
 
 SELECT cohort_definition_id,
 	covariate_id,
-{@temporal} ? {
+{@temporal | @temporal_sequence} ? {
 	time_id,
 }
 	MIN(value_as_number) AS min_value,
@@ -97,14 +106,14 @@ SELECT cohort_definition_id,
 INTO #meas_val_stats
 FROM #meas_val_data
 GROUP BY cohort_definition_id,
-{@temporal} ? {
+{@temporal | @temporal_sequence} ? {
 	time_id,
 }
 	covariate_id;
 
 SELECT cohort_definition_id,
 	covariate_id,
-{@temporal} ? {
+{@temporal | @temporal_sequence} ? {
 	time_id,
 }	
 	value_as_number,
@@ -114,14 +123,14 @@ INTO #meas_val_prep
 FROM #meas_val_data
 GROUP BY cohort_definition_id,
 	value_as_number,
-{@temporal} ? {
+{@temporal | @temporal_sequence} ? {
 	time_id,
 }	
 	covariate_id;
 	
 SELECT s.cohort_definition_id,
 	s.covariate_id,
-{@temporal} ? {
+{@temporal | @temporal_sequence} ? {
 	s.time_id,
 }	
 	s.value_as_number,
@@ -134,14 +143,14 @@ INNER JOIN #meas_val_prep p
 		AND p.cohort_definition_id = s.cohort_definition_id
 GROUP BY s.cohort_definition_id,
 	s.covariate_id,
-{@temporal} ? {
+{@temporal | @temporal_sequence} ? {
 	s.time_id,
 }			
 	s.value_as_number;
 	
 SELECT o.cohort_definition_id,
 	o.covariate_id,
-{@temporal} ? {
+{@temporal | @temporal_sequence} ? {
     o.time_id,
 }
 	o.count_value,
@@ -159,11 +168,11 @@ FROM #meas_val_prep2 p
 INNER JOIN #meas_val_stats o
 	ON o.covariate_id = p.covariate_id
 		AND o.cohort_definition_id = p.cohort_definition_id
-{@temporal} ? {
+{@temporal | @temporal_sequence} ? {
 		AND	o.time_id = p.time_id
 }		
 GROUP BY o.covariate_id,
-{@temporal} ? {
+{@temporal | @temporal_sequence} ? {
     o.time_id,
 }
 	o.count_value,
@@ -174,7 +183,7 @@ GROUP BY o.covariate_id,
 	o.cohort_definition_id;
 } : {
 SELECT covariate_id,
-{@temporal} ? {
+{@temporal | @temporal_sequence} ? {
     time_id,
 }	
 	row_id,
@@ -191,7 +200,7 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT temp.covariate_id,
-{@temporal} ? {
+{@temporal | @temporal_sequence} ? {
 	CAST(CASE WHEN unit_concept.concept_id IS NULL OR unit_concept.concept_id = 0 THEN
 		CONCAT('measurement value: ', CASE WHEN measurement_concept.concept_name IS NULL THEN 'Unknown concept' ELSE measurement_concept.concept_name END, ' (Unknown unit)')
 	ELSE 	

@@ -30,13 +30,6 @@
 #' @param useDemographicsEthnicity                 Ethnicity of the subject. (analysis ID 5)
 #' @param useDemographicsIndexYear                 Year of the index date. (analysis ID 6)
 #' @param useDemographicsIndexMonth                Month of the index date. (analysis ID 7)
-#' @param useDemographicsPriorObservationTime      Number of days of observation time preceding the
-#'                                                 index date. (analysis ID 8)
-#' @param useDemographicsPostObservationTime       Number of days of observation time preceding the
-#'                                                 index date. (analysis ID 9)
-#' @param useDemographicsTimeInCohort              Number of days of observation time preceding the
-#'                                                 index date. (analysis ID 10)
-#' @param useDemographicsIndexYearMonth            Calendar month of the index date. (analysis ID 11)
 #' @param useConditionOccurrence                   One covariate per condition in the
 #'                                                 condition_occurrence table starting in the time
 #'                                                 window. (analysis ID 101)
@@ -46,28 +39,16 @@
 #'                                                 window. (analysis ID 102)
 #' @param useConditionEraStart                     One covariate per condition in the condition_era
 #'                                                 table starting in the time window. (analysis ID 201)
-#' @param useConditionEraOverlap                   One covariate per condition in the condition_era
-#'                                                 table overlapping with any part of the time window.
-#'                                                 (analysis ID 202)
 #' @param useConditionEraGroupStart                One covariate per condition era rolled up to SNOMED
 #'                                                 groups in the condition_era table starting in the
 #'                                                 time window. (analysis ID 203)
-#' @param useConditionEraGroupOverlap              One covariate per condition era rolled up to SNOMED
-#'                                                 groups in the condition_era table overlapping with
-#'                                                 any part of the time window. (analysis ID 203)
 #' @param useDrugExposure                          One covariate per drug in the drug_exposure table
 #'                                                 starting in the time window. (analysis ID 301)
 #' @param useDrugEraStart                          One covariate per drug in the drug_era table
 #'                                                 starting in the time window. (analysis ID 401)
-#' @param useDrugEraOverlap                        One covariate per drug in the drug_era table
-#'                                                 overlapping with any part of the time window.
-#'                                                 (analysis ID 402)
 #' @param useDrugEraGroupStart                     One covariate per drug rolled up to ATC groups in
 #'                                                 the drug_era table starting in thetime window.
 #'                                                 (analysis ID 403)
-#' @param useDrugEraGroupOverlap                   One covariate per drug rolled up to ATC groups in
-#'                                                 the drug_era table overlapping with any part of
-#'                                                 thetime window. (analysis ID 403)
 #' @param useProcedureOccurrence                   One covariate per procedure in the
 #'                                                 procedure_occurrence table in the time window.
 #'                                                 (analysis ID 501)
@@ -79,48 +60,15 @@
 #'                                                 measurement-unit combination in the time window. If
 #'                                                 multiple values are found, the last is taken.
 #'                                                 (analysis ID 702)
-#' @param useMeasurementRangeGroup                 Covariates indicating whether measurements are
-#'                                                 below, within, or above normal range within the time
-#'                                                 period. (analysis ID 703)
 #' @param useObservation                           One covariate per observation in the observation
 #'                                                 table in the time window. (analysis ID 801)
-#' @param useCharlsonIndex                         The Charlson comorbidity index (Romano adaptation)
-#'                                                 using all conditions prior to the window end.
-#'                                                 (analysis ID 901)
-#' @param useDcsi                                  The Diabetes Comorbidity Severity Index (DCSI) using
-#'                                                 all conditions prior to the window end. (analysis ID
-#'                                                 902)
-#' @param useChads2                                The CHADS2 score using all conditions prior to the
-#'                                                 window end. (analysis ID 903)
-#' @param useChads2Vasc                            The CHADS2VASc score using all conditions prior to
-#'                                                 the window end. (analysis ID 904)
-#' @param useHfrs                                  The Hospital Frailty Risk Score score using all
-#'                                                 conditions prior to the window end. (analysis ID
-#'                                                 926)
-#' @param useDistinctConditionCount                The number of distinct condition concepts observed
-#'                                                 in the time window. (analysis ID 905)
-#' @param useDistinctIngredientCount               The number of distinct ingredients observed in the
-#'                                                 time window. (analysis ID 906)
-#' @param useDistinctProcedureCount                The number of distinct procedures observed in the
-#'                                                 time window. (analysis ID 907)
-#' @param useDistinctMeasurementCount              The number of distinct measurements observed in the
-#'                                                 time window. (analysis ID 908)
-#' @param useDistinctObservationCount              The number of distinct observations in the time
-#'                                                 window. (analysis ID 909)
-#' @param useVisitCount                            The number of visits observed in the time window.
-#'                                                 (analysis ID 910)
-#' @param useVisitConceptCount                     The number of visits observed in the time window,
-#'                                                 stratified by visit concept ID. (analysis ID 911)
-#' @param temporalStartDays                        A list of integers representing the start of a time
-#'                                                 period, relative to the index date. 0 indicates the
-#'                                                 index date, -1 indicates the day before the index
-#'                                                 date, etc. The start day is included in the time
-#'                                                 period.
-#' @param temporalEndDays                          A list of integers representing the end of a time
-#'                                                 period, relative to the index date. 0 indicates the
-#'                                                 index date, -1 indicates the day before the index
-#'                                                 date, etc. The end day is included in the time
-#'                                                 period.
+#' @param timePart                                The interval scale ('DAY', 'MONTH', 'YEAR')
+#' @param timeInterval                            Fixed interval length for timeId using the 'timePart' scale.  For example, a 'timePart' of DAY with 
+#'                                                 'timeInterval' 30 has timeIds where timeId 1 is day 0 to day 29, timeId 2 is day 30 to day 59, etc.
+#' @param sequenceEndDay                                  What is the end day (relative to the
+#'                                                 index date) of the data extraction?
+#' @param sequenceStartDay                                What is the start day (relative to the
+#'                                                 index date) of the data extraction?
 #' @param includedCovariateConceptIds              A list of concept IDs that should be used to
 #'                                                 construct covariates.
 #' @param addDescendantsToInclude                  Should descendant concept IDs be added to the list
@@ -136,48 +84,29 @@
 #' An object of type \code{covariateSettings}, to be used in other functions.
 #'
 #' @examples
-#' settings <- createTemporalCovariateSettings(useDemographicsGender = TRUE,
+#' settings <- createTemporalSequenceCovariateSettings(useDemographicsGender = TRUE,
 #'                                             useDemographicsAge = FALSE,
 #'                                             useDemographicsAgeGroup = TRUE,
 #'                                             useDemographicsRace = TRUE,
 #'                                             useDemographicsEthnicity = TRUE,
 #'                                             useDemographicsIndexYear = TRUE,
 #'                                             useDemographicsIndexMonth = TRUE,
-#'                                             useDemographicsPriorObservationTime = FALSE,
-#'                                             useDemographicsPostObservationTime = FALSE,
-#'                                             useDemographicsTimeInCohort = FALSE,
-#'                                             useDemographicsIndexYearMonth = FALSE,
 #'                                             useConditionOccurrence = FALSE,
 #'                                             useConditionOccurrencePrimaryInpatient = FALSE,
 #'                                             useConditionEraStart = FALSE,
-#'                                             useConditionEraOverlap = FALSE,
 #'                                             useConditionEraGroupStart = FALSE,
-#'                                             useConditionEraGroupOverlap = TRUE,
 #'                                             useDrugExposure = FALSE,
 #'                                             useDrugEraStart = FALSE,
-#'                                             useDrugEraOverlap = FALSE,
 #'                                             useDrugEraGroupStart = FALSE,
-#'                                             useDrugEraGroupOverlap = TRUE,
 #'                                             useProcedureOccurrence = TRUE,
 #'                                             useDeviceExposure = TRUE,
 #'                                             useMeasurement = TRUE,
 #'                                             useMeasurementValue = FALSE,
-#'                                             useMeasurementRangeGroup = TRUE,
 #'                                             useObservation = TRUE,
-#'                                             useCharlsonIndex = TRUE,
-#'                                             useDcsi = TRUE,
-#'                                             useChads2 = TRUE,
-#'                                             useChads2Vasc = TRUE,
-#'                                             useHfrs = FALSE,
-#'                                             useDistinctConditionCount = FALSE,
-#'                                             useDistinctIngredientCount = FALSE,
-#'                                             useDistinctProcedureCount = FALSE,
-#'                                             useDistinctMeasurementCount = FALSE,
-#'                                             useDistinctObservationCount = FALSE,
-#'                                             useVisitCount = FALSE,
-#'                                             useVisitConceptCount = FALSE,
-#'                                             temporalStartDays = -365:-1,
-#'                                             temporalEndDays = -365:-1,
+#'                                             timePart = 'DAY',
+#'                                             timeInterval = 1,
+#'                                             sequenceEndDay = -1,
+#'                                             sequenceStartDay = -730,
 #'                                             includedCovariateConceptIds = c(),
 #'                                             addDescendantsToInclude = FALSE,
 #'                                             excludedCovariateConceptIds = c(),
@@ -185,56 +114,37 @@
 #'                                             includedCovariateIds = c())
 #'
 #' @export
-createTemporalCovariateSettings <- function(useDemographicsGender = FALSE,
+createTemporalSequenceCovariateSettings <- function(useDemographicsGender = FALSE,
                                             useDemographicsAge = FALSE,
                                             useDemographicsAgeGroup = FALSE,
                                             useDemographicsRace = FALSE,
                                             useDemographicsEthnicity = FALSE,
                                             useDemographicsIndexYear = FALSE,
                                             useDemographicsIndexMonth = FALSE,
-                                            useDemographicsPriorObservationTime = FALSE,
-                                            useDemographicsPostObservationTime = FALSE,
-                                            useDemographicsTimeInCohort = FALSE,
-                                            useDemographicsIndexYearMonth = FALSE,
                                             useConditionOccurrence = FALSE,
                                             useConditionOccurrencePrimaryInpatient = FALSE,
                                             useConditionEraStart = FALSE,
-                                            useConditionEraOverlap = FALSE,
                                             useConditionEraGroupStart = FALSE,
-                                            useConditionEraGroupOverlap = FALSE,
                                             useDrugExposure = FALSE,
                                             useDrugEraStart = FALSE,
-                                            useDrugEraOverlap = FALSE,
                                             useDrugEraGroupStart = FALSE,
-                                            useDrugEraGroupOverlap = FALSE,
                                             useProcedureOccurrence = FALSE,
                                             useDeviceExposure = FALSE,
                                             useMeasurement = FALSE,
                                             useMeasurementValue = FALSE,
-                                            useMeasurementRangeGroup = FALSE,
                                             useObservation = FALSE,
-                                            useCharlsonIndex = FALSE,
-                                            useDcsi = FALSE,
-                                            useChads2 = FALSE,
-                                            useChads2Vasc = FALSE,
-                                            useHfrs = FALSE,
-                                            useDistinctConditionCount = FALSE,
-                                            useDistinctIngredientCount = FALSE,
-                                            useDistinctProcedureCount = FALSE,
-                                            useDistinctMeasurementCount = FALSE,
-                                            useDistinctObservationCount = FALSE,
-                                            useVisitCount = FALSE,
-                                            useVisitConceptCount = FALSE,
-                                            temporalStartDays = -365:-1,
-                                            temporalEndDays = -365:-1,
+                                            timePart = 'month',
+                                            timeInterval = 1,
+                                            sequenceEndDay = -1,
+                                            sequenceStartDay = -730,
                                             includedCovariateConceptIds = c(),
                                             addDescendantsToInclude = FALSE,
                                             excludedCovariateConceptIds = c(),
                                             addDescendantsToExclude = FALSE,
                                             includedCovariateIds = c()) {
-  covariateSettings <- list(temporal = TRUE,
-                            temporalSequence = FALSE)
-  formalNames <- names(formals(createTemporalCovariateSettings))
+  covariateSettings <- list(temporal = FALSE,
+                            temporalSequence = TRUE)
+  formalNames <- names(formals(createTemporalSequenceCovariateSettings))
   anyUseTrue <- FALSE
   for (name in formalNames) {
     value <- get(name)

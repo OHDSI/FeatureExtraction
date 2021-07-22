@@ -1,0 +1,20 @@
+analysisId,analysisName,sqlFileName,subType,domainId,domainTable,domainConceptId,domainStartDate,domainEndDate,isDefault,description
+1,DemographicsGender,DemographicsGender.sql,,Demographics,,,,,TRUE,Gender of the subject.
+2,DemographicsAge,DemographicsAge.sql,,Demographics,,,,,FALSE,Age of the subject on the index date (in years).
+3,DemographicsAgeGroup,DemographicsAgeGroup.sql,,Demographics,,,,,TRUE,Age of the subject on the index date (in 5 year age groups)
+4,DemographicsRace,DemographicsRace.sql,,Demographics,,,,,TRUE,Race of the subject.
+5,DemographicsEthnicity,DemographicsEthnicity.sql,,Demographics,,,,,TRUE,Ethnicity of the subject.
+6,DemographicsIndexYear,DemographicsYear.sql,,Demographics,,,,,FALSE,Year of the index date.
+7,DemographicsIndexMonth,DemographicsMonth.sql,,Demographics,,,,,FALSE,Month of the index date.
+101,ConditionOccurrence,DomainConcept.sql,all,Condition,condition_occurrence,condition_concept_id,condition_start_date,condition_start_date,FALSE,One covariate per condition in the condition_occurrence table starting in the time window.
+102,ConditionOccurrencePrimaryInpatient,DomainConcept.sql,inpatient,Condition,condition_occurrence,condition_concept_id,condition_start_date,condition_start_date,FALSE,One covariate per condition observed as a primary diagnosis in an inpatient setting in the condition_occurrence table starting  in the time window.
+201,ConditionEraStart,DomainConcept.sql,all,Condition,condition_era,condition_concept_id,condition_era_start_date,condition_era_start_date,FALSE,One covariate per condition in the condition_era table starting in the time window.
+203,ConditionEraGroupStart,DomainConceptGroup.sql,all,Condition,condition_era,condition_concept_id,condition_era_start_date,condition_era_start_date,TRUE,One covariate per condition era rolled up to SNOMED groups in the condition_era table starting in the time window.
+301,DrugExposure,DomainConcept.sql,all,Drug,drug_exposure,drug_concept_id,drug_exposure_start_date,drug_exposure_start_date,FALSE,One covariate per drug in the drug_exposure table starting in the time window.
+401,DrugEraStart,DomainConcept.sql,all,Drug,drug_era,drug_concept_id,drug_era_start_date,drug_era_start_date,FALSE,One covariate per drug in the drug_era table starting in the time window.
+403,DrugEraGroupStart,DomainConceptGroup.sql,all,Drug,drug_era,drug_concept_id,drug_era_start_date,drug_era_start_date,TRUE,One covariate per drug rolled up to ATC groups in the drug_era table starting in thetime window.
+501,ProcedureOccurrence,DomainConcept.sql,all,Procedure,procedure_occurrence,procedure_concept_id,procedure_date,procedure_date,FALSE,One covariate per procedure in the procedure_occurrence table in the time window.
+601,DeviceExposure,DomainConcept.sql,all,Device,device_exposure,device_concept_id,device_exposure_start_date,device_exposure_start_date,FALSE,One covariate per device in the device exposure table starting in the timewindow.
+701,Measurement,DomainConcept.sql,all,Measurement,measurement,measurement_concept_id,measurement_date,measurement_date,FALSE,One covariate per measurement in the measurement table in the time window.
+702,MeasurementValue,MeasurementValue.sql,,Measurement,,,,,FALSE,"One covariate containing the value per measurement-unit combination in the time window. If multiple values are found, the last is taken."
+801,Observation,DomainConcept.sql,all,Observation,observation,observation_concept_id,observation_date,observation_date,FALSE,One covariate per observation in the observation table in the time window.

@@ -1,7 +1,7 @@
 -- Feature construction
 SELECT 
 	CAST(race_concept_id AS BIGINT) * 1000 + @analysis_id AS covariate_id,
-{@temporal} ? {
+{@temporal | @temporal_sequence} ? {
     CAST(NULL AS INT) AS time_id,
 }		
 {@aggregated} ? {
