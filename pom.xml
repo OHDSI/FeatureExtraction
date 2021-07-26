@@ -18,33 +18,13 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<src.dir>java</src.dir>
 		<test.dir>test</test.dir>
+		<SqlRender.version>1.7.0</SqlRender.version>
 	</properties>
-	<distributionManagement>
-		<repository>
-			<id>internal</id>
-			<url>http://repo.ohdsi.org:8085/nexus/content/repositories/releases</url>
-		</repository>
-		<snapshotRepository>
-			<id>snapshots</id>
-			<url>http://repo.ohdsi.org:8085/nexus/content/repositories/snapshots</url>
-		</snapshotRepository>
-	</distributionManagement>
 	<repositories>
 		<repository>
 			<id>ohdsi</id>
 			<name>repo.ohdsi.org</name>
-			<url>http://repo.ohdsi.org:8085/nexus/content/repositories/releases</url>
-		</repository>
-		<repository>
-			<id>ohdsi.snapshots</id>
-			<name>repo.ohdsi.org-snapshots</name>
-			<url>http://repo.ohdsi.org:8085/nexus/content/repositories/snapshots</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
+			<url>https://repo.ohdsi.org/nexus/content/groups/public</url>
 		</repository>
 	</repositories>
 	<dependencies>
@@ -56,7 +36,7 @@
 		<dependency>
 			<groupId>org.ohdsi.sql</groupId>
 			<artifactId>SqlRender</artifactId>
-			<version>1.5.3-SNAPSHOT</version>
+			<version>${SqlRender.version}</version>
 		</dependency>
 	</dependencies>
 	<build>
@@ -124,6 +104,8 @@
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>3.0.2</version>
        		 	<configuration>
+       		 	  <finalName>FeatureExtraction</finalName>
+       		 	  <outputDirectory>inst/java</outputDirectory>
         			<archive>
             			<manifest>
               				<addClasspath>true</addClasspath>
@@ -163,6 +145,20 @@
 					</execution>
 				</executions>
 			</plugin>
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>inst/java</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>		  
 		</plugins>
 	</build>
 	<profiles>
