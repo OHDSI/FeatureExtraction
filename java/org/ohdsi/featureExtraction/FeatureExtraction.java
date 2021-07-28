@@ -75,15 +75,16 @@ public class FeatureExtraction {
 	private static String									ADD_DESCENDANTS_SQL				= "SELECT descendant_concept_id AS id\nINTO @target_temp\nFROM @cdm_database_schema.concept_ancestor\nINNER JOIN @source_temp\n\tON ancestor_concept_id = id;\n\n";
 	
 	public static void main(String[] args) {
-		init("C:/Users/mschuemi/git/FeatureExtraction/inst");
+		//init("C:/Users/mschuemi/git/FeatureExtraction/inst");
 		// init("C:/R/R-3.3.1/library/FeatureExtraction");
-		
+		init("D:/git/OHDSI/FeatureExtraction/inst");
 		// System.out.println(convertSettingsPrespecToDetails("{\"temporal\":false,\"DemographicsGender\":true,\"DemographicsAge\":true,\"longTermStartDays\":-365,\"mediumTermStartDays\":-180,\"shortTermStartDays\":-30,\"endDays\":0,\"includedCovariateConceptIds\":[],\"addDescendantsToInclude\":false,\"excludedCovariateConceptIds\":[1,2,3],\"addDescendantsToExclude\":false,\"includedCovariateIds\":[]}"));
 		// System.out.println(getDefaultPrespecAnalyses());
 		//
 		// System.out.println(getDefaultPrespecAnalyses());
 		//
-		String settings = getDefaultPrespecTemporalAnalyses();
+		//String settings = getDefaultPrespecTemporalAnalyses();
+		String settings = getDefaultPrespecTemporalSequenceAnalyses();
 		// String settings = convertSettingsPrespecToDetails(getDefaultPrespecTemporalAnalyses());
 		// System.out.println(convertSettingsPrespecToDetails(getDefaultPrespecAnalyses()));
 		// String settings =
@@ -410,12 +411,13 @@ public class FeatureExtraction {
 					jsonWriter.value(value);
 				}
 				// add temporal_sequence one here
-				if (temporalSequence)
-			for (String name : typeToNameToOtherParameters.get(TEMPORAL_SEQUENCE_TYPE).keySet()) {
-				jsonWriter.key(name);
-				jsonWriter.value(jsonObject.get(name));
-			}
-			// end temporal_sequence 
+				if (temporalSequence) {
+                                    for (String name : typeToNameToOtherParameters.get(TEMPORAL_SEQUENCE_TYPE).keySet()) {
+                                            jsonWriter.key(name);
+                                            jsonWriter.value(jsonObject.get(name));
+                                    }
+                                }
+				// end temporal_sequence 
 				jsonWriter.endObject();
 				for (OtherParameter otherParameter : typeToNameToOtherParameters.get(COMMON_TYPE).values()) {
 					jsonWriter.key(otherParameter.name);
@@ -425,11 +427,18 @@ public class FeatureExtraction {
 			}
 		}
 		jsonWriter.endArray();
-		if (temporal)
-			for (String name : typeToNameToOtherParameters.get(TEMPORAL_TYPE).keySet()) {
-				jsonWriter.key(name);
-				jsonWriter.value(jsonObject.get(name));
-			}
+		if (temporal) {
+                    for (String name : typeToNameToOtherParameters.get(TEMPORAL_TYPE).keySet()) {
+                            jsonWriter.key(name);
+                            jsonWriter.value(jsonObject.get(name));
+                    }
+                }
+                if (temporalSequence) {
+                    for (String name : typeToNameToOtherParameters.get(TEMPORAL_SEQUENCE_TYPE).keySet()) {
+                            jsonWriter.key(name);
+                            jsonWriter.value(jsonObject.get(name));
+                    }
+                }
 		jsonWriter.endObject();
 		return stringWriter.toString();
 	}
@@ -586,6 +595,19 @@ public class FeatureExtraction {
 			jsonWriter.value(createIndexArray(jsonObject.getJSONArray("temporalEndDays").length()));
 			jsonWriter.endObject();
 		}
+		if (temporalSequence) {
+			jsonWriter.key("#time_ref");
+			jsonWriter.object();
+			jsonWriter.key("time_part");
+			jsonWriter.value(jsonObject.get("timePart"));
+			jsonWriter.key("time_interval");
+			jsonWriter.value(jsonObject.get("timeInterval"));
+			jsonWriter.key("sequence_start_day");
+			jsonWriter.value(jsonObject.get("sequenceStartDay"));
+			jsonWriter.key("sequence_end_day");
+			jsonWriter.value(jsonObject.get("sequenceEndDay"));
+			jsonWriter.endObject();
+		}
 		jsonWriter.endObject();
 		
 		jsonWriter.key("sqlConstruction");
@@ -620,6 +642,11 @@ public class FeatureExtraction {
 			jsonWriter.value("SELECT time_id, start_day, end_day FROM #time_period");
 		}
 		
+		if (temporalSequence) {
+			jsonWriter.key("sqlQueryTimeRef");
+			jsonWriter.value("SELECT time_part, time_interval, sequence_start_day, sequence_end_day FROM #time_ref");
+		}
+                
 		jsonWriter.key("sqlCleanup");
 		jsonWriter.value(createCleanupSql(jsonObject, temporal));
 		
