@@ -74,4 +74,21 @@ test_that("getDbCovariateData works with createTemporalSequenceCovariateSettings
   on.exit(DatabaseConnector::disconnect(connection))
 })
 
+# Check backwards compatibility
+test_that("Temporal Covariate Settings are backwards compatible", {
+  # Temporal covariate settings created previously will not have
+  # the temporalSequence property
+  covSet <- FeatureExtraction::createDefaultTemporalCovariateSettings()
+  covSet$temporalSequence <- NULL 
+  
+  connection <- DatabaseConnector::connect(connectionDetails)
+  result <- getDbCovariateData(connection = connection,
+                               cdmDatabaseSchema = "main",
+                               cohortTable = "cohort", 
+                               cohortId = 1,
+                               covariateSettings = covSet)
+  expect_true(is(result, "CovariateData"))
+  on.exit(DatabaseConnector::disconnect(connection))
+})
+
 unlink(connectionDetails$server())

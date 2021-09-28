@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -53,7 +54,7 @@ public class FeatureExtraction {
 	private static Set<String>								otherParameterNames				= null;
 	
 	private static String									TEMPORAL						= "temporal";
-	private static String									TEMPORAL_SEQUENCE			= "temporalSequence";
+	private static String									TEMPORAL_SEQUENCE				= "temporalSequence";
 	private static String									ANALYSIS_ID						= "analysisId";
 	private static String									ANALYSIS_NAME					= "analysisName";
 	private static String									DESCRIPTION						= "description";
@@ -70,7 +71,7 @@ public class FeatureExtraction {
 	private static String									COMMON_TYPE						= "common";
 	private static String									DAYS_TYPE						= "days";
 	private static String									TEMPORAL_TYPE					= "temporal";
-	private static String									TEMPORAL_SEQUENCE_TYPE					= "temporal_sequence";
+	private static String									TEMPORAL_SEQUENCE_TYPE			= "temporal_sequence";
 	
 	private static String									ADD_DESCENDANTS_SQL				= "SELECT descendant_concept_id AS id\nINTO @target_temp\nFROM @cdm_database_schema.concept_ancestor\nINNER JOIN @source_temp\n\tON ancestor_concept_id = id;\n\n";
 	
@@ -371,7 +372,10 @@ public class FeatureExtraction {
 	public static String convertSettingsPrespecToDetails(String settings) {
 		JSONObject jsonObject = new JSONObject(settings);
 		boolean temporal = jsonObject.getBoolean(TEMPORAL);
-		boolean temporalSequence = jsonObject.getBoolean(TEMPORAL_SEQUENCE);
+		boolean temporalSequence = false;
+		try {
+			temporalSequence = jsonObject.getBoolean(TEMPORAL_SEQUENCE);
+		} catch(Exception e) {}
 		StringWriter stringWriter = new StringWriter();
 		JSONWriter jsonWriter = new JSONWriter(stringWriter);
 		jsonWriter.object();
@@ -566,7 +570,10 @@ public class FeatureExtraction {
 			jsonObject = new JSONObject(settings);
 		}
 
-		boolean temporalSequence = jsonObject.getBoolean(TEMPORAL_SEQUENCE);
+		boolean temporalSequence = false;
+		try {
+			temporalSequence = jsonObject.getBoolean(TEMPORAL_SEQUENCE);
+		} catch(Exception e) {}
 		boolean temporal = jsonObject.getBoolean(TEMPORAL);
 		Map<IdSet, String> idSetToName = extractUniqueIdSets(jsonObject);
 		
