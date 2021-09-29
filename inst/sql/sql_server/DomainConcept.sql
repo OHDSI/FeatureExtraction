@@ -27,6 +27,15 @@ FROM (
 	FROM @cohort_table cohort
 	INNER JOIN @cdm_database_schema.@domain_table
 		ON cohort.subject_id = @domain_table.person_id
+{@sub_type == 'inpatient'} ? {	
+  INNER JOIN @cdm_database_schema.visit_occurrence vo
+    ON vo.person_id = @domain_table.person_id
+    AND vo.visit_start_date <= @domain_table.@domain_start_date
+    AND vo.visit_end_date >= @domain_table.@domain_start_date
+  INNER JOIN @cdm_database_schema.concept_ancestor ca
+    ON ca.ancestor_concept_id IN (9201, 38004311, 8920, 262)
+    AND ca.descendant_concept_id = vo.visit_concept_id
+}
 {@temporal} ? {
 	INNER JOIN #time_period time_period
 		ON @domain_start_date <= DATEADD(DAY, time_period.end_day, cohort.cohort_start_date)
@@ -37,7 +46,6 @@ FROM (
 {@start_day != 'anyTimePrior'} ? {		AND @domain_end_date >= DATEADD(DAY, @start_day, cohort.cohort_start_date)}
 		AND @domain_concept_id != 0
 }
-{@sub_type == 'inpatient'} ? {	AND condition_type_concept_id IN (38000183, 38000184, 38000199, 38000200)}
 {@excluded_concept_table != ''} ? {		AND @domain_concept_id NOT IN (SELECT id FROM @excluded_concept_table)}
 {@included_concept_table != ''} ? {		AND @domain_concept_id IN (SELECT id FROM @included_concept_table)}
 {@included_cov_table != ''} ? {		AND CAST(@domain_concept_id AS BIGINT) * 1000 + @analysis_id IN (SELECT id FROM @included_cov_table)}
