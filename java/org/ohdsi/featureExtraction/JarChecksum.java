@@ -18,7 +18,7 @@ public class JarChecksum {
 	 * Compute the checksum of the current JAR file. This can be used by R to verify that the JAR version is in sync with the R package. Note: will throw an
 	 * error if not running from a JAR file.
 	 * 
-	 * @return
+	 * @return The checksum of the current JAR file
 	 */
 	public static String computeJarChecksum() {
 		File currentJavaJarFile = new File(JarChecksum.class.getProtectionDomain().getCodeSource().getLocation().getPath());

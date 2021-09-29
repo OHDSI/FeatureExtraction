@@ -4,6 +4,9 @@ SELECT
 {@temporal} ? {
     CAST(NULL AS INT) AS time_id,
 }		
+{@temporal_sequence} ? {
+    CAST(NULL AS INT) AS time_id,
+}	
 {@aggregated} ? {
 	cohort_definition_id,
 	COUNT(*) AS sum_value

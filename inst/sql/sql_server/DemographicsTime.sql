@@ -19,7 +19,7 @@ SELECT subject_id,
 INTO #dem_time_data
 } : {
 SELECT CAST(1000 + @analysis_id AS BIGINT) AS covariate_id,
-{@temporal} ? {
+{@temporal | @temporal_sequence} ? {
     CAST(NULL AS INT) AS time_id,
 }	
 	row_id,
@@ -107,7 +107,7 @@ GROUP BY s.cohort_definition_id,
 
 SELECT o.cohort_definition_id,
 	CAST(1000 + @analysis_id AS BIGINT) AS covariate_id,
-{@temporal} ? {
+{@temporal | @temporal_sequence} ? {
     CAST(NULL AS INT) AS time_id,
 }
 	o.count_value,

@@ -44,8 +44,8 @@ test_that("test convertPrespecSettingsToDetailedSettings", {
   settings <- createCovariateSettings(useDemographicsAgeGroup = TRUE, useChads2Vasc = TRUE)
   convertedSettings <- convertPrespecSettingsToDetailedSettings(settings)
   expect_s3_class(convertedSettings, "covariateSettings")
-  expect_equal(names(convertedSettings), c("temporal", "analyses"))
-  expect_equal(convertedSettings$analyses[[1]]$sqlFileName, "DemographicsAgeGroup.sql")
+  expect_equal(names(convertedSettings), c("temporal","temporalSequence", "analyses"))
+  expect_equal(sum(unlist(lapply(1:length(convertedSettings$analyses), function(i) convertedSettings$analyses[[i]]$sqlFileName))%in%c("DemographicsAgeGroup.sql", "Chads2Vasc.sql")),2)
 })
 
 test_that("test createDefaultCovariateSettings", {
