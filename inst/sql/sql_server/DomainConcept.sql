@@ -1,7 +1,7 @@
 -- Feature construction
 SELECT 
 	CAST(@domain_concept_id AS BIGINT) * 1000 + @analysis_id AS covariate_id,
-{@temporal} ? {
+{@temporal | @temporal_sequence} ? {
     time_id,
 }	
 {@aggregated} ? {
@@ -16,7 +16,10 @@ FROM (
 	SELECT DISTINCT @domain_concept_id,
 {@temporal} ? {
 		time_id,
-}	
+}
+{@temporal_sequence} ? {
+FLOOR(DATEDIFF(@time_part, @cdm_database_schema.@domain_table.@domain_start_date, cohort.cohort_start_date)*1.0/@time_interval ) as time_id,
+}
 {@aggregated} ? {
 		cohort_definition_id,
 		cohort.subject_id,
@@ -27,17 +30,31 @@ FROM (
 	FROM @cohort_table cohort
 	INNER JOIN @cdm_database_schema.@domain_table
 		ON cohort.subject_id = @domain_table.person_id
+{@sub_type == 'inpatient'} ? {	
+  INNER JOIN @cdm_database_schema.visit_occurrence vo
+    ON vo.person_id = @domain_table.person_id
+    AND vo.visit_start_date <= @domain_table.@domain_start_date
+    AND vo.visit_end_date >= @domain_table.@domain_start_date
+  INNER JOIN @cdm_database_schema.concept_ancestor ca
+    ON ca.ancestor_concept_id IN (9201, 38004311, 8920, 262)
+    AND ca.descendant_concept_id = vo.visit_concept_id
+}
 {@temporal} ? {
 	INNER JOIN #time_period time_period
 		ON @domain_start_date <= DATEADD(DAY, time_period.end_day, cohort.cohort_start_date)
 		AND @domain_end_date >= DATEADD(DAY, time_period.start_day, cohort.cohort_start_date)
 	WHERE @domain_concept_id != 0
 } : {
-	WHERE @domain_start_date <= DATEADD(DAY, @end_day, cohort.cohort_start_date)
-{@start_day != 'anyTimePrior'} ? {		AND @domain_end_date >= DATEADD(DAY, @start_day, cohort.cohort_start_date)}
+
+	WHERE @domain_start_date <= DATEADD(DAY, {@temporal_sequence} ? {@sequence_end_day} : {@end_day}, cohort.cohort_start_date)
+{@start_day != 'anyTimePrior'} ? {		AND 
+
+{@temporal_sequence} ? {@domain_start_date} : {@domain_end_date}
+
+>= DATEADD(DAY, {@temporal_sequence} ? {@sequence_start_day} : {@start_day}, cohort.cohort_start_date)}
 		AND @domain_concept_id != 0
+     
 }
-{@sub_type == 'inpatient'} ? {	AND condition_type_concept_id IN (38000183, 38000184, 38000199, 38000200)}
 {@excluded_concept_table != ''} ? {		AND @domain_concept_id NOT IN (SELECT id FROM @excluded_concept_table)}
 {@included_concept_table != ''} ? {		AND @domain_concept_id IN (SELECT id FROM @included_concept_table)}
 {@included_cov_table != ''} ? {		AND CAST(@domain_concept_id AS BIGINT) * 1000 + @analysis_id IN (SELECT id FROM @included_cov_table)}
@@ -46,7 +63,7 @@ FROM (
 {@aggregated} ? {		
 GROUP BY cohort_definition_id,
 	@domain_concept_id
-{@temporal} ? {
+{@temporal | @temporal_sequence} ? {
     ,time_id
 } 
 } 
@@ -60,7 +77,7 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT covariate_id,
-{@temporal} ? {
+{@temporal | @temporal_sequence} ? {
 	CAST(CONCAT('@domain_table: ', CASE WHEN concept_name IS NULL THEN 'Unknown concept' ELSE concept_name END {@sub_type == 'inpatient'} ? {, ' (inpatient)'}) AS VARCHAR(512)) AS covariate_name,
 } : {
 {@start_day == 'anyTimePrior'} ? {
@@ -96,10 +113,10 @@ SELECT @analysis_id AS analysis_id,
 {@start_day == 'anyTimePrior'} ? {
 	CAST(NULL AS INT) AS start_day,
 } : {
-	@start_day AS start_day,
+	
+	{@temporal_sequence} ? {@sequence_start_day} : {@start_day}  AS start_day,
 }
-	@end_day AS end_day,
+	{@temporal_sequence} ? {@sequence_end_day} : {@end_day} AS end_day,
 }
 	CAST('Y' AS VARCHAR(1)) AS is_binary,
 	CAST(NULL AS VARCHAR(1)) AS missing_means_zero;
-

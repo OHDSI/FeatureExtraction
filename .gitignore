@@ -29,3 +29,4 @@ standalone/build/*
 
 *.tex
 *.log
+.Renviron

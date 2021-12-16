@@ -1,0 +1,43 @@
+# This file covers the code in Aggregation.R. View coverage for this file using
+# library(testthat); library(FeatureExtraction)
+# covr::file_report(covr::file_coverage("R/Aggregation.R", "tests/testthat/test-Aggregation.R"))
+
+connectionDetails <- Eunomia::getEunomiaConnectionDetails()
+Eunomia::createCohorts(connectionDetails)
+
+test_that("aggregateCovariates works", {
+  settings <- createCovariateSettings(useDemographicsAgeGroup = TRUE, useChads2Vasc = TRUE)
+  
+  covariateData <- getDbCovariateData(connectionDetails = connectionDetails,
+                                      cdmDatabaseSchema = "main",
+                                      cohortDatabaseSchema = "main",
+                                      cohortId = 1,
+                                      covariateSettings = settings,
+                                      aggregated = FALSE)
+  
+  aggregatedCovariateData <- aggregateCovariates(covariateData)
+  expect_true(isAggregatedCovariateData(aggregatedCovariateData))
+  expect_error(aggregateCovariates("blah"), "not of class CovariateData")
+  expect_error(aggregateCovariates(aggregatedCovariateData), "already be aggregated")
+  
+  # create example where missing does not mean zero
+  covariateData$analysisRef <- covariateData$analysisRef %>% 
+    mutate(missingMeansZero = ifelse(.data$analysisName == "Chads2Vasc", "N", .data$missingMeansZero))
+  expect_true(isAggregatedCovariateData(aggregateCovariates(covariateData)))
+  
+  Andromeda::close(covariateData)
+  expect_error(aggregateCovariates(covariateData), "object is closed")
+})
+
+test_that("aggregateCovariates handles temporalCovariates", {
+  settings <- createTemporalCovariateSettings(useDemographicsGender = TRUE)
+  covariateData <- getDbCovariateData(connectionDetails = connectionDetails,
+                                      cdmDatabaseSchema = "main",
+                                      cohortDatabaseSchema = "main",
+                                      cohortId = 1,
+                                      covariateSettings = settings)
+  expect_error(aggregateCovariates(covariateData), "temporal covariates")
+})
+
+# Remove the Eunomia database:
+unlink(connectionDetails$server())

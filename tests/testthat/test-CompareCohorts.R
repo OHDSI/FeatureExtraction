@@ -1,7 +1,9 @@
-library(FeatureExtraction)
+# View coverage for this file using
+# library(testthat); library(FeatureExtraction)
+# covr::file_report(covr::file_coverage("R/CompareCohorts.R", "tests/testthat/test-CompareCohorts.R"))
 
 test_that("Test stdDiff continuous variable computation", {
-  # NOTE: Data stored in "resources/continuousCovariateData.zip" created by:
+  # NOTE: Data stored in "inst/testdata/continuousCovariateData.zip" created by:
   # ------------------------------------------------------------------------------
   # connectionDetails <- Eunomia::getEunomiaConnectionDetails()
   # Eunomia::createCohorts(connectionDetails)
@@ -10,11 +12,11 @@ test_that("Test stdDiff continuous variable computation", {
   #                                               cohortTable = "cohort",
   #                                               aggregated = TRUE,
   #                                               covariateSettings = FeatureExtraction::createCovariateSettings(useCharlsonIndex = TRUE))
-  # FeatureExtraction::saveCovariateData(data, "resources/continuousCovariateData.zip")
+  # FeatureExtraction::saveCovariateData(data, "inst/testdata/continuousCovariateData.zip")
   # ------------------------------------------------------------------------------
   
   
-  data <- loadCovariateData("resources/continuousCovariateData.zip")
+  data <- loadCovariateData(getTestResourceFilePath("continuousCovariateData.zip"))
   output <- computeStandardizedDifference(covariateData1 = data,
                                           covariateData2 = data,
                                           cohortId1 = 1,
@@ -33,20 +35,13 @@ test_that("Test stdDiff continuous variable computation", {
 })
 
 test_that("Test stdDiff binary variable computation", {
-  # NOTE: Data stored in "resources/binaryCovariateData.zip" created by this code:
-  # ------------------------------------------------------------------------------
-  # connectionDetails <- Eunomia::getEunomiaConnectionDetails()
-  # Eunomia::createCohorts(connectionDetails)
-  # data <- FeatureExtraction::getDbCovariateData(connectionDetails = connectionDetails,
-  #                                               cdmDatabaseSchema = "main",
-  #                                               cohortTable = "cohort",
-  #                                               aggregated = TRUE,
-  #                                               covariateSettings = FeatureExtraction::createCovariateSettings(useConditionOccurrenceLongTerm = TRUE))
-  # FeatureExtraction::saveCovariateData(data, "resources/binaryCovariateData.zip")
-  # ------------------------------------------------------------------------------
-  
-  
-  data <- loadCovariateData("resources/binaryCovariateData.zip")
+  connectionDetails <- Eunomia::getEunomiaConnectionDetails()
+  Eunomia::createCohorts(connectionDetails)
+  data <- FeatureExtraction::getDbCovariateData(connectionDetails = connectionDetails,
+                                                cdmDatabaseSchema = "main",
+                                                cohortTable = "cohort",
+                                                aggregated = TRUE,
+                                                covariateSettings = FeatureExtraction::createCovariateSettings(useConditionOccurrenceLongTerm = TRUE))
   output <- computeStandardizedDifference(covariateData1 = data,
                                           covariateData2 = data,
                                           cohortId1 = 1,

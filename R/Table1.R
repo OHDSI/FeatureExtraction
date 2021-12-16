@@ -71,7 +71,7 @@ createTable1 <- function(covariateData1,
   comparison <- !is.null(covariateData2)
   if (!isCovariateData(covariateData1))
     stop("covariateData1 is not of type 'covariateData'")
-  if (comparison && !isCovariateData(covariateData1))
+  if (comparison && !isCovariateData(covariateData2))
     stop("covariateData2 is not of type 'covariateData'")
   if (!isAggregatedCovariateData(covariateData1))
     stop("Covariate1 data is not aggregated")
@@ -79,6 +79,8 @@ createTable1 <- function(covariateData1,
     stop("Covariate2 data is not aggregated")
   if (!showCounts && !showPercent)
     stop("Must show counts or percent, or both")
+  if (!(output %in% c("one column", "two columns", "list")))
+    stop("The `output` argument  must be 'one column', 'two columns', or 'list'")
   
   fixCase <- function(label) {
     idx <- (toupper(label) == label)
@@ -488,7 +490,8 @@ createTable1 <- function(covariateData1,
       }
       result <- cbind(column1, column2)
     } else {
-      stop("Don't know what to do when there are more rows in the table of continuous covariates than there are in the table of binary covariates.")
+      rlang::abort(paste("createTable1 cannot display the output in two columns because there are more rows in the table of continuous covariates than there are in the table of binary covariates.",
+                         "\nTry using `output = 'one column'` when calling createTable1()"))
     }
   } else if (output == "one column") {
     ct <- continuousTable

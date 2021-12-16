@@ -2709,8 +2709,10 @@ FROM (
 }
 	) temp
 {@aggregated} ? {
-GROUP BY subject_id,
-			cohort_start_date
+GROUP BY
+    cohort_definition_id,
+    subject_id,
+		cohort_start_date
 } : {
 GROUP BY row_id
 }	
@@ -2772,7 +2774,6 @@ SELECT o.cohort_definition_id,
 {@temporal} ? {
     CAST(NULL AS INT) AS time_id,
 }
-	o.cohort_definition_id,
 	o.count_value,
 	o.min_value,
 	o.max_value,

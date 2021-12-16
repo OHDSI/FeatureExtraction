@@ -57,16 +57,25 @@ getDbCohortAttrCovariatesData <- function(connection,
                                    tempTable = TRUE,
                                    oracleTempSchema = oracleTempSchema)
   }
-  
-  renderedSql <- SqlRender::loadRenderTranslateSql("GetAttrCovariates.sql",
-                                                   packageName = "FeatureExtraction",
-                                                   dbms = attr(connection, "dbms"),
-                                                   oracleTempSchema = oracleTempSchema,
-                                                   attr_database_schema = covariateSettings$attrDatabaseSchema,
-                                                   cohort_table = cohortTable,
-                                                   row_id_field = rowIdField,
-                                                   cohort_attribute_table = covariateSettings$cohortAttrTable,
-                                                   has_include_attr_ids = hasIncludeAttrIds)
+  sql <- SqlRender::readSql(system.file("sql/sql_server/GetAttrCovariates.sql", package = "FeatureExtraction"))
+  renderedSql <- SqlRender::render(sql = sql,
+                                   attr_database_schema = covariateSettings$attrDatabaseSchema,
+                                   cohort_table = cohortTable,
+                                   row_id_field = rowIdField,
+                                   cohort_attribute_table = covariateSettings$cohortAttrTable,
+                                   has_include_attr_ids = hasIncludeAttrIds)
+  renderedSql <- SqlRender::translate(sql = renderedSql,
+                                      targetDialect = attr(connection, "dbms"),
+                                      oracleTempSchema = oracleTempSchema)
+  # renderedSql <- SqlRender::loadRenderTranslateSql("GetAttrCovariates.sql",
+  #                                                  packageName = "FeatureExtraction",
+  #                                                  dbms = attr(connection, "dbms"),
+  #                                                  oracleTempSchema = oracleTempSchema,
+  #                                                  attr_database_schema = covariateSettings$attrDatabaseSchema,
+  #                                                  cohort_table = cohortTable,
+  #                                                  row_id_field = rowIdField,
+  #                                                  cohort_attribute_table = covariateSettings$cohortAttrTable,
+  #                                                  has_include_attr_ids = hasIncludeAttrIds)
   
   covariates <- DatabaseConnector::querySql(connection, renderedSql, snakeCaseToCamelCase = TRUE)  
   covariateRefSql <- "SELECT attribute_definition_id AS covariate_id, attribute_name AS covariate_name FROM @attr_database_schema.@attr_definition_table ORDER BY attribute_definition_id"
@@ -85,17 +94,16 @@ getDbCohortAttrCovariatesData <- function(connection,
                             domainId = "Cohort",
                             startDay = as.numeric(NA),
                             endDay = as.numeric(NA),
-                            isBinary = if (covariateSettings$isBinary) {"Y"} else {"N"},
-                            missingMeansZero = if (covariateSettings$missingMeansZero) {"Y"} else {"N"})
+                            isBinary = ifelse(covariateSettings$isBinary, "Y", "N"),
+                            missingMeansZero = ifelse(covariateSettings$missingMeansZero, "Y", "N"))
   delta <- Sys.time() - start
   writeLines(paste("Loading took", signif(delta, 3), attr(delta, "units")))
   
-  result <- Andromeda::andromeda(covariates = covariates, 
-                                 covariateRef = covariateRef, 
-                                 analysisRef = analysisRef)
-  attr(result, "metaData") <- list()
-  class(result) <- "CovariateData"
-  attr(class(result), "package") <- "FeatureExtraction"
+  result <- createEmptyCovariateData(cohortId, aggregated, covariateSettings$temporal)
+  result$covariates = covariates
+  result$covariateRef = covariateRef
+  result$analysisRef = analysisRef
+  
   return(result)
 }
 

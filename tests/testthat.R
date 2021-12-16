@@ -1,5 +1,3 @@
 library(testthat)
 library(FeatureExtraction)
-options(dbms = "oracle")
-options(test = "temporalPerPerson")
 test_check("FeatureExtraction")
