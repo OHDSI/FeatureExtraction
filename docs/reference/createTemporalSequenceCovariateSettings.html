@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create covariate settings — createTemporalCovariateSettings • FeatureExtraction</title>
+<title>Create covariate settings — createTemporalSequenceCovariateSettings • FeatureExtraction</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="Create covariate settings — createTemporalCovariateSettings" />
+<meta property="og:title" content="Create covariate settings — createTemporalSequenceCovariateSettings" />
 <meta property="og:description" content="Create covariate settings" />
 
 
@@ -139,15 +139,15 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Create covariate settings</h1>
-    <small class="dont-index">Source: <a href='https://github.com/OHDSI/FeatureExtraction/blob/master/R/DefaultTemporalCovariateSettings.R'><code>R/DefaultTemporalCovariateSettings.R</code></a></small>
-    <div class="hidden name"><code>createTemporalCovariateSettings.Rd</code></div>
+    <small class="dont-index">Source: <a href='https://github.com/OHDSI/FeatureExtraction/blob/master/R/DefaultTemporalSequenceCovariateSettings.R'><code>R/DefaultTemporalSequenceCovariateSettings.R</code></a></small>
+    <div class="hidden name"><code>createTemporalSequenceCovariateSettings.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>Create covariate settings</p>
     </div>
 
-    <pre class="usage"><span class='fu'>createTemporalCovariateSettings</span><span class='op'>(</span>
+    <pre class="usage"><span class='fu'>createTemporalSequenceCovariateSettings</span><span class='op'>(</span>
   useDemographicsGender <span class='op'>=</span> <span class='cn'>FALSE</span>,
   useDemographicsAge <span class='op'>=</span> <span class='cn'>FALSE</span>,
   useDemographicsAgeGroup <span class='op'>=</span> <span class='cn'>FALSE</span>,
@@ -155,41 +155,22 @@
   useDemographicsEthnicity <span class='op'>=</span> <span class='cn'>FALSE</span>,
   useDemographicsIndexYear <span class='op'>=</span> <span class='cn'>FALSE</span>,
   useDemographicsIndexMonth <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  useDemographicsPriorObservationTime <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  useDemographicsPostObservationTime <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  useDemographicsTimeInCohort <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  useDemographicsIndexYearMonth <span class='op'>=</span> <span class='cn'>FALSE</span>,
   useConditionOccurrence <span class='op'>=</span> <span class='cn'>FALSE</span>,
   useConditionOccurrencePrimaryInpatient <span class='op'>=</span> <span class='cn'>FALSE</span>,
   useConditionEraStart <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  useConditionEraOverlap <span class='op'>=</span> <span class='cn'>FALSE</span>,
   useConditionEraGroupStart <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  useConditionEraGroupOverlap <span class='op'>=</span> <span class='cn'>FALSE</span>,
   useDrugExposure <span class='op'>=</span> <span class='cn'>FALSE</span>,
   useDrugEraStart <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  useDrugEraOverlap <span class='op'>=</span> <span class='cn'>FALSE</span>,
   useDrugEraGroupStart <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  useDrugEraGroupOverlap <span class='op'>=</span> <span class='cn'>FALSE</span>,
   useProcedureOccurrence <span class='op'>=</span> <span class='cn'>FALSE</span>,
   useDeviceExposure <span class='op'>=</span> <span class='cn'>FALSE</span>,
   useMeasurement <span class='op'>=</span> <span class='cn'>FALSE</span>,
   useMeasurementValue <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  useMeasurementRangeGroup <span class='op'>=</span> <span class='cn'>FALSE</span>,
   useObservation <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  useCharlsonIndex <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  useDcsi <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  useChads2 <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  useChads2Vasc <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  useHfrs <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  useDistinctConditionCount <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  useDistinctIngredientCount <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  useDistinctProcedureCount <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  useDistinctMeasurementCount <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  useDistinctObservationCount <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  useVisitCount <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  useVisitConceptCount <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  temporalStartDays <span class='op'>=</span> <span class='op'>-</span><span class='fl'>365</span><span class='op'>:</span><span class='op'>-</span><span class='fl'>1</span>,
-  temporalEndDays <span class='op'>=</span> <span class='op'>-</span><span class='fl'>365</span><span class='op'>:</span><span class='op'>-</span><span class='fl'>1</span>,
+  timePart <span class='op'>=</span> <span class='st'>"month"</span>,
+  timeInterval <span class='op'>=</span> <span class='fl'>1</span>,
+  sequenceEndDay <span class='op'>=</span> <span class='op'>-</span><span class='fl'>1</span>,
+  sequenceStartDay <span class='op'>=</span> <span class='op'>-</span><span class='fl'>730</span>,
   includedCovariateConceptIds <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>)</span>,
   addDescendantsToInclude <span class='op'>=</span> <span class='cn'>FALSE</span>,
   excludedCovariateConceptIds <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>)</span>,
@@ -231,25 +212,6 @@ groups) (analysis ID 3)</p></td>
       <td><p>Month of the index date. (analysis ID 7)</p></td>
     </tr>
     <tr>
-      <th>useDemographicsPriorObservationTime</th>
-      <td><p>Number of days of observation time preceding the
-index date. (analysis ID 8)</p></td>
-    </tr>
-    <tr>
-      <th>useDemographicsPostObservationTime</th>
-      <td><p>Number of days of observation time preceding the
-index date. (analysis ID 9)</p></td>
-    </tr>
-    <tr>
-      <th>useDemographicsTimeInCohort</th>
-      <td><p>Number of days of observation time preceding the
-index date. (analysis ID 10)</p></td>
-    </tr>
-    <tr>
-      <th>useDemographicsIndexYearMonth</th>
-      <td><p>Calendar month of the index date. (analysis ID 11)</p></td>
-    </tr>
-    <tr>
       <th>useConditionOccurrence</th>
       <td><p>One covariate per condition in the
 condition_occurrence table starting in the time
@@ -268,22 +230,10 @@ window. (analysis ID 102)</p></td>
 table starting in the time window. (analysis ID 201)</p></td>
     </tr>
     <tr>
-      <th>useConditionEraOverlap</th>
-      <td><p>One covariate per condition in the condition_era
-table overlapping with any part of the time window.
-(analysis ID 202)</p></td>
-    </tr>
-    <tr>
       <th>useConditionEraGroupStart</th>
       <td><p>One covariate per condition era rolled up to SNOMED
 groups in the condition_era table starting in the
 time window. (analysis ID 203)</p></td>
-    </tr>
-    <tr>
-      <th>useConditionEraGroupOverlap</th>
-      <td><p>One covariate per condition era rolled up to SNOMED
-groups in the condition_era table overlapping with
-any part of the time window. (analysis ID 203)</p></td>
     </tr>
     <tr>
       <th>useDrugExposure</th>
@@ -296,22 +246,10 @@ starting in the time window. (analysis ID 301)</p></td>
 starting in the time window. (analysis ID 401)</p></td>
     </tr>
     <tr>
-      <th>useDrugEraOverlap</th>
-      <td><p>One covariate per drug in the drug_era table
-overlapping with any part of the time window.
-(analysis ID 402)</p></td>
-    </tr>
-    <tr>
       <th>useDrugEraGroupStart</th>
       <td><p>One covariate per drug rolled up to ATC groups in
 the drug_era table starting in thetime window.
 (analysis ID 403)</p></td>
-    </tr>
-    <tr>
-      <th>useDrugEraGroupOverlap</th>
-      <td><p>One covariate per drug rolled up to ATC groups in
-the drug_era table overlapping with any part of
-thetime window. (analysis ID 403)</p></td>
     </tr>
     <tr>
       <th>useProcedureOccurrence</th>
@@ -337,94 +275,28 @@ multiple values are found, the last is taken.
 (analysis ID 702)</p></td>
     </tr>
     <tr>
-      <th>useMeasurementRangeGroup</th>
-      <td><p>Covariates indicating whether measurements are
-below, within, or above normal range within the time
-period. (analysis ID 703)</p></td>
-    </tr>
-    <tr>
       <th>useObservation</th>
       <td><p>One covariate per observation in the observation
 table in the time window. (analysis ID 801)</p></td>
     </tr>
     <tr>
-      <th>useCharlsonIndex</th>
-      <td><p>The Charlson comorbidity index (Romano adaptation)
-using all conditions prior to the window end.
-(analysis ID 901)</p></td>
+      <th>timePart</th>
+      <td><p>The interval scale ('DAY', 'MONTH', 'YEAR')</p></td>
     </tr>
     <tr>
-      <th>useDcsi</th>
-      <td><p>The Diabetes Comorbidity Severity Index (DCSI) using
-all conditions prior to the window end. (analysis ID
-902)</p></td>
+      <th>timeInterval</th>
+      <td><p>Fixed interval length for timeId using the 'timePart' scale.  For example, a 'timePart' of DAY with 
+'timeInterval' 30 has timeIds where timeId 1 is day 0 to day 29, timeId 2 is day 30 to day 59, etc.</p></td>
     </tr>
     <tr>
-      <th>useChads2</th>
-      <td><p>The CHADS2 score using all conditions prior to the
-window end. (analysis ID 903)</p></td>
+      <th>sequenceEndDay</th>
+      <td><p>What is the end day (relative to the
+index date) of the data extraction?</p></td>
     </tr>
     <tr>
-      <th>useChads2Vasc</th>
-      <td><p>The CHADS2VASc score using all conditions prior to
-the window end. (analysis ID 904)</p></td>
-    </tr>
-    <tr>
-      <th>useHfrs</th>
-      <td><p>The Hospital Frailty Risk Score score using all
-conditions prior to the window end. (analysis ID
-926)</p></td>
-    </tr>
-    <tr>
-      <th>useDistinctConditionCount</th>
-      <td><p>The number of distinct condition concepts observed
-in the time window. (analysis ID 905)</p></td>
-    </tr>
-    <tr>
-      <th>useDistinctIngredientCount</th>
-      <td><p>The number of distinct ingredients observed in the
-time window. (analysis ID 906)</p></td>
-    </tr>
-    <tr>
-      <th>useDistinctProcedureCount</th>
-      <td><p>The number of distinct procedures observed in the
-time window. (analysis ID 907)</p></td>
-    </tr>
-    <tr>
-      <th>useDistinctMeasurementCount</th>
-      <td><p>The number of distinct measurements observed in the
-time window. (analysis ID 908)</p></td>
-    </tr>
-    <tr>
-      <th>useDistinctObservationCount</th>
-      <td><p>The number of distinct observations in the time
-window. (analysis ID 909)</p></td>
-    </tr>
-    <tr>
-      <th>useVisitCount</th>
-      <td><p>The number of visits observed in the time window.
-(analysis ID 910)</p></td>
-    </tr>
-    <tr>
-      <th>useVisitConceptCount</th>
-      <td><p>The number of visits observed in the time window,
-stratified by visit concept ID. (analysis ID 911)</p></td>
-    </tr>
-    <tr>
-      <th>temporalStartDays</th>
-      <td><p>A list of integers representing the start of a time
-period, relative to the index date. 0 indicates the
-index date, -1 indicates the day before the index
-date, etc. The start day is included in the time
-period.</p></td>
-    </tr>
-    <tr>
-      <th>temporalEndDays</th>
-      <td><p>A list of integers representing the end of a time
-period, relative to the index date. 0 indicates the
-index date, -1 indicates the day before the index
-date, etc. The end day is included in the time
-period.</p></td>
+      <th>sequenceStartDay</th>
+      <td><p>What is the start day (relative to the
+index date) of the data extraction?</p></td>
     </tr>
     <tr>
       <th>includedCovariateConceptIds</th>
@@ -461,48 +333,29 @@ to.</p></td>
     <p>creates an object specifying how covariates should be contructed from data in the CDM model.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>settings</span> <span class='op'>&lt;-</span> <span class='fu'>createTemporalCovariateSettings</span><span class='op'>(</span>useDemographicsGender <span class='op'>=</span> <span class='cn'>TRUE</span>,
+    <pre class="examples"><div class='input'><span class='va'>settings</span> <span class='op'>&lt;-</span> <span class='fu'>createTemporalSequenceCovariateSettings</span><span class='op'>(</span>useDemographicsGender <span class='op'>=</span> <span class='cn'>TRUE</span>,
                                             useDemographicsAge <span class='op'>=</span> <span class='cn'>FALSE</span>,
                                             useDemographicsAgeGroup <span class='op'>=</span> <span class='cn'>TRUE</span>,
                                             useDemographicsRace <span class='op'>=</span> <span class='cn'>TRUE</span>,
                                             useDemographicsEthnicity <span class='op'>=</span> <span class='cn'>TRUE</span>,
                                             useDemographicsIndexYear <span class='op'>=</span> <span class='cn'>TRUE</span>,
                                             useDemographicsIndexMonth <span class='op'>=</span> <span class='cn'>TRUE</span>,
-                                            useDemographicsPriorObservationTime <span class='op'>=</span> <span class='cn'>FALSE</span>,
-                                            useDemographicsPostObservationTime <span class='op'>=</span> <span class='cn'>FALSE</span>,
-                                            useDemographicsTimeInCohort <span class='op'>=</span> <span class='cn'>FALSE</span>,
-                                            useDemographicsIndexYearMonth <span class='op'>=</span> <span class='cn'>FALSE</span>,
                                             useConditionOccurrence <span class='op'>=</span> <span class='cn'>FALSE</span>,
                                             useConditionOccurrencePrimaryInpatient <span class='op'>=</span> <span class='cn'>FALSE</span>,
                                             useConditionEraStart <span class='op'>=</span> <span class='cn'>FALSE</span>,
-                                            useConditionEraOverlap <span class='op'>=</span> <span class='cn'>FALSE</span>,
                                             useConditionEraGroupStart <span class='op'>=</span> <span class='cn'>FALSE</span>,
-                                            useConditionEraGroupOverlap <span class='op'>=</span> <span class='cn'>TRUE</span>,
                                             useDrugExposure <span class='op'>=</span> <span class='cn'>FALSE</span>,
                                             useDrugEraStart <span class='op'>=</span> <span class='cn'>FALSE</span>,
-                                            useDrugEraOverlap <span class='op'>=</span> <span class='cn'>FALSE</span>,
                                             useDrugEraGroupStart <span class='op'>=</span> <span class='cn'>FALSE</span>,
-                                            useDrugEraGroupOverlap <span class='op'>=</span> <span class='cn'>TRUE</span>,
                                             useProcedureOccurrence <span class='op'>=</span> <span class='cn'>TRUE</span>,
                                             useDeviceExposure <span class='op'>=</span> <span class='cn'>TRUE</span>,
                                             useMeasurement <span class='op'>=</span> <span class='cn'>TRUE</span>,
                                             useMeasurementValue <span class='op'>=</span> <span class='cn'>FALSE</span>,
-                                            useMeasurementRangeGroup <span class='op'>=</span> <span class='cn'>TRUE</span>,
                                             useObservation <span class='op'>=</span> <span class='cn'>TRUE</span>,
-                                            useCharlsonIndex <span class='op'>=</span> <span class='cn'>TRUE</span>,
-                                            useDcsi <span class='op'>=</span> <span class='cn'>TRUE</span>,
-                                            useChads2 <span class='op'>=</span> <span class='cn'>TRUE</span>,
-                                            useChads2Vasc <span class='op'>=</span> <span class='cn'>TRUE</span>,
-                                            useHfrs <span class='op'>=</span> <span class='cn'>FALSE</span>,
-                                            useDistinctConditionCount <span class='op'>=</span> <span class='cn'>FALSE</span>,
-                                            useDistinctIngredientCount <span class='op'>=</span> <span class='cn'>FALSE</span>,
-                                            useDistinctProcedureCount <span class='op'>=</span> <span class='cn'>FALSE</span>,
-                                            useDistinctMeasurementCount <span class='op'>=</span> <span class='cn'>FALSE</span>,
-                                            useDistinctObservationCount <span class='op'>=</span> <span class='cn'>FALSE</span>,
-                                            useVisitCount <span class='op'>=</span> <span class='cn'>FALSE</span>,
-                                            useVisitConceptCount <span class='op'>=</span> <span class='cn'>FALSE</span>,
-                                            temporalStartDays <span class='op'>=</span> <span class='op'>-</span><span class='fl'>365</span><span class='op'>:</span><span class='op'>-</span><span class='fl'>1</span>,
-                                            temporalEndDays <span class='op'>=</span> <span class='op'>-</span><span class='fl'>365</span><span class='op'>:</span><span class='op'>-</span><span class='fl'>1</span>,
+                                            timePart <span class='op'>=</span> <span class='st'>'DAY'</span>,
+                                            timeInterval <span class='op'>=</span> <span class='fl'>1</span>,
+                                            sequenceEndDay <span class='op'>=</span> <span class='op'>-</span><span class='fl'>1</span>,
+                                            sequenceStartDay <span class='op'>=</span> <span class='op'>-</span><span class='fl'>730</span>,
                                             includedCovariateConceptIds <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>)</span>,
                                             addDescendantsToInclude <span class='op'>=</span> <span class='cn'>FALSE</span>,
                                             excludedCovariateConceptIds <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>)</span>,

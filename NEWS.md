@@ -1,3 +1,20 @@
+FeatureExtraction 3.2.0
+=======================
+
+New Features:
+
+- Adds the ability to create a "temporalSequence" to create temporal features by specifying a fixed time window. (#134)
+
+- Identify inpatient events using visit_occurrence to support CDM 5.4 (#141)
+
+Bugfixes:
+
+- Fixes MeasurementRangeGroup analysis bug (#133) to use proper look back days
+
+Other:
+
+- Additional unit tests and improvement of code coverage
+
 FeatureExtraction 3.1.1
 =======================
 
