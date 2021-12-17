@@ -13,3 +13,4 @@ deploy.sh
 ^\.git
 compare_versions
 _pkgdown.yml
+nbactions.xml
