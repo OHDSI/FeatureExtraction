@@ -14,9 +14,8 @@ getDbDefaultCovariateData(
   rowIdField = "subject_id",
   covariateSettings,
   targetDatabaseSchema,
-  targetCovariateTable,
-  targetCovariateRefTable,
-  targetAnalysisRefTable,
+  targetTables = list(),
+  dropExistingTables = FALSE,
   aggregated = FALSE
 )
 }
@@ -51,16 +50,15 @@ is more than one period per person.}
 of the createCovariate functions, or a list of such objects.}
 
 \item{targetDatabaseSchema}{(Optional) The name of the database schema where the resulting covariates
-should be stored.}
+should be stored.  If not provided, results will be fetched to R.}
 
-\item{targetCovariateTable}{(Optional) The name of the table where the resulting covariates will
-be stored. If not provided, results will be fetched to R. The table can be 
-a permanent table in the \code{targetDatabaseSchema} or a temp table. If 
-it is a temp table, do not specify \code{targetDatabaseSchema}.}
+\item{targetTables}{(Optional) list of mappings for table names.
+The names of the table where the resulting covariates will be if
+\code{targetDatabaseSchema} is specified. The tables will be created in permanent
+table in the \code{targetDatabaseSchema}.}
 
-\item{targetCovariateRefTable}{(Optional) The name of the table where the covariate reference will be stored.}
-
-\item{targetAnalysisRefTable}{(Optional) The name of the table where the analysis reference will be stored.}
+\item{dropExistingTables}{If targetDatabaseSchema, drop any existing tables. Otherwise, results are merged
+into existing table data.}
 
 \item{aggregated}{Should aggregate statistics be computed instead of covariates per
 cohort entry?}

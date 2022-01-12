@@ -24,14 +24,13 @@
 #' @param covariateSettings      Either an object of type \code{covariateSettings} as created using one
 #'                               of the createCovariate functions, or a list of such objects.
 #' @param targetDatabaseSchema   (Optional) The name of the database schema where the resulting covariates
-#'                               should be stored.
-#' @param targetCovariateTable  (Optional) The name of the table where the resulting covariates will
-#'                               be stored. If not provided, results will be fetched to R. The table can be 
-#'                               a permanent table in the \code{targetDatabaseSchema} or a temp table. If 
-#'                               it is a temp table, do not specify \code{targetDatabaseSchema}.
-#' @param targetCovariateRefTable (Optional) The name of the table where the covariate reference will be stored.
-#' @param targetAnalysisRefTable (Optional) The name of the table where the analysis reference will be stored.
-#'
+#'                               should be stored.  If not provided, results will be fetched to R.
+#' @param targetTables           (Optional) list of mappings for table names.
+#'                               The names of the table where the resulting covariates will be if
+#'                               \code{targetDatabaseSchema} is specified. The tables will be created in permanent
+#'                               table in the \code{targetDatabaseSchema}.
+#' @param dropExistingTables     If targetDatabaseSchema, drop any existing tables. Otherwise, results are merged
+#'                               into existing table data.
 #' @template GetCovarParams
 #'
 #' @export
@@ -44,9 +43,8 @@ getDbDefaultCovariateData <- function(connection,
                                       rowIdField = "subject_id",
                                       covariateSettings,
                                       targetDatabaseSchema,
-                                      targetCovariateTable,
-                                      targetCovariateRefTable,
-                                      targetAnalysisRefTable,
+                                      targetTables = list(),
+                                      dropExistingTables = FALSE,
                                       aggregated = FALSE) {
   if (!is(covariateSettings, "covariateSettings")) {
     stop("Covariate settings object not of type covariateSettings")
@@ -80,8 +78,8 @@ getDbDefaultCovariateData <- function(connection,
   profile <- (!is.null(getOption("dbProfile")) && getOption("dbProfile") == TRUE)
   DatabaseConnector::executeSql(connection, sql, profile = profile)
 
-
-  if (missing(targetCovariateTable) | is.null(targetCovariateTable)) {
+  if (missing(targetDatabaseSchema) | is.null(targetDatabaseSchema)) {
+    # Save to Andromeda
     covariateData <- Andromeda::andromeda()
 
     queryFunction <- function(sql, tableName) {
@@ -91,34 +89,53 @@ getDbDefaultCovariateData <- function(connection,
                                              andromedaTableName = tableName,
                                              snakeCaseToCamelCase = TRUE)
     }
-
+    ParallelLogger::logInfo("Fetching data from server")
   } else {
+    # Save to DB
+    ParallelLogger::logInfo("Creating tables on server")
+    existingTables <- DatabaseConnector::getTableNames(connection, targetDatabaseSchema)
 
-    convertQuery <- function(sql, databaseSchema, table) {
+    convertQuery <- function(sql, targetDatabaseSchema, table) {
+      mappedTable <- targetTables[[table]]
+      if (is.null(mappedTable)) {
+        mappedTable <- SqlRender::camelCaseToSnakeCase(table)
+      }
+      tableExists <- mappedTable %in% existingTables
+
+      if (!dropExistingTables & tableExists) {
+        ParallelLogger::logInfo("Appending", table, " results to table ", mappedTable)
+      } else {
+        ParallelLogger::logInfo("Creating table ", mappedTable, "for ", table)
+      }
+
       outerSql <- "
+      {@create} ? {
       IF OBJECT_ID('@database_schema.@table', 'U') IS NOT NULL
 	        DROP TABLE @database_schema.@table;
 
-      CREATE TABLE @database_schema.@table AS
-      @sub_query;"
+      SELECT * INTO @database_schema.@table FROM ( @sub_query ) sq;
+      } : {
+      INSERT INTO @database_schema.@table @sub_query;
+      }
+      "
       SqlRender::render(outerSql,
                         sub_query = gsub(";", "", sql),
-                        database_schema = databaseSchema,
-                        table = SqlRender::snakeCaseToCamelCase(table))
-
+                        database_schema = targetDatabaseSchema,
+                        create = dropExistingTables | !tableExists,
+                        table = mappedTable)
     }
 
     queryFunction <- function(sql, tableName) {
-      sql <- convertQuery(todo$sqlQueryFeatures, targetDatabaseSchema, tableName)
-      sql <- SqlRender::translate(sql = sql,
-                                  targetDialect = attr(connection, "dbms"),
-                                  oracleTempSchema = oracleTempSchema)
-      DatabaseConnector::renderTranslateExecuteSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
+      sql <- convertQuery(sql, targetDatabaseSchema, tableName)
+      DatabaseConnector::renderTranslateExecuteSql(connection,
+                                                   sql,
+                                                   tempEmulationSchema = oracleTempSchema,
+                                                   progressBar = FALSE,
+                                                   reportOverallTime = FALSE)
     }
 
   }
 
-  ParallelLogger::logInfo("Fetching data from server")
   start <- Sys.time()
   # Binary or non-aggregated features
   if (!is.null(todo$sqlQueryFeatures)) {
@@ -176,7 +193,7 @@ getDbDefaultCovariateData <- function(connection,
     }
   }
 
-  if (missing(targetCovariateTable) | is.null(targetCovariateTable)) {
+  if (missing(targetTables) | is.null(targetTables)) {
     attr(covariateData, "metaData") <- list()
     if (is.null(covariateData$covariates) && is.null(covariateData$covariatesContinuous)) {
       warning("No data found, probably because no covariates were specified.")
