@@ -6,7 +6,7 @@ connectionDetails <- Eunomia::getEunomiaConnectionDetails()
 
 test_that("Test exit conditions", {
   connection <- DatabaseConnector::connect(connectionDetails)
-
+  on.exit(DatabaseConnector::disconnect(connection))
   # covariateSettings object type
   expect_error(getDbDefaultCovariateData(connection = connection,
                                          cdmDatabaseSchema = "main",
@@ -24,11 +24,11 @@ test_that("Test exit conditions", {
                                          targetTables = list(covariates = "cov",
                                                              covariateRef = "cov_ref",
                                                              analysisRef = "cov_analysis_ref")))
-  on.exit(DatabaseConnector::disconnect(connection))
 })
 
 test_that("Test target table", {
   connection <- DatabaseConnector::connect(connectionDetails)
+  on.exit(DatabaseConnector::disconnect(connection))
   Eunomia::createCohorts(connectionDetails)
 
   results <- getDbDefaultCovariateData(connection = connection,
@@ -58,7 +58,31 @@ test_that("Test target table", {
   expect_gt(DatabaseConnector::renderTranslateQuerySql(connection, "SELECT COUNT(*) FROM main.ut_cov_ref_agg")[1], 1)
   expect_gt(DatabaseConnector::renderTranslateQuerySql(connection, "SELECT COUNT(*) FROM main.ut_cov_analysis_ref_agg")[1], 1)
 
-  DatabaseConnector::disconnect(connection)
+  # Temp tables with old prototype
+  results <- getDbDefaultCovariateData(connection = connection,
+                                       cdmDatabaseSchema = "main",
+                                       cohortTable = "cohort",
+                                       covariateSettings = createDefaultCovariateSettings(),
+                                       aggregated = TRUE,
+                                       targetCovariateTable = "#ut_cov_agg",
+                                       targetAnalysisRefTable = "#ut_cov_ref_agg",
+                                       targetCovariateRefTable = "#ut_cov_anal_ref_agg")
+
+  expect_gt(DatabaseConnector::renderTranslateQuerySql(connection, "SELECT COUNT(*) FROM #ut_cov_agg")[1], 1)
+  expect_gt(DatabaseConnector::renderTranslateQuerySql(connection, "SELECT COUNT(*) FROM #ut_cov_ref_agg")[1], 1)
+  expect_gt(DatabaseConnector::renderTranslateQuerySql(connection, "SELECT COUNT(*) FROM #ut_cov_anal_ref_agg")[1], 1)
+
+  results <- getDbDefaultCovariateData(connection = connection,
+                                       cdmDatabaseSchema = "main",
+                                       cohortTable = "cohort",
+                                       covariateSettings = createDefaultCovariateSettings(),
+                                       targetCovariateTable = "#ut_cov",
+                                       targetAnalysisRefTable = "#ut_cov_ref",
+                                       targetCovariateRefTable = "#ut_cov_analysis_ref")
+
+  expect_gt(DatabaseConnector::renderTranslateQuerySql(connection, "SELECT COUNT(*) FROM #ut_cov")[1], 1)
+  expect_gt(DatabaseConnector::renderTranslateQuerySql(connection, "SELECT COUNT(*) FROM #ut_cov_ref")[1], 1)
+  expect_gt(DatabaseConnector::renderTranslateQuerySql(connection, "SELECT COUNT(*) FROM #ut_cov_analysis_ref")[1], 1)
 })
 
 unlink(connectionDetails$server())

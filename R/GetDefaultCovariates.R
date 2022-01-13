@@ -28,7 +28,18 @@
 #' @param targetTables           (Optional) list of mappings for table names.
 #'                               The names of the table where the resulting covariates will be if
 #'                               \code{targetDatabaseSchema} is specified. The tables will be created in permanent
-#'                               table in the \code{targetDatabaseSchema}.
+#'                               table in the \code{targetDatabaseSchema} or as temporary tables. Tables that can be
+#'                               included in this list: covariates, covariateRef, analysisRef, covariatesContinuous,
+#'                               timeRef
+#' @param targetCovariateTable  (Optional) The name of the table where the resulting covariates will
+#'                               be stored. If not provided, results will be fetched to R. The table can be
+#'                               a permanent table in the \code{targetDatabaseSchema} or a temp table. If
+#'                               it is a temp table, do not specify \code{targetDatabaseSchema}.
+#'                               Superseded by \code{targetTables}
+#' @param targetCovariateRefTable (Optional) The name of the table where the covariate reference will be stored.
+#'                               Superseded by \code{targetTables}
+#' @param targetAnalysisRefTable (Optional) The name of the table where the analysis reference will be stored.
+#'                               Superseded by \code{targetTables}
 #' @param dropExistingTables     If targetDatabaseSchema, drop any existing tables. Otherwise, results are merged
 #'                               into existing table data.
 #' @template GetCovarParams
@@ -42,8 +53,15 @@ getDbDefaultCovariateData <- function(connection,
                                       cdmVersion = "5",
                                       rowIdField = "subject_id",
                                       covariateSettings,
-                                      targetDatabaseSchema,
-                                      targetTables = list(),
+                                      targetDatabaseSchema = NULL,
+                                      targetCovariateTable = NULL,
+                                      targetCovariateRefTable = NULL,
+                                      targetAnalysisRefTable = NULL,
+                                      targetTables = list(
+                                        covariates = targetCovariateTable,
+                                        covariateRef = targetCovariateRefTable,
+                                        analysisRef = targetAnalysisRefTable
+                                      ),
                                       dropExistingTables = FALSE,
                                       aggregated = FALSE) {
   if (!is(covariateSettings, "covariateSettings")) {
@@ -77,8 +95,9 @@ getDbDefaultCovariateData <- function(connection,
                               oracleTempSchema = oracleTempSchema)
   profile <- (!is.null(getOption("dbProfile")) && getOption("dbProfile") == TRUE)
   DatabaseConnector::executeSql(connection, sql, profile = profile)
-
-  if (missing(targetDatabaseSchema) | is.null(targetDatabaseSchema)) {
+  # Is the target schema missing or are all the specified tables temp
+  allTempTables <- all(substr(targetTables,1,1) == "#")
+  if ((missing(targetDatabaseSchema) | is.null(targetDatabaseSchema)) & !allTempTables) {
     # Save to Andromeda
     covariateData <- Andromeda::andromeda()
 
@@ -95,38 +114,46 @@ getDbDefaultCovariateData <- function(connection,
     ParallelLogger::logInfo("Creating tables on server")
     existingTables <- DatabaseConnector::getTableNames(connection, targetDatabaseSchema)
 
-    convertQuery <- function(sql, targetDatabaseSchema, table) {
-      mappedTable <- targetTables[[table]]
-      if (is.null(mappedTable)) {
-        mappedTable <- SqlRender::camelCaseToSnakeCase(table)
-      }
-      tableExists <- mappedTable %in% existingTables
-
-      if (!dropExistingTables & tableExists) {
-        ParallelLogger::logInfo("Appending", table, " results to table ", mappedTable)
-      } else {
-        ParallelLogger::logInfo("Creating table ", mappedTable, "for ", table)
-      }
-
+    convertQuery <- function(sql, table, tableExists) {
       outerSql <- "
       {@create} ? {
-      IF OBJECT_ID('@database_schema.@table', 'U') IS NOT NULL
-	        DROP TABLE @database_schema.@table;
+      IF OBJECT_ID('@table', 'U') IS NOT NULL
+          DROP TABLE @table;
 
-      SELECT * INTO @database_schema.@table FROM ( @sub_query ) sq;
+      SELECT * INTO @table FROM ( @sub_query ) sq;
       } : {
-      INSERT INTO @database_schema.@table @sub_query;
+      INSERT INTO @table @sub_query;
       }
       "
       SqlRender::render(outerSql,
                         sub_query = gsub(";", "", sql),
-                        database_schema = targetDatabaseSchema,
                         create = dropExistingTables | !tableExists,
-                        table = mappedTable)
+                        table = table)
     }
 
-    queryFunction <- function(sql, tableName) {
-      sql <- convertQuery(sql, targetDatabaseSchema, tableName)
+    queryFunction <- function(sql, table) {
+      mappedTable <- targetTables[[table]]
+      if (is.null(mappedTable)) {
+        if (allTempTables) {
+          # Only bother storing specified temp tables
+          ParallelLogger::logInfo("Skipping", table, " other mapped tables are temp")
+          return(NULL)
+        }
+        mappedTable <- SqlRender::camelCaseToSnakeCase(table)
+      }
+      tableExists <- mappedTable %in% existingTables
+
+      if (substr(mappedTable, 1, 1) != "#") {
+        mappedTable <- paste0(targetDatabaseSchema, ".", mappedTable)
+      }
+
+      if (!dropExistingTables & tableExists) {
+        ParallelLogger::logInfo("Appending", table, " results to table ", mappedTable)
+      } else {
+        ParallelLogger::logInfo("Creating table ", mappedTable, " for ", table)
+      }
+
+      sql <- convertQuery(sql, mappedTable, tableExists)
       DatabaseConnector::renderTranslateExecuteSql(connection,
                                                    sql,
                                                    tempEmulationSchema = oracleTempSchema,
@@ -193,7 +220,7 @@ getDbDefaultCovariateData <- function(connection,
     }
   }
 
-  if (missing(targetTables) | is.null(targetTables)) {
+  if ((missing(targetDatabaseSchema) | is.null(targetDatabaseSchema)) & !allTempTables) {
     attr(covariateData, "metaData") <- list()
     if (is.null(covariateData$covariates) && is.null(covariateData$covariatesContinuous)) {
       warning("No data found, probably because no covariates were specified.")
