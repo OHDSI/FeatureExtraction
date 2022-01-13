@@ -40,8 +40,9 @@
 #'                               Superseded by \code{targetTables}
 #' @param targetAnalysisRefTable (Optional) The name of the table where the analysis reference will be stored.
 #'                               Superseded by \code{targetTables}
-#' @param dropExistingTables     If targetDatabaseSchema, drop any existing tables. Otherwise, results are merged
-#'                               into existing table data.
+#' @param dropTableIfExists      If targetDatabaseSchema, drop any existing tables. Otherwise, results are merged
+#'                               into existing table data. Overides createTable.
+#' @param createTable            Run sql to create table? Code does not check if table exists.
 #' @template GetCovarParams
 #'
 #' @export
@@ -62,7 +63,8 @@ getDbDefaultCovariateData <- function(connection,
                                         covariateRef = targetCovariateRefTable,
                                         analysisRef = targetAnalysisRefTable
                                       ),
-                                      dropExistingTables = FALSE,
+                                      dropTableIfExists = FALSE,
+                                      createTable = TRUE,
                                       aggregated = FALSE) {
   if (!is(covariateSettings, "covariateSettings")) {
     stop("Covariate settings object not of type covariateSettings")
@@ -110,16 +112,19 @@ getDbDefaultCovariateData <- function(connection,
     }
     ParallelLogger::logInfo("Fetching data from server")
   } else {
+
+    if (dropTableIfExists) {
+      createTable <- TRUE
+    }
     # Save to DB
     ParallelLogger::logInfo("Creating tables on server")
-    existingTables <- DatabaseConnector::getTableNames(connection, targetDatabaseSchema)
-
-    convertQuery <- function(sql, table, tableExists) {
+    convertQuery <- function(sql, table) {
       outerSql <- "
-      {@create} ? {
-      IF OBJECT_ID('@table', 'U') IS NOT NULL
+      {@drop} ? {
+        IF OBJECT_ID('@table', 'U') IS NOT NULL
           DROP TABLE @table;
-
+      }
+      {@create} ? {
       SELECT * INTO @table FROM ( @sub_query ) sq;
       } : {
       INSERT INTO @table @sub_query;
@@ -127,7 +132,8 @@ getDbDefaultCovariateData <- function(connection,
       "
       SqlRender::render(outerSql,
                         sub_query = gsub(";", "", sql),
-                        create = dropExistingTables | !tableExists,
+                        create = createTable,
+                        drop = dropTableIfExists,
                         table = table)
     }
 
@@ -141,19 +147,18 @@ getDbDefaultCovariateData <- function(connection,
         }
         mappedTable <- SqlRender::camelCaseToSnakeCase(table)
       }
-      tableExists <- mappedTable %in% existingTables
 
       if (substr(mappedTable, 1, 1) != "#") {
         mappedTable <- paste0(targetDatabaseSchema, ".", mappedTable)
       }
 
-      if (!dropExistingTables & tableExists) {
-        ParallelLogger::logInfo("Appending", table, " results to table ", mappedTable)
-      } else {
+      if (createTable) {
         ParallelLogger::logInfo("Creating table ", mappedTable, " for ", table)
+      } else {
+        ParallelLogger::logInfo("Appending", table, " results to table ", mappedTable)
       }
 
-      sql <- convertQuery(sql, mappedTable, tableExists)
+      sql <- convertQuery(sql, mappedTable)
       DatabaseConnector::renderTranslateExecuteSql(connection,
                                                    sql,
                                                    tempEmulationSchema = oracleTempSchema,

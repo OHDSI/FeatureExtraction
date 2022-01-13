@@ -80,9 +80,42 @@ test_that("Test target table", {
                                        targetAnalysisRefTable = "#ut_cov_ref",
                                        targetCovariateRefTable = "#ut_cov_analysis_ref")
 
-  expect_gt(DatabaseConnector::renderTranslateQuerySql(connection, "SELECT COUNT(*) FROM #ut_cov")[1], 1)
-  expect_gt(DatabaseConnector::renderTranslateQuerySql(connection, "SELECT COUNT(*) FROM #ut_cov_ref")[1], 1)
-  expect_gt(DatabaseConnector::renderTranslateQuerySql(connection, "SELECT COUNT(*) FROM #ut_cov_analysis_ref")[1], 1)
+  covCt <- DatabaseConnector::renderTranslateQuerySql(connection, "SELECT COUNT(*) FROM #ut_cov")[1]
+  expect_gt(covCt, 1)
+  covRefCt <- DatabaseConnector::renderTranslateQuerySql(connection, "SELECT COUNT(*) FROM #ut_cov_ref")[1]
+  expect_gt(covRefCt, 1)
+  anlRefCt <- DatabaseConnector::renderTranslateQuerySql(connection, "SELECT COUNT(*) FROM #ut_cov_analysis_ref")[1]
+  expect_gt(anlRefCt, 1)
+
+  # append results rather than deleting the tables
+  results <- getDbDefaultCovariateData(connection = connection,
+                                       cdmDatabaseSchema = "main",
+                                       cohortTable = "cohort",
+                                       covariateSettings = createDefaultCovariateSettings(),
+                                       createTable = FALSE,
+                                       dropTableIfExists = FALSE,
+                                       targetCovariateTable = "#ut_cov",
+                                       targetAnalysisRefTable = "#ut_cov_ref",
+                                       targetCovariateRefTable = "#ut_cov_analysis_ref")
+
+  expect_equal(DatabaseConnector::renderTranslateQuerySql(connection, "SELECT COUNT(*) FROM #ut_cov")[1], covCt * 2)
+  expect_equal(DatabaseConnector::renderTranslateQuerySql(connection, "SELECT COUNT(*) FROM #ut_cov_ref")[1], covRefCt * 2)
+  expect_equal(DatabaseConnector::renderTranslateQuerySql(connection, "SELECT COUNT(*) FROM #ut_cov_analysis_ref")[1], anlRefCt * 2)
+
+  # Recreate tables (and check create override works)
+  results <- getDbDefaultCovariateData(connection = connection,
+                                       cdmDatabaseSchema = "main",
+                                       cohortTable = "cohort",
+                                       covariateSettings = createDefaultCovariateSettings(),
+                                       createTable = FALSE,
+                                       dropTableIfExists = TRUE,
+                                       targetCovariateTable = "#ut_cov",
+                                       targetAnalysisRefTable = "#ut_cov_ref",
+                                       targetCovariateRefTable = "#ut_cov_analysis_ref")
+
+  expect_equal(DatabaseConnector::renderTranslateQuerySql(connection, "SELECT COUNT(*) FROM #ut_cov")[1], covCt)
+  expect_equal(DatabaseConnector::renderTranslateQuerySql(connection, "SELECT COUNT(*) FROM #ut_cov_ref")[1], covRefCt)
+  expect_equal(DatabaseConnector::renderTranslateQuerySql(connection, "SELECT COUNT(*) FROM #ut_cov_analysis_ref")[1], anlRefCt)
 })
 
 unlink(connectionDetails$server())

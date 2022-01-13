@@ -19,7 +19,8 @@ getDbDefaultCovariateData(
   targetAnalysisRefTable = NULL,
   targetTables = list(covariates = targetCovariateTable, covariateRef =
     targetCovariateRefTable, analysisRef = targetAnalysisRefTable),
-  dropExistingTables = FALSE,
+  dropTableIfExists = FALSE,
+  createTable = TRUE,
   aggregated = FALSE
 )
 }
@@ -75,8 +76,10 @@ table in the \code{targetDatabaseSchema} or as temporary tables. Tables that can
 included in this list: covariates, covariateRef, analysisRef, covariatesContinuous,
 timeRef}
 
-\item{dropExistingTables}{If targetDatabaseSchema, drop any existing tables. Otherwise, results are merged
-into existing table data.}
+\item{dropTableIfExists}{If targetDatabaseSchema, drop any existing tables. Otherwise, results are merged
+into existing table data. Overides createTable.}
+
+\item{createTable}{Run sql to create table? Code does not check if table exists.}
 
 \item{aggregated}{Should aggregate statistics be computed instead of covariates per
 cohort entry?}
