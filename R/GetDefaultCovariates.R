@@ -155,7 +155,7 @@ getDbDefaultCovariateData <- function(connection,
       if (createTable) {
         ParallelLogger::logInfo("Creating table ", mappedTable, " for ", table)
       } else {
-        ParallelLogger::logInfo("Appending", table, " results to table ", mappedTable)
+        ParallelLogger::logInfo("Appending ", table, " results to table ", mappedTable)
       }
 
       sql <- convertQuery(sql, mappedTable)
