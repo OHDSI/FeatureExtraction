@@ -2,7 +2,7 @@ FeatureExtraction
 =================
 
 [![Build Status](https://github.com/OHDSI/FeatureExtraction/workflows/R-CMD-check/badge.svg)](https://github.com/OHDSI/FeatureExtraction/actions?query=workflow%3AR-CMD-check)
-[![codecov.io](https://codecov.io/github/OHDSI/FeatureExtraction/coverage.svg?branch=master)](https://codecov.io/github/OHDSI/FeatureExtraction?branch=master)
+[![codecov.io](https://codecov.io/github/OHDSI/FeatureExtraction/coverage.svg?branch=main)](https://codecov.io/github/OHDSI/FeatureExtraction?branch=main)
 
 FeatureExtraction is part of [HADES](https://ohdsi.github.io/Hades).
 
@@ -42,15 +42,15 @@ User Documentation
 ==================
 The documentation website can be found at [https://ohdsi.github.io/FeatureExtraction/](https://ohdsi.github.io/FeatureExtraction/). PDF versions of the vignettes and package manual are here:
 
-* Vignette: [Using FeatureExtraction](https://raw.githubusercontent.com/OHDSI/FeatureExtraction/master/inst/doc/UsingFeatureExtraction.pdf)
-* Vignette: [Creating covariates using cohort attributes](https://raw.githubusercontent.com/OHDSI/FeatureExtraction/master/inst/doc/CreatingCovariatesUsingCohortAttributes.pdf)
-* Vignette: [Creating custom covariate builders](https://raw.githubusercontent.com/OHDSI/FeatureExtraction/master/inst/doc/CreatingCustomCovariateBuilders.pdf)
-* Package manual: [FeatureExtraction manual](https://raw.githubusercontent.com/OHDSI/FeatureExtraction/master/extras/FeatureExtraction.pdf) 
+* Vignette: [Using FeatureExtraction](https://raw.githubusercontent.com/OHDSI/FeatureExtraction/main/inst/doc/UsingFeatureExtraction.pdf)
+* Vignette: [Creating covariates using cohort attributes](https://raw.githubusercontent.com/OHDSI/FeatureExtraction/main/inst/doc/CreatingCovariatesUsingCohortAttributes.pdf)
+* Vignette: [Creating custom covariate builders](https://raw.githubusercontent.com/OHDSI/FeatureExtraction/main/inst/doc/CreatingCustomCovariateBuilders.pdf)
+* Package manual: [FeatureExtraction manual](https://raw.githubusercontent.com/OHDSI/FeatureExtraction/main/extras/FeatureExtraction.pdf) 
 
 These vignettes are also available in Korean:
 
-* Vignette: [Using FeatureExtraction](https://raw.githubusercontent.com/OHDSI/FeatureExtraction/master/inst/doc/UsingFeatureExtractionKorean.pdf)
-* Vignette: [Creating custom covariate builders](https://raw.githubusercontent.com/OHDSI/FeatureExtraction/master/inst/doc/CreatingCustomCovariateBuildersKorean.pdf)
+* Vignette: [Using FeatureExtraction](https://raw.githubusercontent.com/OHDSI/FeatureExtraction/main/inst/doc/UsingFeatureExtractionKorean.pdf)
+* Vignette: [Creating custom covariate builders](https://raw.githubusercontent.com/OHDSI/FeatureExtraction/main/inst/doc/CreatingCustomCovariateBuildersKorean.pdf)
 
 
 Support
