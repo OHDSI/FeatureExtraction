@@ -3,27 +3,29 @@
 # covr::file_report(covr::file_coverage("R/GetCovariates.R", "tests/testthat/test-GetCohortBasedCovariates.R"))
 library(testthat)
 
-connectionDetails <- Eunomia::getEunomiaConnectionDetails()
-connection <- DatabaseConnector::connect(connectionDetails)
-
-cohort <- data.frame(cohortDefinitionId = c(1, 1, 101, 101),
-                     cohortStartDate = as.Date(c("2000-02-01", "2000-01-01", "2000-01-01", "2000-01-02")),
-                     cohortEndDate = as.Date(c("2000-02-14", "2000-01-14", "2000-01-01", "2000-01-02")),
-                     subjectId = c(1, 2, 1, 1))
-DatabaseConnector::insertTable(connection = connection,
-                               databaseSchema = "main",
-                               tableName = "cohort",
-                               data = cohort,
-                               dropTableIfExists = TRUE,
-                               createTable = TRUE,
-                               progressBar = FALSE,
-                               camelCaseToSnakeCase = TRUE)
-
+if (runTestsOnEunomia) {
+  connectionDetails <- Eunomia::getEunomiaConnectionDetails()
+  connection <- DatabaseConnector::connect(connectionDetails)
+  
+  cohort <- data.frame(cohortDefinitionId = c(1, 1, 101, 101),
+                       cohortStartDate = as.Date(c("2000-02-01", "2000-01-01", "2000-01-01", "2000-01-02")),
+                       cohortEndDate = as.Date(c("2000-02-14", "2000-01-14", "2000-01-01", "2000-01-02")),
+                       subjectId = c(1, 2, 1, 1))
+  DatabaseConnector::insertTable(connection = connection,
+                                 databaseSchema = "main",
+                                 tableName = "cohort",
+                                 data = cohort,
+                                 dropTableIfExists = TRUE,
+                                 createTable = TRUE,
+                                 progressBar = FALSE,
+                                 camelCaseToSnakeCase = TRUE)
+}
 
 covariateCohorts <- data.frame(cohortId = c(101, 102),
                                cohortName = c("Foo", "Bar"))
 
 test_that("Cohort-based covariates: binary, non-aggregated", {
+  skip_if_not(runTestsOnEunomia)
   settings <- createCohortBasedCovariateSettings(analysisId = 999,
                                                  covariateCohorts = covariateCohorts,
                                                  valueType = "binary")
@@ -45,6 +47,7 @@ test_that("Cohort-based covariates: binary, non-aggregated", {
 })
 
 test_that("Cohort-based covariates: binary, aggregated", {
+  skip_if_not(runTestsOnEunomia)
   settings <- createCohortBasedCovariateSettings(analysisId = 999,
                                                  covariateCohorts = covariateCohorts,
                                                  valueType = "binary")
@@ -67,6 +70,7 @@ test_that("Cohort-based covariates: binary, aggregated", {
 })
 
 test_that("Cohort-based covariates: binary, non-aggregated, temporal", {
+  skip_if_not(runTestsOnEunomia)
   settings <- createCohortBasedTemporalCovariateSettings(analysisId = 999,
                                                          covariateCohorts = covariateCohorts)
   covs <- getDbCovariateData(connection = connection,
@@ -87,6 +91,7 @@ test_that("Cohort-based covariates: binary, non-aggregated, temporal", {
 })
 
 test_that("Cohort-based covariates: binary, aggregated, temporal", {
+  skip_if_not(runTestsOnEunomia)
   settings <- createCohortBasedTemporalCovariateSettings(analysisId = 999,
                                                          covariateCohorts = covariateCohorts)
   covs <- getDbCovariateData(connection = connection,
@@ -108,6 +113,7 @@ test_that("Cohort-based covariates: binary, aggregated, temporal", {
 })
 
 test_that("Cohort-based covariates: counts, non-aggregated", {
+  skip_if_not(runTestsOnEunomia)
   settings <- createCohortBasedCovariateSettings(analysisId = 999,
                                                  covariateCohorts = covariateCohorts,
                                                  valueType = "count")
@@ -129,6 +135,7 @@ test_that("Cohort-based covariates: counts, non-aggregated", {
 })
 
 test_that("Cohort-based covariates: counts, aggregated", {
+  skip_if_not(runTestsOnEunomia)
   settings <- createCohortBasedCovariateSettings(analysisId = 999,
                                                  covariateCohorts = covariateCohorts,
                                                  valueType = "count")
@@ -152,4 +159,6 @@ test_that("Cohort-based covariates: counts, aggregated", {
   expect_equivalent(expectedCovariates[, names(expectedCovariates)], expectedCovariates)
 })
 
-DatabaseConnector::disconnect(connection)
+if (runTestsOnEunomia) {
+  DatabaseConnector::disconnect(connection)
+}
