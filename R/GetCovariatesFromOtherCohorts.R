@@ -41,7 +41,7 @@ getDbCohortBasedCovariatesData <- function(connection,
   checkmate::assertCharacter(cdmDatabaseSchema, len = 1, null.ok = TRUE, add = errorMessages)
   checkmate::assertCharacter(cohortTable, len = 1, add = errorMessages)
   checkmate::assertInt(cohortId, add = errorMessages)
-  checkmate::assertCharacter(cdmVersion, len = 1, add = errorMessages)
+  # checkmate::assertCharacter(cdmVersion, len = 1, add = errorMessages)
   checkmate::assertCharacter(rowIdField, len = 1, add = errorMessages)
   checkmate::assertClass(covariateSettings, "covariateSettings", add = errorMessages)
   checkmate::assertLogical(aggregated, len = 1, add = errorMessages)
@@ -68,7 +68,7 @@ getDbCohortBasedCovariatesData <- function(connection,
   } else {
     covariateCohortTable <- paste(covariateSettings$covariateCohortDatabaseSchema,
                                   covariateSettings$covariateCohortTable,
-                                  collapse = ".")
+                                  sep = ".")
   }
   
   if (covariateSettings$temporal) {
