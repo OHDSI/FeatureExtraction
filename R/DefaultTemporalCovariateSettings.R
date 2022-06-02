@@ -37,6 +37,9 @@
 #' @param useDemographicsTimeInCohort              Number of days of observation time preceding the
 #'                                                 index date. (analysis ID 10)
 #' @param useDemographicsIndexYearMonth            Calendar month of the index date. (analysis ID 11)
+#' @param useCareSiteId                            Care site associated with the cohort start, pulled 
+#'                                                 from the visit_detail, visit_occurrence, or person 
+#'                                                 table, in that order. (analysis ID 12)
 #' @param useConditionOccurrence                   One covariate per condition in the
 #'                                                 condition_occurrence table starting in the time
 #'                                                 window. (analysis ID 101)
@@ -147,6 +150,7 @@
 #'                                             useDemographicsPostObservationTime = FALSE,
 #'                                             useDemographicsTimeInCohort = FALSE,
 #'                                             useDemographicsIndexYearMonth = FALSE,
+#'                                             useCareSiteId = FALSE,
 #'                                             useConditionOccurrence = FALSE,
 #'                                             useConditionOccurrencePrimaryInpatient = FALSE,
 #'                                             useConditionEraStart = FALSE,
@@ -196,6 +200,7 @@ createTemporalCovariateSettings <- function(useDemographicsGender = FALSE,
                                             useDemographicsPostObservationTime = FALSE,
                                             useDemographicsTimeInCohort = FALSE,
                                             useDemographicsIndexYearMonth = FALSE,
+                                            useCareSiteId = FALSE,
                                             useConditionOccurrence = FALSE,
                                             useConditionOccurrencePrimaryInpatient = FALSE,
                                             useConditionEraStart = FALSE,

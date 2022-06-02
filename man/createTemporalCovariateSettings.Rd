@@ -16,6 +16,7 @@ createTemporalCovariateSettings(
   useDemographicsPostObservationTime = FALSE,
   useDemographicsTimeInCohort = FALSE,
   useDemographicsIndexYearMonth = FALSE,
+  useCareSiteId = FALSE,
   useConditionOccurrence = FALSE,
   useConditionOccurrencePrimaryInpatient = FALSE,
   useConditionEraStart = FALSE,
@@ -81,6 +82,10 @@ index date. (analysis ID 9)}
 index date. (analysis ID 10)}
 
 \item{useDemographicsIndexYearMonth}{Calendar month of the index date. (analysis ID 11)}
+
+\item{useCareSiteId}{Care site associated with the cohort start, pulled 
+from the visit_detail, visit_occurrence, or person 
+table, in that order. (analysis ID 12)}
 
 \item{useConditionOccurrence}{One covariate per condition in the
 condition_occurrence table starting in the time
@@ -233,6 +238,7 @@ settings <- createTemporalCovariateSettings(useDemographicsGender = TRUE,
                                             useDemographicsPostObservationTime = FALSE,
                                             useDemographicsTimeInCohort = FALSE,
                                             useDemographicsIndexYearMonth = FALSE,
+                                            useCareSiteId = FALSE,
                                             useConditionOccurrence = FALSE,
                                             useConditionOccurrencePrimaryInpatient = FALSE,
                                             useConditionEraStart = FALSE,

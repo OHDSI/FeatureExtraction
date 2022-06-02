@@ -16,6 +16,7 @@ createCovariateSettings(
   useDemographicsPostObservationTime = FALSE,
   useDemographicsTimeInCohort = FALSE,
   useDemographicsIndexYearMonth = FALSE,
+  useCareSiteId = FALSE,
   useConditionOccurrenceAnyTimePrior = FALSE,
   useConditionOccurrenceLongTerm = FALSE,
   useConditionOccurrenceMediumTerm = FALSE,
@@ -153,6 +154,11 @@ during cohort period. (analysis ID 10)}
 \item{useDemographicsIndexYearMonth}{Both calendar year and month of the
 index date in a single variable.
 (analysis ID 11)}
+
+\item{useCareSiteId}{Care site associated with the cohort
+start, pulled from the visit_detail,
+visit_occurrence, or person table, in
+that order. (analysis ID 12)}
 
 \item{useConditionOccurrenceAnyTimePrior}{One covariate per condition in the
 condition_occurrence table starting any
@@ -606,6 +612,7 @@ settings <- createCovariateSettings(useDemographicsGender = TRUE,
                                     useDemographicsPostObservationTime = FALSE,
                                     useDemographicsTimeInCohort = FALSE,
                                     useDemographicsIndexYearMonth = FALSE,
+                                    useCareSiteId = FALSE,
                                     useConditionOccurrenceAnyTimePrior = FALSE,
                                     useConditionOccurrenceLongTerm = FALSE,
                                     useConditionOccurrenceMediumTerm = FALSE,

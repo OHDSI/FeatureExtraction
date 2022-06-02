@@ -31,7 +31,7 @@
 #' 
 #' @export
 %functionName% <- function(%arguments%) {
-  covariateSettings <- list(temporal = %temporal%)
+  covariateSettings <- list(temporal = %temporal%, temporalSequence = FALSE)
   formalNames <- names(formals(%functionName%))
   anyUseTrue <- FALSE
   for (name in formalNames) {
