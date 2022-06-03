@@ -120,7 +120,8 @@ test_that("Custom covariate builder", {
 test_that("getDbCovariateData care site from person tests", {
   connection <- DatabaseConnector::connect(connectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
-  covariateSettings <- createCovariateSettings(useCareSiteId = TRUE)
+  
+  # Add care site IDs to person table
   person <- DatabaseConnector::querySql(connection, "SELECT * FROM main.person;", snakeCaseToCamelCase = TRUE)
   person$careSiteId <- sample.int(4, nrow(person), replace = TRUE)
   DatabaseConnector::insertTable(connection = connection,
@@ -130,6 +131,8 @@ test_that("getDbCovariateData care site from person tests", {
                                  dropTableIfExists = TRUE,
                                  createTable = TRUE,
                                  camelCaseToSnakeCase = TRUE)
+
+  covariateSettings <- createCovariateSettings(useCareSiteId = TRUE)
   covariateData <- getDbCovariateData(connection = connection,
                                       cdmDatabaseSchema = "main",
                                       cohortTableIsTemp = FALSE,
@@ -151,9 +154,11 @@ test_that("getDbCovariateData care site from person tests", {
 })
 
 test_that("getDbCovariateData care site from visit_occurrence tests", {
+  library(dplyr)
   connection <- DatabaseConnector::connect(connectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
-  covariateSettings <- createCovariateSettings(useCareSiteId = TRUE)
+  
+  # Add care site IDs to visit occurrence table
   visitOccurrence <- DatabaseConnector::querySql(connection, "SELECT * FROM main.visit_occurrence;", snakeCaseToCamelCase = TRUE)
   visitOccurrence$careSiteId <- 4 + sample.int(4, nrow(visitOccurrence), replace = TRUE)
   DatabaseConnector::insertTable(connection = connection,
@@ -163,8 +168,17 @@ test_that("getDbCovariateData care site from visit_occurrence tests", {
                                  dropTableIfExists = TRUE,
                                  createTable = TRUE,
                                  camelCaseToSnakeCase = TRUE)
+  
+  # Make sure cohorts overlap with visits
   cohort <- DatabaseConnector::querySql(connection, "SELECT * FROM main.cohort;", snakeCaseToCamelCase = TRUE)
-  cohort$cohortStartDate <- sample(visitOccurrence$visitStartDate, nrow(cohort), replace = TRUE)
+  cohort <- cohort %>%
+    inner_join(visitOccurrence %>%
+                 select(subjectId = .data$personId,
+                        .data$visitStartDate),
+               by = "subjectId") %>%
+    mutate(cohortStartDate = .data$visitStartDate, cohortEndDate = .data$visitStartDate) %>%
+    select(-.data$visitStartDate) %>%
+    filter(!duplicated(.data$subjectId))
   DatabaseConnector::insertTable(connection = connection,
                                  databaseSchema = "main",
                                  tableName = "cohort",
@@ -172,13 +186,15 @@ test_that("getDbCovariateData care site from visit_occurrence tests", {
                                  dropTableIfExists = TRUE,
                                  createTable = TRUE,
                                  camelCaseToSnakeCase = TRUE)
+
+  covariateSettings <- createCovariateSettings(useCareSiteId = TRUE)
   covariateData <- getDbCovariateData(connection = connection,
                                       cdmDatabaseSchema = "main",
                                       cohortTableIsTemp = FALSE,
                                       cohortTable = "cohort",
                                       cohortId = 1, 
                                       covariateSettings = covariateSettings)
-  expect_gt(pull(count(filter(covariateData$covariates, covariateID > 4012))), 0)
+  expect_equal(pull(count(filter(covariateData$covariates, covariateID > 4012))), sum(cohort$cohortDefinitionId == 1))
 })
 
 unlink(connectionDetails$server())
