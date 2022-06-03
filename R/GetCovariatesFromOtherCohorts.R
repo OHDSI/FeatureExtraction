@@ -161,7 +161,7 @@ createCohortBasedCovariateSettings <- function(analysisId,
                                                endDay = 0,
                                                includedCovariateIds = c()) {
   errorMessages <- checkmate::makeAssertCollection()
-  checkmate::assertInt(analysisId, add = errorMessages)
+  checkmate::assertInt(analysisId, lower = 1, upper = 999, add = errorMessages)
   checkmate::assertCharacter(covariateCohortDatabaseSchema, len = 1, null.ok = TRUE, add = errorMessages)
   checkmate::assertCharacter(covariateCohortTable, len = 1, null.ok = TRUE, add = errorMessages)
   checkmate::assertDataFrame(covariateCohorts, min.rows = 1, add = errorMessages)
@@ -225,7 +225,7 @@ createCohortBasedTemporalCovariateSettings <- function(analysisId,
                                                        temporalEndDays = -365:-1,
                                                        includedCovariateIds = c()) {
   errorMessages <- checkmate::makeAssertCollection()
-  checkmate::assertInt(analysisId, add = errorMessages)
+  checkmate::assertInt(analysisId, lower = 1, upper = 999, add = errorMessages)
   checkmate::assertCharacter(covariateCohortDatabaseSchema, len = 1, null.ok = TRUE, add = errorMessages)
   checkmate::assertCharacter(covariateCohortTable, len = 1, null.ok = TRUE, add = errorMessages)
   checkmate::assertDataFrame(covariateCohorts, min.rows = 1, add = errorMessages)
