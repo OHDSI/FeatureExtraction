@@ -33,7 +33,7 @@ In this vignette we review how we can create covariates based on other cohorts i
 To construct covariates based on other cohorts, the following steps must be taken:
 
 1. Populate a table with the cohorts to be used for covariate construction.
-3. Use the `createCohortBasedCovariateSettings()` or `createCohortBasedTemporalCovariateSettings()` function to create a `covariateSettings` object pointing to the cohorts mentioned in the previous steps.
+2. Use the `createCohortBasedCovariateSettings()` or `createCohortBasedTemporalCovariateSettings()` function to create a `covariateSettings` object pointing to the cohorts mentioned in the previous steps.
 
 ## Populate a table with the cohorts to be used for covariate construction.
 
