@@ -11,7 +11,8 @@ createCohortBasedTemporalCovariateSettings(
   covariateCohorts,
   temporalStartDays = -365:-1,
   temporalEndDays = -365:-1,
-  includedCovariateIds = c()
+  includedCovariateIds = c(),
+  warnOnAnalysisIdOverlap = TRUE
 )
 }
 \arguments{
@@ -42,6 +43,9 @@ date, etc. The end day is included in the time
 period.}
 
 \item{includedCovariateIds}{A list of covariate IDs that should be restricted to.}
+
+\item{warnOnAnalysisIdOverlap}{Warn if the provided `analysisId` overlaps with any predefined analysis as 
+available in the `createTemporalCovariateSettings()` function.}
 }
 \value{
 An object of type \code{covariateSettings}, to be used in other functions.

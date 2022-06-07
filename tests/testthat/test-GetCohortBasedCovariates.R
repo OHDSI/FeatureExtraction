@@ -162,3 +162,13 @@ test_that("Cohort-based covariates: counts, aggregated", {
 if (runTestsOnEunomia) {
   DatabaseConnector::disconnect(connection)
 }
+
+test_that("Cohort-based covariates: warning if using pre-defined analysis ID", {
+  expect_warning(createCohortBasedCovariateSettings(analysisId = 1,
+                                                    covariateCohorts = covariateCohorts,
+                                                    valueType = "count"),
+                 "Analysis ID [0-9+] also used for prespecified analysis")
+  expect_warning(createCohortBasedTemporalCovariateSettings(analysisId = 1,
+                                                            covariateCohorts = covariateCohorts),
+                 "Analysis ID [0-9+] also used for prespecified analysis")
+})

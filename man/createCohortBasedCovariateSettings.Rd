@@ -12,7 +12,8 @@ createCohortBasedCovariateSettings(
   valueType = "binary",
   startDay = -365,
   endDay = 0,
-  includedCovariateIds = c()
+  includedCovariateIds = c(),
+  warnOnAnalysisIdOverlap = TRUE
 )
 }
 \arguments{
@@ -38,6 +39,9 @@ value will be the number of times the cohort was observed in the window.}
 \item{endDay}{What is the end day (relative to the index date) of the covariate window?}
 
 \item{includedCovariateIds}{A list of covariate IDs that should be restricted to.}
+
+\item{warnOnAnalysisIdOverlap}{Warn if the provided `analysisId` overlaps with any predefined analysis as 
+available in the `createCoverateSettings()` function.}
 }
 \value{
 An object of type \code{covariateSettings}, to be used in other functions.

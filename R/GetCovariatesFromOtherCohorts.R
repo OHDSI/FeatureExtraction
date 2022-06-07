@@ -147,6 +147,8 @@ getDbCohortBasedCovariatesData <- function(connection,
 #' @param startDay                      What is the start day (relative to the index date) of the covariate window?
 #' @param endDay                        What is the end day (relative to the index date) of the covariate window?
 #' @param includedCovariateIds          A list of covariate IDs that should be restricted to.
+#' @param warnOnAnalysisIdOverlap       Warn if the provided `analysisId` overlaps with any predefined analysis as 
+#'                                      available in the `createCoverateSettings()` function.
 #'
 #' @return
 #' An object of type \code{covariateSettings}, to be used in other functions.
@@ -159,7 +161,8 @@ createCohortBasedCovariateSettings <- function(analysisId,
                                                valueType = "binary",
                                                startDay = -365,
                                                endDay = 0,
-                                               includedCovariateIds = c()) {
+                                               includedCovariateIds = c(),
+                                               warnOnAnalysisIdOverlap = TRUE) {
   errorMessages <- checkmate::makeAssertCollection()
   checkmate::assertInt(analysisId, lower = 1, upper = 999, add = errorMessages)
   checkmate::assertCharacter(covariateCohortDatabaseSchema, len = 1, null.ok = TRUE, add = errorMessages)
@@ -171,7 +174,12 @@ createCohortBasedCovariateSettings <- function(analysisId,
   checkmate::assertInt(endDay, add = errorMessages)
   checkmate::assertTRUE(startDay <= endDay, add = errorMessages)
   .assertCovariateId(includedCovariateIds, null.ok = TRUE, add = errorMessages)
+  checkmate::assertLogical(warnOnAnalysisIdOverlap, len = 1, add = errorMessages)
   checkmate::reportAssertions(collection = errorMessages)
+  
+  if (warnOnAnalysisIdOverlap) {
+    warnIfPredefined(analysisId)
+  }
   
   covariateSettings <- list(temporal = FALSE,
                             temporalSequence = FALSE)
@@ -212,6 +220,8 @@ createCohortBasedCovariateSettings <- function(analysisId,
 #'                                                 date, etc. The end day is included in the time
 #'                                                 period.
 #' @param includedCovariateIds          A list of covariate IDs that should be restricted to.
+#' @param warnOnAnalysisIdOverlap       Warn if the provided `analysisId` overlaps with any predefined analysis as 
+#'                                      available in the `createTemporalCovariateSettings()` function.
 #'
 #' @return
 #' An object of type \code{covariateSettings}, to be used in other functions.
@@ -223,7 +233,8 @@ createCohortBasedTemporalCovariateSettings <- function(analysisId,
                                                        covariateCohorts,
                                                        temporalStartDays = -365:-1,
                                                        temporalEndDays = -365:-1,
-                                                       includedCovariateIds = c()) {
+                                                       includedCovariateIds = c(),
+                                                       warnOnAnalysisIdOverlap = TRUE) {
   errorMessages <- checkmate::makeAssertCollection()
   checkmate::assertInt(analysisId, lower = 1, upper = 999, add = errorMessages)
   checkmate::assertCharacter(covariateCohortDatabaseSchema, len = 1, null.ok = TRUE, add = errorMessages)
@@ -234,7 +245,12 @@ createCohortBasedTemporalCovariateSettings <- function(analysisId,
   checkmate::assertIntegerish(temporalEndDays, add = errorMessages)
   checkmate::assertTRUE(all(temporalStartDays <= temporalEndDays), add = errorMessages)
   .assertCovariateId(includedCovariateIds, null.ok = TRUE, add = errorMessages)
+  checkmate::assertLogical(warnOnAnalysisIdOverlap, len = 1, add = errorMessages)
   checkmate::reportAssertions(collection = errorMessages)
+  
+  if (warnOnAnalysisIdOverlap) {
+    warnIfPredefined(analysisId, TRUE)
+  }
   
   covariateSettings <- list(temporal = TRUE,
                             temporalSequence = FALSE)
@@ -246,4 +262,17 @@ createCohortBasedTemporalCovariateSettings <- function(analysisId,
   attr(covariateSettings, "fun") <- "getDbCohortBasedCovariatesData"
   class(covariateSettings) <- "covariateSettings"
   return(covariateSettings)
+}
+
+warnIfPredefined <- function(analysisId, temporal = FALSE) {
+  if (temporal) {
+    csvFile <- system.file("csv", "PrespecTemporalAnalyses.csv", package = "FeatureExtraction")
+  } else {
+    csvFile <- system.file("csv", "PrespecAnalyses.csv", package = "FeatureExtraction")
+  }
+  preSpecAnalysis <- read.csv(csvFile) %>%
+    filter(.data$analysisId == !!analysisId)
+  if (nrow(preSpecAnalysis) > 0) {
+    warning(sprintf("Analysis ID %d also used for prespecified analysis '%s'.", analysisId, preSpecAnalysis$analysisName))
+  }
 }
