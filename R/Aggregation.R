@@ -37,8 +37,8 @@ aggregateCovariates <- function(covariateData) {
   result <- Andromeda::andromeda(covariateRef = covariateData$covariateRef,
                                  analysisRef = covariateData$analysisRef)
   attr(result, "metaData") <- attr(covariateData, "metaData")
-  class(result) <- "CovariateData"
-  attr(class(result), "package") <- "FeatureExtraction"
+  class(result) <- c("CovariateData", "Andromeda")
+  # attr(class(result), "package") <- "FeatureExtraction"
   populationSize <-  attr(covariateData, "metaData")$populationSize
   
   # Aggregate binary variables

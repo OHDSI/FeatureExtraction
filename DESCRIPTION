@@ -40,7 +40,9 @@ Suggests:
   Eunomia,
   withr
 Remotes:
-  ohdsi/Eunomia
+  ohdsi/Eunomia,
+  ohdsi/Andromeda@arrow,
+  ohdsi/DatabaseConnector@arrow
 NeedsCompilation: no
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.0
 Encoding: UTF-8

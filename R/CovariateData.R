@@ -14,30 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#' Covariate Data
-#'
-#' @description
-#' \code{CovariateData} is an S4 class that inherits from \code{\link[Andromeda]{Andromeda}}. It contains 
-#' information on covariates, which can be either captured on a per-person basis, or aggregated across
-#' the cohort(s).
-#' 
-#' By default covariates refer to a specific time period, with for example different covariate IDs for 
-#' whether a diagnosis code was observed in the year before and month before index date. However, a
-#' \code{CovariateData} can also be temporal, meaning that next to a covariate ID there is also a time ID,
-#' which identifies the (user specified) time window the covariate was captured.
-#'
-#' A \code{CovariateData} object is typically created using \code{\link{getDbCovariateData}}, can only be saved using
-#' \code{\link{saveCovariateData}}, and loaded using \code{\link{loadCovariateData}}.
-#'
-#' @seealso \code{\link{isCovariateData}}, \code{\link{isAggregatedCovariateData}}, \code{\link{isTemporalCovariateData}}
-#' @name CovariateData-class
-#' @aliases CovariateData
-#' @export
-#' @import Andromeda
-#' @importClassesFrom RSQLite SQLiteConnection
-#' @importClassesFrom DBI DBIObject DBIConnection
-setClass("CovariateData", contains = "Andromeda")
-
 
 #' Save the covariate data to folder
 #'
@@ -93,17 +69,13 @@ loadCovariateData <- function(file, readOnly) {
   if (!missing(readOnly)) 
     warning("readOnly argument has been deprecated")
   covariateData <- Andromeda::loadAndromeda(file)
-  class(covariateData) <- "CovariateData"
-  attr(class(covariateData), "package") <- "FeatureExtraction"
+  class(covariateData) <- c("CovariateData", "Andromeda")
+  # attr(class(covariateData), "package") <- "FeatureExtraction"
   return(covariateData)
 }
 
-# show()
-#' @param object  An object of class `CovariateData`.
-#' 
 #' @export
-#' @rdname CovariateData-class
-setMethod("show", "CovariateData", function(object) {
+show.CovariateData <- function(object) {
   cli::cat_line(pillar::style_subtle("# CovariateData object"))
   cli::cat_line("")
   cohortId <- attr(object, "metaData")$cohortId
@@ -118,15 +90,10 @@ setMethod("show", "CovariateData", function(object) {
   cli::cat_line(pillar::style_subtle("Inherits from Andromeda:"))
   class(object) <- "Andromeda"
   show(object)
-})
+}
 
-
-# summary()
-#' @param object  An object of class `CovariateData`.
-#' 
 #' @export
-#' @rdname CovariateData-class
-setMethod("summary", "CovariateData", function(object) {
+summary.CovariateData <- function(object) {
   covariateValueCount <- 0
   if (!is.null(object$covariates)) {
     covariateValueCount <- covariateValueCount + (object$covariates %>% count() %>% pull())
@@ -139,7 +106,7 @@ setMethod("summary", "CovariateData", function(object) {
                  covariateValueCount = covariateValueCount)
   class(result) <- "summary.CovariateData"
   return(result)
-})
+}
 
 #' @export
 print.summary.CovariateData <- function(x, ...) {
@@ -174,7 +141,7 @@ isAggregatedCovariateData <- function(x) {
     stop("Object not of class CovariateData")
   if (!Andromeda::isValidAndromeda(x)) 
     stop("CovariateData object is closed")
-  return(!is.null(x$covariatesContinuous) || !"rowId" %in% colnames(x$covariates))
+  return(!is.null(x$covariatesContinuous) || !"rowId" %in% names(x$covariates))
 }
 
 #' Check whether covariate data is temporal
@@ -190,7 +157,7 @@ isTemporalCovariateData <- function(x) {
     stop("Object not of class CovariateData")
   if (!Andromeda::isValidAndromeda(x)) 
     stop("CovariateData object is closed")
-  return("timeId" %in% colnames(x$covariates))
+  return("timeId" %in% names(x$covariates))
 }
 
 createEmptyCovariateData <- function(cohortId, aggregated, temporal) {
@@ -216,6 +183,6 @@ createEmptyCovariateData <- function(cohortId, aggregated, temporal) {
                                                              missingMeansZero = "")[!1, ])
   attr(covariateData, "metaData") <- list(populationSize = 0,
                                           cohortId = cohortId)
-  class(covariateData) <- "CovariateData"
+  class(covariateData) <- c("CovariateData", "Andromeda")
   return(covariateData)
 }

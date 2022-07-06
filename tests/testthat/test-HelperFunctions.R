@@ -44,8 +44,8 @@ test_that("arguments are checked", {
   expect_error(filterByCohortDefinitionId("blah", 1), "not of class CovariateData")
   expect_error(filterByCohortDefinitionId(covariateData, 1), "Can only filter aggregated")
   
-  Andromeda::close(covariateData)
-  Andromeda::close(aggregatedCovariateData)
+  close(covariateData)
+  close(aggregatedCovariateData)
   expect_error(filterByRowId(covariateData, 1), "closed")
   expect_error(filterByCohortDefinitionId(aggregatedCovariateData, 1), "closed")
 })

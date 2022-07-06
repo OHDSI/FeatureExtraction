@@ -215,8 +215,8 @@ getDbDefaultCovariateData <- function(connection,
                                                 aggregated = aggregated,
                                                 temporal = covariateSettings$temporal)
     }
-    class(covariateData) <- "CovariateData"
-    attr(class(covariateData), "package") <- "FeatureExtraction"
+    class(covariateData) <- c("CovariateData", "Andromeda")
+    # attr(class(covariateData), "package") <- "FeatureExtraction"
     return(covariateData)
   }
 }

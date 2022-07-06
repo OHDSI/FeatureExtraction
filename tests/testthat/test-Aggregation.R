@@ -25,7 +25,7 @@ test_that("aggregateCovariates works", {
     mutate(missingMeansZero = ifelse(.data$analysisName == "Chads2Vasc", "N", .data$missingMeansZero))
   expect_true(isAggregatedCovariateData(aggregateCovariates(covariateData)))
   
-  Andromeda::close(covariateData)
+  close(covariateData)
   expect_error(aggregateCovariates(covariateData), "object is closed")
 })
 

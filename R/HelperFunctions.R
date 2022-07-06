@@ -38,7 +38,7 @@ filterByRowId <- function(covariateData, rowIds) {
   metaData <- attr(covariateData, "metaData")
   metaData$populationSize <- length(rowIds)
   attr(result, "metaData") <- metaData
-  class(result) <- "CovariateData"
+  class(result) <- c("CovariateData", "Andromeda")
   return(result)
 }
 
@@ -76,7 +76,7 @@ filterByCohortDefinitionId <- function(covariateData, cohortId) {
   metaData <- attr(covariateData, "metaData")
   metaData$populationSize <- metaData$populationSize[as.numeric(names(metaData$populationSize)) %in% cohortId]
   attr(result, "metaData") <- metaData
-  class(result) <- "CovariateData"
-  attr(class(result), "package") <- "FeatureExtraction"
+  class(result) <- c("CovariateData", "Andromeda")
+  # attr(class(result), "package") <- "FeatureExtraction"
   return(result)
 }

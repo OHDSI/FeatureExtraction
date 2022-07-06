@@ -75,6 +75,6 @@
                                  covariateRef = covariateRef,
                                  analysisRef = analysisRef)
   attr(result, "metaData") <- metaData
-  class(result) <- "CovariateData"
+  class(result) <- c("CovariateData", "Andromeda")
   return(result)
 }

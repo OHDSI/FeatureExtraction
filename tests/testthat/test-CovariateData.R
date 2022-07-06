@@ -43,9 +43,9 @@ test_that("test CovariateData Class on Empty", {
   expect_false(isTemporalCovariateData(aggCovData))
   expect_true(isTemporalCovariateData(tempCovData))
 
-  Andromeda::close(covData)
-  Andromeda::close(aggCovData)
-  Andromeda::close(tempCovData)
+  close(covData)
+  close(aggCovData)
+  close(tempCovData)
 })
 
 test_that("test saveCovariateData", {
@@ -65,7 +65,7 @@ test_that("test saveCovariateData", {
   expect_error(saveCovariateData(errCovData, file = saveFileTest)) #non covariateData class error
   expect_message(saveCovariateData(covariateData, file = saveFileTest),
                         "Disconnected Andromeda. This data object can no longer be used")
-  Andromeda::close(covariateData)
+  close(covariateData)
   unlink(saveFileTest)
 })
 
@@ -79,7 +79,7 @@ test_that("test summary call for covariateData class", {
                                       aggregated = FALSE)
 
   sumOut <- summary(covariateData)
-  Andromeda::close(covariateData)
+  close(covariateData)
   expect_equal(sumOut$metaData$cohortId, 1L)
 })
 

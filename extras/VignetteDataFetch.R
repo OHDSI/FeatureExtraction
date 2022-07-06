@@ -23,32 +23,26 @@ library(FeatureExtraction)
 
 # Datafetch for main vignette ----------------------------------
 
-dbms <- "pdw"
-user <- NULL
-pw <- NULL
-server <- Sys.getenv("PDW_SERVER")
-port <- Sys.getenv("PDW_PORT")
-cdmDatabaseSchema <- "cdm_truven_mdcd_v569.dbo"
-resultsDatabaseSchema <- "scratch.dbo"
+connectionDetails <- DatabaseConnector::createConnectionDetails(
+  dbms = "redshift",
+  connectionString = keyring::key_get("redShiftConnectionStringMdcd"),
+  user = keyring::key_get("redShiftUserName"),
+  password = keyring::key_get("redShiftPassword")
+)
+cdmDatabaseSchema <- "cdm"
+resultsDatabaseSchema <- "scratch_mschuemi2"
 cdmVersion <- "5"
-extraSettings <- NULL
 
 vignetteFolder <- "s:/temp/vignetteFeatureExtraction"
 if (!file.exists(vignetteFolder))
   dir.create(vignetteFolder)
 
 
-connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = dbms,
-                                                                server = server,
-                                                                user = user,
-                                                                password = pw,
-                                                                port = port,
-                                                                extraSettings = extraSettings)
 connection <- DatabaseConnector::connect(connectionDetails)
 
 sql <- loadRenderTranslateSql("cohortsOfInterest.sql",
                               packageName = "FeatureExtraction",
-                              dbms = dbms,
+                              dbms = connectionDetails$dbms,
                               cdmDatabaseSchema = cdmDatabaseSchema,
                               resultsDatabaseSchema = resultsDatabaseSchema)
 DatabaseConnector::executeSql(connection, sql)
@@ -230,7 +224,7 @@ getDbLooCovariateData <- function(connection,
                  covariateRef = covariateRef, 
                  analysisRef = analysisRef)
   attr(result, "metaData") <- metaData
-  class(result) <- "CovariateData"
+  class(result) <- c("CovariateData", "Andromeda")
   return(result)
 }
 

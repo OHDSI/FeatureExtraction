@@ -11,7 +11,7 @@ test_that("Test exit conditions ", {
   cvData <- FeatureExtraction:::createEmptyCovariateData(cohortId = 1,
                                                          aggregated = FALSE, 
                                                          temporal = FALSE)
-  Andromeda::close(cvData)
+  close(cvData)
   expect_error(tidyCovariateData(covariateData = cvData))
   # CovariateData aggregated
   cvData <- FeatureExtraction:::createEmptyCovariateData(cohortId = 1, 
@@ -50,7 +50,7 @@ test_that("tidyCovariates works", {
   covariateData <- Andromeda::andromeda(covariates = covariates,
                                         covariateRef = covariateRef)
   attr(covariateData, "metaData") <- metaData
-  class(covariateData) <- "CovariateData"
+  class(covariateData) <-  c("CovariateData", "Andromeda")
 
   tidy <- tidyCovariateData(covariateData, minFraction = 0.1, normalize = TRUE, removeRedundancy = TRUE)
 

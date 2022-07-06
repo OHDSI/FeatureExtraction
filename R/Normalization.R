@@ -57,7 +57,7 @@ tidyCovariateData <- function(covariateData,
     if (removeRedundancy || minFraction != 0) {
       covariateData$valueCounts <- covariateData$covariates %>% 
         group_by(.data$covariateId) %>% 
-        summarise(n = count(), nDistinct = n_distinct(.data$covariateValue))
+        summarise(n = n(), nDistinct = n_distinct(.data$covariateValue))
       on.exit(covariateData$valueCounts <- NULL, add = TRUE)
     }
     
@@ -171,8 +171,8 @@ tidyCovariateData <- function(covariateData,
     newCovariateData$covariates <- newCovariates
   }
   
-  class(newCovariateData) <- "CovariateData"
-  attr(class(newCovariateData), "package") <- "FeatureExtraction"
+  class(newCovariateData) <- c("CovariateData", "Andromeda")
+  # attr(class(newCovariateData), "package") <- "FeatureExtraction"
   attr(newCovariateData, "metaData") <- metaData
   
   delta <- Sys.time() - start
