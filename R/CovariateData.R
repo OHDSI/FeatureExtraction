@@ -75,7 +75,7 @@ loadCovariateData <- function(file, readOnly) {
 }
 
 #' @export
-show.CovariateData <- function(object) {
+print.CovariateData <- function(object) {
   cli::cat_line(pillar::style_subtle("# CovariateData object"))
   cli::cat_line("")
   cohortId <- attr(object, "metaData")$cohortId
@@ -89,7 +89,7 @@ show.CovariateData <- function(object) {
   cli::cat_line("")
   cli::cat_line(pillar::style_subtle("Inherits from Andromeda:"))
   class(object) <- "Andromeda"
-  show(object)
+  print(object)
 }
 
 #' @export
