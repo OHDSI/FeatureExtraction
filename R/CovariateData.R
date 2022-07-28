@@ -1,4 +1,4 @@
-# Copyright 2021 Observational Health Data Sciences and Informatics
+# Copyright 2022 Observational Health Data Sciences and Informatics
 #
 # This file is part of FeatureExtraction
 #
@@ -17,21 +17,22 @@
 #' Covariate Data
 #'
 #' @description
-#' \code{CovariateData} is an S4 class that inherits from \code{\link[Andromeda]{Andromeda}}. It contains 
-#' information on covariates, which can be either captured on a per-person basis, or aggregated across
-#' the cohort(s).
-#' 
-#' By default covariates refer to a specific time period, with for example different covariate IDs for 
+#' \code{CovariateData} is an S4 class that inherits from \code{\link[Andromeda]{Andromeda}}. It
+#' contains information on covariates, which can be either captured on a per-person basis, or
+#' aggregated across the cohort(s).
+#' By default covariates refer to a specific time period, with for example different covariate IDs for
 #' whether a diagnosis code was observed in the year before and month before index date. However, a
-#' \code{CovariateData} can also be temporal, meaning that next to a covariate ID there is also a time ID,
-#' which identifies the (user specified) time window the covariate was captured.
+#' \code{CovariateData} can also be temporal, meaning that next to a covariate ID there is also a time
+#' ID, which identifies the (user specified) time window the covariate was captured.
+#' A \code{CovariateData} object is typically created using \code{\link{getDbCovariateData}}, can only
+#' be saved using \code{\link{saveCovariateData}}, and loaded using \code{\link{loadCovariateData}}.
 #'
-#' A \code{CovariateData} object is typically created using \code{\link{getDbCovariateData}}, can only be saved using
-#' \code{\link{saveCovariateData}}, and loaded using \code{\link{loadCovariateData}}.
-#'
-#' @seealso \code{\link{isCovariateData}}, \code{\link{isAggregatedCovariateData}}, \code{\link{isTemporalCovariateData}}
+#' @seealso
+#' \code{\link{isCovariateData}}, \code{\link{isAggregatedCovariateData}},
+#' \code{\link{isTemporalCovariateData}}
 #' @name CovariateData-class
-#' @aliases CovariateData
+#' @aliases
+#' CovariateData
 #' @export
 #' @import Andromeda
 #' @importClassesFrom RSQLite SQLiteConnection
@@ -63,7 +64,7 @@ saveCovariateData <- function(covariateData, file) {
     stop("Must specify file")
   if (!inherits(covariateData, "CovariateData"))
     stop("Data not of class CovariateData")
-  
+
   Andromeda::saveAndromeda(covariateData, file)
 }
 
@@ -89,8 +90,8 @@ loadCovariateData <- function(file, readOnly) {
   if (!file.exists(file))
     stop("Cannot find file ", file)
   if (file.info(file)$isdir)
-    stop(file , " is a folder, but should be a file")
-  if (!missing(readOnly)) 
+    stop(file, " is a folder, but should be a file")
+  if (!missing(readOnly))
     warning("readOnly argument has been deprecated")
   covariateData <- Andromeda::loadAndromeda(file)
   class(covariateData) <- "CovariateData"
@@ -99,10 +100,11 @@ loadCovariateData <- function(file, readOnly) {
 }
 
 # show()
-#' @param object  An object of class `CovariateData`.
-#' 
+#' @param object   An object of class `CovariateData`.
+#'
 #' @export
-#' @rdname CovariateData-class
+#' @rdname
+#' CovariateData-class
 setMethod("show", "CovariateData", function(object) {
   cli::cat_line(pillar::style_subtle("# CovariateData object"))
   cli::cat_line("")
@@ -122,21 +124,26 @@ setMethod("show", "CovariateData", function(object) {
 
 
 # summary()
-#' @param object  An object of class `CovariateData`.
-#' 
+#' @param object   An object of class `CovariateData`.
+#'
 #' @export
-#' @rdname CovariateData-class
+#' @rdname
+#' CovariateData-class
 setMethod("summary", "CovariateData", function(object) {
   covariateValueCount <- 0
   if (!is.null(object$covariates)) {
-    covariateValueCount <- covariateValueCount + (object$covariates %>% count() %>% pull())
+    covariateValueCount <- covariateValueCount + (object$covariates %>%
+      count() %>%
+      pull())
   }
   if (!is.null(object$covariatesContinuous)) {
-    covariateValueCount <- covariateValueCount + (object$covariatesContinuous %>% count() %>% pull())
+    covariateValueCount <- covariateValueCount + (object$covariatesContinuous %>%
+      count() %>%
+      pull())
   }
-  result <- list(metaData = attr(object, "metaData"),
-                 covariateCount = object$covariateRef %>% count() %>% pull(),
-                 covariateValueCount = covariateValueCount)
+  result <- list(metaData = attr(object, "metaData"), covariateCount = object$covariateRef %>%
+    count() %>%
+    pull(), covariateValueCount = covariateValueCount)
   class(result) <- "summary.CovariateData"
   return(result)
 })
@@ -151,11 +158,11 @@ print.summary.CovariateData <- function(x, ...) {
 
 #' Check whether an object is a CovariateData object
 #'
-#' @param x  The object to check.
+#' @param x   The object to check.
 #'
 #' @return
 #' A logical value.
-#' 
+#'
 #' @export
 isCovariateData <- function(x) {
   return(inherits(x, "CovariateData"))
@@ -163,59 +170,51 @@ isCovariateData <- function(x) {
 
 #' Check whether covariate data is aggregated
 #'
-#' @param x  The covariate data object to check.
+#' @param x   The covariate data object to check.
 #'
 #' @return
 #' A logical value.
-#' 
+#'
 #' @export
 isAggregatedCovariateData <- function(x) {
   if (!isCovariateData(x))
     stop("Object not of class CovariateData")
-  if (!Andromeda::isValidAndromeda(x)) 
+  if (!Andromeda::isValidAndromeda(x))
     stop("CovariateData object is closed")
   return(!is.null(x$covariatesContinuous) || !"rowId" %in% colnames(x$covariates))
 }
 
 #' Check whether covariate data is temporal
 #'
-#' @param x  The covariate data object to check.
+#' @param x   The covariate data object to check.
 #'
 #' @return
 #' A logical value.
-#' 
+#'
 #' @export
 isTemporalCovariateData <- function(x) {
   if (!isCovariateData(x))
     stop("Object not of class CovariateData")
-  if (!Andromeda::isValidAndromeda(x)) 
+  if (!Andromeda::isValidAndromeda(x))
     stop("CovariateData object is closed")
   return("timeId" %in% colnames(x$covariates))
 }
 
 createEmptyCovariateData <- function(cohortId, aggregated, temporal) {
-  dummy <- tibble(covariateId = 1,
-                  covariateValue = 1)
+  dummy <- tibble(covariateId = 1, covariateValue = 1)
   if (!aggregated) {
     dummy$rowId <- 1
   }
   if (!is.null(temporal) && temporal) {
     dummy$timeId <- 1
   }
-  covariateData <- Andromeda::andromeda(covariates = dummy[!1, ],
-                                        covariateRef = tibble(covariateId = 1, 
-                                                              covariateName = "", 
-                                                              analysisId = 1,
-                                                              conceptId = 1)[!1, ],
-                                        analysisRef = tibble(analysisId = 1, 
-                                                             analysisName = "",
-                                                             domainId = "",
-                                                             startDay = 1, 
-                                                             endDay = 1, 
-                                                             isBinary = "", 
-                                                             missingMeansZero = "")[!1, ])
-  attr(covariateData, "metaData") <- list(populationSize = 0,
-                                          cohortId = cohortId)
+  covariateData <- Andromeda::andromeda(covariates = dummy[!1,
+                                        ],
+                                        covariateRef = tibble(covariateId = 1,
+    covariateName = "", analysisId = 1, conceptId = 1)[!1, ], analysisRef = tibble(analysisId = 1,
+    analysisName = "", domainId = "", startDay = 1, endDay = 1, isBinary = "", missingMeansZero = "")[!1,
+    ])
+  attr(covariateData, "metaData") <- list(populationSize = 0, cohortId = cohortId)
   class(covariateData) <- "CovariateData"
   return(covariateData)
 }
