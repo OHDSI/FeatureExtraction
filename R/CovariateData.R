@@ -174,7 +174,7 @@ isAggregatedCovariateData <- function(x) {
     stop("Object not of class CovariateData")
   if (!Andromeda::isValidAndromeda(x)) 
     stop("CovariateData object is closed")
-  return(!is.null(x$covariatesContinuous) || !"rowId" %in% colnames(x$covariates))
+  return(!is.null(x$covariatesContinuous) || !"rowId" %in% names(x$covariates))
 }
 
 #' Check whether covariate data is temporal
@@ -190,7 +190,7 @@ isTemporalCovariateData <- function(x) {
     stop("Object not of class CovariateData")
   if (!Andromeda::isValidAndromeda(x)) 
     stop("CovariateData object is closed")
-  return("timeId" %in% colnames(x$covariates))
+  return("timeId" %in% names(x$covariates))
 }
 
 createEmptyCovariateData <- function(cohortId, aggregated, temporal) {
