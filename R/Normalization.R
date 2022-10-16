@@ -45,7 +45,7 @@ tidyCovariateData <- function(covariateData,
                                            analysisRef = covariateData$analysisRef)
   metaData <- attr(covariateData, "metaData")
   populationSize <- metaData$populationSize
-  if (covariateData$covariates %>% count() %>% pull() == 0) {
+  if (nrow(covariateData$covariates) == 0) {
     newCovariateData$covariates <- covariateData$covariates
   } else {
     newCovariates <- covariateData$covariates
@@ -57,7 +57,7 @@ tidyCovariateData <- function(covariateData,
     if (removeRedundancy || minFraction != 0) {
       covariateData$valueCounts <- covariateData$covariates %>% 
         group_by(.data$covariateId) %>% 
-        summarise(n = count(), nDistinct = n_distinct(.data$covariateValue))
+        summarise(n = n(), nDistinct = n_distinct(.data$covariateValue))
       on.exit(covariateData$valueCounts <- NULL, add = TRUE)
     }
     
@@ -70,17 +70,17 @@ tidyCovariateData <- function(covariateData,
         select(covariateId = .data$covariateId)
       on.exit(covariateData$binaryCovariateIds <- NULL, add = TRUE)
       
-      if (covariateData$binaryCovariateIds %>% count() %>% pull() != 0) {
+      if (nrow(covariateData$binaryCovariateIds) != 0) {
         if (isTemporalCovariateData(covariateData)) { 
           # Temporal
           covariateData$temporalValueCounts <- covariateData$covariates %>% 
             inner_join(covariateData$binaryCovariateIds, by = "covariateId") %>% 
             group_by(.data$covariateId, .data$timeId) %>% 
-            count()
+            tally()
           on.exit(covariateData$temporalValueCounts <- NULL, add = TRUE)
-          
+          browser()
           # First, find all single covariates that, for every timeId, appear in every row with the same value
-          covariateData$deleteCovariateTimeIds <-  covariateData$temporalValueCounts %>% 
+          covariateData$deleteCovariateTimeIds <- covariateData$temporalValueCounts %>% 
             filter(n == populationSize) %>% 
             select(.data$covariateId, .data$timeId)
           on.exit(covariateData$deleteCovariateTimeIds <- NULL, add = TRUE)
@@ -107,7 +107,7 @@ tidyCovariateData <- function(covariateData,
           newCovariates <- newCovariates %>%
             anti_join(covariateData$deleteCovariateTimeIds, by = c("covariateId", "timeId"))
           
-          ParallelLogger::logInfo("Removing ", covariateData$deleteCovariateTimeIds  %>% count() %>% pull(), " redundant covariate ID - time ID combinations")
+          ParallelLogger::logInfo("Removing ", nrow(covariateData$deleteCovariateTimeIds), " redundant covariate ID - time ID combinations")
         } else {
           # Non-temporal
           

@@ -119,7 +119,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
     if (is.list(covariateSettings)) {
       covariateData <- NULL
       hasData <- function(data) {
-        return(!is.null(data) && (data %>% count() %>% pull()) > 0)
+        return(!is.null(data) && (nrow(data) > 0))
       }
       for (i in 1:length(covariateSettings)) {
         fun <- attr(covariateSettings[[i]], "fun")
