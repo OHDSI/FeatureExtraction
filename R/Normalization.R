@@ -73,12 +73,12 @@ tidyCovariateData <- function(covariateData,
       if (nrow(covariateData$binaryCovariateIds) != 0) {
         if (isTemporalCovariateData(covariateData)) { 
           # Temporal
+          # browser()
           covariateData$temporalValueCounts <- covariateData$covariates %>% 
             inner_join(covariateData$binaryCovariateIds, by = "covariateId") %>% 
-            group_by(.data$covariateId, .data$timeId) %>% 
-            tally()
+            count(.data$covariateId, .data$timeId)
+            
           on.exit(covariateData$temporalValueCounts <- NULL, add = TRUE)
-          browser()
           # First, find all single covariates that, for every timeId, appear in every row with the same value
           covariateData$deleteCovariateTimeIds <- covariateData$temporalValueCounts %>% 
             filter(n == populationSize) %>% 
@@ -142,11 +142,11 @@ tidyCovariateData <- function(covariateData,
       }
       metaData$deletedRedundantCovariateIds <- deleteCovariateIds
     }
-    if (minFraction != 0) {
+    if (minFraction != 0 && !is.null(ignoreCovariateIds)) {
       minCount <- floor(minFraction * populationSize)
       toDelete <- covariateData$valueCounts %>%
         filter(.data$n < minCount) %>%
-        filter(!.data$covariateId %in% ignoreCovariateIds) %>%
+        filter(!(.data$covariateId %in% local(ignoreCovariateIds))) %>%
         select(.data$covariateId) %>%
         collect()
       

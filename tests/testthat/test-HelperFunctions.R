@@ -34,7 +34,7 @@ test_that("filterByCohortDefinitionId works", {
 
 test_that("filterByCohortDefinitionId handles locally aggregated data", {
   locallyAggregated <- aggregateCovariates(covariateData)
-  expect_error(filterByCohortDefinitionId(locallyAggregated, 1), "no such column")
+  expect_error(filterByCohortDefinitionId(locallyAggregated, 1))
 })
 
 test_that("arguments are checked", {

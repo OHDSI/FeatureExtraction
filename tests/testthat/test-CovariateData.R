@@ -63,8 +63,6 @@ test_that("test saveCovariateData", {
   expect_error(saveCovariateData()) #empty call error
   expect_error(saveCovariateData(covariateData)) #no file error
   expect_error(saveCovariateData(errCovData, file = saveFileTest)) #non covariateData class error
-  expect_message(saveCovariateData(covariateData, file = saveFileTest),
-                        "Disconnected Andromeda. This data object can no longer be used")
   Andromeda::close(covariateData)
   unlink(saveFileTest)
 })

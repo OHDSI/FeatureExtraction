@@ -15,8 +15,8 @@ test_that("Test stdDiff continuous variable computation", {
   # FeatureExtraction::saveCovariateData(data, "inst/testdata/continuousCovariateData.zip")
   # ------------------------------------------------------------------------------
   
-  
-  data <- loadCovariateData(getTestResourceFilePath("continuousCovariateData.zip"))
+  path <- system.file("testdata", "continuousCovariateData.zip", package = "FeatureExtraction", mustWork = TRUE)
+  data <- loadCovariateData(path)
   output <- computeStandardizedDifference(covariateData1 = data,
                                           covariateData2 = data,
                                           cohortId1 = 1,
