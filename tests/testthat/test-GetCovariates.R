@@ -35,6 +35,7 @@ insertTempCohortData <- function(connection, dbms) {
 }
 
 test_that("getDbCovariateData enforces specification of database details", {
+  on.exit(DatabaseConnector::disconnect(connection))
   # No database details specified
   expect_error(getDbCovariateData(connectionDetails = NULL,
                                   connection = NULL,
@@ -52,8 +53,6 @@ test_that("getDbCovariateData enforces specification of database details", {
   result <- getDbCovariateData(connectionDetails = connectionDetails,
                                cdmDatabaseSchema = "main",
                                covariateSettings = getCovariateSettings())
-  
-  on.exit(DatabaseConnector::disconnect(connection))
 })
 
 test_that("getDbCovariateData CDM v4 not supported", {
@@ -66,6 +65,7 @@ test_that("getDbCovariateData CDM v4 not supported", {
 
 test_that("getDbCovariateData cohortTableIsTemp tests when table name lacks # symbol", {
   connection <- DatabaseConnector::connect(connectionDetails)
+  on.exit(DatabaseConnector::disconnect(connection))
   insertTempCohortData(connection, connectionDetails$dbms)
   result <- getDbCovariateData(connection = connection,
                                cdmDatabaseSchema = "main",
@@ -73,7 +73,6 @@ test_that("getDbCovariateData cohortTableIsTemp tests when table name lacks # sy
                                cohortTable = "cohort",
                                covariateSettings = getCovariateSettings())
   expect_true(is(result, "CovariateData"))
-  on.exit(DatabaseConnector::disconnect(connection))
 })
 
 test_that("getDbCovariateData cohortTableIsTemp tests when table name contains # symbol", {
@@ -90,17 +89,18 @@ test_that("getDbCovariateData cohortTableIsTemp tests when table name contains #
 
 test_that("getDbCovariateData populationSize == 0 tests", {
   connection <- DatabaseConnector::connect(connectionDetails)
+  on.exit(DatabaseConnector::disconnect(connection))
   expect_warning(getDbCovariateData(connection = connection,
                                     cdmDatabaseSchema = "main",
                                     cohortTableIsTemp = FALSE,
                                     cohortTable = "cohort",
                                     cohortId = 0, # This is a cohort that is not created in Eunomia
                                     covariateSettings = getCovariateSettings()))
-  on.exit(DatabaseConnector::disconnect(connection))
 })
 
 test_that("Custom covariate builder", {
   connection <- DatabaseConnector::connect(connectionDetails)
+  on.exit(DatabaseConnector::disconnect(connection))
   Eunomia::createCohorts(connectionDetails)  
   covariateSettings <- createCovariateSettings(useDemographicsGender = TRUE,
                                                useDemographicsAgeGroup = TRUE,
@@ -115,7 +115,86 @@ test_that("Custom covariate builder", {
                                    cohortTable = "cohort",
                                    cohortId = -1,
                                    covariateSettings = covariateSettingsList)
+})
+
+test_that("getDbCovariateData care site from person tests", {
+  connection <- DatabaseConnector::connect(connectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
+  
+  # Add care site IDs to person table
+  person <- DatabaseConnector::querySql(connection, "SELECT * FROM main.person;", snakeCaseToCamelCase = TRUE)
+  person$careSiteId <- sample.int(4, nrow(person), replace = TRUE)
+  DatabaseConnector::insertTable(connection = connection,
+                                 databaseSchema = "main",
+                                 tableName = "person",
+                                 data = person,
+                                 dropTableIfExists = TRUE,
+                                 createTable = TRUE,
+                                 camelCaseToSnakeCase = TRUE)
+
+  covariateSettings <- createCovariateSettings(useCareSiteId = TRUE)
+  covariateData <- getDbCovariateData(connection = connection,
+                                      cdmDatabaseSchema = "main",
+                                      cohortTableIsTemp = FALSE,
+                                      cohortTable = "cohort",
+                                      cohortId = 1, 
+                                      covariateSettings = covariateSettings)
+  expect_gt(pull(count(covariateData$covariates)), 0)
+  joined <- inner_join(collect(covariateData$covariates), person, by = c("rowId" = "personId")) 
+  expect_true(all(joined$careSiteId * 1000 + 12 == joined$covariateId))
+  
+  covariateData <- getDbCovariateData(connection = connection,
+                                      cdmDatabaseSchema = "main",
+                                      cohortTableIsTemp = FALSE,
+                                      cohortTable = "cohort",
+                                      cohortId = 1, 
+                                      covariateSettings = covariateSettings,
+                                      aggregated = TRUE)
+  expect_gt(pull(count(covariateData$covariates)), 0)
+})
+
+test_that("getDbCovariateData care site from visit_occurrence tests", {
+  library(dplyr)
+  connection <- DatabaseConnector::connect(connectionDetails)
+  on.exit(DatabaseConnector::disconnect(connection))
+  
+  # Add care site IDs to visit occurrence table
+  visitOccurrence <- DatabaseConnector::querySql(connection, "SELECT * FROM main.visit_occurrence;", snakeCaseToCamelCase = TRUE)
+  visitOccurrence$careSiteId <- 4 + sample.int(4, nrow(visitOccurrence), replace = TRUE)
+  DatabaseConnector::insertTable(connection = connection,
+                                 databaseSchema = "main",
+                                 tableName = "visit_occurrence",
+                                 data = visitOccurrence,
+                                 dropTableIfExists = TRUE,
+                                 createTable = TRUE,
+                                 camelCaseToSnakeCase = TRUE)
+  
+  # Make sure cohorts overlap with visits
+  cohort <- DatabaseConnector::querySql(connection, "SELECT * FROM main.cohort;", snakeCaseToCamelCase = TRUE)
+  cohort <- cohort %>%
+    inner_join(visitOccurrence %>%
+                 select(subjectId = .data$personId,
+                        .data$visitStartDate),
+               by = "subjectId") %>%
+    mutate(cohortStartDate = .data$visitStartDate, cohortEndDate = .data$visitStartDate) %>%
+    select(-.data$visitStartDate) %>%
+    filter(!duplicated(.data$subjectId))
+  DatabaseConnector::insertTable(connection = connection,
+                                 databaseSchema = "main",
+                                 tableName = "cohort",
+                                 data = cohort,
+                                 dropTableIfExists = TRUE,
+                                 createTable = TRUE,
+                                 camelCaseToSnakeCase = TRUE)
+
+  covariateSettings <- createCovariateSettings(useCareSiteId = TRUE)
+  covariateData <- getDbCovariateData(connection = connection,
+                                      cdmDatabaseSchema = "main",
+                                      cohortTableIsTemp = FALSE,
+                                      cohortTable = "cohort",
+                                      cohortId = 1, 
+                                      covariateSettings = covariateSettings)
+  expect_equal(pull(count(filter(covariateData$covariates, covariateID > 4012))), sum(cohort$cohortDefinitionId == 1))
 })
 
 unlink(connectionDetails$server())

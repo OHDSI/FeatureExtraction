@@ -42,6 +42,10 @@
 #' @param useDemographicsIndexYearMonth                        Both calendar year and month of the
 #'                                                             index date in a single variable.
 #'                                                             (analysis ID 11)
+#' @param useCareSiteId                                        Care site associated with the cohort
+#'                                                             start, pulled from the visit_detail,
+#'                                                             visit_occurrence, or person table, in
+#'                                                             that order. (analysis ID 12)
 #' @param useConditionOccurrenceAnyTimePrior                   One covariate per condition in the
 #'                                                             condition_occurrence table starting any
 #'                                                             time prior to index. (analysis ID 101)
@@ -386,6 +390,7 @@
 #'                                     useDemographicsPostObservationTime = FALSE,
 #'                                     useDemographicsTimeInCohort = FALSE,
 #'                                     useDemographicsIndexYearMonth = FALSE,
+#'                                     useCareSiteId = FALSE,
 #'                                     useConditionOccurrenceAnyTimePrior = FALSE,
 #'                                     useConditionOccurrenceLongTerm = FALSE,
 #'                                     useConditionOccurrenceMediumTerm = FALSE,
@@ -502,6 +507,7 @@ createCovariateSettings <- function(useDemographicsGender = FALSE,
                                     useDemographicsPostObservationTime = FALSE,
                                     useDemographicsTimeInCohort = FALSE,
                                     useDemographicsIndexYearMonth = FALSE,
+                                    useCareSiteId = FALSE,
                                     useConditionOccurrenceAnyTimePrior = FALSE,
                                     useConditionOccurrenceLongTerm = FALSE,
                                     useConditionOccurrenceMediumTerm = FALSE,
