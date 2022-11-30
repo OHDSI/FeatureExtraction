@@ -13,10 +13,14 @@ getDbDefaultCovariateData(
   cdmVersion = "5",
   rowIdField = "subject_id",
   covariateSettings,
-  targetDatabaseSchema,
-  targetCovariateTable,
-  targetCovariateRefTable,
-  targetAnalysisRefTable,
+  targetDatabaseSchema = NULL,
+  targetCovariateTable = NULL,
+  targetCovariateRefTable = NULL,
+  targetAnalysisRefTable = NULL,
+  targetTables = list(covariates = targetCovariateTable, covariateRef =
+    targetCovariateRefTable, analysisRef = targetAnalysisRefTable),
+  dropTableIfExists = FALSE,
+  createTable = TRUE,
   aggregated = FALSE
 )
 }
@@ -51,16 +55,31 @@ is more than one period per person.}
 of the createCovariate functions, or a list of such objects.}
 
 \item{targetDatabaseSchema}{(Optional) The name of the database schema where the resulting covariates
-should be stored.}
+should be stored.  If not provided, results will be fetched to R.}
 
 \item{targetCovariateTable}{(Optional) The name of the table where the resulting covariates will
-be stored. If not provided, results will be fetched to R. The table can be 
-a permanent table in the \code{targetDatabaseSchema} or a temp table. If 
-it is a temp table, do not specify \code{targetDatabaseSchema}.}
+be stored. If not provided, results will be fetched to R. The table can be
+a permanent table in the \code{targetDatabaseSchema} or a temp table. If
+it is a temp table, do not specify \code{targetDatabaseSchema}.
+Superseded by \code{targetTables}}
 
-\item{targetCovariateRefTable}{(Optional) The name of the table where the covariate reference will be stored.}
+\item{targetCovariateRefTable}{(Optional) The name of the table where the covariate reference will be stored.
+Superseded by \code{targetTables}}
 
-\item{targetAnalysisRefTable}{(Optional) The name of the table where the analysis reference will be stored.}
+\item{targetAnalysisRefTable}{(Optional) The name of the table where the analysis reference will be stored.
+Superseded by \code{targetTables}}
+
+\item{targetTables}{(Optional) list of mappings for table names.
+The names of the table where the resulting covariates will be if
+\code{targetDatabaseSchema} is specified. The tables will be created in permanent
+table in the \code{targetDatabaseSchema} or as temporary tables. Tables that can be
+included in this list: covariates, covariateRef, analysisRef, covariatesContinuous,
+timeRef}
+
+\item{dropTableIfExists}{If targetDatabaseSchema, drop any existing tables. Otherwise, results are merged
+into existing table data. Overides createTable.}
+
+\item{createTable}{Run sql to create table? Code does not check if table exists.}
 
 \item{aggregated}{Should aggregate statistics be computed instead of covariates per
 cohort entry?}
