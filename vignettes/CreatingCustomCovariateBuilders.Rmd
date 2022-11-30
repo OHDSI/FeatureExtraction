@@ -69,7 +69,6 @@ The covariate construction function has to accept the following arguments:
 * `cdmVersion`: Defines the OMOP CDM version used: currently supports "4" and "5".
 * `cohortTable`: Name of the table holding the cohort for which we want to construct covariates. This is a fully specified name, so either the name of a temp table (e.g. '#cohort_table'), or a permanent table including its database schema (e.g. 'cdm_schema.dbo.cohort').
 * `cohortId`: The cohort definition ID of the cohort. If set to -1, use all entries in the cohort table.
-* `cdmVersion`: The version of the Common Data Model.
 * `rowIdField`:  The name of the field in the cohort temp table that is to be used as the row_id field in the output table. This can be especially usefull if there is more than one period per person.
 * `covariateSettings`: The object created in your covariate settings function.
 * `aggregated`: Should covariates be constructed per-person, or aggregated across the cohort?
@@ -92,9 +91,9 @@ Additionally, the object should have an attribute called `metaData`, which is a 
 getDbLooCovariateData <- function(connection,
                                   oracleTempSchema = NULL,
                                   cdmDatabaseSchema,
+                                  cdmVersion = "5",
                                   cohortTable = "#cohort_person",
                                   cohortId = -1,
-                                  cdmVersion = "5",
                                   rowIdField = "subject_id",
                                   covariateSettings,
                                   aggregated = FALSE) {
