@@ -159,6 +159,53 @@ test_that("Cohort-based covariates: counts, aggregated", {
   expect_equivalent(expectedCovariates[, names(expectedCovariates)], expectedCovariates)
 })
 
+test_that("Cohort-based covariates: counts, non-aggregated, temporal", {
+  skip_if_not(runTestsOnEunomia)
+  settings <- createCohortBasedTemporalCovariateSettings(analysisId = 999,
+                                                         covariateCohorts = covariateCohorts,
+                                                         valueType = "count")
+  covs <- getDbCovariateData(connection = connection,
+                             oracleTempSchema = NULL,
+                             cdmDatabaseSchema = "main",
+                             cohortTable = "cohort",
+                             cohortId = 1,
+                             cdmVersion = "5",
+                             rowIdField = "subject_id",
+                             covariateSettings = settings,
+                             aggregated = FALSE)
+  covariates <- dplyr::collect(covs$covariates)
+  expectedCovariates <- data.frame(rowId = c(1, 1),
+                                   covariateId = c(101999, 101999),
+                                   covariateValue = c(1,1),
+                                   timeId = c(335,336))
+  expect_equivalent(covariates, expectedCovariates)
+})
+
+test_that("Cohort-based covariates: counts, aggregated, temporal", {
+  skip_if_not(runTestsOnEunomia)
+  settings <- createCohortBasedTemporalCovariateSettings(analysisId = 999,
+                                                         covariateCohorts = covariateCohorts,
+                                                         valueType = "count")
+  covs <- getDbCovariateData(connection = connection,
+                             oracleTempSchema = NULL,
+                             cdmDatabaseSchema = "main",
+                             cohortTable = "cohort",
+                             cohortId = 1,
+                             cdmVersion = "5",
+                             rowIdField = "subject_id",
+                             covariateSettings = settings,
+                             aggregated = TRUE)
+  covariates <- dplyr::collect(covs$covariatesContinuous)
+  expectedCovariates <- data.frame(cohortDefinitionId  = 1,
+                                   covariateId = 101999,
+                                   countValue  = 1,
+                                   minValue = 0,
+                                   maxValue = 1,
+                                   averageValue = 1,
+                                   timeId = c(335,336))
+  expect_equivalent(expectedCovariates[, names(expectedCovariates)], expectedCovariates)
+})
+
 if (runTestsOnEunomia) {
   DatabaseConnector::disconnect(connection)
 }

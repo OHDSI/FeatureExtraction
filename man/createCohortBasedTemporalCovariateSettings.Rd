@@ -9,6 +9,7 @@ createCohortBasedTemporalCovariateSettings(
   covariateCohortDatabaseSchema = NULL,
   covariateCohortTable = NULL,
   covariateCohorts,
+  valueType = "binary",
   temporalStartDays = -365:-1,
   temporalEndDays = -365:-1,
   includedCovariateIds = c(),
@@ -29,6 +30,9 @@ guessed, for example using the same one as for the main cohorts.}
 \item{covariateCohorts}{A data frame with at least two columns: 'cohortId' and 'cohortName'. The 
 cohort  ID should correspond to the \code{cohort_definition_id} of the cohort
 to use for creating a covariate.}
+
+\item{valueType}{Either 'binary' or 'count'. When \code{valueType = 'count'}, the covariate 
+value will be the number of times the cohort was observed in the window.}
 
 \item{temporalStartDays}{A list of integers representing the start of a time
 period, relative to the index date. 0 indicates the

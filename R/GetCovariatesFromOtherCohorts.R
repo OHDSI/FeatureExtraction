@@ -72,7 +72,11 @@ getDbCohortBasedCovariatesData <- function(connection,
   }
   
   if (covariateSettings$temporal) {
-    sqlFileName <- "CohortBasedBinaryCovariates.sql"
+    if (covariateSettings$valueType == "binary") {
+      sqlFileName <- "CohortBasedBinaryCovariates.sql"
+    } else {
+      sqlFileName <- "CohortBasedCountCovariates.sql"
+    }
     parameters <- list(covariateCohortTable = covariateCohortTable,
                        analysisId = covariateSettings$analysisId,
                        analysisName = "CohortTemporal")
@@ -209,6 +213,8 @@ createCohortBasedCovariateSettings <- function(analysisId,
 #' @param covariateCohorts              A data frame with at least two columns: 'cohortId' and 'cohortName'. The 
 #'                                      cohort  ID should correspond to the \code{cohort_definition_id} of the cohort
 #'                                      to use for creating a covariate.
+#' @param valueType                     Either 'binary' or 'count'. When \code{valueType = 'count'}, the covariate 
+#'                                      value will be the number of times the cohort was observed in the window.
 #' @param temporalStartDays                        A list of integers representing the start of a time
 #'                                                 period, relative to the index date. 0 indicates the
 #'                                                 index date, -1 indicates the day before the index
@@ -231,6 +237,7 @@ createCohortBasedTemporalCovariateSettings <- function(analysisId,
                                                        covariateCohortDatabaseSchema = NULL,
                                                        covariateCohortTable = NULL,
                                                        covariateCohorts,
+                                                       valueType = "binary",
                                                        temporalStartDays = -365:-1,
                                                        temporalEndDays = -365:-1,
                                                        includedCovariateIds = c(),
@@ -241,6 +248,7 @@ createCohortBasedTemporalCovariateSettings <- function(analysisId,
   checkmate::assertCharacter(covariateCohortTable, len = 1, null.ok = TRUE, add = errorMessages)
   checkmate::assertDataFrame(covariateCohorts, min.rows = 1, add = errorMessages)
   checkmate::assertNames(colnames(covariateCohorts), must.include = c("cohortId", "cohortName"), add = errorMessages)
+  checkmate::assertChoice(valueType, c("binary", "count"), add = errorMessages)
   checkmate::assertIntegerish(temporalStartDays, add = errorMessages)
   checkmate::assertIntegerish(temporalEndDays, add = errorMessages)
   checkmate::assertTRUE(all(temporalStartDays <= temporalEndDays), add = errorMessages)
