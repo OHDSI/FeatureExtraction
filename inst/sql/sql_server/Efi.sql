@@ -1077,7 +1077,7 @@ UNION
 		@row_id_field,
 		cohort_start_date
 } : {
-		cohort.@row_id_field AS row_id
+		@row_id_field AS row_id
 }			
 	FROM 
 	(
@@ -1093,7 +1093,7 @@ UNION
 	AND drug_era_start_date <= cohort.cohort_start_date
 } : {
 	AND drug_era_start_date <= DATEADD(DAY, @end_day, cohort.cohort_start_date)
-	AND drug_era_start_date >= DATEADD(DAY, @start_day, cohort.cohort_start_date)
+	AND drug_era_end_date >= DATEADD(DAY, @end_day, cohort.cohort_start_date)
 }
 {@cohort_definition_id != -1} ? {		AND cohort.cohort_definition_id IN (@cohort_definition_id)}
 		GROUP BY cohort.cohort_definition_id,
