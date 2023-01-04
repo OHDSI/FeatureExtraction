@@ -1,4 +1,4 @@
-# Copyright 2021 Observational Health Data Sciences and Informatics
+# Copyright 2022 Observational Health Data Sciences and Informatics
 #
 # This file is part of FeatureExtraction
 #
@@ -30,9 +30,7 @@
 #'
 #' @export
 createDetailedCovariateSettings <- function(analyses = list()) {
-  covariateSettings <- list(temporal = FALSE, 
-                            temporalSequence = FALSE, 
-                            analyses = analyses)
+  covariateSettings <- list(temporal = FALSE, temporalSequence = FALSE, analyses = analyses)
   attr(covariateSettings, "fun") <- "getDbDefaultCovariateData"
   class(covariateSettings) <- "covariateSettings"
   return(covariateSettings)
@@ -61,8 +59,7 @@ createDetailedCovariateSettings <- function(analyses = list()) {
 createDetailedTemporalCovariateSettings <- function(analyses = list(),
                                                     temporalStartDays = -365:-1,
                                                     temporalEndDays = -365:-1) {
-  covariateSettings <- list(temporal = TRUE,
-                            temporalSequence = FALSE)
+  covariateSettings <- list(temporal = TRUE, temporalSequence = FALSE)
   formalNames <- names(formals(createDetailedTemporalCovariateSettings))
   for (name in formalNames) {
     covariateSettings[[name]] <- get(name)
@@ -102,13 +99,8 @@ createDetailedTemporalCovariateSettings <- function(analyses = list(),
 #' analysisDetails <- createAnalysisDetails(analysisId = 1,
 #'                                          sqlFileName = "DemographicsGender.sql",
 #'                                          parameters = list(analysisId = 1,
-#'                                                            analysisName = "Gender",
-#'                                                            domainId = "Demographics"),
-#'                                          includedCovariateConceptIds = c(),
-#'                                          addDescendantsToInclude = FALSE,
-#'                                          excludedCovariateConceptIds = c(),
-#'                                          addDescendantsToExclude = FALSE,
-#'                                          includedCovariateIds = c())
+#'   analysisName = "Gender", domainId = "Demographics"), includedCovariateConceptIds = c(), addDescendantsToInclude = FALSE,
+#'   excludedCovariateConceptIds = c(), addDescendantsToExclude = FALSE, includedCovariateIds = c())
 #'
 #'
 #' @export
@@ -116,10 +108,9 @@ createAnalysisDetails <- function(analysisId,
                                   sqlFileName,
                                   parameters,
                                   includedCovariateConceptIds = c(),
-                                  addDescendantsToInclude = FALSE,
-                                  excludedCovariateConceptIds = c(),
-                                  addDescendantsToExclude = FALSE,
-                                  includedCovariateIds = c()) {
+
+  addDescendantsToInclude = FALSE, excludedCovariateConceptIds = c(), addDescendantsToExclude = FALSE,
+  includedCovariateIds = c()) {
   analysisDetail <- list()
   formalNames <- names(formals(createAnalysisDetails))
   for (name in formalNames) {
@@ -173,9 +164,8 @@ convertPrespecSettingsToDetailedSettings <- function(covariateSettings) {
 #' @export
 createDefaultCovariateSettings <- function(includedCovariateConceptIds = c(),
                                            addDescendantsToInclude = FALSE,
-                                           excludedCovariateConceptIds = c(),
-                                           addDescendantsToExclude = FALSE,
-                                           includedCovariateIds = c()) {
+
+  excludedCovariateConceptIds = c(), addDescendantsToExclude = FALSE, includedCovariateIds = c()) {
   rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$init(system.file("", package = "FeatureExtraction"))
   newJson <- rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$getDefaultPrespecAnalyses()
   covariateSettings <- .fromJson(newJson)
@@ -210,9 +200,8 @@ createDefaultCovariateSettings <- function(includedCovariateConceptIds = c(),
 #' @export
 createDefaultTemporalCovariateSettings <- function(includedCovariateConceptIds = c(),
                                                    addDescendantsToInclude = FALSE,
-                                                   excludedCovariateConceptIds = c(),
-                                                   addDescendantsToExclude = FALSE,
-                                                   includedCovariateIds = c()) {
+
+  excludedCovariateConceptIds = c(), addDescendantsToExclude = FALSE, includedCovariateIds = c()) {
   rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$init(system.file("", package = "FeatureExtraction"))
   newJson <- rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$getDefaultPrespecTemporalAnalyses()
   covariateSettings <- .fromJson(newJson)

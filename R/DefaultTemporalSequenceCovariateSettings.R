@@ -1,4 +1,4 @@
-# Copyright 2021 Observational Health Data Sciences and Informatics
+# Copyright 2022 Observational Health Data Sciences and Informatics
 #
 # This file is part of FeatureExtraction
 #
@@ -62,13 +62,15 @@
 #'                                                 (analysis ID 702)
 #' @param useObservation                           One covariate per observation in the observation
 #'                                                 table in the time window. (analysis ID 801)
-#' @param timePart                                The interval scale ('DAY', 'MONTH', 'YEAR')
-#' @param timeInterval                            Fixed interval length for timeId using the 'timePart' scale.  For example, a 'timePart' of DAY with 
-#'                                                 'timeInterval' 30 has timeIds where timeId 1 is day 0 to day 29, timeId 2 is day 30 to day 59, etc.
-#' @param sequenceEndDay                                  What is the end day (relative to the
-#'                                                 index date) of the data extraction?
-#' @param sequenceStartDay                                What is the start day (relative to the
-#'                                                 index date) of the data extraction?
+#' @param timePart                                 The interval scale ('DAY', 'MONTH', 'YEAR')
+#' @param timeInterval                             Fixed interval length for timeId using the
+#'                                                 'timePart' scale.  For example, a 'timePart' of DAY
+#'                                                 with 'timeInterval' 30 has timeIds where timeId 1 is
+#'                                                 day 0 to day 29, timeId 2 is day 30 to day 59, etc.
+#' @param sequenceEndDay                           What is the end day (relative to the index date) of
+#'                                                 the data extraction?
+#' @param sequenceStartDay                         What is the start day (relative to the index date)
+#'                                                 of the data extraction?
 #' @param includedCovariateConceptIds              A list of concept IDs that should be used to
 #'                                                 construct covariates.
 #' @param addDescendantsToInclude                  Should descendant concept IDs be added to the list
@@ -85,65 +87,28 @@
 #'
 #' @examples
 #' settings <- createTemporalSequenceCovariateSettings(useDemographicsGender = TRUE,
-#'                                             useDemographicsAge = FALSE,
-#'                                             useDemographicsAgeGroup = TRUE,
-#'                                             useDemographicsRace = TRUE,
-#'                                             useDemographicsEthnicity = TRUE,
-#'                                             useDemographicsIndexYear = TRUE,
-#'                                             useDemographicsIndexMonth = TRUE,
-#'                                             useConditionOccurrence = FALSE,
-#'                                             useConditionOccurrencePrimaryInpatient = FALSE,
-#'                                             useConditionEraStart = FALSE,
-#'                                             useConditionEraGroupStart = FALSE,
-#'                                             useDrugExposure = FALSE,
-#'                                             useDrugEraStart = FALSE,
-#'                                             useDrugEraGroupStart = FALSE,
-#'                                             useProcedureOccurrence = TRUE,
-#'                                             useDeviceExposure = TRUE,
-#'                                             useMeasurement = TRUE,
-#'                                             useMeasurementValue = FALSE,
-#'                                             useObservation = TRUE,
-#'                                             timePart = 'DAY',
-#'                                             timeInterval = 1,
-#'                                             sequenceEndDay = -1,
-#'                                             sequenceStartDay = -730,
-#'                                             includedCovariateConceptIds = c(),
-#'                                             addDescendantsToInclude = FALSE,
-#'                                             excludedCovariateConceptIds = c(),
-#'                                             addDescendantsToExclude = FALSE,
-#'                                             includedCovariateIds = c())
+#'                                                     useDemographicsAge = FALSE,
+#'
+#'   useDemographicsAgeGroup = TRUE, useDemographicsRace = TRUE, useDemographicsEthnicity = TRUE, useDemographicsIndexYear = TRUE,
+#'   useDemographicsIndexMonth = TRUE, useConditionOccurrence = FALSE, useConditionOccurrencePrimaryInpatient = FALSE,
+#'   useConditionEraStart = FALSE, useConditionEraGroupStart = FALSE, useDrugExposure = FALSE, useDrugEraStart = FALSE,
+#'   useDrugEraGroupStart = FALSE, useProcedureOccurrence = TRUE, useDeviceExposure = TRUE, useMeasurement = TRUE,
+#'   useMeasurementValue = FALSE, useObservation = TRUE, timePart = "DAY", timeInterval = 1, sequenceEndDay = -1,
+#'   sequenceStartDay = -730, includedCovariateConceptIds = c(), addDescendantsToInclude = FALSE, excludedCovariateConceptIds = c(),
+#'   addDescendantsToExclude = FALSE, includedCovariateIds = c())
 #'
 #' @export
 createTemporalSequenceCovariateSettings <- function(useDemographicsGender = FALSE,
-                                            useDemographicsAge = FALSE,
-                                            useDemographicsAgeGroup = FALSE,
-                                            useDemographicsRace = FALSE,
-                                            useDemographicsEthnicity = FALSE,
-                                            useDemographicsIndexYear = FALSE,
-                                            useDemographicsIndexMonth = FALSE,
-                                            useConditionOccurrence = FALSE,
-                                            useConditionOccurrencePrimaryInpatient = FALSE,
-                                            useConditionEraStart = FALSE,
-                                            useConditionEraGroupStart = FALSE,
-                                            useDrugExposure = FALSE,
-                                            useDrugEraStart = FALSE,
-                                            useDrugEraGroupStart = FALSE,
-                                            useProcedureOccurrence = FALSE,
-                                            useDeviceExposure = FALSE,
-                                            useMeasurement = FALSE,
-                                            useMeasurementValue = FALSE,
-                                            useObservation = FALSE,
-                                            timePart = 'month',
-                                            timeInterval = 1,
-                                            sequenceEndDay = -1,
-                                            sequenceStartDay = -730,
-                                            includedCovariateConceptIds = c(),
-                                            addDescendantsToInclude = FALSE,
-                                            excludedCovariateConceptIds = c(),
-                                            addDescendantsToExclude = FALSE,
-                                            includedCovariateIds = c()) {
-  covariateSettings <- list(temporal = FALSE,
-                            temporalSequence = TRUE)
+                                                    useDemographicsAge = FALSE,
+
+  useDemographicsAgeGroup = FALSE, useDemographicsRace = FALSE, useDemographicsEthnicity = FALSE, useDemographicsIndexYear = FALSE,
+  useDemographicsIndexMonth = FALSE, useConditionOccurrence = FALSE, useConditionOccurrencePrimaryInpatient = FALSE,
+  useConditionEraStart = FALSE, useConditionEraGroupStart = FALSE, useDrugExposure = FALSE, useDrugEraStart = FALSE,
+  useDrugEraGroupStart = FALSE, useProcedureOccurrence = FALSE, useDeviceExposure = FALSE, useMeasurement = FALSE,
+  useMeasurementValue = FALSE, useObservation = FALSE, timePart = "month", timeInterval = 1, sequenceEndDay = -1,
+  sequenceStartDay = -730, includedCovariateConceptIds = c(), addDescendantsToInclude = FALSE, excludedCovariateConceptIds = c(),
+  addDescendantsToExclude = FALSE, includedCovariateIds = c()) {
+  covariateSettings <- list(temporal = FALSE, temporalSequence = TRUE)
   formalNames <- names(formals(createTemporalSequenceCovariateSettings))
   anyUseTrue <- FALSE
   for (name in formalNames) {

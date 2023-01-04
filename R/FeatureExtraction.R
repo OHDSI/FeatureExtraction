@@ -1,6 +1,6 @@
 # @file FeatureExtraction.R
 #
-# Copyright 2021 Observational Health Data Sciences and Informatics
+# Copyright 2022 Observational Health Data Sciences and Informatics
 #
 # This file is part of FeatureExtraction
 # 
@@ -28,16 +28,23 @@
 NULL
 
 .onLoad <- function(libname, pkgname) {
-  
+
   rJava::.jpackage(pkgname, lib.loc = libname)
-  
+
   # Verify checksum of JAR:
-  storedChecksum <- scan(file = system.file("csv", "jarChecksum.txt", package = "FeatureExtraction"), what = character(), quiet = TRUE)
-  computedChecksum <- tryCatch(rJava::J("org.ohdsi.featureExtraction.JarChecksum","computeJarChecksum"),
-                               error = function(e) {warning("Problem connecting to Java. This is normal when runing roxygen."); return("")})
+  storedChecksum <- scan(file = system.file("csv",
+                                            "jarChecksum.txt",
+                                            package = "FeatureExtraction"),
+    what = character(), quiet = TRUE)
+  computedChecksum <- tryCatch(rJava::J("org.ohdsi.featureExtraction.JarChecksum",
+                                        "computeJarChecksum"),
+    error = function(e) {
+      warning("Problem connecting to Java. This is normal when runing roxygen.")
+      return("")
+    })
   if (computedChecksum != "" && (storedChecksum != computedChecksum)) {
     warning("Java library version does not match R package version! Please try reinstalling the FeatureExtraction package.
-            Make sure to close all instances of R, and open only one instance before reinstalling. Also make sure your 
+            Make sure to close all instances of R, and open only one instance before reinstalling. Also make sure your
             R workspace is not reloaded on startup. Delete your .Rdata file if necessary")
   }
 }

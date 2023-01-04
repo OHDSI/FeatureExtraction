@@ -1,4 +1,4 @@
-# Copyright 2021 Observational Health Data Sciences and Informatics
+# Copyright 2022 Observational Health Data Sciences and Informatics
 #
 # This file is part of FeatureExtraction
 #
@@ -61,18 +61,9 @@
 #' Returns an object of type \code{covariateData}, containing information on the covariates.
 #'
 #' @export
-getDbCovariateData <- function(connectionDetails = NULL,
-                               connection = NULL,
-                               oracleTempSchema = NULL,
-                               cdmDatabaseSchema,
-                               cdmVersion = "5",
-                               cohortTable = "cohort",
-                               cohortDatabaseSchema = cdmDatabaseSchema,
-                               cohortTableIsTemp = FALSE,
-                               cohortId = -1,
-                               rowIdField = "subject_id",
-                               covariateSettings,
-                               aggregated = FALSE) {
+getDbCovariateData <- function(connectionDetails = NULL, connection = NULL, oracleTempSchema = NULL,
+  cdmDatabaseSchema, cdmVersion = "5", cohortTable = "cohort", cohortDatabaseSchema = cdmDatabaseSchema,
+  cohortTableIsTemp = FALSE, cohortId = -1, rowIdField = "subject_id", covariateSettings, aggregated = FALSE) {
   if (is.null(connectionDetails) && is.null(connection)) {
     stop("Need to provide either connectionDetails or connection")
   }
@@ -119,46 +110,46 @@ getDbCovariateData <- function(connectionDetails = NULL,
     if (is.list(covariateSettings)) {
       covariateData <- NULL
       hasData <- function(data) {
-        return(!is.null(data) && (data %>% count() %>% pull()) > 0)
+        return(!is.null(data) && (data %>%
+          count() %>%
+          pull()) > 0)
       }
       for (i in 1:length(covariateSettings)) {
         fun <- attr(covariateSettings[[i]], "fun")
         args <- list(connection = connection,
                      oracleTempSchema = oracleTempSchema,
                      cdmDatabaseSchema = cdmDatabaseSchema,
-                     cohortTable = cohortDatabaseSchemaTable,
-                     cohortId = cohortId,
-                     cdmVersion = cdmVersion,
-                     rowIdField = rowIdField,
-                     covariateSettings = covariateSettings[[i]],
-                     aggregated = aggregated)
+
+          cohortTable = cohortDatabaseSchemaTable, cohortId = cohortId, cdmVersion = cdmVersion,
+          rowIdField = rowIdField, covariateSettings = covariateSettings[[i]], aggregated = aggregated)
         tempCovariateData <- do.call(eval(parse(text = fun)), args)
         if (is.null(covariateData)) {
           covariateData <- tempCovariateData
         } else {
           if (hasData(covariateData$covariates)) {
-            if (hasData(tempCovariateData$covariates)) {
-              Andromeda::appendToTable(covariateData$covariates, tempCovariateData$covariates)
-            } 
+          if (hasData(tempCovariateData$covariates)) {
+            Andromeda::appendToTable(covariateData$covariates, tempCovariateData$covariates)
+          }
           } else if (hasData(tempCovariateData$covariates)) {
-            covariateData$covariates <- tempCovariateData$covariates
+          covariateData$covariates <- tempCovariateData$covariates
           }
           if (hasData(covariateData$covariatesContinuous)) {
-            if (hasData(tempCovariateData$covariatesContinuous)) {
-              Andromeda::appendToTable(covariateData$covariatesContinuous, tempCovariateData$covariatesContinuous)
-            } else if (hasData(tempCovariateData$covariatesContinuous)) {
-              covariateData$covariatesContinuous <- tempCovariateData$covariatesContinuous
-            }
-          } 
+          if (hasData(tempCovariateData$covariatesContinuous)) {
+            Andromeda::appendToTable(covariateData$covariatesContinuous,
+                                     tempCovariateData$covariatesContinuous)
+          } else if (hasData(tempCovariateData$covariatesContinuous)) {
+            covariateData$covariatesContinuous <- tempCovariateData$covariatesContinuous
+          }
+          }
           Andromeda::appendToTable(covariateData$covariateRef, tempCovariateData$covariateRef)
           Andromeda::appendToTable(covariateData$analysisRef, tempCovariateData$analysisRef)
           for (name in names(attr(tempCovariateData, "metaData"))) {
-            if (is.null(attr(covariateData, "metaData")[name])) {
-              attr(covariateData, "metaData")[[name]] <- attr(tempCovariateData, "metaData")[[name]]
-            } else {
-              attr(covariateData, "metaData")[[name]] <- list(attr(covariateData, "metaData")[[name]],
-                                                              attr(tempCovariateData, "metaData")[[name]])
-            }
+          if (is.null(attr(covariateData, "metaData")[name])) {
+            attr(covariateData, "metaData")[[name]] <- attr(tempCovariateData, "metaData")[[name]]
+          } else {
+            attr(covariateData, "metaData")[[name]] <- list(attr(covariateData, "metaData")[[name]],
+            attr(tempCovariateData, "metaData")[[name]])
+          }
           }
         }
       }

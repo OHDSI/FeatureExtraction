@@ -1,4 +1,4 @@
-# Copyright 2021 Observational Health Data Sciences and Informatics
+# Copyright 2022 Observational Health Data Sciences and Informatics
 #
 # This file is part of FeatureExtraction
 #
@@ -97,6 +97,8 @@
 #' @param useHfrs                                  The Hospital Frailty Risk Score score using all
 #'                                                 conditions prior to the window end. (analysis ID
 #'                                                 926)
+#' @param useEfi                                   Electronic frailty score, using all conditions prior
+#'                                                 to the window end. (analysis ID 927)
 #' @param useDistinctConditionCount                The number of distinct condition concepts observed
 #'                                                 in the time window. (analysis ID 905)
 #' @param useDistinctIngredientCount               The number of distinct ingredients observed in the
@@ -138,102 +140,39 @@
 #' @examples
 #' settings <- createTemporalCovariateSettings(useDemographicsGender = TRUE,
 #'                                             useDemographicsAge = FALSE,
-#'                                             useDemographicsAgeGroup = TRUE,
-#'                                             useDemographicsRace = TRUE,
-#'                                             useDemographicsEthnicity = TRUE,
-#'                                             useDemographicsIndexYear = TRUE,
-#'                                             useDemographicsIndexMonth = TRUE,
-#'                                             useDemographicsPriorObservationTime = FALSE,
-#'                                             useDemographicsPostObservationTime = FALSE,
-#'                                             useDemographicsTimeInCohort = FALSE,
-#'                                             useDemographicsIndexYearMonth = FALSE,
-#'                                             useConditionOccurrence = FALSE,
-#'                                             useConditionOccurrencePrimaryInpatient = FALSE,
-#'                                             useConditionEraStart = FALSE,
-#'                                             useConditionEraOverlap = FALSE,
-#'                                             useConditionEraGroupStart = FALSE,
-#'                                             useConditionEraGroupOverlap = TRUE,
-#'                                             useDrugExposure = FALSE,
-#'                                             useDrugEraStart = FALSE,
-#'                                             useDrugEraOverlap = FALSE,
-#'                                             useDrugEraGroupStart = FALSE,
-#'                                             useDrugEraGroupOverlap = TRUE,
-#'                                             useProcedureOccurrence = TRUE,
-#'                                             useDeviceExposure = TRUE,
-#'                                             useMeasurement = TRUE,
-#'                                             useMeasurementValue = FALSE,
-#'                                             useMeasurementRangeGroup = TRUE,
-#'                                             useObservation = TRUE,
-#'                                             useCharlsonIndex = TRUE,
-#'                                             useDcsi = TRUE,
-#'                                             useChads2 = TRUE,
-#'                                             useChads2Vasc = TRUE,
-#'                                             useHfrs = FALSE,
-#'                                             useDistinctConditionCount = FALSE,
-#'                                             useDistinctIngredientCount = FALSE,
-#'                                             useDistinctProcedureCount = FALSE,
-#'                                             useDistinctMeasurementCount = FALSE,
-#'                                             useDistinctObservationCount = FALSE,
-#'                                             useVisitCount = FALSE,
-#'                                             useVisitConceptCount = FALSE,
-#'                                             temporalStartDays = -365:-1,
-#'                                             temporalEndDays = -365:-1,
-#'                                             includedCovariateConceptIds = c(),
-#'                                             addDescendantsToInclude = FALSE,
-#'                                             excludedCovariateConceptIds = c(),
-#'                                             addDescendantsToExclude = FALSE,
-#'                                             includedCovariateIds = c())
+#'
+#'   useDemographicsAgeGroup = TRUE, useDemographicsRace = TRUE, useDemographicsEthnicity = TRUE, useDemographicsIndexYear = TRUE,
+#'   useDemographicsIndexMonth = TRUE, useDemographicsPriorObservationTime = FALSE, useDemographicsPostObservationTime = FALSE,
+#'   useDemographicsTimeInCohort = FALSE, useDemographicsIndexYearMonth = FALSE, useConditionOccurrence = FALSE,
+#'   useConditionOccurrencePrimaryInpatient = FALSE, useConditionEraStart = FALSE, useConditionEraOverlap = FALSE,
+#'   useConditionEraGroupStart = FALSE, useConditionEraGroupOverlap = TRUE, useDrugExposure = FALSE,
+#'   useDrugEraStart = FALSE, useDrugEraOverlap = FALSE, useDrugEraGroupStart = FALSE, useDrugEraGroupOverlap = TRUE,
+#'   useProcedureOccurrence = TRUE, useDeviceExposure = TRUE, useMeasurement = TRUE, useMeasurementValue = FALSE,
+#'   useMeasurementRangeGroup = TRUE, useObservation = TRUE, useCharlsonIndex = TRUE, useDcsi = TRUE,
+#'   useChads2 = TRUE, useChads2Vasc = TRUE, useHfrs = FALSE, useEfi = FALSE, useDistinctConditionCount = FALSE,
+#'   useDistinctIngredientCount = FALSE, useDistinctProcedureCount = FALSE, useDistinctMeasurementCount = FALSE,
+#'   useDistinctObservationCount = FALSE, useVisitCount = FALSE, useVisitConceptCount = FALSE, temporalStartDays = -365:-1,
+#'   temporalEndDays = -365:-1, includedCovariateConceptIds = c(), addDescendantsToInclude = FALSE,
+#'   excludedCovariateConceptIds = c(), addDescendantsToExclude = FALSE, includedCovariateIds = c())
 #'
 #' @export
 createTemporalCovariateSettings <- function(useDemographicsGender = FALSE,
                                             useDemographicsAge = FALSE,
-                                            useDemographicsAgeGroup = FALSE,
-                                            useDemographicsRace = FALSE,
-                                            useDemographicsEthnicity = FALSE,
-                                            useDemographicsIndexYear = FALSE,
-                                            useDemographicsIndexMonth = FALSE,
-                                            useDemographicsPriorObservationTime = FALSE,
-                                            useDemographicsPostObservationTime = FALSE,
-                                            useDemographicsTimeInCohort = FALSE,
-                                            useDemographicsIndexYearMonth = FALSE,
-                                            useConditionOccurrence = FALSE,
-                                            useConditionOccurrencePrimaryInpatient = FALSE,
-                                            useConditionEraStart = FALSE,
-                                            useConditionEraOverlap = FALSE,
-                                            useConditionEraGroupStart = FALSE,
-                                            useConditionEraGroupOverlap = FALSE,
-                                            useDrugExposure = FALSE,
-                                            useDrugEraStart = FALSE,
-                                            useDrugEraOverlap = FALSE,
-                                            useDrugEraGroupStart = FALSE,
-                                            useDrugEraGroupOverlap = FALSE,
-                                            useProcedureOccurrence = FALSE,
-                                            useDeviceExposure = FALSE,
-                                            useMeasurement = FALSE,
-                                            useMeasurementValue = FALSE,
-                                            useMeasurementRangeGroup = FALSE,
-                                            useObservation = FALSE,
-                                            useCharlsonIndex = FALSE,
-                                            useDcsi = FALSE,
-                                            useChads2 = FALSE,
-                                            useChads2Vasc = FALSE,
-                                            useHfrs = FALSE,
-                                            useDistinctConditionCount = FALSE,
-                                            useDistinctIngredientCount = FALSE,
-                                            useDistinctProcedureCount = FALSE,
-                                            useDistinctMeasurementCount = FALSE,
-                                            useDistinctObservationCount = FALSE,
-                                            useVisitCount = FALSE,
-                                            useVisitConceptCount = FALSE,
-                                            temporalStartDays = -365:-1,
-                                            temporalEndDays = -365:-1,
-                                            includedCovariateConceptIds = c(),
-                                            addDescendantsToInclude = FALSE,
-                                            excludedCovariateConceptIds = c(),
-                                            addDescendantsToExclude = FALSE,
-                                            includedCovariateIds = c()) {
-  covariateSettings <- list(temporal = TRUE,
-                            temporalSequence = FALSE)
+
+  useDemographicsAgeGroup = FALSE, useDemographicsRace = FALSE, useDemographicsEthnicity = FALSE, useDemographicsIndexYear = FALSE,
+  useDemographicsIndexMonth = FALSE, useDemographicsPriorObservationTime = FALSE, useDemographicsPostObservationTime = FALSE,
+  useDemographicsTimeInCohort = FALSE, useDemographicsIndexYearMonth = FALSE, useConditionOccurrence = FALSE,
+  useConditionOccurrencePrimaryInpatient = FALSE, useConditionEraStart = FALSE, useConditionEraOverlap = FALSE,
+  useConditionEraGroupStart = FALSE, useConditionEraGroupOverlap = FALSE, useDrugExposure = FALSE,
+  useDrugEraStart = FALSE, useDrugEraOverlap = FALSE, useDrugEraGroupStart = FALSE, useDrugEraGroupOverlap = FALSE,
+  useProcedureOccurrence = FALSE, useDeviceExposure = FALSE, useMeasurement = FALSE, useMeasurementValue = FALSE,
+  useMeasurementRangeGroup = FALSE, useObservation = FALSE, useCharlsonIndex = FALSE, useDcsi = FALSE,
+  useChads2 = FALSE, useChads2Vasc = FALSE, useHfrs = FALSE, useEfi = FALSE, useDistinctConditionCount = FALSE,
+  useDistinctIngredientCount = FALSE, useDistinctProcedureCount = FALSE, useDistinctMeasurementCount = FALSE,
+  useDistinctObservationCount = FALSE, useVisitCount = FALSE, useVisitConceptCount = FALSE, temporalStartDays = -365:-1,
+  temporalEndDays = -365:-1, includedCovariateConceptIds = c(), addDescendantsToInclude = FALSE, excludedCovariateConceptIds = c(),
+  addDescendantsToExclude = FALSE, includedCovariateIds = c()) {
+  covariateSettings <- list(temporal = TRUE, temporalSequence = FALSE)
   formalNames <- names(formals(createTemporalCovariateSettings))
   anyUseTrue <- FALSE
   for (name in formalNames) {

@@ -1,4 +1,4 @@
-# Copyright 2021 Observational Health Data Sciences and Informatics
+# Copyright 2022 Observational Health Data Sciences and Informatics
 #
 # This file is part of FeatureExtraction
 #
@@ -29,11 +29,8 @@ getDbCohortAttrCovariatesData <- function(connection,
                                           oracleTempSchema = NULL,
                                           cdmDatabaseSchema,
                                           cohortTable = "#cohort_person",
-                                          cohortId = -1,
-                                          cdmVersion = "5",
-                                          rowIdField = "subject_id",
-                                          covariateSettings,
-                                          aggregated = FALSE) {
+
+  cohortId = -1, cdmVersion = "5", rowIdField = "subject_id", covariateSettings, aggregated = FALSE) {
   if (aggregated) {
     stop("Aggregation not implemented for covariates from cohort attributes.")
   }
@@ -42,7 +39,7 @@ getDbCohortAttrCovariatesData <- function(connection,
   }
   start <- Sys.time()
   writeLines("Constructing covariates from cohort attributes table")
-  
+
   if (is.null(covariateSettings$includeAttrIds) || length(covariateSettings$includeAttrIds) == 0) {
     hasIncludeAttrIds <- FALSE
   } else {
@@ -52,58 +49,53 @@ getDbCohortAttrCovariatesData <- function(connection,
     DatabaseConnector::insertTable(connection,
                                    tableName = "#included_attr",
                                    data = data.frame(attribute_definition_id = as.integer(covariateSettings$includeAttrIds)),
-                                   dropTableIfExists = TRUE,
-                                   createTable = TRUE,
-                                   tempTable = TRUE,
-                                   oracleTempSchema = oracleTempSchema)
+
+      dropTableIfExists = TRUE, createTable = TRUE, tempTable = TRUE, oracleTempSchema = oracleTempSchema)
   }
-  sql <- SqlRender::readSql(system.file("sql/sql_server/GetAttrCovariates.sql", package = "FeatureExtraction"))
+  sql <- SqlRender::readSql(system.file("sql/sql_server/GetAttrCovariates.sql",
+                                        package = "FeatureExtraction"))
   renderedSql <- SqlRender::render(sql = sql,
                                    attr_database_schema = covariateSettings$attrDatabaseSchema,
-                                   cohort_table = cohortTable,
-                                   row_id_field = rowIdField,
-                                   cohort_attribute_table = covariateSettings$cohortAttrTable,
-                                   has_include_attr_ids = hasIncludeAttrIds)
-  renderedSql <- SqlRender::translate(sql = renderedSql,
-                                      targetDialect = attr(connection, "dbms"),
-                                      oracleTempSchema = oracleTempSchema)
-  # renderedSql <- SqlRender::loadRenderTranslateSql("GetAttrCovariates.sql",
-  #                                                  packageName = "FeatureExtraction",
-  #                                                  dbms = attr(connection, "dbms"),
-  #                                                  oracleTempSchema = oracleTempSchema,
-  #                                                  attr_database_schema = covariateSettings$attrDatabaseSchema,
-  #                                                  cohort_table = cohortTable,
-  #                                                  row_id_field = rowIdField,
-  #                                                  cohort_attribute_table = covariateSettings$cohortAttrTable,
-  #                                                  has_include_attr_ids = hasIncludeAttrIds)
-  
-  covariates <- DatabaseConnector::querySql(connection, renderedSql, snakeCaseToCamelCase = TRUE)  
+
+    cohort_table = cohortTable, row_id_field = rowIdField, cohort_attribute_table = covariateSettings$cohortAttrTable,
+    has_include_attr_ids = hasIncludeAttrIds)
+  renderedSql <- SqlRender::translate(sql = renderedSql, targetDialect = attr(connection, "dbms"),
+    oracleTempSchema = oracleTempSchema)
+  # renderedSql <- SqlRender::loadRenderTranslateSql('GetAttrCovariates.sql', packageName =
+  # 'FeatureExtraction', dbms = attr(connection, 'dbms'), oracleTempSchema = oracleTempSchema,
+  # attr_database_schema = covariateSettings$attrDatabaseSchema, cohort_table = cohortTable,
+  # row_id_field = rowIdField, cohort_attribute_table = covariateSettings$cohortAttrTable,
+  # has_include_attr_ids = hasIncludeAttrIds)
+
+  covariates <- DatabaseConnector::querySql(connection, renderedSql, snakeCaseToCamelCase = TRUE)
   covariateRefSql <- "SELECT attribute_definition_id AS covariate_id, attribute_name AS covariate_name FROM @attr_database_schema.@attr_definition_table ORDER BY attribute_definition_id"
   covariateRefSql <- SqlRender::render(covariateRefSql,
                                        attr_database_schema = covariateSettings$attrDatabaseSchema,
-                                       attr_definition_table = covariateSettings$attrDefinitionTable)
-  covariateRefSql <- SqlRender::translate(sql = covariateRefSql,
-                                          targetDialect = attr(connection, "dbms"),
-                                          oracleTempSchema = oracleTempSchema)
-  covariateRef <- DatabaseConnector::querySql(connection, covariateRefSql, snakeCaseToCamelCase = TRUE)
-  covariateRef$analysisId <- rep(as.numeric(covariateSettings$analysisId), length = nrow(covariateRef))
+
+    attr_definition_table = covariateSettings$attrDefinitionTable)
+  covariateRefSql <- SqlRender::translate(sql = covariateRefSql, targetDialect = attr(connection,
+                                                                                      "dbms"),
+    oracleTempSchema = oracleTempSchema)
+  covariateRef <- DatabaseConnector::querySql(connection,
+                                              covariateRefSql,
+                                              snakeCaseToCamelCase = TRUE)
+  covariateRef$analysisId <- rep(as.numeric(covariateSettings$analysisId),
+                                 length = nrow(covariateRef))
   covariateRef$conceptId <- rep(0, length = nrow(covariateRef))
-  
+
   analysisRef <- data.frame(analysisId = as.numeric(covariateSettings$analysisId),
                             analysisName = "Covariates from cohort attributes",
-                            domainId = "Cohort",
-                            startDay = as.numeric(NA),
-                            endDay = as.numeric(NA),
-                            isBinary = ifelse(covariateSettings$isBinary, "Y", "N"),
-                            missingMeansZero = ifelse(covariateSettings$missingMeansZero, "Y", "N"))
+
+    domainId = "Cohort", startDay = as.numeric(NA), endDay = as.numeric(NA), isBinary = ifelse(covariateSettings$isBinary,
+      "Y", "N"), missingMeansZero = ifelse(covariateSettings$missingMeansZero, "Y", "N"))
   delta <- Sys.time() - start
   writeLines(paste("Loading took", signif(delta, 3), attr(delta, "units")))
-  
+
   result <- createEmptyCovariateData(cohortId, aggregated, covariateSettings$temporal)
-  result$covariates = covariates
-  result$covariateRef = covariateRef
-  result$analysisRef = analysisRef
-  
+  result$covariates <- covariates
+  result$covariateRef <- covariateRef
+  result$analysisRef <- analysisRef
+
   return(result)
 }
 
@@ -127,10 +119,10 @@ getDbCohortAttrCovariatesData <- function(connection,
 #' @param attrDefinitionTable   The name of the attribute definition table.
 #' @param cohortAttrTable       The name of the cohort attribute table.
 #' @param includeAttrIds        (optional) A list of attribute definition IDs to restrict to.
-#' @param isBinary              Needed for aggregation: Are these binary variables? Binary 
-#'                              variables should only have the values 0 or 1.
-#' @param missingMeansZero      Needed for aggregation: For continuous values, should missing
-#'                              values be interpreted as 0?
+#' @param isBinary              Needed for aggregation: Are these binary variables? Binary variables
+#'                              should only have the values 0 or 1.
+#' @param missingMeansZero      Needed for aggregation: For continuous values, should missing values be
+#'                              interpreted as 0?
 #'
 #' @return
 #' An object of type \code{covariateSettings}, to be used in other functions.
@@ -139,10 +131,8 @@ getDbCohortAttrCovariatesData <- function(connection,
 createCohortAttrCovariateSettings <- function(analysisId = -1,
                                               attrDatabaseSchema,
                                               attrDefinitionTable = "attribute_definition",
-                                              cohortAttrTable = "cohort_attribute",
-                                              includeAttrIds = c(),
-                                              isBinary = FALSE,
-                                              missingMeansZero = FALSE) {
+
+  cohortAttrTable = "cohort_attribute", includeAttrIds = c(), isBinary = FALSE, missingMeansZero = FALSE) {
   # First: get the default values:
   covariateSettings <- list()
   for (name in names(formals(createCohortAttrCovariateSettings))) {
@@ -154,7 +144,7 @@ createCohortAttrCovariateSettings <- function(analysisId = -1,
     if (name %in% names(covariateSettings))
       covariateSettings[[name]] <- values[[name]]
   }
-  
+
   attr(covariateSettings, "fun") <- "getDbCohortAttrCovariatesData"
   class(covariateSettings) <- "covariateSettings"
   return(covariateSettings)
