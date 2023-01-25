@@ -194,7 +194,7 @@ test_that("getDbCovariateData care site from visit_occurrence tests", {
                                       cohortTable = "cohort",
                                       cohortId = 1, 
                                       covariateSettings = covariateSettings)
-  expect_equal(pull(count(filter(covariateData$covariates, covariateID > 4012))), sum(cohort$cohortDefinitionId == 1))
+  expect_equal(pull(count(filter(covariateData$covariates, covariateId > 4012))), sum(cohort$cohortDefinitionId == 1))
 })
 
 unlink(connectionDetails$server())
