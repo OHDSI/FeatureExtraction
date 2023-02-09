@@ -57,7 +57,7 @@
 #'                                                 time window. (analysis ID 203)
 #' @param useConditionEraGroupOverlap              One covariate per condition era rolled up to SNOMED
 #'                                                 groups in the condition_era table overlapping with
-#'                                                 any part of the time window. (analysis ID 203)
+#'                                                 any part of the time window. (analysis ID 204)
 #' @param useDrugExposure                          One covariate per drug in the drug_exposure table
 #'                                                 starting in the time window. (analysis ID 301)
 #' @param useDrugEraStart                          One covariate per drug in the drug_era table
@@ -70,7 +70,7 @@
 #'                                                 (analysis ID 403)
 #' @param useDrugEraGroupOverlap                   One covariate per drug rolled up to ATC groups in
 #'                                                 the drug_era table overlapping with any part of
-#'                                                 thetime window. (analysis ID 403)
+#'                                                 thetime window. (analysis ID 404)
 #' @param useProcedureOccurrence                   One covariate per procedure in the
 #'                                                 procedure_occurrence table in the time window.
 #'                                                 (analysis ID 501)
