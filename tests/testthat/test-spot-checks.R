@@ -1,13 +1,14 @@
 library(testthat)
 library(Andromeda)
 
-runSpotChecks <- function(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema) {
+runSpotChecks <- function(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable) {
   connection <- DatabaseConnector::connect(connectionDetails)
   sql <- loadRenderTranslateSql(sqlFileName = "cohortsOfInterest.sql",
                                 targetDialect = connectionDetails$dbms,
                                 tempEmulationSchema = ohdsiDatabaseSchema,
                                 cdmDatabaseSchema = cdmDatabaseSchema,
-                                resultsDatabaseSchema = ohdsiDatabaseSchema)
+                                resultsDatabaseSchema = ohdsiDatabaseSchema,
+                                cohortsTable = cohortsTable)
   DatabaseConnector::executeSql(connection, sql)
   DatabaseConnector::disconnect(connection)
   
@@ -235,5 +236,6 @@ test_that("Run spot-checks at per-person level on Eunomia", {
   connectionDetails <- Eunomia::getEunomiaConnectionDetails()
   cdmDatabaseSchema <- "main"
   ohdsiDatabaseSchema <- "main"
-  runSpotChecks(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+  cohortsTable <- "cohorts_of_interest"
+  runSpotChecks(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
 })

@@ -1,13 +1,14 @@
 library(testthat)
 
 # runExtractionPerPerson ----------- 
-runExtractionPerPerson <- function(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema) {
+runExtractionPerPerson <- function(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable) {
   connection <- DatabaseConnector::connect(connectionDetails)
   sql <- loadRenderTranslateSql(sqlFileName = "cohortsOfInterest.sql",
                                 targetDialect = connectionDetails$dbms,
                                 tempEmulationSchema = ohdsiDatabaseSchema,
                                 cdmDatabaseSchema = cdmDatabaseSchema,
-                                resultsDatabaseSchema = ohdsiDatabaseSchema)
+                                resultsDatabaseSchema = ohdsiDatabaseSchema,
+                                cohortsTable = cohortsTable)
   DatabaseConnector::executeSql(connection, sql)
   DatabaseConnector::disconnect(connection)
   settings <- createCovariateSettings(useDemographicsGender = TRUE,
@@ -191,18 +192,20 @@ test_that("Run all analysis at per-person level on Eunomia", {
   connectionDetails <- Eunomia::getEunomiaConnectionDetails()
   cdmDatabaseSchema <- "main"
   ohdsiDatabaseSchema <- "main"
-  covariateData <- runExtractionPerPerson(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+  cohortsTable <- "cohorts_of_interest"
+  covariateData <- runExtractionPerPerson(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
 # runExtractionAggregated ----------- 
-runExtractionAggregated <- function(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema) {
+runExtractionAggregated <- function(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable) {
   connection <- DatabaseConnector::connect(connectionDetails)
   sql <- loadRenderTranslateSql(sqlFileName = "cohortsOfInterest.sql",
                                 targetDialect = connectionDetails$dbms,
                                 tempEmulationSchema = ohdsiDatabaseSchema,
                                 cdmDatabaseSchema = cdmDatabaseSchema,
-                                resultsDatabaseSchema = ohdsiDatabaseSchema)
+                                resultsDatabaseSchema = ohdsiDatabaseSchema,
+                                cohortsTable = cohortsTable)
   DatabaseConnector::executeSql(connection, sql)
   DatabaseConnector::disconnect(connection)
   settings <- createCovariateSettings(useDemographicsGender = TRUE,
@@ -387,18 +390,20 @@ test_that("Run all analysis at aggregated level on Eunomia", {
   connectionDetails <- Eunomia::getEunomiaConnectionDetails()
   cdmDatabaseSchema <- "main"
   ohdsiDatabaseSchema <- "main"
-  covariateData <- runExtractionAggregated(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+  cohortsTable <- "cohorts_of_interest"
+  covariateData <- runExtractionAggregated(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
 # runExtractionTemporalPerPerson ----------- 
-runExtractionTemporalPerPerson <- function(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema) {
+runExtractionTemporalPerPerson <- function(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable) {
   connection <- DatabaseConnector::connect(connectionDetails)
   sql <- loadRenderTranslateSql(sqlFileName = "cohortsOfInterest.sql",
                                 targetDialect = connectionDetails$dbms,
                                 tempEmulationSchema = ohdsiDatabaseSchema,
                                 cdmDatabaseSchema = cdmDatabaseSchema,
-                                resultsDatabaseSchema = ohdsiDatabaseSchema)
+                                resultsDatabaseSchema = ohdsiDatabaseSchema,
+                                cohortsTable = cohortsTable)
   DatabaseConnector::executeSql(connection, sql)
   DatabaseConnector::disconnect(connection)
   settings <- createTemporalCovariateSettings(useDemographicsGender = TRUE,
@@ -514,18 +519,20 @@ test_that("Run all temporalanalysis at per-person level on Eunomia", {
   connectionDetails <- Eunomia::getEunomiaConnectionDetails()
   cdmDatabaseSchema <- "main"
   ohdsiDatabaseSchema <- "main"
-  covariateData <- runExtractionTemporalPerPerson(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+  cohortsTable <- "cohorts_of_interest"
+  covariateData <- runExtractionTemporalPerPerson(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
 # runExtractionTemporalPerPerson -----------
-runExtractionTemporalAggregated <- function(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema) {
+runExtractionTemporalAggregated <- function(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable) {
   connection <- DatabaseConnector::connect(connectionDetails)
   sql <- loadRenderTranslateSql(sqlFileName = "cohortsOfInterest.sql",
                                 targetDialect = connectionDetails$dbms,
                                 tempEmulationSchema = ohdsiDatabaseSchema,
                                 cdmDatabaseSchema = cdmDatabaseSchema,
-                                resultsDatabaseSchema = ohdsiDatabaseSchema)  
+                                resultsDatabaseSchema = ohdsiDatabaseSchema,
+                                cohortsTable = cohortsTable)  
   DatabaseConnector::executeSql(connection, sql)
   DatabaseConnector::disconnect(connection)
   settings <- createTemporalCovariateSettings(useDemographicsGender = TRUE,
@@ -642,6 +649,7 @@ test_that("Run all temporalanalysis at aggregated level on Eunomia", {
   connectionDetails <- Eunomia::getEunomiaConnectionDetails()
   cdmDatabaseSchema <- "main"
   ohdsiDatabaseSchema <- "main"
-  covariateData <- runExtractionTemporalAggregated(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+  cohortsTable <- "cohorts_of_interest"
+  covariateData <- runExtractionTemporalAggregated(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
   expect_true(is(covariateData, "CovariateData"))
 })
