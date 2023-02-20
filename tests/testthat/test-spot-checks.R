@@ -30,7 +30,7 @@ runSpotChecks <- function(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSch
                                                        cdmDatabaseSchema = cdmDatabaseSchema,
                                                        oracleTempSchema = ohdsiDatabaseSchema,
                                                        cohortDatabaseSchema = ohdsiDatabaseSchema,
-                                                       cohortTable = "cohorts_of_interest",
+                                                       cohortTable = cohortsTable,
                                                        cohortId = 1124300,
                                                        rowIdField = "subject_id",
                                                        covariateSettings = settings))
@@ -38,7 +38,7 @@ runSpotChecks <- function(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSch
                                                        cdmDatabaseSchema = cdmDatabaseSchema,
                                                        oracleTempSchema = ohdsiDatabaseSchema,
                                                        cohortDatabaseSchema = ohdsiDatabaseSchema,
-                                                       cohortTable = "cohorts_of_interest",
+                                                       cohortTable = cohortsTable,
                                                        cohortId = 1124300,
                                                        rowIdField = "subject_id",
                                                        covariateSettings = settings,
@@ -49,10 +49,11 @@ runSpotChecks <- function(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSch
   connection <- DatabaseConnector::connect(connectionDetails)
   
   # Test analysis 1: gender
-  sql <- "SELECT subject_id, gender_concept_id FROM @resultsDatabaseSchema.cohorts_of_interest INNER JOIN @cdmDatabaseSchema.person ON subject_id = person_id WHERE cohort_definition_id = 1124300"
-  sql <- SqlRender::render(sql ,
-                              cdmDatabaseSchema = cdmDatabaseSchema,
-                              resultsDatabaseSchema = ohdsiDatabaseSchema)
+  sql <- "SELECT subject_id, gender_concept_id FROM @resultsDatabaseSchema.@cohortsTable INNER JOIN @cdmDatabaseSchema.person ON subject_id = person_id WHERE cohort_definition_id = 1124300"
+  sql <- SqlRender::render(sql,
+                           cdmDatabaseSchema = cdmDatabaseSchema,
+                           resultsDatabaseSchema = ohdsiDatabaseSchema,
+                           cohortsTable = cohortsTable)
   sql <- SqlRender::translate(sql, targetDialect = connectionDetails$dbms)
   results <- as_tibble(DatabaseConnector::querySql(connection, sql))
   colnames(results) <- c("rowId", "covariateId")
@@ -71,10 +72,11 @@ runSpotChecks <- function(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSch
   expect_equivalent(results, results2)
   
   # Test analysis 2: age
-  sql <- "SELECT subject_id, YEAR(cohort_start_date) - year_of_birth AS age FROM @resultsDatabaseSchema.cohorts_of_interest INNER JOIN @cdmDatabaseSchema.person ON subject_id = person_id WHERE cohort_definition_id = 1124300"
-  sql <- SqlRender::render(sql ,
-                              cdmDatabaseSchema = cdmDatabaseSchema,
-                              resultsDatabaseSchema = ohdsiDatabaseSchema)
+  sql <- "SELECT subject_id, YEAR(cohort_start_date) - year_of_birth AS age FROM @resultsDatabaseSchema.@cohortsTable INNER JOIN @cdmDatabaseSchema.person ON subject_id = person_id WHERE cohort_definition_id = 1124300"
+  sql <- SqlRender::render(sql,
+                           cdmDatabaseSchema = cdmDatabaseSchema,
+                           resultsDatabaseSchema = ohdsiDatabaseSchema,
+                           cohortsTable = cohortsTable)
   sql <- SqlRender::translate(sql, targetDialect = connectionDetails$dbms)
   results <- as_tibble(DatabaseConnector::querySql(connection, sql))
   colnames(results) <- c("rowId", "covariateValue")
@@ -94,10 +96,11 @@ runSpotChecks <- function(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSch
   
   
   # Test analysis 102: condition occurrence long term
-  sql <- "SELECT DISTINCT subject_id, condition_concept_id FROM @resultsDatabaseSchema.cohorts_of_interest INNER JOIN @cdmDatabaseSchema.condition_occurrence ON subject_id = person_id WHERE cohort_definition_id = 1124300 AND condition_start_date <= cohort_start_date AND condition_start_date >= DATEADD(DAY, -365, cohort_start_date)"
-  sql <- SqlRender::render(sql ,
-                              cdmDatabaseSchema = cdmDatabaseSchema,
-                              resultsDatabaseSchema = ohdsiDatabaseSchema)
+  sql <- "SELECT DISTINCT subject_id, condition_concept_id FROM @resultsDatabaseSchema.@cohortsTable INNER JOIN @cdmDatabaseSchema.condition_occurrence ON subject_id = person_id WHERE cohort_definition_id = 1124300 AND condition_start_date <= cohort_start_date AND condition_start_date >= DATEADD(DAY, -365, cohort_start_date)"
+  sql <- SqlRender::render(sql,
+                           cdmDatabaseSchema = cdmDatabaseSchema,
+                           resultsDatabaseSchema = ohdsiDatabaseSchema,
+                           cohortsTable = cohortsTable)
   sql <- SqlRender::translate(sql, targetDialect = connectionDetails$dbms)
   results <- DatabaseConnector::querySql(connection, sql)
   colnames(results) <- c("rowId", "covariateId")
@@ -118,10 +121,11 @@ runSpotChecks <- function(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSch
   
   
   # Test analysis 404: drug era short term (excluding NSAIDS)
-  sql <- "SELECT DISTINCT subject_id, drug_concept_id FROM @resultsDatabaseSchema.cohorts_of_interest INNER JOIN @cdmDatabaseSchema.drug_era ON subject_id = person_id WHERE cohort_definition_id = 1124300 AND drug_era_start_date <= cohort_start_date AND drug_era_end_date >= DATEADD(DAY, -30, cohort_start_date) AND drug_concept_id NOT IN (SELECT descendant_concept_id FROM @cdmDatabaseSchema.concept_ancestor WHERE ancestor_concept_id = 21603933)"
-  sql <- SqlRender::render(sql ,
-                              cdmDatabaseSchema = cdmDatabaseSchema,
-                              resultsDatabaseSchema = ohdsiDatabaseSchema)
+  sql <- "SELECT DISTINCT subject_id, drug_concept_id FROM @resultsDatabaseSchema.@cohortsTable INNER JOIN @cdmDatabaseSchema.drug_era ON subject_id = person_id WHERE cohort_definition_id = 1124300 AND drug_era_start_date <= cohort_start_date AND drug_era_end_date >= DATEADD(DAY, -30, cohort_start_date) AND drug_concept_id NOT IN (SELECT descendant_concept_id FROM @cdmDatabaseSchema.concept_ancestor WHERE ancestor_concept_id = 21603933)"
+  sql <- SqlRender::render(sql,
+                           cdmDatabaseSchema = cdmDatabaseSchema,
+                           resultsDatabaseSchema = ohdsiDatabaseSchema,
+                           cohortsTable = cohortsTable)
   sql <- SqlRender::translate(sql, targetDialect = connectionDetails$dbms)
   results <- DatabaseConnector::querySql(connection, sql)
   colnames(results) <- c("rowId", "covariateId")
@@ -141,10 +145,11 @@ runSpotChecks <- function(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSch
   expect_equivalent(results, results2)
   
   # Test analysis 923: visit concept count (long term)
-  sql <- "SELECT subject_id, visit_concept_id, COUNT(*) AS visit_count FROM @resultsDatabaseSchema.cohorts_of_interest INNER JOIN @cdmDatabaseSchema.visit_occurrence ON subject_id = person_id WHERE cohort_definition_id = 1124300 AND visit_start_date <= cohort_start_date AND visit_start_date >= DATEADD(DAY, -365, cohort_start_date) AND visit_concept_id != 0 GROUP BY subject_id, visit_concept_id"
-  sql <- SqlRender::render(sql ,
-                              cdmDatabaseSchema = cdmDatabaseSchema,
-                              resultsDatabaseSchema = ohdsiDatabaseSchema)
+  sql <- "SELECT subject_id, visit_concept_id, COUNT(*) AS visit_count FROM @resultsDatabaseSchema.@cohortsTable INNER JOIN @cdmDatabaseSchema.visit_occurrence ON subject_id = person_id WHERE cohort_definition_id = 1124300 AND visit_start_date <= cohort_start_date AND visit_start_date >= DATEADD(DAY, -365, cohort_start_date) AND visit_concept_id != 0 GROUP BY subject_id, visit_concept_id"
+  sql <- SqlRender::render(sql,
+                           cdmDatabaseSchema = cdmDatabaseSchema,
+                           resultsDatabaseSchema = ohdsiDatabaseSchema,
+                           cohortsTable = cohortsTable)
   sql <- SqlRender::translate(sql, targetDialect = connectionDetails$dbms)
   results <- DatabaseConnector::querySql(connection, sql)
   colnames(results) <- c("rowId", "covariateId", "covariateValue")
@@ -194,7 +199,8 @@ test_that("Run spot-checks at per-person level on PostgreSQL", {
                                                server = Sys.getenv("CDM5_POSTGRESQL_SERVER"))
   cdmDatabaseSchema <- Sys.getenv("CDM5_POSTGRESQL_CDM_SCHEMA")
   ohdsiDatabaseSchema <- Sys.getenv("CDM5_POSTGRESQL_OHDSI_SCHEMA")
-  runSpotChecks(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+  cohortsTable <- getCohortsTableName("cohorts_of_interest")
+  runSpotChecks(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
 })
 
 test_that("Run spot-checks at per-person level on SQL Server", {
@@ -205,7 +211,8 @@ test_that("Run spot-checks at per-person level on SQL Server", {
                                                server = Sys.getenv("CDM5_SQL_SERVER_SERVER"))
   cdmDatabaseSchema <- Sys.getenv("CDM5_SQL_SERVER_CDM_SCHEMA")
   ohdsiDatabaseSchema <- Sys.getenv("CDM5_SQL_SERVER_OHDSI_SCHEMA")
-  runSpotChecks(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+  cohortsTable <- getCohortsTableName("cohorts_of_interest")
+  runSpotChecks(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
 })
 
 test_that("Run spot-checks at per-person level on Oracle", {  
@@ -216,7 +223,8 @@ test_that("Run spot-checks at per-person level on Oracle", {
                                                server = Sys.getenv("CDM5_ORACLE_SERVER"))
   cdmDatabaseSchema <- Sys.getenv("CDM5_ORACLE_CDM_SCHEMA")
   ohdsiDatabaseSchema <- Sys.getenv("CDM5_ORACLE_OHDSI_SCHEMA")
-  runSpotChecks(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+  cohortsTable <- getCohortsTableName("cohorts_of_interest")
+  runSpotChecks(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
 })
 
 test_that("Run spot-checks at per-person level on Impala", {  
@@ -228,7 +236,8 @@ test_that("Run spot-checks at per-person level on Impala", {
                                                pathToDriver = Sys.getenv("CDM5_IMPALA_PATH_TO_DRIVER"))
   cdmDatabaseSchema <- Sys.getenv("CDM5_IMPALA_CDM_SCHEMA")
   ohdsiDatabaseSchema <- Sys.getenv("CDM5_IMPALA_OHDSI_SCHEMA")
-  runSpotChecks(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+  cohortsTable <- getCohortsTableName("cohorts_of_interest")
+  runSpotChecks(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
 })
 
 test_that("Run spot-checks at per-person level on Eunomia", {
@@ -236,6 +245,6 @@ test_that("Run spot-checks at per-person level on Eunomia", {
   connectionDetails <- Eunomia::getEunomiaConnectionDetails()
   cdmDatabaseSchema <- "main"
   ohdsiDatabaseSchema <- "main"
-  cohortsTable <- "cohorts_of_interest"
+  cohortsTable <- getCohortsTableName("cohorts_of_interest")
   runSpotChecks(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
 })

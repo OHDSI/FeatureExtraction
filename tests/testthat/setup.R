@@ -32,3 +32,8 @@ runTestsOnOracle <- FALSE #!(Sys.getenv("CDM5_ORACLE_USER") == "" & Sys.getenv("
 runTestsOnImpala <- FALSE #!(Sys.getenv("CDM5_IMPALA_USER") == "" & Sys.getenv("CDM5_IMPALA_PASSWORD") == "" & Sys.getenv("CDM5_IMPALA_SERVER") == "" & Sys.getenv("CDM5_IMPALA_CDM_SCHEMA") == "" & Sys.getenv("CDM5_IMPALA_OHDSI_SCHEMA") == "")
 runTestsOnEunomia <- TRUE
 
+# Get a cohorts table name that is unique per OS to avoid errors in running parallel tests
+getCohortsTableName <- function(tableName) {
+  sysName <- as.character(Sys.info()["sysname"])
+  return(paste(sysName, tableName, sep = "_"))
+}

@@ -131,7 +131,7 @@ runExtractionPerPerson <- function(connectionDetails, cdmDatabaseSchema, ohdsiDa
                                                        cdmDatabaseSchema = cdmDatabaseSchema,
                                                        oracleTempSchema = ohdsiDatabaseSchema,
                                                        cohortDatabaseSchema = ohdsiDatabaseSchema,
-                                                       cohortTable = "cohorts_of_interest",
+                                                       cohortTable = cohortsTable,
                                                        cohortId = 1124300,
                                                        rowIdField = "subject_id",
                                                        covariateSettings = settings))
@@ -146,7 +146,8 @@ test_that("Run all analysis at per-person level on PostgreSQL", {
                                                server = Sys.getenv("CDM5_POSTGRESQL_SERVER"))
   cdmDatabaseSchema <- Sys.getenv("CDM5_POSTGRESQL_CDM_SCHEMA")
   ohdsiDatabaseSchema <- Sys.getenv("CDM5_POSTGRESQL_OHDSI_SCHEMA")
-  covariateData <- runExtractionPerPerson(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+  cohortsTable <- getCohortsTableName("cohorts_of_interest")
+  covariateData <- runExtractionPerPerson(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
@@ -158,7 +159,8 @@ test_that("Run all analysis at per-person level on SQL Server", {
                                                server = Sys.getenv("CDM5_SQL_SERVER_SERVER"))
   cdmDatabaseSchema <- Sys.getenv("CDM5_SQL_SERVER_CDM_SCHEMA")
   ohdsiDatabaseSchema <- Sys.getenv("CDM5_SQL_SERVER_OHDSI_SCHEMA")
-  covariateData <- runExtractionPerPerson(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+  cohortsTable <- getCohortsTableName("cohorts_of_interest")
+  covariateData <- runExtractionPerPerson(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
@@ -170,7 +172,8 @@ test_that("Run all analysis at per-person level on Oracle", {
                                                server = Sys.getenv("CDM5_ORACLE_SERVER"))
   cdmDatabaseSchema <- Sys.getenv("CDM5_ORACLE_CDM_SCHEMA")
   ohdsiDatabaseSchema <- Sys.getenv("CDM5_ORACLE_OHDSI_SCHEMA")
-  covariateData <- runExtractionPerPerson(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+  cohortsTable <- getCohortsTableName("cohorts_of_interest")
+  covariateData <- runExtractionPerPerson(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
@@ -183,7 +186,8 @@ test_that("Run all analysis at per-person level on Impala", {
                                                pathToDriver = Sys.getenv("CDM5_IMPALA_PATH_TO_DRIVER"))
   cdmDatabaseSchema <- Sys.getenv("CDM5_IMPALA_CDM_SCHEMA")
   ohdsiDatabaseSchema <- Sys.getenv("CDM5_IMPALA_OHDSI_SCHEMA")
-  covariateData <- runExtractionPerPerson(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+  cohortsTable <- getCohortsTableName("cohorts_of_interest")
+  covariateData <- runExtractionPerPerson(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
@@ -192,7 +196,7 @@ test_that("Run all analysis at per-person level on Eunomia", {
   connectionDetails <- Eunomia::getEunomiaConnectionDetails()
   cdmDatabaseSchema <- "main"
   ohdsiDatabaseSchema <- "main"
-  cohortsTable <- "cohorts_of_interest"
+  cohortsTable <- getCohortsTableName("cohorts_of_interest")
   covariateData <- runExtractionPerPerson(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
   expect_true(is(covariateData, "CovariateData"))
 })
@@ -328,7 +332,7 @@ runExtractionAggregated <- function(connectionDetails, cdmDatabaseSchema, ohdsiD
                                                        cdmDatabaseSchema = cdmDatabaseSchema,
                                                        oracleTempSchema = ohdsiDatabaseSchema,
                                                        cohortDatabaseSchema = ohdsiDatabaseSchema,
-                                                       cohortTable = "cohorts_of_interest",
+                                                       cohortTable = cohortsTable,
                                                        cohortId = 1124300,
                                                        rowIdField = "subject_id",
                                                        covariateSettings = settings,
@@ -344,7 +348,8 @@ test_that("Run all analysis at aggregated level on PostgreSQL", {
                                                server = Sys.getenv("CDM5_POSTGRESQL_SERVER"))
   cdmDatabaseSchema <- Sys.getenv("CDM5_POSTGRESQL_CDM_SCHEMA")
   ohdsiDatabaseSchema <- Sys.getenv("CDM5_POSTGRESQL_OHDSI_SCHEMA")
-  covariateData <- runExtractionAggregated(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+  cohortsTable <- getCohortsTableName("cohorts_of_interest")
+  covariateData <- runExtractionAggregated(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
@@ -356,7 +361,8 @@ test_that("Run all analysis at aggregated level on SQL Server", {
                                                server = Sys.getenv("CDM5_SQL_SERVER_SERVER"))
   cdmDatabaseSchema <- Sys.getenv("CDM5_SQL_SERVER_CDM_SCHEMA")
   ohdsiDatabaseSchema <- Sys.getenv("CDM5_SQL_SERVER_OHDSI_SCHEMA")
-  covariateData <- runExtractionAggregated(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+  cohortsTable <- getCohortsTableName("cohorts_of_interest")
+  covariateData <- runExtractionAggregated(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
@@ -368,7 +374,8 @@ test_that("Run all analysis at aggregated level on Oracle", {
                                                server = Sys.getenv("CDM5_ORACLE_SERVER"))
   cdmDatabaseSchema <- Sys.getenv("CDM5_ORACLE_CDM_SCHEMA")
   ohdsiDatabaseSchema <- Sys.getenv("CDM5_ORACLE_OHDSI_SCHEMA")
-  covariateData <- runExtractionAggregated(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+  cohortsTable <- getCohortsTableName("cohorts_of_interest")
+  covariateData <- runExtractionAggregated(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
@@ -381,7 +388,8 @@ test_that("Run all analysis at aggregated level on Impala", {
                                                pathToDriver = Sys.getenv("CDM5_IMPALA_PATH_TO_DRIVER"))
   cdmDatabaseSchema <- Sys.getenv("CDM5_IMPALA_CDM_SCHEMA")
   ohdsiDatabaseSchema <- Sys.getenv("CDM5_IMPALA_OHDSI_SCHEMA")
-  covariateData <- runExtractionAggregated(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+  cohortsTable <- getCohortsTableName("cohorts_of_interest")
+  covariateData <- runExtractionAggregated(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
@@ -390,7 +398,7 @@ test_that("Run all analysis at aggregated level on Eunomia", {
   connectionDetails <- Eunomia::getEunomiaConnectionDetails()
   cdmDatabaseSchema <- "main"
   ohdsiDatabaseSchema <- "main"
-  cohortsTable <- "cohorts_of_interest"
+  cohortsTable <- getCohortsTableName("cohorts_of_interest")
   covariateData <- runExtractionAggregated(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
   expect_true(is(covariateData, "CovariateData"))
 })
@@ -458,7 +466,7 @@ runExtractionTemporalPerPerson <- function(connectionDetails, cdmDatabaseSchema,
                                                        cdmDatabaseSchema = cdmDatabaseSchema,
                                                        oracleTempSchema = ohdsiDatabaseSchema,
                                                        cohortDatabaseSchema = ohdsiDatabaseSchema,
-                                                       cohortTable = "cohorts_of_interest",
+                                                       cohortTable = cohortsTable,
                                                        cohortId = 1124300,
                                                        rowIdField = "subject_id",
                                                        covariateSettings = settings))
@@ -473,7 +481,8 @@ test_that("Run all temporalanalysis at per-person level on PostgreSQL", {
                                                server = Sys.getenv("CDM5_POSTGRESQL_SERVER"))
   cdmDatabaseSchema <- Sys.getenv("CDM5_POSTGRESQL_CDM_SCHEMA")
   ohdsiDatabaseSchema <- Sys.getenv("CDM5_POSTGRESQL_OHDSI_SCHEMA")
-  covariateData <- runExtractionTemporalPerPerson(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+  cohortsTable <- getCohortsTableName("cohorts_of_interest")
+  covariateData <- runExtractionTemporalPerPerson(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
@@ -485,7 +494,8 @@ test_that("Run all temporalanalysis at per-person level on SQL Server", {
                                                server = Sys.getenv("CDM5_SQL_SERVER_SERVER"))
   cdmDatabaseSchema <- Sys.getenv("CDM5_SQL_SERVER_CDM_SCHEMA")
   ohdsiDatabaseSchema <- Sys.getenv("CDM5_SQL_SERVER_OHDSI_SCHEMA")
-  covariateData <- runExtractionTemporalPerPerson(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+  cohortsTable <- getCohortsTableName("cohorts_of_interest")
+  covariateData <- runExtractionTemporalPerPerson(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
@@ -497,7 +507,8 @@ test_that("Run all temporalanalysis at per-person level on Oracle", {
                                                server = Sys.getenv("CDM5_ORACLE_SERVER"))
   cdmDatabaseSchema <- Sys.getenv("CDM5_ORACLE_CDM_SCHEMA")
   ohdsiDatabaseSchema <- Sys.getenv("CDM5_ORACLE_OHDSI_SCHEMA")
-  covariateData <- runExtractionTemporalPerPerson(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+  cohortsTable <- getCohortsTableName("cohorts_of_interest")
+  covariateData <- runExtractionTemporalPerPerson(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
@@ -510,7 +521,8 @@ test_that("Run all temporalanalysis at per-person level on Impala", {
                                                pathToDriver = Sys.getenv("CDM5_IMPALA_PATH_TO_DRIVER"))
   cdmDatabaseSchema <- Sys.getenv("CDM5_IMPALA_CDM_SCHEMA")
   ohdsiDatabaseSchema <- Sys.getenv("CDM5_IMPALA_OHDSI_SCHEMA")
-  covariateData <- runExtractionTemporalPerPerson(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+  cohortsTable <- getCohortsTableName("cohorts_of_interest")
+  covariateData <- runExtractionTemporalPerPerson(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
@@ -519,7 +531,7 @@ test_that("Run all temporalanalysis at per-person level on Eunomia", {
   connectionDetails <- Eunomia::getEunomiaConnectionDetails()
   cdmDatabaseSchema <- "main"
   ohdsiDatabaseSchema <- "main"
-  cohortsTable <- "cohorts_of_interest"
+  cohortsTable <- getCohortsTableName("cohorts_of_interest")
   covariateData <- runExtractionTemporalPerPerson(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
   expect_true(is(covariateData, "CovariateData"))
 })
@@ -587,7 +599,7 @@ runExtractionTemporalAggregated <- function(connectionDetails, cdmDatabaseSchema
                                                        cdmDatabaseSchema = cdmDatabaseSchema,
                                                        oracleTempSchema = ohdsiDatabaseSchema,
                                                        cohortDatabaseSchema = ohdsiDatabaseSchema,
-                                                       cohortTable = "cohorts_of_interest",
+                                                       cohortTable = cohortsTable,
                                                        cohortId = 1124300,
                                                        rowIdField = "subject_id",
                                                        covariateSettings = settings,
@@ -603,7 +615,8 @@ test_that("Run all temporalanalysis at aggregated level on PostgreSQL", {
                                                server = Sys.getenv("CDM5_POSTGRESQL_SERVER"))
   cdmDatabaseSchema <- Sys.getenv("CDM5_POSTGRESQL_CDM_SCHEMA")
   ohdsiDatabaseSchema <- Sys.getenv("CDM5_POSTGRESQL_OHDSI_SCHEMA")
-  covariateData <- runExtractionTemporalAggregated(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+  cohortsTable <- getCohortsTableName("cohorts_of_interest")
+  covariateData <- runExtractionTemporalAggregated(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
@@ -615,7 +628,8 @@ test_that("Run all temporalanalysis at aggregated level on SQL Server", {
                                                server = Sys.getenv("CDM5_SQL_SERVER_SERVER"))
   cdmDatabaseSchema <- Sys.getenv("CDM5_SQL_SERVER_CDM_SCHEMA")
   ohdsiDatabaseSchema <- Sys.getenv("CDM5_SQL_SERVER_OHDSI_SCHEMA")
-  covariateData <- runExtractionTemporalAggregated(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+  cohortsTable <- getCohortsTableName("cohorts_of_interest")
+  covariateData <- runExtractionTemporalAggregated(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
@@ -627,7 +641,8 @@ test_that("Run all temporalanalysis at aggregated level on Oracle", {
                                                server = Sys.getenv("CDM5_ORACLE_SERVER"))
   cdmDatabaseSchema <- Sys.getenv("CDM5_ORACLE_CDM_SCHEMA")
   ohdsiDatabaseSchema <- Sys.getenv("CDM5_ORACLE_OHDSI_SCHEMA")
-  covariateData <- runExtractionTemporalAggregated(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+  cohortsTable <- getCohortsTableName("cohorts_of_interest")
+  covariateData <- runExtractionTemporalAggregated(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
@@ -640,7 +655,8 @@ test_that("Run all temporalanalysis at aggregated level on Impala", {
                                                pathToDriver = Sys.getenv("CDM5_IMPALA_PATH_TO_DRIVER"))
   cdmDatabaseSchema <- Sys.getenv("CDM5_IMPALA_CDM_SCHEMA")
   ohdsiDatabaseSchema <- Sys.getenv("CDM5_IMPALA_OHDSI_SCHEMA")
-  covariateData <- runExtractionTemporalAggregated(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema)
+  cohortsTable <- getCohortsTableName("cohorts_of_interest")
+  covariateData <- runExtractionTemporalAggregated(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
@@ -649,7 +665,7 @@ test_that("Run all temporalanalysis at aggregated level on Eunomia", {
   connectionDetails <- Eunomia::getEunomiaConnectionDetails()
   cdmDatabaseSchema <- "main"
   ohdsiDatabaseSchema <- "main"
-  cohortsTable <- "cohorts_of_interest"
+  cohortsTable <- getCohortsTableName("cohorts_of_interest")
   covariateData <- runExtractionTemporalAggregated(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
   expect_true(is(covariateData, "CovariateData"))
 })
