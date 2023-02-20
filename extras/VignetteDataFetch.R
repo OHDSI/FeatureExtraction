@@ -30,6 +30,7 @@ server <- Sys.getenv("PDW_SERVER")
 port <- Sys.getenv("PDW_PORT")
 cdmDatabaseSchema <- "cdm_truven_mdcd_v569.dbo"
 resultsDatabaseSchema <- "scratch.dbo"
+cohortsTable <- "cohorts_of_interest"
 cdmVersion <- "5"
 extraSettings <- NULL
 
@@ -50,14 +51,15 @@ sql <- loadRenderTranslateSql("cohortsOfInterest.sql",
                               packageName = "FeatureExtraction",
                               dbms = dbms,
                               cdmDatabaseSchema = cdmDatabaseSchema,
-                              resultsDatabaseSchema = resultsDatabaseSchema)
+                              resultsDatabaseSchema = resultsDatabaseSchema,
+                              cohortsTable = cohortsTable)
 DatabaseConnector::executeSql(connection, sql)
 
 # Check number of subjects per cohort:
 sql <- paste("SELECT cohort_definition_id, COUNT(*) AS count",
-             "FROM @resultsDatabaseSchema.cohorts_of_interest",
+             "FROM @resultsDatabaseSchema.@cohortsTable",
              "GROUP BY cohort_definition_id")
-sql <- render(sql, resultsDatabaseSchema = resultsDatabaseSchema)
+sql <- render(sql, resultsDatabaseSchema = resultsDatabaseSchema, cohortsTable = cohortsTable)
 sql <- translate(sql, targetDialect = connectionDetails$dbms)
 DatabaseConnector::querySql(connection, sql)
 
@@ -68,7 +70,7 @@ covariateSettings <- createDefaultCovariateSettings()
 covariateData <- getDbCovariateData(connectionDetails = connectionDetails,
                                     cdmDatabaseSchema = cdmDatabaseSchema,
                                     cohortDatabaseSchema = resultsDatabaseSchema,
-                                    cohortTable = "cohorts_of_interest",
+                                    cohortTable = cohortsTable,
                                     cohortId = 1118084,
                                     rowIdField = "subject_id",
                                     covariateSettings = covariateSettings)
@@ -93,7 +95,7 @@ covariateSettings <- createDefaultCovariateSettings()
 covariateData2 <- getDbCovariateData(connectionDetails = connectionDetails,
                                      cdmDatabaseSchema = cdmDatabaseSchema,
                                      cohortDatabaseSchema = resultsDatabaseSchema,
-                                     cohortTable = "cohorts_of_interest",
+                                     cohortTable = cohortsTable,
                                      cohortId = 1118084,
                                      covariateSettings = covariateSettings,
                                      aggregated = TRUE)
@@ -110,7 +112,7 @@ covariateSettings <- createTable1CovariateSettings()
 covariateData2b <- getDbCovariateData(connectionDetails = connectionDetails,
                                       cdmDatabaseSchema = cdmDatabaseSchema,
                                       cohortDatabaseSchema = resultsDatabaseSchema,
-                                      cohortTable = "cohorts_of_interest",
+                                      cohortTable = cohortsTable,
                                       cohortId = 1118084,
                                       covariateSettings = covariateSettings,
                                       aggregated = TRUE)
@@ -127,7 +129,7 @@ covariateSettings <- createTable1CovariateSettings(excludedCovariateConceptIds =
 covDiclofenac <- getDbCovariateData(connectionDetails = connectionDetails,
                                     cdmDatabaseSchema = cdmDatabaseSchema,
                                     cohortDatabaseSchema = resultsDatabaseSchema,
-                                    cohortTable = "cohorts_of_interest",
+                                    cohortTable = cohortsTable,
                                     cohortId = 1124300,
                                     covariateSettings = covariateSettings,
                                     aggregated = TRUE)
@@ -137,7 +139,7 @@ saveCovariateData(covDiclofenac, file.path(vignetteFolder, "covDiclofenac"))
 covCelecoxib <- getDbCovariateData(connectionDetails = connectionDetails,
                                    cdmDatabaseSchema = cdmDatabaseSchema,
                                    cohortDatabaseSchema = resultsDatabaseSchema,
-                                   cohortTable = "cohorts_of_interest",
+                                   cohortTable = cohortsTable,
                                    cohortId = 1118084,
                                    covariateSettings = covariateSettings,
                                    aggregated = TRUE)

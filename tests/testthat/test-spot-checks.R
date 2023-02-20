@@ -188,39 +188,17 @@ test_that("Run spot-checks at per-person level on PostgreSQL", {
 
 test_that("Run spot-checks at per-person level on SQL Server", {
   skip_if_not(runTestsOnSQLServer)
-  connectionDetails <- createConnectionDetails(dbms = "sql server",
-                                               user = Sys.getenv("CDM5_SQL_SERVER_USER"),
-                                               password = URLdecode(Sys.getenv("CDM5_SQL_SERVER_PASSWORD")),
-                                               server = Sys.getenv("CDM5_SQL_SERVER_SERVER"))
-  cdmDatabaseSchema <- Sys.getenv("CDM5_SQL_SERVER_CDM_SCHEMA")
-  ohdsiDatabaseSchema <- Sys.getenv("CDM5_SQL_SERVER_OHDSI_SCHEMA")
-  cohortsTable <- getCohortsTableName()
-  runSpotChecks(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
+  runSpotChecks(sqlServerConnectionDetails, sqlServerCdmDatabaseSchema, sqlServerOhdsiDatabaseSchema, cohortsTable)
 })
 
 test_that("Run spot-checks at per-person level on Oracle", {  
   skip_if_not(runTestsOnOracle)
-  connectionDetails <- createConnectionDetails(dbms = "oracle",
-                                               user = Sys.getenv("CDM5_ORACLE_USER"),
-                                               password = URLdecode(Sys.getenv("CDM5_ORACLE_PASSWORD")),
-                                               server = Sys.getenv("CDM5_ORACLE_SERVER"))
-  cdmDatabaseSchema <- Sys.getenv("CDM5_ORACLE_CDM_SCHEMA")
-  ohdsiDatabaseSchema <- Sys.getenv("CDM5_ORACLE_OHDSI_SCHEMA")
-  cohortsTable <- getCohortsTableName()
-  runSpotChecks(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
+  runSpotChecks(oracleConnectionDetails, oracleCdmDatabaseSchema, oracleOhdsiDatabaseSchema, cohortsTable)
 })
 
 test_that("Run spot-checks at per-person level on Impala", {  
   skip_if_not(runTestsOnImpala)
-  connectionDetails <- createConnectionDetails(dbms = "impala",
-                                               user = Sys.getenv("CDM5_IMPALA_USER"),
-                                               password = URLdecode(Sys.getenv("CDM5_IMPALA_PASSWORD")),
-                                               server = Sys.getenv("CDM5_IMPALA_SERVER"),
-                                               pathToDriver = Sys.getenv("CDM5_IMPALA_PATH_TO_DRIVER"))
-  cdmDatabaseSchema <- Sys.getenv("CDM5_IMPALA_CDM_SCHEMA")
-  ohdsiDatabaseSchema <- Sys.getenv("CDM5_IMPALA_OHDSI_SCHEMA")
-  cohortsTable <- getCohortsTableName()
-  runSpotChecks(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
+  runSpotChecks(impalaConnectionDetails, impalaOhdsiDatabaseSchema, cohortsTable)
 })
 
 test_that("Run spot-checks at per-person level on Eunomia", {
