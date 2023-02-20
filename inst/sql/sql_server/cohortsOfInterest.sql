@@ -4,7 +4,7 @@ File cohortsOfInterest.sql
 
 IF OBJECT_ID('@resultsDatabaseSchema.@cohortsTable', 'U') IS NOT NULL
   DROP TABLE @resultsDatabaseSchema.@cohortsTable;
-  
+
 SELECT first_use.*
 INTO @resultsDatabaseSchema.@cohortsTable
 FROM (
