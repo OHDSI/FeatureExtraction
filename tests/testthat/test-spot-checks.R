@@ -2,16 +2,6 @@ library(testthat)
 library(Andromeda)
 
 runSpotChecks <- function(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable) {
-  connection <- DatabaseConnector::connect(connectionDetails)
-  sql <- loadRenderTranslateSql(sqlFileName = "cohortsOfInterest.sql",
-                                targetDialect = connectionDetails$dbms,
-                                tempEmulationSchema = ohdsiDatabaseSchema,
-                                cdmDatabaseSchema = cdmDatabaseSchema,
-                                resultsDatabaseSchema = ohdsiDatabaseSchema,
-                                cohortsTable = cohortsTable)
-  DatabaseConnector::executeSql(connection, sql)
-  DatabaseConnector::disconnect(connection)
-  
   settings <- createCovariateSettings(useDemographicsGender = TRUE,
                                       useDemographicsAge = TRUE,
                                       useConditionOccurrenceLongTerm = TRUE,
@@ -193,14 +183,7 @@ runSpotChecks <- function(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSch
 
 test_that("Run spot-checks at per-person level on PostgreSQL", {
   skip_if_not(runTestsOnPostgreSQL)
-  connectionDetails <- createConnectionDetails(dbms = "postgresql",
-                                               user = Sys.getenv("CDM5_POSTGRESQL_USER"),
-                                               password = URLdecode(Sys.getenv("CDM5_POSTGRESQL_PASSWORD")),
-                                               server = Sys.getenv("CDM5_POSTGRESQL_SERVER"))
-  cdmDatabaseSchema <- Sys.getenv("CDM5_POSTGRESQL_CDM_SCHEMA")
-  ohdsiDatabaseSchema <- Sys.getenv("CDM5_POSTGRESQL_OHDSI_SCHEMA")
-  cohortsTable <- getCohortsTableName("cohorts_of_interest")
-  runSpotChecks(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
+  runSpotChecks(pgConnectionDetails, pgCdmDatabaseSchema, pgOhdsiDatabaseSchema, cohortsTable)
 })
 
 test_that("Run spot-checks at per-person level on SQL Server", {
@@ -211,7 +194,7 @@ test_that("Run spot-checks at per-person level on SQL Server", {
                                                server = Sys.getenv("CDM5_SQL_SERVER_SERVER"))
   cdmDatabaseSchema <- Sys.getenv("CDM5_SQL_SERVER_CDM_SCHEMA")
   ohdsiDatabaseSchema <- Sys.getenv("CDM5_SQL_SERVER_OHDSI_SCHEMA")
-  cohortsTable <- getCohortsTableName("cohorts_of_interest")
+  cohortsTable <- getCohortsTableName()
   runSpotChecks(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
 })
 
@@ -223,7 +206,7 @@ test_that("Run spot-checks at per-person level on Oracle", {
                                                server = Sys.getenv("CDM5_ORACLE_SERVER"))
   cdmDatabaseSchema <- Sys.getenv("CDM5_ORACLE_CDM_SCHEMA")
   ohdsiDatabaseSchema <- Sys.getenv("CDM5_ORACLE_OHDSI_SCHEMA")
-  cohortsTable <- getCohortsTableName("cohorts_of_interest")
+  cohortsTable <- getCohortsTableName()
   runSpotChecks(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
 })
 
@@ -236,15 +219,11 @@ test_that("Run spot-checks at per-person level on Impala", {
                                                pathToDriver = Sys.getenv("CDM5_IMPALA_PATH_TO_DRIVER"))
   cdmDatabaseSchema <- Sys.getenv("CDM5_IMPALA_CDM_SCHEMA")
   ohdsiDatabaseSchema <- Sys.getenv("CDM5_IMPALA_OHDSI_SCHEMA")
-  cohortsTable <- getCohortsTableName("cohorts_of_interest")
+  cohortsTable <- getCohortsTableName()
   runSpotChecks(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
 })
 
 test_that("Run spot-checks at per-person level on Eunomia", {
   skip_if_not(runTestsOnEunomia)
-  connectionDetails <- Eunomia::getEunomiaConnectionDetails()
-  cdmDatabaseSchema <- "main"
-  ohdsiDatabaseSchema <- "main"
-  cohortsTable <- getCohortsTableName("cohorts_of_interest")
-  runSpotChecks(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
+  runSpotChecks(eunomiaConnectionDetails, eunomiaCdmDatabaseSchema, eunomiaOhdsiDatabaseSchema, cohortsTable)
 })

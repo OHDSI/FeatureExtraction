@@ -33,7 +33,77 @@ runTestsOnImpala <- FALSE #!(Sys.getenv("CDM5_IMPALA_USER") == "" & Sys.getenv("
 runTestsOnEunomia <- TRUE
 
 # Get a cohorts table name that is unique per OS to avoid errors in running parallel tests
-getCohortsTableName <- function(tableName) {
+getCohortsTableName <- function() {
   sysName <- as.character(Sys.info()["sysname"])
-  return(paste(sysName, tableName, sep = "_"))
+  return(paste(sysName, "cohorts_of_interest", sep = "_"))
+}
+
+# create cohorts table based on given params
+createCohortsTable <- function(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable) {
+  connection <- DatabaseConnector::connect(connectionDetails)
+  sql <- loadRenderTranslateSql(sqlFileName = "cohortsOfInterest.sql",
+                                targetDialect = connectionDetails$dbms,
+                                tempEmulationSchema = ohdsiDatabaseSchema,
+                                cdmDatabaseSchema = cdmDatabaseSchema,
+                                resultsDatabaseSchema = ohdsiDatabaseSchema,
+                                cohortsTable = cohortsTable)
+  DatabaseConnector::executeSql(connection, sql)
+  return(connection)
+}
+
+## create cohorts table for different databases
+cohortsTable <- getCohortsTableName()
+
+# postgres
+if (runTestsOnPostgreSQL) {
+  pgConnectionDetails <- createConnectionDetails(dbms = "postgresql",
+                                               user = Sys.getenv("CDM5_POSTGRESQL_USER"),
+                                               password = URLdecode(Sys.getenv("CDM5_POSTGRESQL_PASSWORD")),
+                                               server = Sys.getenv("CDM5_POSTGRESQL_SERVER"))
+  pgCdmDatabaseSchema <- Sys.getenv("CDM5_POSTGRESQL_CDM_SCHEMA")
+  pgOhdsiDatabaseSchema <- Sys.getenv("CDM5_POSTGRESQL_OHDSI_SCHEMA")
+  createCohortsTable(pgConnectionDetails, pgCdmDatabaseSchema, pgOhdsiDatabaseSchema, cohortsTable)
+}
+
+# sql server
+if (runTestsOnSQLServer) {
+  connectionDetails <- createConnectionDetails(dbms = "sql server",
+                                               user = Sys.getenv("CDM5_SQL_SERVER_USER"),
+                                               password = URLdecode(Sys.getenv("CDM5_SQL_SERVER_PASSWORD")),
+                                               server = Sys.getenv("CDM5_SQL_SERVER_SERVER"))
+  cdmDatabaseSchema <- Sys.getenv("CDM5_SQL_SERVER_CDM_SCHEMA")
+  ohdsiDatabaseSchema <- Sys.getenv("CDM5_SQL_SERVER_OHDSI_SCHEMA")
+  createCohortsTable(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
+}
+
+# oracle
+if (runTestsOnOracle) {
+  connectionDetails <- createConnectionDetails(dbms = "oracle",
+                                               user = Sys.getenv("CDM5_ORACLE_USER"),
+                                               password = URLdecode(Sys.getenv("CDM5_ORACLE_PASSWORD")),
+                                               server = Sys.getenv("CDM5_ORACLE_SERVER"))
+  cdmDatabaseSchema <- Sys.getenv("CDM5_ORACLE_CDM_SCHEMA")
+  ohdsiDatabaseSchema <- Sys.getenv("CDM5_ORACLE_OHDSI_SCHEMA")
+  createCohortsTable(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
+}
+
+# impala
+if (runTestsOnImpala) {
+  connectionDetails <- createConnectionDetails(dbms = "impala",
+                                               user = Sys.getenv("CDM5_IMPALA_USER"),
+                                               password = URLdecode(Sys.getenv("CDM5_IMPALA_PASSWORD")),
+                                               server = Sys.getenv("CDM5_IMPALA_SERVER"),
+                                               pathToDriver = Sys.getenv("CDM5_IMPALA_PATH_TO_DRIVER"))
+  cdmDatabaseSchema <- Sys.getenv("CDM5_IMPALA_CDM_SCHEMA")
+  ohdsiDatabaseSchema <- Sys.getenv("CDM5_IMPALA_OHDSI_SCHEMA")
+  createCohortsTable(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable)
+}
+
+# eunomia
+if (runTestsOnEunomia) {
+  eunomiaConnectionDetails <- Eunomia::getEunomiaConnectionDetails()
+  eunomiaCdmDatabaseSchema <- "main"
+  eunomiaOhdsiDatabaseSchema <- "main"
+  print("create cohorts of interest eunomia!")
+  eunomiaConnection <- createCohortsTable(eunomiaConnectionDetails, eunomiaCdmDatabaseSchema, eunomiaOhdsiDatabaseSchema, cohortsTable)
 }
