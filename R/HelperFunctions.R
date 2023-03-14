@@ -60,12 +60,16 @@ filterByCohortDefinitionId <- function(covariateData, cohortId) {
   if (is.null(covariateData$covariates)) {
     covariates <- NULL
   } else {
+    if (!"cohortDefinitionId" %in% names(covariateData$covariates))
+      stop("CovariateData object is aggregated, but does not contain cohort definition IDs")
     covariates <- covariateData$covariates %>%
       filter(.data$cohortDefinitionId %in% cohortId)
   }
   if (is.null(covariateData$covariatesContinuous)) {
     covariatesContinuous <- NULL
   } else {
+    if (!"cohortDefinitionId" %in% names(covariateData$covariatesContinuous))
+      stop("CovariateData object is aggregated, but does not contain cohort definition IDs")
     covariatesContinuous <- covariateData$covariatesContinuous %>%
       filter(.data$cohortDefinitionId %in% cohortId)
   }
