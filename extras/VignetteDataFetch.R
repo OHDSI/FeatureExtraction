@@ -30,11 +30,12 @@ server <- Sys.getenv("PDW_SERVER")
 port <- Sys.getenv("PDW_PORT")
 cdmDatabaseSchema <- "cdm_truven_mdcd_v569.dbo"
 resultsDatabaseSchema <- "scratch.dbo"
-cohortsTable <- "cohorts_of_interest"
+cohortsTable <- "#cohorts_of_interest"
 cdmVersion <- "5"
 extraSettings <- NULL
 
 vignetteFolder <- "s:/temp/vignetteFeatureExtraction"
+vignetteFolder <- getwd()
 if (!file.exists(vignetteFolder))
   dir.create(vignetteFolder)
 
@@ -51,7 +52,6 @@ sql <- loadRenderTranslateSql("cohortsOfInterest.sql",
                               packageName = "FeatureExtraction",
                               dbms = dbms,
                               cdmDatabaseSchema = cdmDatabaseSchema,
-                              resultsDatabaseSchema = resultsDatabaseSchema,
                               cohortsTable = cohortsTable)
 DatabaseConnector::executeSql(connection, sql)
 

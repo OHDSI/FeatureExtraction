@@ -1,11 +1,12 @@
 ## Drop cohorts tables for various databases
 
-dropCohortsTable <- function(connectionDetails, ohdsiDatabaseSchema, cohortsTable) {
-  connection <- DatabaseConnector::connect(connectionDetails)
+dropCohortsTable <- function(connectionDetails, connection, ohdsiDatabaseSchema, cohortsTable) {
+  if (!DatabaseConnector::dbIsValid(connection)) {
+    connection <- DatabaseConnector::connect(connectionDetails)
+  }
   sql <- loadRenderTranslateSql(sqlFileName = "DropCohortsOfInterest.sql",
                                 targetDialect = connectionDetails$dbms,
                                 tempEmulationSchema = ohdsiDatabaseSchema,
-                                resultsDatabaseSchema = ohdsiDatabaseSchema,
                                 cohortsTable = cohortsTable)
   DatabaseConnector::executeSql(connection, sql)
   DatabaseConnector::disconnect(connection)
@@ -13,25 +14,25 @@ dropCohortsTable <- function(connectionDetails, ohdsiDatabaseSchema, cohortsTabl
 
 # postgres
 if (runTestsOnPostgreSQL) {
-  dropCohortsTable(pgConnectionDetails, pgOhdsiDatabaseSchema, cohortsTable)
+  dropCohortsTable(pgConnectionDetails, pgConnection, pgOhdsiDatabaseSchema, cohortsTable)
 }
 
 # sql server
 if (runTestsOnSQLServer) {
-  dropCohortsTable(sqlServerConnectionDetails, sqlServerOhdsiDatabaseSchema, cohortsTable)
+  dropCohortsTable(sqlServerConnectionDetails, sqlServerConnection, sqlServerOhdsiDatabaseSchema, cohortsTable)
 }
 
 # oracle
 if (runTestsOnOracle) {
-  dropCohortsTable(oracleConnectionDetails, oracleOhdsiDatabaseSchema, cohortsTable)
+  dropCohortsTable(oracleConnectionDetails, oracleConnection, oracleOhdsiDatabaseSchema, cohortsTable)
 }
 
 # impala
 if (runTestsOnImpala) {
-  dropCohortsTable(impalaConnectionDetails, impalaOhdsiDatabaseSchema, cohortsTable)
+  dropCohortsTable(impalaConnectionDetails, impalaConnection, impalaOhdsiDatabaseSchema, cohortsTable)
 }
 
 # eunomia
 if (runTestsOnEunomia) {
-  dropCohortsTable(eunomiaConnectionDetails, eunomiaOhdsiDatabaseSchema, cohortsTable)
+  dropCohortsTable(eunomiaConnectionDetails, eunomiaConnection, eunomiaOhdsiDatabaseSchema, cohortsTable)
 }

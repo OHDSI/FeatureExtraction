@@ -2,11 +2,8 @@
 File cohortsOfInterest.sql
 ***********************************/
 
-IF OBJECT_ID('@resultsDatabaseSchema.@cohortsTable', 'U') IS NOT NULL
-  DROP TABLE @resultsDatabaseSchema.@cohortsTable;
-
 SELECT first_use.*
-INTO @resultsDatabaseSchema.@cohortsTable
+INTO @cohortsTable
 FROM (
   SELECT drug_concept_id AS cohort_definition_id,
   	MIN(drug_era_start_date) AS cohort_start_date,

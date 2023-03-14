@@ -32,12 +32,6 @@ runTestsOnOracle <- FALSE #!(Sys.getenv("CDM5_ORACLE_USER") == "" & Sys.getenv("
 runTestsOnImpala <- FALSE #!(Sys.getenv("CDM5_IMPALA_USER") == "" & Sys.getenv("CDM5_IMPALA_PASSWORD") == "" & Sys.getenv("CDM5_IMPALA_SERVER") == "" & Sys.getenv("CDM5_IMPALA_CDM_SCHEMA") == "" & Sys.getenv("CDM5_IMPALA_OHDSI_SCHEMA") == "")
 runTestsOnEunomia <- TRUE
 
-# Get a cohorts table name that is unique per OS to avoid errors in running parallel tests
-getCohortsTableName <- function() {
-  sysName <- as.character(Sys.info()["sysname"])
-  return(paste(sysName, "cohorts_of_interest", sep = "_"))
-}
-
 # create cohorts table based on given params
 createCohortsTable <- function(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable) {
   connection <- DatabaseConnector::connect(connectionDetails)
@@ -45,14 +39,13 @@ createCohortsTable <- function(connectionDetails, cdmDatabaseSchema, ohdsiDataba
                                 targetDialect = connectionDetails$dbms,
                                 tempEmulationSchema = ohdsiDatabaseSchema,
                                 cdmDatabaseSchema = cdmDatabaseSchema,
-                                resultsDatabaseSchema = ohdsiDatabaseSchema,
                                 cohortsTable = cohortsTable)
   DatabaseConnector::executeSql(connection, sql)
   return(connection)
 }
 
-## create cohorts table for different databases
-cohortsTable <- getCohortsTableName()
+## cohorts table should be a temp table to avoid collisions between different runs
+cohortsTable <- "#cohorts_of_interest"
 
 # postgres
 if (runTestsOnPostgreSQL) {
@@ -62,7 +55,7 @@ if (runTestsOnPostgreSQL) {
                                                server = Sys.getenv("CDM5_POSTGRESQL_SERVER"))
   pgCdmDatabaseSchema <- Sys.getenv("CDM5_POSTGRESQL_CDM_SCHEMA")
   pgOhdsiDatabaseSchema <- Sys.getenv("CDM5_POSTGRESQL_OHDSI_SCHEMA")
-  createCohortsTable(pgConnectionDetails, pgCdmDatabaseSchema, pgOhdsiDatabaseSchema, cohortsTable)
+  pgConnection <- createCohortsTable(pgConnectionDetails, pgCdmDatabaseSchema, pgOhdsiDatabaseSchema, cohortsTable)
 }
 
 # sql server
@@ -73,7 +66,7 @@ if (runTestsOnSQLServer) {
                                                server = Sys.getenv("CDM5_SQL_SERVER_SERVER"))
   sqlServerCdmDatabaseSchema <- Sys.getenv("CDM5_SQL_SERVER_CDM_SCHEMA")
   sqlServerOhdsiDatabaseSchema <- Sys.getenv("CDM5_SQL_SERVER_OHDSI_SCHEMA")
-  createCohortsTable(sqlServerConnectionDetails, sqlServerCdmDatabaseSchema, sqlServerOhdsiDatabaseSchema, cohortsTable)
+  sqlServerConnection <- createCohortsTable(sqlServerConnectionDetails, sqlServerCdmDatabaseSchema, sqlServerOhdsiDatabaseSchema, cohortsTable)
 }
 
 # oracle
@@ -84,7 +77,7 @@ if (runTestsOnOracle) {
                                                server = Sys.getenv("CDM5_ORACLE_SERVER"))
   oracleCdmDatabaseSchema <- Sys.getenv("CDM5_ORACLE_CDM_SCHEMA")
   oracleOhdsiDatabaseSchema <- Sys.getenv("CDM5_ORACLE_OHDSI_SCHEMA")
-  createCohortsTable(oracleConnectionDetails, oracleCdmDatabaseSchema, oracleOhdsiDatabaseSchema, cohortsTable)
+  oracleConnection <- createCohortsTable(oracleConnectionDetails, oracleCdmDatabaseSchema, oracleOhdsiDatabaseSchema, cohortsTable)
 }
 
 # impala
@@ -96,7 +89,7 @@ if (runTestsOnImpala) {
                                                pathToDriver = Sys.getenv("CDM5_IMPALA_PATH_TO_DRIVER"))
   impalaCdmDatabaseSchema <- Sys.getenv("CDM5_IMPALA_CDM_SCHEMA")
   impalaOhdsiDatabaseSchema <- Sys.getenv("CDM5_IMPALA_OHDSI_SCHEMA")
-  createCohortsTable(impalaConnectionDetails, impalaCdmDatabaseSchema, impalaOhdsiDatabaseSchema, cohortsTable)
+  impalaConnection <- createCohortsTable(impalaConnectionDetails, impalaCdmDatabaseSchema, impalaOhdsiDatabaseSchema, cohortsTable)
 }
 
 # eunomia
