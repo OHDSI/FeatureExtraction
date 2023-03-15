@@ -50,9 +50,9 @@ cohortsTable <- "#cohorts_of_interest"
 # postgres
 if (runTestsOnPostgreSQL) {
   pgConnectionDetails <- createConnectionDetails(dbms = "postgresql",
-                                               user = Sys.getenv("CDM5_POSTGRESQL_USER"),
-                                               password = URLdecode(Sys.getenv("CDM5_POSTGRESQL_PASSWORD")),
-                                               server = Sys.getenv("CDM5_POSTGRESQL_SERVER"))
+                                                 user = Sys.getenv("CDM5_POSTGRESQL_USER"),
+                                                 password = URLdecode(Sys.getenv("CDM5_POSTGRESQL_PASSWORD")),
+                                                 server = Sys.getenv("CDM5_POSTGRESQL_SERVER"))
   pgCdmDatabaseSchema <- Sys.getenv("CDM5_POSTGRESQL_CDM_SCHEMA")
   pgOhdsiDatabaseSchema <- Sys.getenv("CDM5_POSTGRESQL_OHDSI_SCHEMA")
   pgConnection <- createCohortsTable(pgConnectionDetails, pgCdmDatabaseSchema, pgOhdsiDatabaseSchema, cohortsTable)
@@ -61,9 +61,9 @@ if (runTestsOnPostgreSQL) {
 # sql server
 if (runTestsOnSQLServer) {
   sqlServerConnectionDetails <- createConnectionDetails(dbms = "sql server",
-                                               user = Sys.getenv("CDM5_SQL_SERVER_USER"),
-                                               password = URLdecode(Sys.getenv("CDM5_SQL_SERVER_PASSWORD")),
-                                               server = Sys.getenv("CDM5_SQL_SERVER_SERVER"))
+                                                        user = Sys.getenv("CDM5_SQL_SERVER_USER"),
+                                                        password = URLdecode(Sys.getenv("CDM5_SQL_SERVER_PASSWORD")),
+                                                        server = Sys.getenv("CDM5_SQL_SERVER_SERVER"))
   sqlServerCdmDatabaseSchema <- Sys.getenv("CDM5_SQL_SERVER_CDM_SCHEMA")
   sqlServerOhdsiDatabaseSchema <- Sys.getenv("CDM5_SQL_SERVER_OHDSI_SCHEMA")
   sqlServerConnection <- createCohortsTable(sqlServerConnectionDetails, sqlServerCdmDatabaseSchema, sqlServerOhdsiDatabaseSchema, cohortsTable)
@@ -72,9 +72,9 @@ if (runTestsOnSQLServer) {
 # oracle
 if (runTestsOnOracle) {
   oracleConnectionDetails <- createConnectionDetails(dbms = "oracle",
-                                               user = Sys.getenv("CDM5_ORACLE_USER"),
-                                               password = URLdecode(Sys.getenv("CDM5_ORACLE_PASSWORD")),
-                                               server = Sys.getenv("CDM5_ORACLE_SERVER"))
+                                                     user = Sys.getenv("CDM5_ORACLE_USER"),
+                                                     password = URLdecode(Sys.getenv("CDM5_ORACLE_PASSWORD")),
+                                                     server = Sys.getenv("CDM5_ORACLE_SERVER"))
   oracleCdmDatabaseSchema <- Sys.getenv("CDM5_ORACLE_CDM_SCHEMA")
   oracleOhdsiDatabaseSchema <- Sys.getenv("CDM5_ORACLE_OHDSI_SCHEMA")
   oracleConnection <- createCohortsTable(oracleConnectionDetails, oracleCdmDatabaseSchema, oracleOhdsiDatabaseSchema, cohortsTable)
@@ -83,10 +83,10 @@ if (runTestsOnOracle) {
 # impala
 if (runTestsOnImpala) {
   impalaConnectionDetails <- createConnectionDetails(dbms = "impala",
-                                               user = Sys.getenv("CDM5_IMPALA_USER"),
-                                               password = URLdecode(Sys.getenv("CDM5_IMPALA_PASSWORD")),
-                                               server = Sys.getenv("CDM5_IMPALA_SERVER"),
-                                               pathToDriver = Sys.getenv("CDM5_IMPALA_PATH_TO_DRIVER"))
+                                                     user = Sys.getenv("CDM5_IMPALA_USER"),
+                                                     password = URLdecode(Sys.getenv("CDM5_IMPALA_PASSWORD")),
+                                                     server = Sys.getenv("CDM5_IMPALA_SERVER"),
+                                                     pathToDriver = Sys.getenv("CDM5_IMPALA_PATH_TO_DRIVER"))
   impalaCdmDatabaseSchema <- Sys.getenv("CDM5_IMPALA_CDM_SCHEMA")
   impalaOhdsiDatabaseSchema <- Sys.getenv("CDM5_IMPALA_OHDSI_SCHEMA")
   impalaConnection <- createCohortsTable(impalaConnectionDetails, impalaCdmDatabaseSchema, impalaOhdsiDatabaseSchema, cohortsTable)

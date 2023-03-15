@@ -1,38 +1,46 @@
 ## Drop cohorts tables for various databases
 
-dropCohortsTable <- function(connectionDetails, connection, ohdsiDatabaseSchema, cohortsTable) {
-  if (!DatabaseConnector::dbIsValid(connection)) {
-    connection <- DatabaseConnector::connect(connectionDetails)
+clearCohortsTableAndConnection <- function(connectionDetails, connection, ohdsiDatabaseSchema, cohortsTable) {
+  dbms <- connectionDetails$dbms
+  # a tmp table on oracle is basically a permanent table, so needs to be removed
+  if (dbms == "oracle") {
+    if (!DatabaseConnector::dbIsValid(connection)) {
+      connection <- DatabaseConnector::connect(connectionDetails)
+    }
+    sql <- loadRenderTranslateSql(sqlFileName = "DropCohortsOfInterest.sql",
+                                  targetDialect = connectionDetails$dbms,
+                                  tempEmulationSchema = ohdsiDatabaseSchema,
+                                  cohortsTable = cohortsTable)
+    DatabaseConnector::executeSql(connection, sql)
+    DatabaseConnector::disconnect(connection)
+  } else {
+    if (DatabaseConnector::dbIsValid(connection)) {
+      DatabaseConnector::disconnect(connection) 
+    }
   }
-  sql <- loadRenderTranslateSql(sqlFileName = "DropCohortsOfInterest.sql",
-                                targetDialect = connectionDetails$dbms,
-                                tempEmulationSchema = ohdsiDatabaseSchema,
-                                cohortsTable = cohortsTable)
-  DatabaseConnector::executeSql(connection, sql)
-  DatabaseConnector::disconnect(connection)
 }
 
 # postgres
 if (runTestsOnPostgreSQL) {
-  dropCohortsTable(pgConnectionDetails, pgConnection, pgOhdsiDatabaseSchema, cohortsTable)
+  clearCohortsTableAndConnection(pgConnectionDetails, pgConnection, pgOhdsiDatabaseSchema, cohortsTable)
 }
 
 # sql server
 if (runTestsOnSQLServer) {
-  dropCohortsTable(sqlServerConnectionDetails, sqlServerConnection, sqlServerOhdsiDatabaseSchema, cohortsTable)
+  clearCohortsTableAndConnection(sqlServerConnectionDetails, sqlServerConnection, sqlServerOhdsiDatabaseSchema, cohortsTable)
 }
 
 # oracle
 if (runTestsOnOracle) {
-  dropCohortsTable(oracleConnectionDetails, oracleConnection, oracleOhdsiDatabaseSchema, cohortsTable)
+  clearCohortsTableAndConnection(oracleConnectionDetails, oracleConnection, oracleOhdsiDatabaseSchema, cohortsTable)
 }
 
 # impala
 if (runTestsOnImpala) {
-  dropCohortsTable(impalaConnectionDetails, impalaConnection, impalaOhdsiDatabaseSchema, cohortsTable)
+  clearCohortsTableAndConnection(impalaConnectionDetails, impalaConnection, impalaOhdsiDatabaseSchema, cohortsTable)
 }
 
 # eunomia
 if (runTestsOnEunomia) {
-  dropCohortsTable(eunomiaConnectionDetails, eunomiaConnection, eunomiaOhdsiDatabaseSchema, cohortsTable)
+  clearCohortsTableAndConnection(eunomiaConnectionDetails, eunomiaConnection, eunomiaOhdsiDatabaseSchema, cohortsTable)
 }
