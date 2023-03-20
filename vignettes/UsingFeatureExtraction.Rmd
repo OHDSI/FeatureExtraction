@@ -433,7 +433,7 @@ if (file.exists(file.path(vignetteFolder, "aggregatedCovariates"))) {
 ```
 The columns of `covariates` are defined as follows:
 
-- `covariateId` identifies the covariate, and definitions of covariates can be found in the `cohortData$covariateRef` object. 
+- `covariateId` identifies the covariate, and definitions of covariates can be found in the `covariateData$covariateRef` object. 
 - `sumValue` is the sum of the covariate values. Because these are binary features, this is equivalent to the number of people that have the covariate with a value of 1.
 - `averageValue` is the average covariate value.  Because these are binary features, this is equivalent to the proportion of people that have the covariate with a value of 1.
 
