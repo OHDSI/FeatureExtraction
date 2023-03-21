@@ -20,7 +20,7 @@ vignette: >
 ```{r set-options,echo=FALSE,message=FALSE,warning=FALSE,eval=TRUE}
 options(width = 200)
 library(FeatureExtraction)
-vignetteFolder <- "s:/temp/vignetteFeatureExtraction"
+vignetteFolder <- file.path(tempdir(), "vignetteFeatureExtraction")
 ```
 \fontsize{10}{12}
 \selectfont

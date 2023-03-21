@@ -23,35 +23,23 @@ library(FeatureExtraction)
 
 # Datafetch for main vignette ----------------------------------
 
-dbms <- "pdw"
-user <- NULL
-pw <- NULL
-server <- Sys.getenv("PDW_SERVER")
-port <- Sys.getenv("PDW_PORT")
-cdmDatabaseSchema <- "cdm_truven_mdcd_v569.dbo"
-resultsDatabaseSchema <- "scratch.dbo"
+cdmDatabaseSchema <- "main"
+ohdsiDatabaseSchema <- "main"
 cohortsTable <- "#cohorts_of_interest"
 cdmVersion <- "5"
-extraSettings <- NULL
 
-vignetteFolder <- "s:/temp/vignetteFeatureExtraction"
+vignetteFolder <- file.path(tempdir(), "vignetteFeatureExtraction")
 if (!file.exists(vignetteFolder))
   dir.create(vignetteFolder)
 
-
-connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = dbms,
-                                                                server = server,
-                                                                user = user,
-                                                                password = pw,
-                                                                port = port,
-                                                                extraSettings = extraSettings)
+connectionDetails <- Eunomia::getEunomiaConnectionDetails()
 connection <- DatabaseConnector::connect(connectionDetails)
 
-sql <- loadRenderTranslateSql("cohortsOfInterest.sql",
-                              packageName = "FeatureExtraction",
-                              dbms = dbms,
-                              cdmDatabaseSchema = cdmDatabaseSchema,
-                              cohortsTable = cohortsTable)
+sql <- SqlRender::loadRenderTranslateSql("cohortsOfInterest.sql",
+                                         packageName = "FeatureExtraction",
+                                         dbms = connectionDetails$dbms,
+                                         cdmDatabaseSchema = cdmDatabaseSchema,
+                                         cohortsTable = cohortsTable)  
 DatabaseConnector::executeSql(connection, sql)
 
 # Check number of subjects per cohort:
@@ -74,7 +62,7 @@ covariateData <- getDbCovariateData(connection = connection,
                                     covariateSettings = covariateSettings)
 
 saveCovariateData(covariateData, file.path(vignetteFolder, "covariatesPerPerson"))
-# covariateData <- loadCovariateData(file.path(vignetteFolder, "covariatesPerPerson"))
+covariateData <- loadCovariateData(file.path(vignetteFolder, "covariatesPerPerson"))
 summary(covariateData)
 
 tidyCovariates <- tidyCovariateData(covariateData,
@@ -101,8 +89,7 @@ covariateData2 <- getDbCovariateData(connection = connection,
 
 
 saveCovariateData(covariateData2, file.path(vignetteFolder, "aggregatedCovariates"))
-
-# covariateData2 <- loadCovariateData(file.path(vignetteFolder, "aggregatedCovariates"))
+covariateData2 <- loadCovariateData(file.path(vignetteFolder, "aggregatedCovariates"))
 
 result <- createTable1(covariateData2)
 
