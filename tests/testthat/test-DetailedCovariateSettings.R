@@ -1,7 +1,4 @@
 # This file covers the code in DetailedCovariateData.R. View coverage for this file using
-library(testthat); library(FeatureExtraction)
-
-
 test_that("test createDetailedCovariateSettings", {
   analysisDetails <- createAnalysisDetails(analysisId = 1,
                                            sqlFileName = "DemographicsGender.sql",
@@ -36,9 +33,7 @@ test_that("test createDetailedTemporalCovariateSettings",{
   temporalSettings <- createDetailedTemporalCovariateSettings(list(analysisDetails))
   expect_s3_class(temporalSettings, "covariateSettings")
   expect_equal(temporalSettings$temporalStartDays, -365:-1)
-  
 })
-
 
 test_that("test convertPrespecSettingsToDetailedSettings", {
   settings <- createCovariateSettings(useDemographicsAgeGroup = TRUE, useChads2Vasc = TRUE)

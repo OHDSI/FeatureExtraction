@@ -1,7 +1,7 @@
 library(testthat)
 
 # runExtractionPerPerson ----------- 
-runExtractionPerPerson <- function(connection, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable) {
+runExtractionPerPerson <- function(connection, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortTable) {
   settings <- createCovariateSettings(useDemographicsGender = TRUE,
                                       useDemographicsAge = TRUE,
                                       useDemographicsAgeGroup = TRUE,
@@ -122,7 +122,7 @@ runExtractionPerPerson <- function(connection, cdmDatabaseSchema, ohdsiDatabaseS
                                                        cdmDatabaseSchema = cdmDatabaseSchema,
                                                        oracleTempSchema = ohdsiDatabaseSchema,
                                                        cohortDatabaseSchema = ohdsiDatabaseSchema,
-                                                       cohortTable = cohortsTable,
+                                                       cohortTable = cohortTable,
                                                        cohortTableIsTemp = TRUE,
                                                        cohortId = 1124300,
                                                        rowIdField = "subject_id",
@@ -132,36 +132,36 @@ runExtractionPerPerson <- function(connection, cdmDatabaseSchema, ohdsiDatabaseS
 
 test_that("Run all analysis at per-person level on PostgreSQL", {
   skip_if_not(runTestsOnPostgreSQL)
-  covariateData <- runExtractionPerPerson(pgConnection, pgCdmDatabaseSchema, pgOhdsiDatabaseSchema, cohortsTable)
+  covariateData <- runExtractionPerPerson(pgConnection, pgCdmDatabaseSchema, pgOhdsiDatabaseSchema, cohortTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
 test_that("Run all analysis at per-person level on SQL Server", {
   skip_if_not(runTestsOnSQLServer)
-  covariateData <- runExtractionPerPerson(sqlServerConnection, sqlServerCdmDatabaseSchema, sqlServerOhdsiDatabaseSchema, cohortsTable)
+  covariateData <- runExtractionPerPerson(sqlServerConnection, sqlServerCdmDatabaseSchema, sqlServerOhdsiDatabaseSchema, cohortTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
 test_that("Run all analysis at per-person level on Oracle", {
   skip_if_not(runTestsOnOracle)
-  covariateData <- runExtractionPerPerson(oracleConnection, oracleCdmDatabaseSchema, oracleOhdsiDatabaseSchema, cohortsTable)
+  covariateData <- runExtractionPerPerson(oracleConnection, oracleCdmDatabaseSchema, oracleOhdsiDatabaseSchema, cohortTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
 test_that("Run all analysis at per-person level on Impala", {
   skip_if_not(runTestsOnImpala)
-  covariateData <- runExtractionPerPerson(impalaConnection, impalaCdmDatabaseSchema, impalaOhdsiDatabaseSchema, cohortsTable)
+  covariateData <- runExtractionPerPerson(impalaConnection, impalaCdmDatabaseSchema, impalaOhdsiDatabaseSchema, cohortTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
 test_that("Run all analysis at per-person level on Eunomia", {
   skip_if_not(runTestsOnEunomia)
-  covariateData <- runExtractionPerPerson(eunomiaConnection, eunomiaCdmDatabaseSchema, eunomiaOhdsiDatabaseSchema, cohortsTable)
+  covariateData <- runExtractionPerPerson(eunomiaConnection, eunomiaCdmDatabaseSchema, eunomiaOhdsiDatabaseSchema, cohortTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
 # runExtractionAggregated ----------- 
-runExtractionAggregated <- function(connection, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable) {
+runExtractionAggregated <- function(connection, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortTable) {
   settings <- createCovariateSettings(useDemographicsGender = TRUE,
                                       useDemographicsAge = TRUE,
                                       useDemographicsAgeGroup = TRUE,
@@ -282,7 +282,7 @@ runExtractionAggregated <- function(connection, cdmDatabaseSchema, ohdsiDatabase
                                                        cdmDatabaseSchema = cdmDatabaseSchema,
                                                        oracleTempSchema = ohdsiDatabaseSchema,
                                                        cohortDatabaseSchema = ohdsiDatabaseSchema,
-                                                       cohortTable = cohortsTable,
+                                                       cohortTable = cohortTable,
                                                        cohortTableIsTemp = TRUE,
                                                        cohortId = 1124300,
                                                        rowIdField = "subject_id",
@@ -293,36 +293,36 @@ runExtractionAggregated <- function(connection, cdmDatabaseSchema, ohdsiDatabase
 
 test_that("Run all analysis at aggregated level on PostgreSQL", {
   skip_if_not(runTestsOnPostgreSQL)
-  covariateData <- runExtractionAggregated(pgConnection, pgCdmDatabaseSchema, pgOhdsiDatabaseSchema, cohortsTable)
+  covariateData <- runExtractionAggregated(pgConnection, pgCdmDatabaseSchema, pgOhdsiDatabaseSchema, cohortTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
 test_that("Run all analysis at aggregated level on SQL Server", {
   skip_if_not(runTestsOnSQLServer)
-  covariateData <- runExtractionAggregated(sqlServerConnection, sqlServerCdmDatabaseSchema, sqlServerOhdsiDatabaseSchema, cohortsTable)
+  covariateData <- runExtractionAggregated(sqlServerConnection, sqlServerCdmDatabaseSchema, sqlServerOhdsiDatabaseSchema, cohortTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
 test_that("Run all analysis at aggregated level on Oracle", {
   skip_if_not(runTestsOnOracle)
-  covariateData <- runExtractionAggregated(oracleConnection, oracleCdmDatabaseSchema, oracleOhdsiDatabaseSchema, cohortsTable)
+  covariateData <- runExtractionAggregated(oracleConnection, oracleCdmDatabaseSchema, oracleOhdsiDatabaseSchema, cohortTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
 test_that("Run all analysis at aggregated level on Impala", {
   skip_if_not(runTestsOnImpala)
-  covariateData <- runExtractionAggregated(impalaConnection, impalaCdmDatabaseSchema, impalaOhdsiDatabaseSchema, cohortsTable)
+  covariateData <- runExtractionAggregated(impalaConnection, impalaCdmDatabaseSchema, impalaOhdsiDatabaseSchema, cohortTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
 test_that("Run all analysis at aggregated level on Eunomia", {
   skip_if_not(runTestsOnEunomia)
-  covariateData <- runExtractionAggregated(eunomiaConnection, eunomiaCdmDatabaseSchema, eunomiaOhdsiDatabaseSchema, cohortsTable)
+  covariateData <- runExtractionAggregated(eunomiaConnection, eunomiaCdmDatabaseSchema, eunomiaOhdsiDatabaseSchema, cohortTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
 # runExtractionTemporalPerPerson ----------- 
-runExtractionTemporalPerPerson <- function(connection, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable) {
+runExtractionTemporalPerPerson <- function(connection, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortTable) {
   settings <- createTemporalCovariateSettings(useDemographicsGender = TRUE,
                                               useDemographicsAge = TRUE,
                                               useDemographicsAgeGroup = TRUE,
@@ -375,7 +375,7 @@ runExtractionTemporalPerPerson <- function(connection, cdmDatabaseSchema, ohdsiD
                                                        cdmDatabaseSchema = cdmDatabaseSchema,
                                                        oracleTempSchema = ohdsiDatabaseSchema,
                                                        cohortDatabaseSchema = ohdsiDatabaseSchema,
-                                                       cohortTable = cohortsTable,
+                                                       cohortTable = cohortTable,
                                                        cohortTableIsTemp = TRUE,
                                                        cohortId = 1124300,
                                                        rowIdField = "subject_id",
@@ -385,36 +385,36 @@ runExtractionTemporalPerPerson <- function(connection, cdmDatabaseSchema, ohdsiD
 
 test_that("Run all temporalanalysis at per-person level on PostgreSQL", {
   skip_if_not(runTestsOnPostgreSQL)
-  covariateData <- runExtractionTemporalPerPerson(pgConnection, pgCdmDatabaseSchema, pgOhdsiDatabaseSchema, cohortsTable)
+  covariateData <- runExtractionTemporalPerPerson(pgConnection, pgCdmDatabaseSchema, pgOhdsiDatabaseSchema, cohortTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
 test_that("Run all temporalanalysis at per-person level on SQL Server", {
   skip_if_not(runTestsOnSQLServer)
-  covariateData <- runExtractionTemporalPerPerson(sqlServerConnection, sqlServerCdmDatabaseSchema, sqlServerOhdsiDatabaseSchema, cohortsTable)
+  covariateData <- runExtractionTemporalPerPerson(sqlServerConnection, sqlServerCdmDatabaseSchema, sqlServerOhdsiDatabaseSchema, cohortTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
 test_that("Run all temporalanalysis at per-person level on Oracle", {
   skip_if_not(runTestsOnOracle)
-  covariateData <- runExtractionTemporalPerPerson(oracleConnection, oracleCdmDatabaseSchema, oracleOhdsiDatabaseSchema, cohortsTable)
+  covariateData <- runExtractionTemporalPerPerson(oracleConnection, oracleCdmDatabaseSchema, oracleOhdsiDatabaseSchema, cohortTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
 test_that("Run all temporalanalysis at per-person level on Impala", {
   skip_if_not(runTestsOnImpala)
-  covariateData <- runExtractionTemporalPerPerson(impalaConnection, impalaCdmDatabaseSchema, impalaOhdsiDatabaseSchema, cohortsTable)
+  covariateData <- runExtractionTemporalPerPerson(impalaConnection, impalaCdmDatabaseSchema, impalaOhdsiDatabaseSchema, cohortTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
 test_that("Run all temporalanalysis at per-person level on Eunomia", {
   skip_if_not(runTestsOnEunomia)
-  covariateData <- runExtractionTemporalPerPerson(eunomiaConnection, eunomiaCdmDatabaseSchema, eunomiaOhdsiDatabaseSchema, cohortsTable)
+  covariateData <- runExtractionTemporalPerPerson(eunomiaConnection, eunomiaCdmDatabaseSchema, eunomiaOhdsiDatabaseSchema, cohortTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
 # runExtractionTemporalPerPerson -----------
-runExtractionTemporalAggregated <- function(connection, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortsTable) {
+runExtractionTemporalAggregated <- function(connection, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortTable) {
   settings <- createTemporalCovariateSettings(useDemographicsGender = TRUE,
                                               useDemographicsAge = TRUE,
                                               useDemographicsAgeGroup = TRUE,
@@ -467,7 +467,7 @@ runExtractionTemporalAggregated <- function(connection, cdmDatabaseSchema, ohdsi
                                                        cdmDatabaseSchema = cdmDatabaseSchema,
                                                        oracleTempSchema = ohdsiDatabaseSchema,
                                                        cohortDatabaseSchema = ohdsiDatabaseSchema,
-                                                       cohortTable = cohortsTable,
+                                                       cohortTable = cohortTable,
                                                        cohortTableIsTemp = TRUE,
                                                        cohortId = 1124300,
                                                        rowIdField = "subject_id",
@@ -478,30 +478,30 @@ runExtractionTemporalAggregated <- function(connection, cdmDatabaseSchema, ohdsi
 
 test_that("Run all temporalanalysis at aggregated level on PostgreSQL", {
   skip_if_not(runTestsOnPostgreSQL)
-  covariateData <- runExtractionTemporalAggregated(pgConnection, pgCdmDatabaseSchema, pgOhdsiDatabaseSchema, cohortsTable)
+  covariateData <- runExtractionTemporalAggregated(pgConnection, pgCdmDatabaseSchema, pgOhdsiDatabaseSchema, cohortTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
 test_that("Run all temporalanalysis at aggregated level on SQL Server", {
   skip_if_not(runTestsOnSQLServer)
-  covariateData <- runExtractionTemporalAggregated(sqlServerConnection, sqlServerCdmDatabaseSchema, sqlServerOhdsiDatabaseSchema, cohortsTable)
+  covariateData <- runExtractionTemporalAggregated(sqlServerConnection, sqlServerCdmDatabaseSchema, sqlServerOhdsiDatabaseSchema, cohortTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
 test_that("Run all temporalanalysis at aggregated level on Oracle", {
   skip_if_not(runTestsOnOracle)
-  covariateData <- runExtractionTemporalAggregated(oracleConnection, oracleCdmDatabaseSchema, oracleOhdsiDatabaseSchema, cohortsTable)
+  covariateData <- runExtractionTemporalAggregated(oracleConnection, oracleCdmDatabaseSchema, oracleOhdsiDatabaseSchema, cohortTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
 test_that("Run all temporalanalysis at aggregated level on Impala", {
   skip_if_not(runTestsOnImpala)
-  covariateData <- runExtractionTemporalAggregated(impalaConnection, impalaCdmDatabaseSchema, impalaOhdsiDatabaseSchema, cohortsTable)
+  covariateData <- runExtractionTemporalAggregated(impalaConnection, impalaCdmDatabaseSchema, impalaOhdsiDatabaseSchema, cohortTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
 test_that("Run all temporalanalysis at aggregated level on Eunomia", {
   skip_if_not(runTestsOnEunomia)
-  covariateData <- runExtractionTemporalAggregated(eunomiaConnection, eunomiaCdmDatabaseSchema, eunomiaOhdsiDatabaseSchema, cohortsTable)
+  covariateData <- runExtractionTemporalAggregated(eunomiaConnection, eunomiaCdmDatabaseSchema, eunomiaOhdsiDatabaseSchema, cohortTable)
   expect_true(is(covariateData, "CovariateData"))
 })
