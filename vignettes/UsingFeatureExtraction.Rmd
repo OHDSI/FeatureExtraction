@@ -20,7 +20,7 @@ vignette: >
 ```{r set-options,echo=FALSE,message=FALSE,warning=FALSE,eval=TRUE}
 options(width = 200)
 library(FeatureExtraction)
-vignetteFolder <- file.path(tempdir(), "vignetteFeatureExtraction")
+vignetteFolder <- file.path(getwd(), "vignetteFeatureExtraction")
 ```
 \fontsize{10}{12}
 \selectfont
@@ -191,13 +191,10 @@ Here we will walk through an example, creating covariates for two cohorts of int
 We need to tell R how to connect to the server where the data are. `CohortMethod` uses the `DatabaseConnector` package, which provides the `createConnectionDetails` function. Type `?createConnectionDetails` for the specific settings required for the various database management systems (DBMS). For example, one might connect to a PostgreSQL database using this code:
 
 ```{r tidy=FALSE,eval=FALSE}
-connectionDetails <- createConnectionDetails(dbms = "postgresql", 
-                                             server = "localhost/ohdsi", 
-                                             user = "joe", 
-                                             password = "supersecret")
-
-cdmDatabaseSchema <- "my_cdm_data"
-resultsDatabaseSchema <- "my_results"
+connectionDetails <- Eunomia::getEunomiaConnectionDetails()
+cdmDatabaseSchema <- "main"
+resultsDatabaseSchema <- "main"
+cohortsTable <- "#cohorts_of_interest"
 ```
 
 The last two lines define the `cdmDatabaseSchema` and `resultSchema` variables. We'll use these later to tell R where the data in CDM format live, and where we want to write intermediate and result tables. Note that for Microsoft SQL Server, databaseschemas need to specify both the database and the schema, so for example `cdmDatabaseSchema <- "my_cdm_data.dbo"`.
@@ -212,11 +209,8 @@ FeatureExtraction requires the cohorts to be instantiated in the `cohort` table 
 File cohortsOfInterest.sql
 ***********************************/
 
-IF OBJECT_ID('@resultsDatabaseSchema.cohorts_of_interest', 'U') IS NOT NULL
-DROP TABLE @resultsDatabaseSchema.cohorts_of_interest;
-
 SELECT first_use.*
-INTO @resultsDatabaseSchema.cohorts_of_interest
+INTO @cohortsTable
 FROM (
 SELECT drug_concept_id AS cohort_definition_id,
 MIN(drug_era_start_date) AS cohort_start_date,
@@ -242,9 +236,8 @@ library(SqlRender)
 sql <- readSql("cohortsOfInterest.sql")
 sql <- render(sql,
               cdmDatabaseSchema = cdmDatabaseSchema, 
-              resultsDatabaseSchema = resultsDatabaseSchema)
+              cohortsTable = cohortsTable)
 sql <- translate(sql, targetDialect = connectionDetails$dbms)
-
 connection <- connect(connectionDetails)
 executeSql(connection, sql)
 ```
