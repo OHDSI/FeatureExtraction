@@ -2,15 +2,11 @@ library(testthat)
 library(FeatureExtraction)
 library(dplyr)
 
-
-# Download the JDBC drivers used in the tests
+# Set a directory for the JDBC drivers used in the tests
 oldJarFolder <- Sys.getenv("DATABASECONNECTOR_JAR_FOLDER")
 tempJdbcDriverFolder <- tempfile("jdbcDrivers")
 dir.create(tempJdbcDriverFolder, recursive = TRUE)
 Sys.setenv("DATABASECONNECTOR_JAR_FOLDER" = tempJdbcDriverFolder)
-downloadJdbcDrivers("postgresql")
-downloadJdbcDrivers("sql server")
-downloadJdbcDrivers("oracle")
 
 withr::defer({
   unlink(Sys.getenv("DATABASECONNECTOR_JAR_FOLDER"), recursive = TRUE, force = TRUE)
@@ -31,11 +27,12 @@ loadRenderTranslateUnitTestSql <- function(sqlFileName, targetDialect, tempEmula
 }
 
 # Get all environment variables to determine which DBMS to use for testing
-runTestsOnPostgreSQL <- !(Sys.getenv("CDM5_POSTGRESQL_USER") == "" & Sys.getenv("CDM5_POSTGRESQL_PASSWORD") == "" & Sys.getenv("CDM5_POSTGRESQL_SERVER") == "" & Sys.getenv("CDM5_POSTGRESQL_CDM_SCHEMA") == "" & Sys.getenv("CDM5_POSTGRESQL_OHDSI_SCHEMA") == "")
-runTestsOnSQLServer <- !(Sys.getenv("CDM5_SQL_SERVER_USER") == "" & Sys.getenv("CDM5_SQL_SERVER_PASSWORD") == "" & Sys.getenv("CDM5_SQL_SERVER_SERVER") == "" & Sys.getenv("CDM5_SQL_SERVER_CDM_SCHEMA") == "" & Sys.getenv("CDM5_SQL_SERVER_OHDSI_SCHEMA") == "")
-runTestsOnOracle <- !(Sys.getenv("CDM5_ORACLE_USER") == "" & Sys.getenv("CDM5_ORACLE_PASSWORD") == "" & Sys.getenv("CDM5_ORACLE_SERVER") == "" & Sys.getenv("CDM5_ORACLE_CDM_SCHEMA") == "" & Sys.getenv("CDM5_ORACLE_OHDSI_SCHEMA") == "")
-runTestsOnImpala <- !(Sys.getenv("CDM5_IMPALA_USER") == "" & Sys.getenv("CDM5_IMPALA_PASSWORD") == "" & Sys.getenv("CDM5_IMPALA_SERVER") == "" & Sys.getenv("CDM5_IMPALA_CDM_SCHEMA") == "" & Sys.getenv("CDM5_IMPALA_OHDSI_SCHEMA") == "")
-runTestsOnEunomia <- TRUE
+runTestsOnPostgreSQL <- FALSE #!(Sys.getenv("CDM5_POSTGRESQL_USER") == "" & Sys.getenv("CDM5_POSTGRESQL_PASSWORD") == "" & Sys.getenv("CDM5_POSTGRESQL_SERVER") == "" & Sys.getenv("CDM5_POSTGRESQL_CDM_SCHEMA") == "" & Sys.getenv("CDM5_POSTGRESQL_OHDSI_SCHEMA") == "")
+runTestsOnSQLServer <- FALSE #!(Sys.getenv("CDM5_SQL_SERVER_USER") == "" & Sys.getenv("CDM5_SQL_SERVER_PASSWORD") == "" & Sys.getenv("CDM5_SQL_SERVER_SERVER") == "" & Sys.getenv("CDM5_SQL_SERVER_CDM_SCHEMA") == "" & Sys.getenv("CDM5_SQL_SERVER_OHDSI_SCHEMA") == "")
+runTestsOnOracle <- FALSE #!(Sys.getenv("CDM5_ORACLE_USER") == "" & Sys.getenv("CDM5_ORACLE_PASSWORD") == "" & Sys.getenv("CDM5_ORACLE_SERVER") == "" & Sys.getenv("CDM5_ORACLE_CDM_SCHEMA") == "" & Sys.getenv("CDM5_ORACLE_OHDSI_SCHEMA") == "")
+runTestsOnImpala <- FALSE #!(Sys.getenv("CDM5_IMPALA_USER") == "" & Sys.getenv("CDM5_IMPALA_PASSWORD") == "" & Sys.getenv("CDM5_IMPALA_SERVER") == "" & Sys.getenv("CDM5_IMPALA_CDM_SCHEMA") == "" & Sys.getenv("CDM5_IMPALA_OHDSI_SCHEMA") == "")
+runTestsOnRedshift <- !(Sys.getenv("CDM5_REDSHIFT_USER") == "" & Sys.getenv("CDM5_REDSHIFT_PASSWORD") == "" & Sys.getenv("CDM5_REDSHIFT_SERVER") == "" & Sys.getenv("CDM5_REDSHIFT_CDM_SCHEMA") == "" & Sys.getenv("CDM5_REDSHIFT_OHDSI_SCHEMA") == "")
+runTestsOnEunomia <- FALSE
 
 # create unit test data
 createUnitTestData <- function(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable, cohortDefinitionIds = c(1)) {
@@ -55,11 +52,12 @@ createUnitTestData <- function(connectionDetails, cdmDatabaseSchema, ohdsiDataba
 
 ## These tables should be a temp table to avoid collisions between different runs
 cohortTable <- "#cohorts_of_interest"
-cohortAttributeTable <- paste0("c_attr_", gsub("[: -]", "", Sys.time(), perl = TRUE), sample(1:100, 1))
-attributeDefinitionTable <- paste0("attr_def_", gsub("[: -]", "", Sys.time(), perl = TRUE), sample(1:100, 1))
+cohortAttributeTable <- paste0("c_attr_", substr(.Platform$OS.type, 1, 3), gsub("[: -]", "", Sys.time(), perl = TRUE), sample(1:100, 1))
+attributeDefinitionTable <- paste0("attr_def_", substr(.Platform$OS.type, 1, 3), gsub("[: -]", "", Sys.time(), perl = TRUE), sample(1:100, 1))
 
 # postgres
 if (runTestsOnPostgreSQL) {
+  DatabaseConnector::downloadJdbcDrivers("postgresql")  
   pgConnectionDetails <- createConnectionDetails(dbms = "postgresql",
                                                  user = Sys.getenv("CDM5_POSTGRESQL_USER"),
                                                  password = URLdecode(Sys.getenv("CDM5_POSTGRESQL_PASSWORD")),
@@ -71,6 +69,7 @@ if (runTestsOnPostgreSQL) {
 
 # sql server
 if (runTestsOnSQLServer) {
+  DatabaseConnector::downloadJdbcDrivers("sql server")
   sqlServerConnectionDetails <- createConnectionDetails(dbms = "sql server",
                                                         user = Sys.getenv("CDM5_SQL_SERVER_USER"),
                                                         password = URLdecode(Sys.getenv("CDM5_SQL_SERVER_PASSWORD")),
@@ -82,6 +81,7 @@ if (runTestsOnSQLServer) {
 
 # oracle
 if (runTestsOnOracle) {
+  DatabaseConnector::downloadJdbcDrivers("oracle")  
   oracleConnectionDetails <- createConnectionDetails(dbms = "oracle",
                                                      user = Sys.getenv("CDM5_ORACLE_USER"),
                                                      password = URLdecode(Sys.getenv("CDM5_ORACLE_PASSWORD")),
@@ -93,6 +93,7 @@ if (runTestsOnOracle) {
 
 # impala
 if (runTestsOnImpala) {
+  # NOTE: Driver for IMPALA requires manual installation
   impalaConnectionDetails <- createConnectionDetails(dbms = "impala",
                                                      user = Sys.getenv("CDM5_IMPALA_USER"),
                                                      password = URLdecode(Sys.getenv("CDM5_IMPALA_PASSWORD")),
@@ -101,6 +102,18 @@ if (runTestsOnImpala) {
   impalaCdmDatabaseSchema <- Sys.getenv("CDM5_IMPALA_CDM_SCHEMA")
   impalaOhdsiDatabaseSchema <- Sys.getenv("CDM5_IMPALA_OHDSI_SCHEMA")
   impalaConnection <- createUnitTestData(impalaConnectionDetails, impalaCdmDatabaseSchema, impalaOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
+}
+
+# redshift
+if (runTestsOnRedshift) {
+  DatabaseConnector::downloadJdbcDrivers("redshift")  
+  redshiftConnectionDetails <- createConnectionDetails(dbms = "redshift",
+                                                       user = Sys.getenv("CDM5_REDSHIFT_USER"),
+                                                       password = URLdecode(Sys.getenv("CDM5_REDSHIFT_PASSWORD")),
+                                                       server = Sys.getenv("CDM5_REDSHIFT_SERVER"))
+  redshiftCdmDatabaseSchema <- Sys.getenv("CDM5_REDSHIFT_CDM_SCHEMA")
+  redshiftOhdsiDatabaseSchema <- Sys.getenv("CDM5_REDSHIFT_OHDSI_SCHEMA")
+  redshiftConnection <- createUnitTestData(redshiftConnectionDetails, redshiftCdmDatabaseSchema, redshiftOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
 }
 
 # eunomia

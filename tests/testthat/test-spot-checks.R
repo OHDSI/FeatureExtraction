@@ -197,6 +197,11 @@ test_that("Run spot-checks at per-person level on Impala", {
   runSpotChecks(impalaConnection, impalaOhdsiDatabaseSchema, cohortTable)
 })
 
+test_that("Run spot-checks at per-person level on Redshift", {  
+  skip_if_not(runTestsOnRedshift)
+  runSpotChecks(redshiftConnection, redshiftOhdsiDatabaseSchema, cohortTable)
+})
+
 test_that("Run spot-checks at per-person level on Eunomia", {
   skip_if_not(runTestsOnEunomia)
   runSpotChecks(eunomiaConnection, eunomiaCdmDatabaseSchema, eunomiaOhdsiDatabaseSchema, cohortTable)

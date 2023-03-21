@@ -154,6 +154,12 @@ test_that("Run all analysis at per-person level on Impala", {
   expect_true(is(covariateData, "CovariateData"))
 })
 
+test_that("Run all analysis at per-person level on Redshift", {
+  skip_if_not(runTestsOnRedshift)
+  covariateData <- runExtractionPerPerson(redshiftConnection, redshiftCdmDatabaseSchema, redshiftOhdsiDatabaseSchema, cohortTable)
+  expect_true(is(covariateData, "CovariateData"))
+})
+
 test_that("Run all analysis at per-person level on Eunomia", {
   skip_if_not(runTestsOnEunomia)
   covariateData <- runExtractionPerPerson(eunomiaConnection, eunomiaCdmDatabaseSchema, eunomiaOhdsiDatabaseSchema, cohortTable)
@@ -315,6 +321,12 @@ test_that("Run all analysis at aggregated level on Impala", {
   expect_true(is(covariateData, "CovariateData"))
 })
 
+test_that("Run all analysis at aggregated level on Redshift", {
+  skip_if_not(runTestsOnRedshift)
+  covariateData <- runExtractionAggregated(redshiftConnection, redshiftCdmDatabaseSchema, redshiftOhdsiDatabaseSchema, cohortTable)
+  expect_true(is(covariateData, "CovariateData"))
+})
+
 test_that("Run all analysis at aggregated level on Eunomia", {
   skip_if_not(runTestsOnEunomia)
   covariateData <- runExtractionAggregated(eunomiaConnection, eunomiaCdmDatabaseSchema, eunomiaOhdsiDatabaseSchema, cohortTable)
@@ -404,6 +416,12 @@ test_that("Run all temporalanalysis at per-person level on Oracle", {
 test_that("Run all temporalanalysis at per-person level on Impala", {
   skip_if_not(runTestsOnImpala)
   covariateData <- runExtractionTemporalPerPerson(impalaConnection, impalaCdmDatabaseSchema, impalaOhdsiDatabaseSchema, cohortTable)
+  expect_true(is(covariateData, "CovariateData"))
+})
+
+test_that("Run all temporalanalysis at per-person level on Redshift", {
+  skip_if_not(runTestsOnRedshift)
+  covariateData <- runExtractionTemporalPerPerson(redshiftConnection, redshiftCdmDatabaseSchema, redshiftOhdsiDatabaseSchema, cohortTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
@@ -497,6 +515,12 @@ test_that("Run all temporalanalysis at aggregated level on Oracle", {
 test_that("Run all temporalanalysis at aggregated level on Impala", {
   skip_if_not(runTestsOnImpala)
   covariateData <- runExtractionTemporalAggregated(impalaConnection, impalaCdmDatabaseSchema, impalaOhdsiDatabaseSchema, cohortTable)
+  expect_true(is(covariateData, "CovariateData"))
+})
+
+test_that("Run all temporalanalysis at aggregated level on Redshift", {
+  skip_if_not(runTestsOnRedshift)
+  covariateData <- runExtractionTemporalAggregated(redshiftConnection, redshiftCdmDatabaseSchema, redshiftOhdsiDatabaseSchema, cohortTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 

@@ -43,6 +43,11 @@ if (runTestsOnImpala) {
   dropUnitTestData(impalaConnectionDetails, impalaConnection, impalaOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
 }
 
+# redshift
+if (runTestsOnRedshift) {
+  dropUnitTestData(redshiftConnectionDetails, redshiftConnection, redshiftOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
+}
+
 # eunomia
 if (runTestsOnEunomia) {
   dropUnitTestData(eunomiaConnectionDetails, eunomiaConnection, eunomiaOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
