@@ -84,7 +84,7 @@ runSpotChecks <- function(connection, cdmDatabaseSchema, ohdsiDatabaseSchema, co
   
   
   # Test analysis 102: condition occurrence long term
-  sql <- "SELECT DISTINCT subject_id, condition_concept_id FROM @cohortTable INNER JOIN @cdmDatabaseSchema.condition_occurrence ON subject_id = person_id WHERE cohort_definition_id = 1124300 AND condition_start_date <= cohort_start_date AND condition_start_date >= DATEADD(DAY, -365, cohort_start_date)"
+  sql <- "SELECT DISTINCT subject_id, condition_concept_id FROM @cohortTable INNER JOIN @cdmDatabaseSchema.condition_occurrence ON subject_id = person_id WHERE cohort_definition_id = 1124300 AND condition_concept_id != 0 AND condition_start_date <= cohort_start_date AND condition_start_date >= DATEADD(DAY, -365, cohort_start_date)"
   sql <- SqlRender::render(sql,
                            cdmDatabaseSchema = cdmDatabaseSchema,
                            cohortTable = cohortTable)
@@ -108,7 +108,7 @@ runSpotChecks <- function(connection, cdmDatabaseSchema, ohdsiDatabaseSchema, co
   
   
   # Test analysis 404: drug era short term (excluding NSAIDS)
-  sql <- "SELECT DISTINCT subject_id, drug_concept_id FROM @cohortTable INNER JOIN @cdmDatabaseSchema.drug_era ON subject_id = person_id WHERE cohort_definition_id = 1124300 AND drug_era_start_date <= cohort_start_date AND drug_era_end_date >= DATEADD(DAY, -30, cohort_start_date) AND drug_concept_id NOT IN (SELECT descendant_concept_id FROM @cdmDatabaseSchema.concept_ancestor WHERE ancestor_concept_id = 21603933)"
+  sql <- "SELECT DISTINCT subject_id, drug_concept_id FROM @cohortTable INNER JOIN @cdmDatabaseSchema.drug_era ON subject_id = person_id WHERE cohort_definition_id = 1124300 AND drug_concept_id != 0 AND drug_era_start_date <= cohort_start_date AND drug_era_end_date >= DATEADD(DAY, -30, cohort_start_date) AND drug_concept_id NOT IN (SELECT descendant_concept_id FROM @cdmDatabaseSchema.concept_ancestor WHERE ancestor_concept_id = 21603933)"
   sql <- SqlRender::render(sql,
                            cdmDatabaseSchema = cdmDatabaseSchema,
                            cohortTable = cohortTable)
@@ -172,9 +172,6 @@ runSpotChecks <- function(connection, cdmDatabaseSchema, ohdsiDatabaseSchema, co
 
   expect_equal(aggMax$covariateId, results3$covariateId)
   expect_equal(aggMax$covariateValue, results3$maxValue)
-  
-  # AGS - Remove disconnect as it is handled in the teardown
-  #on.exit(DatabaseConnector::disconnect(connection))  
 }
 
 test_that("Run spot-checks at per-person level on PostgreSQL", {
