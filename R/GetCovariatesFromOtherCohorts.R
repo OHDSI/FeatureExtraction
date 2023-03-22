@@ -40,7 +40,7 @@ getDbCohortBasedCovariatesData <- function(connection,
   checkmate::assertCharacter(oracleTempSchema, len = 1, null.ok = TRUE, add = errorMessages)
   checkmate::assertCharacter(cdmDatabaseSchema, len = 1, null.ok = TRUE, add = errorMessages)
   checkmate::assertCharacter(cohortTable, len = 1, add = errorMessages)
-  checkmate::assertInt(cohortId, add = errorMessages)
+  checkmate::assertIntegerish(cohortId, add = errorMessages)
   # checkmate::assertCharacter(cdmVersion, len = 1, add = errorMessages)
   checkmate::assertCharacter(rowIdField, len = 1, add = errorMessages)
   checkmate::assertClass(covariateSettings, "covariateSettings", add = errorMessages)

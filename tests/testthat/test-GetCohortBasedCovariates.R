@@ -206,9 +206,35 @@ test_that("Cohort-based covariates: counts, aggregated, temporal", {
   expect_equivalent(expectedCovariates[, names(expectedCovariates)], expectedCovariates)
 })
 
+test_that("Cohort-based covariates: counts, aggregated, using multiple cohort IDs", {
+  skip_if_not(runTestsOnEunomia)
+  settings <- createCohortBasedCovariateSettings(analysisId = 999,
+                                                 covariateCohorts = covariateCohorts,
+                                                 valueType = "count")
+  
+  covs <- getDbCovariateData(connection = connection,
+                             oracleTempSchema = NULL,
+                             cdmDatabaseSchema = "main",
+                             cohortTable = "cohort",
+                             cohortId = c(1, 101),
+                             cdmVersion = "5",
+                             rowIdField = "subject_id",
+                             covariateSettings = settings,
+                             aggregated = TRUE)
+  covariatesContinuous <- dplyr::collect(covs$covariatesContinuous)
+  expectedCovariates <- data.frame(cohortDefinitionId  = c(1, 101),
+                                   covariateId = c(101999, 101999),
+                                   countValue  = c(1, 2),
+                                   minValue = c(0, 1),
+                                   maxValue = c(2, 2),
+                                   averageValue = c(1, 1.5))
+  expect_equivalent(expectedCovariates[, names(expectedCovariates)], expectedCovariates)
+})
+
 if (runTestsOnEunomia) {
   DatabaseConnector::disconnect(connection)
 }
+
 
 test_that("Cohort-based covariates: warning if using pre-defined analysis ID", {
   expect_warning(createCohortBasedCovariateSettings(analysisId = 1,
