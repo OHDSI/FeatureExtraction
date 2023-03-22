@@ -194,12 +194,12 @@ test_that("Run spot-checks at per-person level on Oracle", {
 
 test_that("Run spot-checks at per-person level on Impala", {  
   skip_if_not(runTestsOnImpala)
-  runSpotChecks(impalaConnection, impalaOhdsiDatabaseSchema, cohortTable)
+  runSpotChecks(impalaConnection, impalaCdmDatabaseSchema, impalaOhdsiDatabaseSchema, cohortTable)
 })
 
 test_that("Run spot-checks at per-person level on Redshift", {  
   skip_if_not(runTestsOnRedshift)
-  runSpotChecks(redshiftConnection, redshiftOhdsiDatabaseSchema, cohortTable)
+  runSpotChecks(redshiftConnection, redshiftCdmDatabaseSchema, redshiftOhdsiDatabaseSchema, cohortTable)
 })
 
 test_that("Run spot-checks at per-person level on Eunomia", {
