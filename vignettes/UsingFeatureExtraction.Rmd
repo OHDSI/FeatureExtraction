@@ -233,11 +233,11 @@ This is parameterized SQL which can be used by the `SqlRender` package. We use p
 
 ```{r tidy=FALSE,eval=FALSE}
 library(SqlRender)
-sql <- readSql("cohortsOfInterest.sql")
-sql <- render(sql,
-              cdmDatabaseSchema = cdmDatabaseSchema, 
-              cohortsTable = cohortsTable)
-sql <- translate(sql, targetDialect = connectionDetails$dbms)
+sql <- SqlRender::loadRenderTranslateSql("cohortsOfInterest.sql",
+                                         packageName = "FeatureExtraction",
+                                         dbms = connectionDetails$dbms,
+                                         cdmDatabaseSchema = cdmDatabaseSchema,
+                                         cohortsTable = cohortsTable)
 connection <- connect(connectionDetails)
 executeSql(connection, sql)
 ```
@@ -248,9 +248,9 @@ If all went well, we now have a table with the cohorts of interest. We can see h
 
 ```{r tidy=FALSE,eval=FALSE}
 sql <- paste("SELECT cohort_definition_id, COUNT(*) AS count",
-             "FROM @resultsDatabaseSchema.cohorts_of_interest",
+             "FROM @cohortsTable",
              "GROUP BY cohort_definition_id")
-sql <- render(sql, resultsDatabaseSchema = resultsDatabaseSchema)
+sql <- render(sql, cohortsTable = cohortsTable)
 sql <- translate(sql, targetDialect = connectionDetails$dbms)
 
 querySql(connection, sql)
@@ -266,10 +266,11 @@ We can create per-person covariates for one of the cohorts of interest, for exam
 ```{r eval=FALSE}
 covariateSettings <- createDefaultCovariateSettings()
 
-covariateData <- getDbCovariateData(connectionDetails = connectionDetails,
+covariateData <- getDbCovariateData(connection = connection,
                                     cdmDatabaseSchema = cdmDatabaseSchema,
                                     cohortDatabaseSchema = resultsDatabaseSchema,
-                                    cohortTable = "cohorts_of_interest",
+                                    cohortTable = cohortsTable,
+                                    cohortTableIsTemp = TRUE,
                                     cohortId = 1118084,
                                     rowIdField = "subject_id",
                                     covariateSettings = covariateSettings)
@@ -321,6 +322,7 @@ One reason for generating per-person covariates may be to use them in some form 
 
 
 ```{r eval=FALSE}
+covariateData <- loadCovariateData("covariates")
 tidyCovariates <- tidyCovariateData(covariateData,
                                     minFraction = 0.001,
                                     normalize = TRUE,
@@ -388,10 +390,11 @@ Of course, if all we wanted was aggregated statistics it would have been more ef
 ```{r eval=FALSE}
 covariateSettings <- createDefaultCovariateSettings()
 
-covariateData2 <- getDbCovariateData(connectionDetails = connectionDetails,
+covariateData2 <- getDbCovariateData(connection = connection,
                                      cdmDatabaseSchema = cdmDatabaseSchema,
                                      cohortDatabaseSchema = resultsDatabaseSchema,
                                      cohortTable = "cohorts_of_interest",
+                                     cohortTableIsTemp = TRUE,
                                      cohortId = 1118084,
                                      covariateSettings = covariateSettings,
                                      aggregated = TRUE)
