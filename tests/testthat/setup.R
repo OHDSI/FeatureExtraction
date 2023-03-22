@@ -79,8 +79,7 @@ if (runTestsOnSQLServer) {
                                                         user = Sys.getenv("CDM5_SQL_SERVER_USER"),
                                                         password = URLdecode(Sys.getenv("CDM5_SQL_SERVER_PASSWORD")),
                                                         server = Sys.getenv("CDM5_SQL_SERVER_SERVER"))
-  sqlServerCdmDatabaseSchema <- Sys.getenv("CDM5_SQL_SERVER_CDM_SCHEMA")
-  print(paste0("TEST DEBUG SQL SERVER: ", sqlServerCdmDatabaseSchema))
+  sqlServerCdmDatabaseSchema <- "cdmv54.dbo" #Sys.getenv("CDM5_SQL_SERVER_CDM_SCHEMA")
   sqlServerOhdsiDatabaseSchema <- Sys.getenv("CDM5_SQL_SERVER_OHDSI_SCHEMA")
   sqlServerConnection <- createUnitTestData(sqlServerConnectionDetails, sqlServerCdmDatabaseSchema, sqlServerOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
 }
