@@ -25,9 +25,10 @@ runTestsOnEunomia <- TRUE
 
 # The cohort table is a temp table but uses the same platform/datetime suffix to avoid collisions when running
 # tests in parallel
-cohortTable <- paste0("#fe", substr(.Platform$OS.type, 1, 3), gsub("[: -]", "", Sys.time(), perl = TRUE), sample(1:100, 1))
-cohortAttributeTable <- paste0("c_attr_", substr(.Platform$OS.type, 1, 3), gsub("[: -]", "", Sys.time(), perl = TRUE), sample(1:100, 1))
-attributeDefinitionTable <- paste0("attr_def_", substr(.Platform$OS.type, 1, 3), gsub("[: -]", "", Sys.time(), perl = TRUE), sample(1:100, 1))
+tableSuffix <- paste0(substr(.Platform$OS.type, 1, 3), format(Sys.time(), "%y%m%d%H%M%S"), sample(1:100, 1))
+cohortTable <- paste0("#fe", tableSuffix)
+cohortAttributeTable <- paste0("c_attr_", tableSuffix)
+attributeDefinitionTable <- paste0("attr_def_", tableSuffix)
 
 # Helper functions ------------
 getTestResourceFilePath <- function(fileName) {
