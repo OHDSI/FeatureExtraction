@@ -20,7 +20,7 @@ vignette: >
 ```{r set-options,echo=FALSE,message=FALSE,warning=FALSE,eval=TRUE}
 options(width = 200)
 library(FeatureExtraction)
-vignetteFolder <- file.path(getwd(), "vignetteFeatureExtraction")
+vignetteFolder <- "s:/temp/vignetteFeatureExtraction"
 ```
 \fontsize{10}{12}
 \selectfont
@@ -191,10 +191,13 @@ Here we will walk through an example, creating covariates for two cohorts of int
 We need to tell R how to connect to the server where the data are. `CohortMethod` uses the `DatabaseConnector` package, which provides the `createConnectionDetails` function. Type `?createConnectionDetails` for the specific settings required for the various database management systems (DBMS). For example, one might connect to a PostgreSQL database using this code:
 
 ```{r tidy=FALSE,eval=FALSE}
-connectionDetails <- Eunomia::getEunomiaConnectionDetails()
-cdmDatabaseSchema <- "main"
-resultsDatabaseSchema <- "main"
-cohortsTable <- "#cohorts_of_interest"
+connectionDetails <- createConnectionDetails(dbms = "postgresql", 
+                                             server = "localhost/ohdsi", 
+                                             user = "joe", 
+                                             password = "supersecret")
+
+cdmDatabaseSchema <- "my_cdm_data"
+resultsDatabaseSchema <- "my_results"
 ```
 
 The last two lines define the `cdmDatabaseSchema` and `resultSchema` variables. We'll use these later to tell R where the data in CDM format live, and where we want to write intermediate and result tables. Note that for Microsoft SQL Server, databaseschemas need to specify both the database and the schema, so for example `cdmDatabaseSchema <- "my_cdm_data.dbo"`.
@@ -209,8 +212,11 @@ FeatureExtraction requires the cohorts to be instantiated in the `cohort` table 
 File cohortsOfInterest.sql
 ***********************************/
 
+IF OBJECT_ID('@resultsDatabaseSchema.cohorts_of_interest', 'U') IS NOT NULL
+DROP TABLE @resultsDatabaseSchema.cohorts_of_interest;
+
 SELECT first_use.*
-INTO @cohortsTable
+INTO @resultsDatabaseSchema.cohorts_of_interest
 FROM (
 SELECT drug_concept_id AS cohort_definition_id,
 MIN(drug_era_start_date) AS cohort_start_date,
@@ -233,11 +239,12 @@ This is parameterized SQL which can be used by the `SqlRender` package. We use p
 
 ```{r tidy=FALSE,eval=FALSE}
 library(SqlRender)
-sql <- SqlRender::loadRenderTranslateSql("cohortsOfInterest.sql",
-                                         packageName = "FeatureExtraction",
-                                         dbms = connectionDetails$dbms,
-                                         cdmDatabaseSchema = cdmDatabaseSchema,
-                                         cohortsTable = cohortsTable)
+sql <- readSql("cohortsOfInterest.sql")
+sql <- render(sql,
+              cdmDatabaseSchema = cdmDatabaseSchema, 
+              resultsDatabaseSchema = resultsDatabaseSchema)
+sql <- translate(sql, targetDialect = connectionDetails$dbms)
+
 connection <- connect(connectionDetails)
 executeSql(connection, sql)
 ```
@@ -248,9 +255,9 @@ If all went well, we now have a table with the cohorts of interest. We can see h
 
 ```{r tidy=FALSE,eval=FALSE}
 sql <- paste("SELECT cohort_definition_id, COUNT(*) AS count",
-             "FROM @cohortsTable",
+             "FROM @resultsDatabaseSchema.cohorts_of_interest",
              "GROUP BY cohort_definition_id")
-sql <- render(sql, cohortsTable = cohortsTable)
+sql <- render(sql, resultsDatabaseSchema = resultsDatabaseSchema)
 sql <- translate(sql, targetDialect = connectionDetails$dbms)
 
 querySql(connection, sql)
@@ -266,11 +273,10 @@ We can create per-person covariates for one of the cohorts of interest, for exam
 ```{r eval=FALSE}
 covariateSettings <- createDefaultCovariateSettings()
 
-covariateData <- getDbCovariateData(connection = connection,
+covariateData <- getDbCovariateData(connectionDetails = connectionDetails,
                                     cdmDatabaseSchema = cdmDatabaseSchema,
                                     cohortDatabaseSchema = resultsDatabaseSchema,
-                                    cohortTable = cohortsTable,
-                                    cohortTableIsTemp = TRUE,
+                                    cohortTable = "cohorts_of_interest",
                                     cohortId = 1118084,
                                     rowIdField = "subject_id",
                                     covariateSettings = covariateSettings)
@@ -322,7 +328,6 @@ One reason for generating per-person covariates may be to use them in some form 
 
 
 ```{r eval=FALSE}
-covariateData <- loadCovariateData("covariates")
 tidyCovariates <- tidyCovariateData(covariateData,
                                     minFraction = 0.001,
                                     normalize = TRUE,
@@ -390,11 +395,10 @@ Of course, if all we wanted was aggregated statistics it would have been more ef
 ```{r eval=FALSE}
 covariateSettings <- createDefaultCovariateSettings()
 
-covariateData2 <- getDbCovariateData(connection = connection,
+covariateData2 <- getDbCovariateData(connectionDetails = connectionDetails,
                                      cdmDatabaseSchema = cdmDatabaseSchema,
                                      cohortDatabaseSchema = resultsDatabaseSchema,
                                      cohortTable = "cohorts_of_interest",
-                                     cohortTableIsTemp = TRUE,
                                      cohortId = 1118084,
                                      covariateSettings = covariateSettings,
                                      aggregated = TRUE)
@@ -429,7 +433,7 @@ if (file.exists(file.path(vignetteFolder, "aggregatedCovariates"))) {
 ```
 The columns of `covariates` are defined as follows:
 
-- `covariateId` identifies the covariate, and definitions of covariates can be found in the `cohortData$covariateRef` object. 
+- `covariateId` identifies the covariate, and definitions of covariates can be found in the `covariateData$covariateRef` object. 
 - `sumValue` is the sum of the covariate values. Because these are binary features, this is equivalent to the number of people that have the covariate with a value of 1.
 - `averageValue` is the average covariate value.  Because these are binary features, this is equivalent to the proportion of people that have the covariate with a value of 1.
 

@@ -28,7 +28,7 @@ ohdsiDatabaseSchema <- "main"
 cohortsTable <- "#cohorts_of_interest"
 cdmVersion <- "5"
 
-vignetteFolder <- file.path(getwd(), "vignetteFeatureExtraction")
+vignetteFolder <- "s:/temp/vignetteFeatureExtraction"
 if (!file.exists(vignetteFolder))
   dir.create(vignetteFolder)
 
