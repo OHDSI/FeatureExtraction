@@ -455,7 +455,7 @@ print(result, row.names = FALSE, right = FALSE)
 \selectfont
 ```{r comment=NA,echo=FALSE,message=FALSE}
 if (file.exists(file.path(vignetteFolder, "aggregatedCovariates"))) {
-  result <- createTable1(covariateData2)
+  result <- createTable1(covariateData2, output = "one column")
   print(result, row.names = FALSE, right = FALSE)
 }
 ```
@@ -550,7 +550,7 @@ print(result, row.names = FALSE, right = FALSE)
 \selectfont
 ```{r comment=NA,echo=FALSE,message=FALSE}
 if (file.exists(file.path(vignetteFolder, "covDiclofenac"))) {
-  result <- createTable1(covCelecoxib, covDiclofenac)
+  result <- createTable1(covCelecoxib, covDiclofenac, output = "one column")
   print(result, row.names = FALSE, right = FALSE)
 }
 ```
