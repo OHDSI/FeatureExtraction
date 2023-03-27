@@ -125,7 +125,7 @@ runExtractionPerPerson <- function(connectionDetails, cdmDatabaseSchema, ohdsiDa
                                       excludedCovariateConceptIds = c(),
                                       addDescendantsToExclude = FALSE,
                                       includedCovariateIds = c())
-  
+
   suppressWarnings(covariateData <- getDbCovariateData(connectionDetails = connectionDetails,
                                                        cdmDatabaseSchema = cdmDatabaseSchema,
                                                        oracleTempSchema = ohdsiDatabaseSchema,
@@ -320,7 +320,7 @@ runExtractionAggregated <- function(connectionDetails, cdmDatabaseSchema, ohdsiD
                                       excludedCovariateConceptIds = c(),
                                       addDescendantsToExclude = FALSE,
                                       includedCovariateIds = c())
-  
+
   suppressWarnings(covariateData <- getDbCovariateData(connectionDetails = connectionDetails,
                                                        cdmDatabaseSchema = cdmDatabaseSchema,
                                                        oracleTempSchema = ohdsiDatabaseSchema,
