@@ -129,13 +129,13 @@ setMethod("show", "CovariateData", function(object) {
 setMethod("summary", "CovariateData", function(object) {
   covariateValueCount <- 0
   if (!is.null(object$covariates)) {
-    covariateValueCount <- covariateValueCount + (nrow(object$covariates))
+    covariateValueCount <- covariateValueCount + (nrow_temp(object$covariates))
   }
   if (!is.null(object$covariatesContinuous)) {
-    covariateValueCount <- covariateValueCount + (nrow(object$covariatesContinuous))
+    covariateValueCount <- covariateValueCount + (nrow_temp(object$covariatesContinuous))
   }
   result <- list(metaData = attr(object, "metaData"),
-                 covariateCount = nrow(object$covariateRef),
+                 covariateCount = nrow_temp(object$covariateRef),
                  covariateValueCount = covariateValueCount)
   class(result) <- "summary.CovariateData"
   return(result)

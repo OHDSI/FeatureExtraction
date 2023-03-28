@@ -45,7 +45,7 @@ tidyCovariateData <- function(covariateData,
                                            analysisRef = covariateData$analysisRef)
   metaData <- attr(covariateData, "metaData")
   populationSize <- metaData$populationSize
-  if (nrow(covariateData$covariates) == 0) {
+  if (nrow_temp(covariateData$covariates) == 0) {
     newCovariateData$covariates <- covariateData$covariates
   } else {
     newCovariates <- covariateData$covariates
@@ -70,7 +70,7 @@ tidyCovariateData <- function(covariateData,
         select(covariateId = .data$covariateId)
       on.exit(covariateData$binaryCovariateIds <- NULL, add = TRUE)
       
-      if (nrow(covariateData$binaryCovariateIds) != 0) {
+      if (nrow_temp(covariateData$binaryCovariateIds) != 0) {
         if (isTemporalCovariateData(covariateData)) { 
           # Temporal
           # browser()
@@ -107,7 +107,7 @@ tidyCovariateData <- function(covariateData,
           newCovariates <- newCovariates %>%
             anti_join(covariateData$deleteCovariateTimeIds, by = c("covariateId", "timeId"))
           
-          ParallelLogger::logInfo("Removing ", nrow(covariateData$deleteCovariateTimeIds), " redundant covariate ID - time ID combinations")
+          ParallelLogger::logInfo("Removing ", nrow_temp(covariateData$deleteCovariateTimeIds), " redundant covariate ID - time ID combinations")
         } else {
           # Non-temporal
           

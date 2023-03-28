@@ -84,3 +84,11 @@ filterByCohortDefinitionId <- function(covariateData, cohortId) {
   attr(class(result), "package") <- "FeatureExtraction"
   return(result)
 }
+
+nrow_temp <- function(x) {
+  if (inherits(x, "tbl_dbi")) {
+    return(x %>% count() %>% pull())
+  } else {
+    return(nrow(x))
+  }
+}
