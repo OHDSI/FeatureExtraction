@@ -69,7 +69,7 @@ test_that("getDbCovariateData works with createTemporalSequenceCovariateSettings
   expect_true(is(result, "CovariateData"))
   
   # check timeId is 59 or less
-  expect_true(max(as.data.frame(result$covariates)$timeId, na.rm = T)<=60)
+  expect_true(max(collect(result$covariates)$timeId, na.rm = T)<=60)
   
   on.exit(DatabaseConnector::disconnect(connection))
 })

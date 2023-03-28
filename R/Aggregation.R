@@ -42,13 +42,13 @@ aggregateCovariates <- function(covariateData) {
   populationSize <-  attr(covariateData, "metaData")$populationSize
   
   # Aggregate binary variables
-  result$covariates <- covariateData$analysisRef %>%
-    filter(rlang::sym("isBinary") == "Y") %>%
+  result$covariates <- covariateData$analysisRef %>% 
+    filter(.data$isBinary == "Y") %>%
     inner_join(covariateData$covariateRef, by = "analysisId") %>%
     inner_join(covariateData$covariates, by = "covariateId") %>%
-    group_by(rlang::sym("covariateId")) %>%
-    summarize(sumValue = sum(rlang::sym("covariateValue"), na.rm = TRUE),
-              averageValue = sum(rlang::sym("covariateValue") / populationSize, na.rm = TRUE))
+    group_by(.data$covariateId) %>%
+    summarize(sumValue = sum(.data$covariateValue, na.rm = TRUE),
+              averageValue = sum(.data$covariateValue / populationSize, na.rm = TRUE))
   
   # Aggregate continuous variables where missing means zero
   computeStats <- function(data) {
@@ -72,7 +72,7 @@ aggregateCovariates <- function(covariateData) {
   }
   
   covariatesContinuous1 <- covariateData$analysisRef %>%
-    filter(rlang::sym("isBinary") == "N" & rlang::sym("missingMeansZero") == "Y") %>%
+    filter(.data$isBinary == "N" & .data$missingMeansZero == "Y") %>%
     inner_join(covariateData$covariateRef, by = "analysisId") %>%
     inner_join(covariateData$covariates, by = "covariateId") %>%
     Andromeda::groupApply("covariateId",  computeStats) %>%
@@ -96,9 +96,9 @@ aggregateCovariates <- function(covariateData) {
   }
   
   covariatesContinuous2 <- covariateData$analysisRef %>%
-    filter(rlang::sym("isBinary") == "N" & rlang::sym("missingMeansZero") == "N") %>%
+    filter(.data$isBinary == "N" & .data$missingMeansZero == "N") %>%
     inner_join(covariateData$covariateRef, by = "analysisId") %>%
-    inner_join(covariateData$covariates, by = "covariateId") %>%
+    inner_join(covariateData$covariates, by = "covariateId") %>% 
     Andromeda::groupApply("covariateId",  computeStats) %>%
     bind_rows()
   

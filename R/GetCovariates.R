@@ -8,7 +8,7 @@
 #
 #     http://www.apache.org/licenses/LICENSE-2.0
 #
-# Unless required by applicable law or agreed to in writing, software
+# Unless required by applicable law or agreed to in writing, stware
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
@@ -119,7 +119,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
     if (is.list(covariateSettings)) {
       covariateData <- NULL
       hasData <- function(data) {
-        return(!is.null(data) && (data %>% count() %>% pull()) > 0)
+        return(!is.null(data) && (nrow_temp(data) > 0))
       }
       for (i in 1:length(covariateSettings)) {
         fun <- attr(covariateSettings[[i]], "fun")

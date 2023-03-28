@@ -30,3 +30,6 @@ standalone/build/*
 *.tex
 *.log
 .Renviron
+
+# local work folder
+work/
