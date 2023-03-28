@@ -19,7 +19,7 @@ BugReports: https://github.com/OHDSI/FeatureExtraction/issues
 Depends:
   R (>= 3.2.2),
   DatabaseConnector (>= 3.0.0),
-  Andromeda
+  Andromeda (>= 0.6.3)
 Imports:
   methods,
   dplyr,
