@@ -12,10 +12,15 @@ test_that("Test stdDiff continuous variable computation", {
   #                                               cohortTable = "cohort",
   #                                               aggregated = TRUE,
   #                                               covariateSettings = FeatureExtraction::createCovariateSettings(useCharlsonIndex = TRUE))
-  # FeatureExtraction::saveCovariateData(data, "inst/testdata/continuousCovariateData.zip")
+  # FeatureExtraction::saveCovariateData(data, "inst/testdata/continuousCovariateDataArrow.zip")
   # ------------------------------------------------------------------------------
-  
-  path <- system.file("testdata", "continuousCovariateData.zip", package = "FeatureExtraction", mustWork = TRUE)
+  a <- Andromeda::andromeda(cars = cars)
+  if (inherits(a$cars, "tbl_dbi")) {
+    path <- system.file("testdata", "continuousCovariateData.zip", package = "FeatureExtraction", mustWork = TRUE)
+  } else {
+    path <- system.file("testdata", "continuousCovariateDataArrow.zip", package = "FeatureExtraction", mustWork = TRUE)
+  }
+  close(a)
   data <- loadCovariateData(path)
   output <- computeStandardizedDifference(covariateData1 = data,
                                           covariateData2 = data,
