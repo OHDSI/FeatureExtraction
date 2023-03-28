@@ -16,11 +16,11 @@ withr::defer({
 
 
 # Get all environment variables to determine which DBMS to use for testing
-runTestsOnPostgreSQL <- !(Sys.getenv("CDM5_POSTGRESQL_USER") == "" & Sys.getenv("CDM5_POSTGRESQL_PASSWORD") == "" & Sys.getenv("CDM5_POSTGRESQL_SERVER") == "" & Sys.getenv("CDM5_POSTGRESQL_CDM_SCHEMA") == "" & Sys.getenv("CDM5_POSTGRESQL_OHDSI_SCHEMA") == "")
+runTestsOnPostgreSQL <- TRUE #!(Sys.getenv("CDM5_POSTGRESQL_USER") == "" & Sys.getenv("CDM5_POSTGRESQL_PASSWORD") == "" & Sys.getenv("CDM5_POSTGRESQL_SERVER") == "" & Sys.getenv("CDM5_POSTGRESQL_CDM_SCHEMA") == "" & Sys.getenv("CDM5_POSTGRESQL_OHDSI_SCHEMA") == "")
 runTestsOnSQLServer <- FALSE #!(Sys.getenv("CDM5_SQL_SERVER_USER") == "" & Sys.getenv("CDM5_SQL_SERVER_PASSWORD") == "" & Sys.getenv("CDM5_SQL_SERVER_SERVER") == "" & Sys.getenv("CDM5_SQL_SERVER_CDM_SCHEMA") == "" & Sys.getenv("CDM5_SQL_SERVER_OHDSI_SCHEMA") == "")
 runTestsOnOracle <- FALSE #!(Sys.getenv("CDM5_ORACLE_USER") == "" & Sys.getenv("CDM5_ORACLE_PASSWORD") == "" & Sys.getenv("CDM5_ORACLE_SERVER") == "" & Sys.getenv("CDM5_ORACLE_CDM_SCHEMA") == "" & Sys.getenv("CDM5_ORACLE_OHDSI_SCHEMA") == "")
-runTestsOnImpala <- !(Sys.getenv("CDM5_IMPALA_USER") == "" & Sys.getenv("CDM5_IMPALA_PASSWORD") == "" & Sys.getenv("CDM5_IMPALA_SERVER") == "" & Sys.getenv("CDM5_IMPALA_CDM_SCHEMA") == "" & Sys.getenv("CDM5_IMPALA_OHDSI_SCHEMA") == "")
-runTestsOnRedshift <- !(Sys.getenv("CDM5_REDSHIFT_USER") == "" & Sys.getenv("CDM5_REDSHIFT_PASSWORD") == "" & Sys.getenv("CDM5_REDSHIFT_SERVER") == "" & Sys.getenv("CDM5_REDSHIFT_CDM_SCHEMA") == "" & Sys.getenv("CDM5_REDSHIFT_OHDSI_SCHEMA") == "")
+runTestsOnImpala <- FALSE #!(Sys.getenv("CDM5_IMPALA_USER") == "" & Sys.getenv("CDM5_IMPALA_PASSWORD") == "" & Sys.getenv("CDM5_IMPALA_SERVER") == "" & Sys.getenv("CDM5_IMPALA_CDM_SCHEMA") == "" & Sys.getenv("CDM5_IMPALA_OHDSI_SCHEMA") == "")
+runTestsOnRedshift <- FALSE #!(Sys.getenv("CDM5_REDSHIFT_USER") == "" & Sys.getenv("CDM5_REDSHIFT_PASSWORD") == "" & Sys.getenv("CDM5_REDSHIFT_SERVER") == "" & Sys.getenv("CDM5_REDSHIFT_CDM_SCHEMA") == "" & Sys.getenv("CDM5_REDSHIFT_OHDSI_SCHEMA") == "")
 runTestsOnEunomia <- TRUE
 
 # The cohort table is a temp table but uses the same platform/datetime suffix to avoid collisions when running
@@ -60,6 +60,18 @@ createUnitTestData <- function(connectionDetails, cdmDatabaseSchema, ohdsiDataba
   return(connection)
 }
 
+dropUnitTestData <- function(connection, ohdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable) {
+  sql <- loadRenderTranslateUnitTestSql(sqlFileName = "dropTestingData.sql",
+                                        targetDialect = connectionDetails$dbms,
+                                        tempEmulationSchema = ohdsiDatabaseSchema,
+                                        attribute_definition_table = attributeDefinitionTable,
+                                        cohort_attribute_table = cohortAttributeTable, 
+                                        cohort_database_schema = ohdsiDatabaseSchema,
+                                        cohort_table = cohortTable)
+  DatabaseConnector::executeSql(connection, sql)
+  DatabaseConnector::disconnect(connection)
+}
+
 # Database Test Settings -----------
 # postgres
 if (runTestsOnPostgreSQL) {
@@ -70,7 +82,7 @@ if (runTestsOnPostgreSQL) {
                                                  server = Sys.getenv("CDM5_POSTGRESQL_SERVER"))
   pgCdmDatabaseSchema <- Sys.getenv("CDM5_POSTGRESQL_CDM_SCHEMA")
   pgOhdsiDatabaseSchema <- Sys.getenv("CDM5_POSTGRESQL_OHDSI_SCHEMA")
-  pgConnection <- createUnitTestData(pgConnectionDetails, pgCdmDatabaseSchema, pgOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
+  #pgConnection <- createUnitTestData(pgConnectionDetails, pgCdmDatabaseSchema, pgOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
 }
 
 # sql server
@@ -82,7 +94,7 @@ if (runTestsOnSQLServer) {
                                                         server = Sys.getenv("CDM5_SQL_SERVER_SERVER"))
   sqlServerCdmDatabaseSchema <- Sys.getenv("CDM5_SQL_SERVER_CDM_SCHEMA")
   sqlServerOhdsiDatabaseSchema <- Sys.getenv("CDM5_SQL_SERVER_OHDSI_SCHEMA")
-  sqlServerConnection <- createUnitTestData(sqlServerConnectionDetails, sqlServerCdmDatabaseSchema, sqlServerOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
+  #sqlServerConnection <- createUnitTestData(sqlServerConnectionDetails, sqlServerCdmDatabaseSchema, sqlServerOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
 }
 
 # oracle
@@ -94,7 +106,7 @@ if (runTestsOnOracle) {
                                                      server = Sys.getenv("CDM5_ORACLE_SERVER"))
   oracleCdmDatabaseSchema <- Sys.getenv("CDM5_ORACLE_CDM_SCHEMA")
   oracleOhdsiDatabaseSchema <- Sys.getenv("CDM5_ORACLE_OHDSI_SCHEMA")
-  oracleConnection <- createUnitTestData(oracleConnectionDetails, oracleCdmDatabaseSchema, oracleOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
+  #oracleConnection <- createUnitTestData(oracleConnectionDetails, oracleCdmDatabaseSchema, oracleOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
 }
 
 # impala
@@ -107,7 +119,7 @@ if (runTestsOnImpala) {
                                                      pathToDriver = Sys.getenv("CDM5_IMPALA_PATH_TO_DRIVER"))
   impalaCdmDatabaseSchema <- Sys.getenv("CDM5_IMPALA_CDM_SCHEMA")
   impalaOhdsiDatabaseSchema <- Sys.getenv("CDM5_IMPALA_OHDSI_SCHEMA")
-  impalaConnection <- createUnitTestData(impalaConnectionDetails, impalaCdmDatabaseSchema, impalaOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
+  #impalaConnection <- createUnitTestData(impalaConnectionDetails, impalaCdmDatabaseSchema, impalaOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
 }
 
 # redshift
@@ -119,7 +131,7 @@ if (runTestsOnRedshift) {
                                                        server = Sys.getenv("CDM5_REDSHIFT_SERVER"))
   redshiftCdmDatabaseSchema <- Sys.getenv("CDM5_REDSHIFT_CDM_SCHEMA")
   redshiftOhdsiDatabaseSchema <- Sys.getenv("CDM5_REDSHIFT_OHDSI_SCHEMA")
-  redshiftConnection <- createUnitTestData(redshiftConnectionDetails, redshiftCdmDatabaseSchema, redshiftOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
+  #redshiftConnection <- createUnitTestData(redshiftConnectionDetails, redshiftCdmDatabaseSchema, redshiftOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
 }
 
 # eunomia
@@ -134,4 +146,11 @@ if (runTestsOnEunomia) {
                          cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
                          cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
                          cohortTable = "cohort")
+  withr::defer(
+    {
+      dropUnitTestData(eunomiaConnectionDetails, eunomiaConnection, eunomiaOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
+      unlink("testEunomia.sqlite", recursive = TRUE, force = TRUE)  
+    },
+    testthat::teardown_env()
+  )  
 }
