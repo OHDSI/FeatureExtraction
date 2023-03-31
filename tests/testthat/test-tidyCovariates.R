@@ -2,8 +2,6 @@
 # library(testthat); library(FeatureExtraction)
 # covr::file_report(covr::file_coverage("R/Normalization.R", "tests/testthat/test-tidyCovariates.R"))
 
-connectionDetails <- Eunomia::getEunomiaConnectionDetails()
-
 test_that("Test exit conditions ", {
   # Covariate Data object check
   expect_error(tidyCovariateData(covariateData = list()))
@@ -68,16 +66,14 @@ test_that("tidyCovariates works", {
 })
 
 test_that("tidyCovariateData on Temporal Data", {
-  Eunomia::createCohorts(connectionDetails)
+  skip_if_not(runTestsOnEunomia)
   covariateSettings <- createTemporalCovariateSettings(useDrugExposure = TRUE,
                                                        temporalStartDays = -2:-1,
                                                        temporalEndDays = -2:-1)
-  covariateData <- getDbCovariateData(connectionDetails,
-                                      cdmDatabaseSchema = "main",
+  covariateData <- getDbCovariateData(connection = eunomiaConnection,
+                                      cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
                                       cohortId = 1,
                                       covariateSettings = covariateSettings)
   tidy <- tidyCovariateData(covariateData)
   expect_equal(length(tidy$analysisRef$analysisId), length(covariateData$analysisRef$analysisId))
 })
-
-unlink(connectionDetails$server())
