@@ -25,8 +25,7 @@ library(FeatureExtraction)
 
 cdmDatabaseSchema <- "main"
 resultsDatabaseSchema <- "main"
-cohortTable <- "cohorts_of_interest"
-cdmVersion <- "5"
+cohortsTable <- "#cohorts_of_interest"
 
 vignetteFolder <- "s:/temp/vignetteFeatureExtraction"
 if (!file.exists(vignetteFolder))
@@ -35,18 +34,33 @@ if (!file.exists(vignetteFolder))
 connectionDetails <- Eunomia::getEunomiaConnectionDetails()
 connection <- DatabaseConnector::connect(connectionDetails)
 
-sql <- SqlRender::loadRenderTranslateSql("cohortsOfInterest.sql",
-                                         packageName = "FeatureExtraction",
-                                         dbms = connectionDetails$dbms,
-                                         cdmDatabaseSchema = cdmDatabaseSchema,
-                                         resultsDatabaseSchema = resultsDatabaseSchema)  
+sql <- "SELECT first_use.*
+INTO @cohortsTable
+FROM (
+  SELECT drug_concept_id AS cohort_definition_id,
+  	MIN(drug_era_start_date) AS cohort_start_date,
+  	MIN(drug_era_end_date) AS cohort_end_date,
+  	person_id AS subject_id
+  FROM @cdmDatabaseSchema.drug_era
+  WHERE drug_concept_id = 1118084-- celecoxib
+    OR drug_concept_id = 1124300 --diclofenac
+  GROUP BY drug_concept_id, 
+    person_id
+) first_use 
+INNER JOIN @cdmDatabaseSchema.observation_period
+  ON first_use.subject_id = observation_period.person_id
+  AND cohort_start_date >= observation_period_start_date
+  AND cohort_end_date <= observation_period_end_date
+WHERE DATEDIFF(DAY, observation_period_start_date, cohort_start_date) >= 365;"
+sql <- render(sql, cohortsTable = cohortsTable, cdmDatabaseSchema = cdmDatabaseSchema)
+sql <- translate(sql, targetDialect = connectionDetails$dbms)
 DatabaseConnector::executeSql(connection, sql)
 
 # Check number of subjects per cohort:
 sql <- paste("SELECT cohort_definition_id, COUNT(*) AS count",
-             "FROM @resultsDatabaseSchema.cohorts_of_interest",
+             "FROM @cohortsTable",
              "GROUP BY cohort_definition_id")
-sql <- render(sql, resultsDatabaseSchema = resultsDatabaseSchema)
+sql <- render(sql, cohortsTable = cohortsTable)
 sql <- translate(sql, targetDialect = connectionDetails$dbms)
 DatabaseConnector::querySql(connection, sql)
 
@@ -55,7 +69,8 @@ covariateSettings <- createDefaultCovariateSettings()
 covariateData <- getDbCovariateData(connection = connection,
                                     cdmDatabaseSchema = cdmDatabaseSchema,
                                     cohortDatabaseSchema = resultsDatabaseSchema,
-                                    cohortTable = cohortTable,
+                                    cohortTable = cohortsTable,
+                                    cohortTableIsTemp = TRUE,
                                     cohortId = 1118084,
                                     rowIdField = "subject_id",
                                     covariateSettings = covariateSettings)
@@ -80,7 +95,8 @@ covariateSettings <- createDefaultCovariateSettings()
 covariateData2 <- getDbCovariateData(connection = connection,
                                      cdmDatabaseSchema = cdmDatabaseSchema,
                                      cohortDatabaseSchema = resultsDatabaseSchema,
-                                     cohortTable = cohortTable,
+                                     cohortTable = cohortsTable,
+                                     cohortTableIsTemp = TRUE,
                                      cohortId = 1118084,
                                      covariateSettings = covariateSettings,
                                      aggregated = TRUE)
@@ -96,7 +112,8 @@ covariateSettings <- createTable1CovariateSettings()
 covariateData2b <- getDbCovariateData(connection = connection,
                                       cdmDatabaseSchema = cdmDatabaseSchema,
                                       cohortDatabaseSchema = resultsDatabaseSchema,
-                                      cohortTable = cohortTable,
+                                      cohortTable = cohortsTable,
+                                      cohortTableIsTemp = TRUE,
                                       cohortId = 1118084,
                                       covariateSettings = covariateSettings,
                                       aggregated = TRUE)
@@ -112,7 +129,8 @@ covariateSettings <- createTable1CovariateSettings(excludedCovariateConceptIds =
 covDiclofenac <- getDbCovariateData(connection = connection,
                                     cdmDatabaseSchema = cdmDatabaseSchema,
                                     cohortDatabaseSchema = resultsDatabaseSchema,
-                                    cohortTable = cohortTable,
+                                    cohortTable = cohortsTable,
+                                    cohortTableIsTemp = TRUE,
                                     cohortId = 1124300,
                                     covariateSettings = covariateSettings,
                                     aggregated = TRUE)
@@ -122,7 +140,8 @@ saveCovariateData(covDiclofenac, file.path(vignetteFolder, "covDiclofenac"))
 covCelecoxib <- getDbCovariateData(connection = connection,
                                    cdmDatabaseSchema = cdmDatabaseSchema,
                                    cohortDatabaseSchema = resultsDatabaseSchema,
-                                   cohortTable = cohortTable,
+                                   cohortTable = cohortsTable,
+                                   cohortTableIsTemp = TRUE,
                                    cohortId = 1118084,
                                    covariateSettings = covariateSettings,
                                    aggregated = TRUE)

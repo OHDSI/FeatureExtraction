@@ -2,9 +2,6 @@
 # library(testthat); library(FeatureExtraction)
 # covr::file_report(covr::file_coverage("R/DefaultTemporalSequenceCovariateSettings.R", "tests/testthat/test-GetCovariatesTemporalSequence.R"))
 
-connectionDetails <- Eunomia::getEunomiaConnectionDetails()
-Eunomia::createCohorts(connectionDetails)
-
 test_that("createTemporalSequenceCovariateSettings correctly sets list", {
   settings <- createTemporalSequenceCovariateSettings(useDemographicsGender = T, 
                                                       useConditionEraGroupStart = T, 
@@ -46,7 +43,7 @@ test_that("createTemporalSequenceCovariateSettings correctly sets function", {
 
 # check extraction
 test_that("getDbCovariateData works with createTemporalSequenceCovariateSettings", {
-  
+  skip_if_not(runTestsOnEunomia)
   covSet <- createTemporalSequenceCovariateSettings(useDemographicsGender = T, 
                                                     useDemographicsAge = T, 
                                                     useDemographicsRace = T,
@@ -60,8 +57,7 @@ test_that("getDbCovariateData works with createTemporalSequenceCovariateSettings
                                                       sequenceStartDay = -365*5)
   
   
-  connection <- DatabaseConnector::connect(connectionDetails)
-  result <- getDbCovariateData(connection = connection,
+  result <- getDbCovariateData(connection = eunomiaConnection,
                                cdmDatabaseSchema = "main",
                                cohortTable = "cohort", 
                                cohortId = 1,
@@ -70,25 +66,21 @@ test_that("getDbCovariateData works with createTemporalSequenceCovariateSettings
   
   # check timeId is 59 or less
   expect_true(max(as.data.frame(result$covariates)$timeId, na.rm = T)<=60)
-  
-  on.exit(DatabaseConnector::disconnect(connection))
 })
 
 # Check backwards compatibility
 test_that("Temporal Covariate Settings are backwards compatible", {
+  skip_if_not(runTestsOnEunomia)
+  
   # Temporal covariate settings created previously will not have
   # the temporalSequence property
   covSet <- FeatureExtraction::createDefaultTemporalCovariateSettings()
   covSet$temporalSequence <- NULL 
   
-  connection <- DatabaseConnector::connect(connectionDetails)
-  result <- getDbCovariateData(connection = connection,
+  result <- getDbCovariateData(connection = eunomiaConnection,
                                cdmDatabaseSchema = "main",
                                cohortTable = "cohort", 
                                cohortId = 1,
                                covariateSettings = covSet)
   expect_true(is(result, "CovariateData"))
-  on.exit(DatabaseConnector::disconnect(connection))
 })
-
-unlink(connectionDetails$server())

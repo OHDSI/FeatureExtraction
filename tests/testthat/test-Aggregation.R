@@ -2,15 +2,13 @@
 # library(testthat); library(FeatureExtraction)
 # covr::file_report(covr::file_coverage("R/Aggregation.R", "tests/testthat/test-Aggregation.R"))
 
-connectionDetails <- Eunomia::getEunomiaConnectionDetails()
-Eunomia::createCohorts(connectionDetails)
-
 test_that("aggregateCovariates works", {
+  skip_if_not(runTestsOnEunomia)
   settings <- createCovariateSettings(useDemographicsAgeGroup = TRUE, useChads2Vasc = TRUE)
   
-  covariateData <- getDbCovariateData(connectionDetails = connectionDetails,
-                                      cdmDatabaseSchema = "main",
-                                      cohortDatabaseSchema = "main",
+  covariateData <- getDbCovariateData(connectionDetails = eunomiaConnectionDetails,
+                                      cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
+                                      cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
                                       cohortId = 1,
                                       covariateSettings = settings,
                                       aggregated = FALSE)
@@ -30,14 +28,12 @@ test_that("aggregateCovariates works", {
 })
 
 test_that("aggregateCovariates handles temporalCovariates", {
+  skip_if_not(runTestsOnEunomia)
   settings <- createTemporalCovariateSettings(useDemographicsGender = TRUE)
-  covariateData <- getDbCovariateData(connectionDetails = connectionDetails,
-                                      cdmDatabaseSchema = "main",
-                                      cohortDatabaseSchema = "main",
+  covariateData <- getDbCovariateData(connectionDetails = eunomiaConnectionDetails,
+                                      cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
+                                      cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
                                       cohortId = 1,
                                       covariateSettings = settings)
   expect_error(aggregateCovariates(covariateData), "temporal covariates")
 })
-
-# Remove the Eunomia database:
-unlink(connectionDetails$server())
