@@ -124,7 +124,7 @@ runExtractionPerPerson <- function(connection, cdmDatabaseSchema, ohdsiDatabaseS
                                                        cohortDatabaseSchema = ohdsiDatabaseSchema,
                                                        cohortTable = cohortTable,
                                                        cohortTableIsTemp = TRUE,
-                                                       cohortId = 1124300,
+                                                       cohortIds = c(1124300),
                                                        rowIdField = "subject_id",
                                                        covariateSettings = settings))
   return(covariateData)
@@ -300,7 +300,7 @@ runExtractionAggregated <- function(connection, cdmDatabaseSchema, ohdsiDatabase
                                                        cohortDatabaseSchema = ohdsiDatabaseSchema,
                                                        cohortTable = cohortTable,
                                                        cohortTableIsTemp = TRUE,
-                                                       cohortId = 1124300,
+                                                       cohortIds = c(1124300),
                                                        rowIdField = "subject_id",
                                                        covariateSettings = settings,
                                                        aggregated = TRUE))
@@ -409,7 +409,7 @@ runExtractionTemporalPerPerson <- function(connection, cdmDatabaseSchema, ohdsiD
                                                        cohortDatabaseSchema = ohdsiDatabaseSchema,
                                                        cohortTable = cohortTable,
                                                        cohortTableIsTemp = TRUE,
-                                                       cohortId = 1124300,
+                                                       cohortIds = c(1124300),
                                                        rowIdField = "subject_id",
                                                        covariateSettings = settings))
   return(covariateData)
@@ -517,7 +517,7 @@ runExtractionTemporalAggregated <- function(connection, cdmDatabaseSchema, ohdsi
                                                        cohortDatabaseSchema = ohdsiDatabaseSchema,
                                                        cohortTable = cohortTable,
                                                        cohortTableIsTemp = TRUE,
-                                                       cohortId = 1124300,
+                                                       cohortIds = c(1124300),
                                                        rowIdField = "subject_id",
                                                        covariateSettings = settings,
                                                        aggregated = TRUE))

@@ -40,6 +40,7 @@ getDbDefaultCovariateData <- function(connection,
                                       cdmDatabaseSchema,
                                       cohortTable = "#cohort_person",
                                       cohortId = -1,
+                                      cohortIds = c(-1),
                                       cdmVersion = "5",
                                       rowIdField = "subject_id",
                                       covariateSettings,
@@ -57,10 +58,13 @@ getDbDefaultCovariateData <- function(connection,
   if (!missing(targetCovariateTable) && !is.null(targetCovariateTable) && aggregated) {
     stop("Writing aggregated results to database is currently not supported")
   }
+  if (!missing(cohortId)) { 
+    stop("cohortId argument has been deprecated, please use cohortIds")
+  }
   
   settings <- .toJson(covariateSettings)
   rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$init(system.file("", package = "FeatureExtraction"))
-  json <- rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$createSql(settings, aggregated, cohortTable, rowIdField, rJava::.jarray(as.character(cohortId)), cdmDatabaseSchema)
+  json <- rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$createSql(settings, aggregated, cohortTable, rowIdField, rJava::.jarray(as.character(cohortIds)), cdmDatabaseSchema)
   todo <- .fromJson(json)
   if (length(todo$tempTables) != 0) {
     ParallelLogger::logInfo("Sending temp tables to server")
@@ -211,7 +215,7 @@ getDbDefaultCovariateData <- function(connection,
     attr(covariateData, "metaData") <- list()
     if (is.null(covariateData$covariates) && is.null(covariateData$covariatesContinuous)) {
       warning("No data found, probably because no covariates were specified.")
-      covariateData <- createEmptyCovariateData(cohortId = cohortId,
+      covariateData <- createEmptyCovariateData(cohortIds = cohortIds,
                                                 aggregated = aggregated,
                                                 temporal = covariateSettings$temporal)
     }

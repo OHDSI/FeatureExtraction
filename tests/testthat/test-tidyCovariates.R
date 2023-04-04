@@ -6,20 +6,20 @@ test_that("Test exit conditions ", {
   # Covariate Data object check
   expect_error(tidyCovariateData(covariateData = list()))
   # CovariateData object closed
-  cvData <- FeatureExtraction:::createEmptyCovariateData(cohortId = 1,
+  cvData <- FeatureExtraction:::createEmptyCovariateData(cohortIds = 1,
                                                          aggregated = FALSE, 
                                                          temporal = FALSE)
   Andromeda::close(cvData)
   expect_error(tidyCovariateData(covariateData = cvData))
   # CovariateData aggregated
-  cvData <- FeatureExtraction:::createEmptyCovariateData(cohortId = 1, 
+  cvData <- FeatureExtraction:::createEmptyCovariateData(cohortIds = 1, 
                                                          aggregated = TRUE, 
                                                          temporal = FALSE)
   expect_error(tidyCovariateData(covariateData = cvData))
 })
 
 test_that("Test empty covariateData", {
-  cvData <- FeatureExtraction:::createEmptyCovariateData(cohortId = 1,
+  cvData <- FeatureExtraction:::createEmptyCovariateData(cohortIds = 1,
                                                          aggregated = FALSE,
                                                          temporal = FALSE)
   result <- tidyCovariateData(covariateData = cvData)
@@ -72,7 +72,7 @@ test_that("tidyCovariateData on Temporal Data", {
                                                        temporalEndDays = -2:-1)
   covariateData <- getDbCovariateData(connection = eunomiaConnection,
                                       cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
-                                      cohortId = 1,
+                                      cohortIds = c(1),
                                       covariateSettings = covariateSettings)
   tidy <- tidyCovariateData(covariateData)
   expect_equal(length(tidy$analysisRef$analysisId), length(covariateData$analysisRef$analysisId))

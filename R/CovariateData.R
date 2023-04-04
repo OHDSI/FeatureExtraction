@@ -106,13 +106,13 @@ loadCovariateData <- function(file, readOnly) {
 setMethod("show", "CovariateData", function(object) {
   cli::cat_line(pillar::style_subtle("# CovariateData object"))
   cli::cat_line("")
-  cohortId <- attr(object, "metaData")$cohortId
-  if (length(cohortId) > 1) {
-    cli::cat_line(paste("Cohorts of interest IDs:", paste(cohortId, collapse = ", ")))
-  } else if (cohortId == -1) {
+  cohortIds <- attr(object, "metaData")$cohortIds
+  if (length(cohortIds) > 1) {
+    cli::cat_line(paste("Cohorts of interest IDs:", paste(cohortIds, collapse = ", ")))
+  } else if (cohortIds == -1) {
     cli::cat_line("All cohorts")
   } else {
-    cli::cat_line(paste("Cohort of interest ID:", cohortId))
+    cli::cat_line(paste("Cohort of interest ID:", cohortIds))
   }
   cli::cat_line("")
   cli::cat_line(pillar::style_subtle("Inherits from Andromeda:"))
@@ -193,7 +193,22 @@ isTemporalCovariateData <- function(x) {
   return("timeId" %in% colnames(x$covariates))
 }
 
-createEmptyCovariateData <- function(cohortId, aggregated, temporal) {
+#' Create an empty CovariateData object
+#'
+#' @param cohortId   DEPRECATED
+#' @param cohortIds  For which cohort ID(s) should covariates be constructed? If set to c(-1),
+#'                   covariates will be constructed for all cohorts in the specified cohort
+#'                   table.
+#' @param aggregated if the covariate data is aggregated
+#' @param temporal   if the covariate data is temporal
+#' 
+#' @return
+#' A logical value.
+createEmptyCovariateData <- function(cohortId, cohortIds, aggregated, temporal) {
+  if (!missing(cohortId)) { 
+    stop("cohortId argument has been deprecated, please use cohortIds")
+  }
+  
   dummy <- tibble(covariateId = 1,
                   covariateValue = 1)
   if (!aggregated) {
@@ -215,7 +230,7 @@ createEmptyCovariateData <- function(cohortId, aggregated, temporal) {
                                                              isBinary = "", 
                                                              missingMeansZero = "")[!1, ])
   attr(covariateData, "metaData") <- list(populationSize = 0,
-                                          cohortId = cohortId)
+                                          cohortIds = cohortIds)
   class(covariateData) <- "CovariateData"
   return(covariateData)
 }

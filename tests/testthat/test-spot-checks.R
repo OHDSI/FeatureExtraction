@@ -22,7 +22,7 @@ runSpotChecks <- function(connection, cdmDatabaseSchema, ohdsiDatabaseSchema, co
                                                        cohortDatabaseSchema = ohdsiDatabaseSchema,
                                                        cohortTable = cohortTable,
                                                        cohortTableIsTemp = TRUE,
-                                                       cohortId = 1124300,
+                                                       cohortIds = c(1124300),
                                                        rowIdField = "subject_id",
                                                        covariateSettings = settings))
   suppressWarnings(covariateDataAgg <- getDbCovariateData(connection = connection,
@@ -31,7 +31,7 @@ runSpotChecks <- function(connection, cdmDatabaseSchema, ohdsiDatabaseSchema, co
                                                           cohortDatabaseSchema = ohdsiDatabaseSchema,
                                                           cohortTable = cohortTable,
                                                           cohortTableIsTemp = TRUE,
-                                                          cohortId = 1124300,
+                                                          cohortIds = c(1124300),
                                                           rowIdField = "subject_id",
                                                           covariateSettings = settings,
                                                           aggregated = TRUE))

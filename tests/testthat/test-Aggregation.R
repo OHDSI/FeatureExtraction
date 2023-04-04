@@ -9,7 +9,7 @@ test_that("aggregateCovariates works", {
   covariateData <- getDbCovariateData(connectionDetails = eunomiaConnectionDetails,
                                       cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
                                       cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
-                                      cohortId = 1,
+                                      cohortIds = c(1),
                                       covariateSettings = settings,
                                       aggregated = FALSE)
   
@@ -33,7 +33,7 @@ test_that("aggregateCovariates handles temporalCovariates", {
   covariateData <- getDbCovariateData(connectionDetails = eunomiaConnectionDetails,
                                       cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
                                       cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
-                                      cohortId = 1,
+                                      cohortIds = c(1),
                                       covariateSettings = settings)
   expect_error(aggregateCovariates(covariateData), "temporal covariates")
 })

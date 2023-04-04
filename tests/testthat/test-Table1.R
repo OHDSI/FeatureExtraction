@@ -19,7 +19,7 @@ test_that("createTable1 works with categorical covariates", {
   covariateData1 <- getDbCovariateData(connection = eunomiaConnection,
                                        cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
                                        cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
-                                       cohortId = 1,
+                                       cohortIds = c(1),
                                        covariateSettings = settings,
                                        aggregated = TRUE)
   
@@ -41,7 +41,7 @@ test_that("createTable1 works with categorical covariates", {
   covariateData2 <- getDbCovariateData(connection = eunomiaConnection,
                                        cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
                                        cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
-                                       cohortId = 2,
+                                       cohortIds = c(2),
                                        covariateSettings = settings,
                                        aggregated = TRUE)
   
@@ -58,7 +58,7 @@ test_that("createTable1 works with categorical covariates", {
   rawCovariateData <- getDbCovariateData(connection = eunomiaConnection,
                                          cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
                                          cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
-                                         cohortId = 1,
+                                         cohortIds = c(1),
                                          covariateSettings = settings,
                                          aggregated = FALSE)
   
@@ -78,7 +78,7 @@ test_that("createTable1 works with continuous covariates", {
   covariateData1 <- getDbCovariateData(connection = eunomiaConnection,
                                        cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
                                        cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
-                                       cohortId = 1,
+                                       cohortIds = c(1),
                                        covariateSettings = settings,
                                        aggregated = TRUE)
   
@@ -96,7 +96,7 @@ test_that("createTable1 works with continuous covariates", {
   covariateData2 <- getDbCovariateData(connection = eunomiaConnection,
                                        cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
                                        cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
-                                       cohortId = 2,
+                                       cohortIds = c(2),
                                        covariateSettings = settings,
                                        aggregated = TRUE)
   
@@ -111,7 +111,7 @@ test_that("createTable1 works with continuous covariates", {
   covariateData3 <- getDbCovariateData(connection = eunomiaConnection,
                                        cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
                                        cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
-                                       cohortId = 1,
+                                       cohortIds = c(1),
                                        covariateSettings = settings,
                                        aggregated = TRUE)
   table1 <- createTable1(covariateData3, output = "one column", showCounts = T, showPercent = T)
@@ -132,7 +132,7 @@ test_that("createTable1 works with other covariates", {
   covariateData1 <- getDbCovariateData(connection = eunomiaConnection,
                                        cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
                                        cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
-                                       cohortId = 1,
+                                       cohortIds = c(1),
                                        covariateSettings = settings,
                                        aggregated = TRUE)
   

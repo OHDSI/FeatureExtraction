@@ -86,7 +86,7 @@ test_that("getDbCovariateData populationSize == 0 tests", {
                                     cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
                                     cohortTableIsTemp = FALSE,
                                     cohortTable = "cohort",
-                                    cohortId = 0, # This is a cohort that is not created in Eunomia
+                                    cohortIds = c(0), # This is a cohort that is not created in Eunomia
                                     covariateSettings = getCovariateSettings()))
 })
 
@@ -104,7 +104,7 @@ test_that("Custom covariate builder", {
   covariates <- getDbCovariateData(connection = eunomiaConnection,
                                    cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
                                    cohortTable = "cohort",
-                                   cohortId = -1,
+                                   cohortIds = c(-1),
                                    covariateSettings = covariateSettingsList)
 })
 
@@ -128,7 +128,7 @@ test_that("getDbCovariateData care site from person tests", {
                                       cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
                                       cohortTableIsTemp = FALSE,
                                       cohortTable = "cohort",
-                                      cohortId = 1, 
+                                      cohortIds = c(1),
                                       covariateSettings = covariateSettings)
   expect_gt(pull(count(covariateData$covariates)), 0)
   joined <- inner_join(collect(covariateData$covariates), person, by = c("rowId" = "personId")) 
@@ -138,7 +138,7 @@ test_that("getDbCovariateData care site from person tests", {
                                       cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
                                       cohortTableIsTemp = FALSE,
                                       cohortTable = "cohort",
-                                      cohortId = 1, 
+                                      cohortIds = c(1),
                                       covariateSettings = covariateSettings,
                                       aggregated = TRUE)
   expect_gt(pull(count(covariateData$covariates)), 0)
@@ -182,7 +182,7 @@ test_that("getDbCovariateData care site from visit_occurrence tests", {
                                       cdmDatabaseSchema = "main",
                                       cohortTableIsTemp = FALSE,
                                       cohortTable = "cohort",
-                                      cohortId = 1, 
+                                      cohortIds = c(1),
                                       covariateSettings = covariateSettings)
   expect_equal(pull(count(filter(covariateData$covariates, covariateId > 4012))), sum(cohort$cohortDefinitionId == 1))
 })

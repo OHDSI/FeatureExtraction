@@ -26,7 +26,7 @@
                                    oracleTempSchema = NULL,
                                    cdmDatabaseSchema,
                                    cohortTable = "#cohort_person",
-                                   cohortId = -1,
+                                   cohortIds = c(-1),
                                    cdmVersion = "5",
                                    rowIdField = "subject_id",
                                    covariateSettings,
@@ -47,10 +47,10 @@
                "ON op.person_id = c.subject_id",
                "WHERE cohort_start_date >= observation_period_start_date",
                "AND cohort_start_date <= observation_period_end_date",
-               "{@cohort_id != -1} ? {AND cohort_definition_id = @cohort_id}")
+               "{@cohort_ids != -1} ? {AND cohort_definition_id = @cohort_ids}")
   sql <- SqlRender::render(sql,
                            cohort_table = cohortTable,
-                           cohort_id = cohortId,
+                           cohort_ids = cohortIds,
                            row_id_field = rowIdField,
                            cdm_database_schema = cdmDatabaseSchema)
   sql <- SqlRender::translate(sql, targetDialect = attr(connection, "dbms"))

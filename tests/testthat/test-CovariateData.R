@@ -10,16 +10,16 @@ test_that("test CovariateData Class on Empty", {
 
   errCovData <- list()
 
-  covData <- FeatureExtraction:::createEmptyCovariateData(cohortId = 9999,
+  covData <- FeatureExtraction:::createEmptyCovariateData(cohortIds = 9999,
                                                           aggregated = FALSE,
                                                           temporal = FALSE)
-  aggCovData <- FeatureExtraction:::createEmptyCovariateData(cohortId = 9999,
+  aggCovData <- FeatureExtraction:::createEmptyCovariateData(cohortIds = 9999,
                                                              aggregated = TRUE,
                                                              temporal = FALSE)
 
-  tempCovData <- FeatureExtraction:::createEmptyCovariateData(cohortId = 9999,
-                                                                aggregated = FALSE,
-                                                                temporal = TRUE)
+  tempCovData <- FeatureExtraction:::createEmptyCovariateData(cohortIds = 9999,
+                                                              aggregated = FALSE,
+                                                              temporal = TRUE)
 
   #check that objects are covariate Data class
   expect_false(isCovariateData(errCovData))
@@ -52,7 +52,7 @@ test_that("test saveCovariateData error cases", {
   covariateData <- getDbCovariateData(connectionDetails = eunomiaConnectionDetails,
                                       cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
                                       cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
-                                      cohortId = 1,
+                                      cohortIds = c(1),
                                       covariateSettings = settings,
                                       aggregated = FALSE)
   #create error for test
@@ -73,7 +73,7 @@ test_that("test summary call for covariateData class", {
   covariateData <- getDbCovariateData(connectionDetails = eunomiaConnectionDetails,
                                       cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
                                       cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
-                                      cohortId = 1,
+                                      cohortIds = c(1),
                                       covariateSettings = settings,
                                       aggregated = FALSE)
 
@@ -93,7 +93,7 @@ test_that("Test exit/warning conditions", {
   on.exit(unlink(tempDir))
   
   # ReadOnly parameter depreciated  
-  cvData <- FeatureExtraction:::createEmptyCovariateData(cohortId = 1, aggregated = FALSE, temporal = FALSE)
+  cvData <- FeatureExtraction:::createEmptyCovariateData(cohortIds = 1, aggregated = FALSE, temporal = FALSE)
   tempFile <- tempfile()
   tempFileName <- paste0(tempFile, ".zip")
   saveCovariateData(cvData, tempFileName)
@@ -103,7 +103,7 @@ test_that("Test exit/warning conditions", {
 })
 
 test_that("Test show method", {
-  cvData <- FeatureExtraction:::createEmptyCovariateData(cohortId = 1, aggregated = FALSE, temporal = FALSE)
+  cvData <- FeatureExtraction:::createEmptyCovariateData(cohortIds = 1, aggregated = FALSE, temporal = FALSE)
   expect_invisible(show(cvData))
   on.exit(rm(cvData))
 })

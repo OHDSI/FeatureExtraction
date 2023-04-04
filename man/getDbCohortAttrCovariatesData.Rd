@@ -10,6 +10,7 @@ getDbCohortAttrCovariatesData(
   cdmDatabaseSchema,
   cohortTable = "#cohort_person",
   cohortId = -1,
+  cohortIds = c(-1),
   cdmVersion = "5",
   rowIdField = "subject_id",
   covariateSettings,

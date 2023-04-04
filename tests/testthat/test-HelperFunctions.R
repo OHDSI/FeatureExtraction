@@ -9,7 +9,7 @@ test_that("Test helper functions for non-aggregated covariate data", {
   covariateData <- getDbCovariateData(connection = eunomiaConnection,
                                       cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
                                       cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
-                                      cohortId = 1:2,
+                                      cohortIds = 1:2,
                                       covariateSettings = createCovariateSettings(useDemographicsAgeGroup = TRUE, useChads2Vasc = TRUE),
                                       aggregated = F)
   
@@ -32,7 +32,7 @@ test_that("Test helper functions for aggregated covariate data", {
   aggregatedCovariateData <- getDbCovariateData(connection = eunomiaConnection,
                                                 cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
                                                 cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
-                                                cohortId = 1:2,
+                                                cohortIds = 1:2,
                                                 covariateSettings = createCovariateSettings(useDemographicsAgeGroup = TRUE, useChads2Vasc = TRUE),
                                                 aggregated = TRUE)
   

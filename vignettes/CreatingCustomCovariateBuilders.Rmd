@@ -93,7 +93,7 @@ getDbLooCovariateData <- function(connection,
                                   cdmDatabaseSchema,
                                   cdmVersion = "5",
                                   cohortTable = "#cohort_person",
-                                  cohortId = -1,
+                                  cohortIds = c(-1),
                                   rowIdField = "subject_id",
                                   covariateSettings,
                                   aggregated = FALSE) {

@@ -60,7 +60,7 @@ test_that("getDbCovariateData works with createTemporalSequenceCovariateSettings
   result <- getDbCovariateData(connection = eunomiaConnection,
                                cdmDatabaseSchema = "main",
                                cohortTable = "cohort", 
-                               cohortId = 1,
+                               cohortIds = c(1),
                                covariateSettings = covSet)
   expect_true(is(result, "CovariateData"))
   
@@ -80,7 +80,7 @@ test_that("Temporal Covariate Settings are backwards compatible", {
   result <- getDbCovariateData(connection = eunomiaConnection,
                                cdmDatabaseSchema = "main",
                                cohortTable = "cohort", 
-                               cohortId = 1,
+                               cohortIds = c(1),
                                covariateSettings = covSet)
   expect_true(is(result, "CovariateData"))
 })
