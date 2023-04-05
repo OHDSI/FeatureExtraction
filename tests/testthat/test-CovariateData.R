@@ -79,7 +79,7 @@ test_that("test summary call for covariateData class", {
 
   sumOut <- summary(covariateData)
   Andromeda::close(covariateData)
-  expect_equal(sumOut$metaData$cohortId, 1L)
+  expect_equal(sumOut$metaData$cohortIds, 1L)
 })
 
 test_that("test loadCovariateData", {

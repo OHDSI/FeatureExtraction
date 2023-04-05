@@ -37,11 +37,14 @@ getDbHdpsCovariateData <- function(connection,
                                    cdmDatabaseSchema,
                                    cohortTable = "cohort_person",
                                    cohortId = -1,
+                                   cohortIds = c(-1),
                                    cdmVersion = "5",
                                    rowIdField = "subject_id",
                                    covariateSettings,
                                    aggregated = FALSE) {
-  if (cohortId != -1)
+  if (!missing(cohortId))
+    stop("cohortId argument has been deprecated, please use cohortIds")
+  if (cohortIds != -1)
     stop("Haven't implemented restricting to cohort ID yet.")
   if (aggregated)
     stop("Aggregation not implemented yet")

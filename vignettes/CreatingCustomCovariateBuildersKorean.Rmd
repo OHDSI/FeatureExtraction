@@ -71,7 +71,7 @@ createLooCovariateSettings <- function(useLengthOfObs = TRUE) {
 - cdmDatabaseSchema : OMOP CDM 인스턴스를 포함하는 데이터베이스 스키마의 이름. SQL  SQL 서버에서 이것은 데이터베이스와 스키마를 모두 지정한다(예: cdm_instance.dbo)
 - cdmVersion : 사용되는 OMOP CDM 버전 정의: 현재 "4" 및 "5" 지원
 - cohortTable : 우리가 공변량을 구성하고자 하는 코호트를 보유하고 있는 테이블의 이름. 이것은 완전히 구체적인 이름이므로 임시테이블의 이름(예: '#cohort_table') 또는 데이터베이스 스키마가 포함된 영구 테이블(예: 'cdm_schema.dbo.cohort)이 될 수 있다.
-- cohortId : 코호트의 코호트 정의 ID. -1로 설정된 경우 코호트 테이블의 모든 항목을 사용하면 된다.
+- cohortIds : 코호트의 코호트 정의 ID. -1로 설정된 경우 코호트 테이블의 모든 항목을 사용하면 된다.
 - cdmVersion : 공통 데이터 모델 버전
 - rowIdField :  결과 테이블에서 row_id 필드로 사용될 코호트 임시 테이블의 필드 이름이다. 1인당 1개이상의 기간이 있는 경우 특히 유용하다.
 - covariateSettings : 공변량 설정 함수에서 생성된 객체
@@ -116,10 +116,10 @@ getDbLooCovariateData <- function(connection,
                "ON op.person_id = c.subject_id",
                "WHERE cohort_start_date >= observation_period_start_date",
                "AND cohort_start_date <= observation_period_end_date",
-               "{@cohort_id != -1} ? {AND cohort_definition_id = @cohort_id}")
+               "{@cohort_ids != -1} ? {AND cohort_definition_id IN @cohort_ids}")
   sql <- SqlRender::render(sql,
                               cohort_table = cohortTable,
-                              cohort_id = cohortId,
+                              cohort_ids = cohortIds,
                               row_id_field = rowIdField,
                               cdm_database_schema = cdmDatabaseSchema)
   sql <- SqlRender::translate(sql, targetDialect = attr(connection, "dbms"))
@@ -173,7 +173,7 @@ covariates <- getDbCovariateData(connectionDetails = connectionDetails,
                                  cdmDatabaseSchema = cdmDatabaseSchema,
                                  cohortDatabaseSchema = resultsDatabaseSchema,
                                  cohortTable = "rehospitalization",
-                                 cohortId = 1,
+                                 cohortIds = c(1),
                                  covariateSettings = looCovSet)
 ```
 
@@ -195,7 +195,7 @@ covariates <- getDbCovariateData(connectionDetails = connectionDetails,
                                  cdmDatabaseSchema = cdmDatabaseSchema,
                                  cohortDatabaseSchema = resultsDatabaseSchema,
                                  cohortTable = "rehospitalization",
-                                 cohortId = 1,
+                                 cohortIds = c(1),
                                  covariateSettings = covariateSettingsList)
 ```
 

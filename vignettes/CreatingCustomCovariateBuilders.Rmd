@@ -68,7 +68,7 @@ The covariate construction function has to accept the following arguments:
 * `cdmDatabaseSchema`: The name of the database schema that contains the OMOP CDM instance.  On SQL  Server, this will specify both the database and the schema, so for example 'cdm_instance.dbo'.
 * `cdmVersion`: Defines the OMOP CDM version used: currently supports "4" and "5".
 * `cohortTable`: Name of the table holding the cohort for which we want to construct covariates. This is a fully specified name, so either the name of a temp table (e.g. '#cohort_table'), or a permanent table including its database schema (e.g. 'cdm_schema.dbo.cohort').
-* `cohortId`: The cohort definition ID of the cohort. If set to -1, use all entries in the cohort table.
+* `cohortIds`: The cohort definition IDs of the cohort. If set to -1, use all entries in the cohort table.
 * `rowIdField`:  The name of the field in the cohort temp table that is to be used as the row_id field in the output table. This can be especially usefull if there is more than one period per person.
 * `covariateSettings`: The object created in your covariate settings function.
 * `aggregated`: Should covariates be constructed per-person, or aggregated across the cohort?
@@ -113,10 +113,10 @@ getDbLooCovariateData <- function(connection,
                "ON op.person_id = c.subject_id",
                "WHERE cohort_start_date >= observation_period_start_date",
                "AND cohort_start_date <= observation_period_end_date",
-               "{@cohort_id != -1} ? {AND cohort_definition_id = @cohort_id}")
+               "{@cohort_ids != -1} ? {AND cohort_definition_id IN @cohort_ids}")
   sql <- SqlRender::render(sql,
                            cohort_table = cohortTable,
-                           cohort_id = cohortId,
+                           cohort_ids = cohortIds,
                            row_id_field = rowIdField,
                            cdm_database_schema = cdmDatabaseSchema)
   sql <- SqlRender::translate(sql, targetDialect = attr(connection, "dbms"))
@@ -163,7 +163,7 @@ covariates <- getDbCovariateData(connectionDetails = connectionDetails,
                                  cdmDatabaseSchema = cdmDatabaseSchema,
                                  cohortDatabaseSchema = resultsDatabaseSchema,
                                  cohortTable = "rehospitalization",
-                                 cohortId = 1,
+                                 cohortIds = c(1),
                                  covariateSettings = looCovSet)
 ```
 
@@ -186,7 +186,7 @@ covariates <- getDbCovariateData(connectionDetails = connectionDetails,
                                  cdmDatabaseSchema = cdmDatabaseSchema,
                                  cohortDatabaseSchema = resultsDatabaseSchema,
                                  cohortTable = "rehospitalization",
-                                 cohortId = 1,
+                                 cohortIds = c(1),
                                  covariateSettings = covariateSettingsList)
 ```
 

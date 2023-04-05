@@ -277,7 +277,7 @@ covariateData <- getDbCovariateData(connectionDetails = connectionDetails,
                                     cdmDatabaseSchema = cdmDatabaseSchema,
                                     cohortDatabaseSchema = resultsDatabaseSchema,
                                     cohortTable = "cohorts_of_interest",
-                                    cohortId = 1118084,
+                                    cohortIds = c(1118084),
                                     rowIdField = "subject_id",
                                     covariateSettings = covariateSettings)
 
@@ -399,7 +399,7 @@ covariateData2 <- getDbCovariateData(connectionDetails = connectionDetails,
                                      cdmDatabaseSchema = cdmDatabaseSchema,
                                      cohortDatabaseSchema = resultsDatabaseSchema,
                                      cohortTable = "cohorts_of_interest",
-                                     cohortId = 1118084,
+                                     cohortIds = c(1118084),
                                      covariateSettings = covariateSettings,
                                      aggregated = TRUE)
 summary(covariateData2)
@@ -475,7 +475,7 @@ covariateData2b <- getDbCovariateData(connectionDetails = connectionDetails,
                                       cdmDatabaseSchema = cdmDatabaseSchema,
                                       cohortDatabaseSchema = resultsDatabaseSchema,
                                       cohortTable = "cohorts_of_interest",
-                                      cohortId = 1118084,
+                                      cohortIds = c(1118084),
                                       covariateSettings = covariateSettings,
                                       aggregated = TRUE)
 summary(covariateData2b)
@@ -499,7 +499,7 @@ covCelecoxib <- getDbCovariateData(connectionDetails = connectionDetails,
                                    cdmDatabaseSchema = cdmDatabaseSchema,
                                    cohortDatabaseSchema = resultsDatabaseSchema,
                                    cohortTable = "cohorts_of_interest",
-                                   cohortId = 1118084,
+                                   cohortIds = c(1118084),
                                    covariateSettings = settings,
                                    aggregated = TRUE)
 
@@ -507,7 +507,7 @@ covDiclofenac <- getDbCovariateData(connectionDetails = connectionDetails,
                                     cdmDatabaseSchema = cdmDatabaseSchema,
                                     cohortDatabaseSchema = resultsDatabaseSchema,
                                     cohortTable = "cohorts_of_interest",
-                                    cohortId = 1124300,
+                                    cohortIds = c(1124300),
                                     covariateSettings = settings,
                                     aggregated = TRUE)
 

@@ -130,7 +130,7 @@ covariates <- getDbCovariateData(connectionDetails = connectionDetails,
                                  cdmDatabaseSchema = cdmDatabaseSchema,
                                  cohortDatabaseSchema = cohortDatabaseSchema,
                                  cohortTable = "rehospitalization",
-                                 cohortId = 1,
+                                 cohortIds = c(1),
                                  covariateSettings = looCovSet)
 ```
 
@@ -155,7 +155,7 @@ covariates <- getDbCovariateData(connectionDetails = connectionDetails,
                                  cdmDatabaseSchema = cdmDatabaseSchema,
                                  cohortDatabaseSchema = resultsDatabaseSchema,
                                  cohortTable = "rehospitalization",
-                                 cohortId = 1,
+                                 cohortIds = c(1),
                                  covariateSettings = covariateSettingsList)
 ```
 
