@@ -51,30 +51,42 @@ filterByRowId <- function(covariateData, rowIds) {
 #' An object of type \code{covariateData}.
 #' @export
 filterByCohortDefinitionId <- function(covariateData, cohortId) {
+    stop("filterByCohortDefinitionId has been deprecated, please use filterByCohortDefinitionIds")
+}
+  
+#' Filter covariates by cohort definition IDs
+#'
+#' @param covariateData  An object of type \code{CovariateData}
+#' @param cohortIds      The cohort definitions IDs to keep.
+#'
+#' @return
+#' An object of type \code{covariateData}.
+#' @export
+filterByCohortDefinitionIds <- function(covariateData, cohortIds) {
   if (!isCovariateData(covariateData))
     stop("Data not of class CovariateData")
   if (!Andromeda::isValidAndromeda(covariateData)) 
     stop("CovariateData object is closed")
   if (!isAggregatedCovariateData(covariateData))
-    stop("Can only filter aggregated data by cohortId")
+    stop("Can only filter aggregated data by cohortIds")
   if (is.null(covariateData$covariates)) {
     covariates <- NULL
   } else {
     covariates <- covariateData$covariates %>%
-      filter(.data$cohortDefinitionId %in% cohortId)
+      filter(.data$cohortDefinitionId %in% cohortIds)
   }
   if (is.null(covariateData$covariatesContinuous)) {
     covariatesContinuous <- NULL
   } else {
     covariatesContinuous <- covariateData$covariatesContinuous %>%
-      filter(.data$cohortDefinitionId %in% cohortId)
+      filter(.data$cohortDefinitionId %in% cohortIds)
   }
   result <- Andromeda::andromeda(covariates = covariates,
                                  covariatesContinuous = covariatesContinuous,
                                  covariateRef = covariateData$covariateRef,
                                  analysisRef = covariateData$analysisRef)
   metaData <- attr(covariateData, "metaData")
-  metaData$populationSize <- metaData$populationSize[as.numeric(names(metaData$populationSize)) %in% cohortId]
+  metaData$populationSize <- metaData$populationSize[as.numeric(names(metaData$populationSize)) %in% cohortIds]
   attr(result, "metaData") <- metaData
   class(result) <- "CovariateData"
   attr(class(result), "package") <- "FeatureExtraction"

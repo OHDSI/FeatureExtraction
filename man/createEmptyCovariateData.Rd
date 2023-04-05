@@ -4,21 +4,17 @@
 \alias{createEmptyCovariateData}
 \title{Create an empty CovariateData object}
 \usage{
-createEmptyCovariateData(cohortId, cohortIds, aggregated, temporal)
+createEmptyCovariateData(cohortIds, aggregated, temporal)
 }
 \arguments{
-\item{cohortId}{DEPRECATED}
-
-\item{cohortIds}{For which cohort ID(s) should covariates be constructed? If set to c(-1),
-covariates will be constructed for all cohorts in the specified cohort
-table.}
+\item{cohortIds}{For which cohort IDs should the covariate data be created?}
 
 \item{aggregated}{if the covariate data is aggregated}
 
 \item{temporal}{if the covariate data is temporal}
 }
 \value{
-A logical value.
+the empty CovariateData object
 }
 \description{
 Create an empty CovariateData object

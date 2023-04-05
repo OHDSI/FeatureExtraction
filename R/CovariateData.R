@@ -195,20 +195,13 @@ isTemporalCovariateData <- function(x) {
 
 #' Create an empty CovariateData object
 #'
-#' @param cohortId   DEPRECATED
-#' @param cohortIds  For which cohort ID(s) should covariates be constructed? If set to c(-1),
-#'                   covariates will be constructed for all cohorts in the specified cohort
-#'                   table.
+#' @param cohortIds  For which cohort IDs should the covariate data be created?
 #' @param aggregated if the covariate data is aggregated
 #' @param temporal   if the covariate data is temporal
 #' 
-#' @return
-#' A logical value.
-createEmptyCovariateData <- function(cohortId, cohortIds, aggregated, temporal) {
-  if (!missing(cohortId)) { 
-    stop("cohortId argument has been deprecated, please use cohortIds")
-  }
-  
+#' @return the empty CovariateData object
+#' 
+createEmptyCovariateData <- function(cohortIds, aggregated, temporal) {
   dummy <- tibble(covariateId = 1,
                   covariateValue = 1)
   if (!aggregated) {

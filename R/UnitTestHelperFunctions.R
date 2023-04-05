@@ -47,7 +47,7 @@
                "ON op.person_id = c.subject_id",
                "WHERE cohort_start_date >= observation_period_start_date",
                "AND cohort_start_date <= observation_period_end_date",
-               "{@cohort_ids != -1} ? {AND cohort_definition_id = @cohort_ids}")
+               "{@cohort_ids != -1} ? {AND cohort_definition_id IN @cohort_ids}")
   sql <- SqlRender::render(sql,
                            cohort_table = cohortTable,
                            cohort_ids = cohortIds,

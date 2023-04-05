@@ -103,7 +103,7 @@ getDbCohortAttrCovariatesData <- function(connection,
   delta <- Sys.time() - start
   writeLines(paste("Loading took", signif(delta, 3), attr(delta, "units")))
   
-  result <- createEmptyCovariateData(cohortIds = cohortIds, aggregated = aggregated, temporal = covariateSettings$temporal)
+  result <- createEmptyCovariateData(cohortIds, aggregated, covariateSettings$temporal)
   result$covariates = covariates
   result$covariateRef = covariateRef
   result$analysisRef = analysisRef

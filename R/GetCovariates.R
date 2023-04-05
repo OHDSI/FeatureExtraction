@@ -117,7 +117,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
     populationSize <- sum(temp$populationSize)
   }
   if (sum(populationSize) == 0) {
-    covariateData <- createEmptyCovariateData(cohortIds = cohortIds, aggregated = aggregated, temporal = covariateSettings$temporal)
+    covariateData <- createEmptyCovariateData(cohortIds, aggregated, covariateSettings$temporal)
     warning("Population is empty. No covariates were constructed")
   } else {
     if (inherits(covariateSettings, "covariateSettings")) {
