@@ -27,10 +27,11 @@ cdmDatabaseSchema <- "main"
 resultsDatabaseSchema <- "main"
 cohortsTable <- "#cohorts_of_interest"
 
-vignetteFolder <- "s:/temp/vignetteFeatureExtraction"
+vignetteFolder <- "c:/temp/vignetteFeatureExtraction"
 if (!file.exists(vignetteFolder))
-  dir.create(vignetteFolder)
+  dir.create(vignetteFolder, recursive = T, showWarnings = F)
 
+options(andromedaTempFolder = vignetteFolder)
 connectionDetails <- Eunomia::getEunomiaConnectionDetails()
 connection <- DatabaseConnector::connect(connectionDetails)
 
