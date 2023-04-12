@@ -2,13 +2,11 @@
 #library(testthat); library(FeatureExtraction)
 #covr::file_report(covr::file_coverage("R/GetDefaultCovariates.R", "tests/testthat/test-GetDefaultCovariates.R"))
 
-connectionDetails <- Eunomia::getEunomiaConnectionDetails()
-
 test_that("Test exit conditions", {
-  connection <- DatabaseConnector::connect(connectionDetails)
-  
+  skip_if_not(runTestsOnEunomia)
+
   # covariateSettings object type
-  expect_error(getDbDefaultCovariateData(connection = connection,
+  expect_error(getDbDefaultCovariateData(connection = eunomiaConnection,
                                          cdmDatabaseSchema = "main",
                                          covariateSettings = list(),
                                          targetDatabaseSchema = "main",
@@ -16,7 +14,7 @@ test_that("Test exit conditions", {
                                          targetCovariateRefTable = "cov_ref",
                                          targetAnalysisRefTable = "cov_analysis_ref"))
   # CDM 4 not supported
-  expect_error(getDbDefaultCovariateData(connection = connection,
+  expect_error(getDbDefaultCovariateData(connection = eunomiaConnection,
                                          cdmDatabaseSchema = "main",
                                          cdmVersion = "4",
                                          covariateSettings = createDefaultCovariateSettings(),
@@ -26,7 +24,7 @@ test_that("Test exit conditions", {
                                          targetAnalysisRefTable = "cov_analysis_ref"))
   
   # targetCovariateTable and aggregated not supported
-  expect_error(getDbDefaultCovariateData(connection = connection,
+  expect_error(getDbDefaultCovariateData(connection = eunomiaConnection,
                                          cdmDatabaseSchema = "main",
                                          covariateSettings = createDefaultCovariateSettings(),
                                          targetDatabaseSchema = "main",
@@ -34,8 +32,6 @@ test_that("Test exit conditions", {
                                          targetCovariateRefTable = "cov_ref",
                                          targetAnalysisRefTable = "cov_analysis_ref",
                                          aggregated = TRUE))
-  
-  on.exit(DatabaseConnector::disconnect(connection))  
 })
 
 # AGS - This test fails and is likely due to a bug when using SqlLite
@@ -54,5 +50,5 @@ test_that("Test exit conditions", {
 # 
 #   on.exit(DatabaseConnector::disconnect(connection))  
 # })
-
-unlink(connectionDetails$server())
+# 
+# unlink(connectionDetails$server())

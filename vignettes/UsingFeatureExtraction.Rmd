@@ -20,7 +20,7 @@ vignette: >
 ```{r set-options,echo=FALSE,message=FALSE,warning=FALSE,eval=TRUE}
 options(width = 200)
 library(FeatureExtraction)
-vignetteFolder <- "s:/temp/vignetteFeatureExtraction"
+vignetteFolder <- "c:/temp/vignetteFeatureExtraction"
 ```
 \fontsize{10}{12}
 \selectfont
@@ -433,7 +433,7 @@ if (file.exists(file.path(vignetteFolder, "aggregatedCovariates"))) {
 ```
 The columns of `covariates` are defined as follows:
 
-- `covariateId` identifies the covariate, and definitions of covariates can be found in the `cohortData$covariateRef` object. 
+- `covariateId` identifies the covariate, and definitions of covariates can be found in the `covariateData$covariateRef` object. 
 - `sumValue` is the sum of the covariate values. Because these are binary features, this is equivalent to the number of people that have the covariate with a value of 1.
 - `averageValue` is the average covariate value.  Because these are binary features, this is equivalent to the proportion of people that have the covariate with a value of 1.
 
@@ -448,14 +448,19 @@ The columns of `covariatesContinuous` are defined as follows:
 
 One task supported by the `FeatureExtraction` package is creating a table of overall study population characteristics that can be include in a paper. Since this is typically the first table in a paper we refer to such a table as 'table 1'. A default table 1 is available in the `FeatureExtraction` package:
 ```{r eval=FALSE}
-result <- createTable1(covariateData2)
+result <- createTable1(
+  covariateData1 = covariateData2
+)
 print(result, row.names = FALSE, right = FALSE)
 ```
 \fontsize{6}{6}
 \selectfont
 ```{r comment=NA,echo=FALSE,message=FALSE}
 if (file.exists(file.path(vignetteFolder, "aggregatedCovariates"))) {
-  result <- createTable1(covariateData2)
+  result <- createTable1(
+    covariateData1 = covariateData2, 
+    output = "one column"
+  )
   print(result, row.names = FALSE, right = FALSE)
 }
 ```
@@ -543,14 +548,22 @@ The `stdDiff` column contains the standardized difference. By default the data i
 We can also show the comparison as a standard table 1:
 
 ```{r eval=FALSE}
-result <- createTable1(covCelecoxib, covDiclofenac)
+result <- createTable1(
+  covariateData1 = covCelecoxib, 
+  covariateData2 = covDiclofenac,
+  output = "two columns"
+)
 print(result, row.names = FALSE, right = FALSE)
 ```
 \fontsize{5}{5}
 \selectfont
 ```{r comment=NA,echo=FALSE,message=FALSE}
 if (file.exists(file.path(vignetteFolder, "covDiclofenac"))) {
-  result <- createTable1(covCelecoxib, covDiclofenac)
+  result <- createTable1(
+    covariateData1 = covCelecoxib, 
+    covariateData2 = covDiclofenac,
+    output = "one column"
+  )
   print(result, row.names = FALSE, right = FALSE)
 }
 ```
