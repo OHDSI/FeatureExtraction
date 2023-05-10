@@ -136,8 +136,6 @@ if (runTestsOnEunomia) {
   eunomiaConnectionDetails <- Eunomia::getEunomiaConnectionDetails(databaseFile = "testEunomia.sqlite")
   eunomiaCdmDatabaseSchema <- "main"
   eunomiaOhdsiDatabaseSchema <- "main"
-  eunomiaCohortAttributeTable <- "cohort_attribute"
-  eunomiaAttributeDefinitionTable <- "attribute_definition"
   eunomiaConnection <- createUnitTestData(eunomiaConnectionDetails, eunomiaCdmDatabaseSchema, eunomiaOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
   Eunomia::createCohorts(connectionDetails = eunomiaConnectionDetails,
                          cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
