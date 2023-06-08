@@ -26,7 +26,7 @@ This vignette assumes you are already familiar with the `FeatureExtraction` pack
 
 The `FeatureExtraction` package can generate a default set of covariates, such as one covariate for each condition found in the `condition_occurrence` table. These covariates are based on the concepts found in the data in the Common Data Model (CDM). For example, if we wish to have a covariate for 'prior diabetes', the default set of covariates includes a covariate based on the condition concept `Diabetes melitus` and all of its descendant concepts.
 
-In this vignette we review how we can create covariates based on other cohorts instead of concepts by themselves. In our diabetes example, we may wish to define diabetes not just as the occurrence of a diagnose code, but also require records of antidiabetic treatments, or blood glucose values exceeding certain thresholds. We can construct a complicated cohort definition, for example using the OHDSI ATLAS tool, encoding this logic. We can instantiate this cohort, and then construct covariates based on the presence or abscense of this cohort in a patient's history.
+In this vignette we review how we can create covariates based on other cohorts instead of concepts by themselves. In our diabetes example, we may wish to define diabetes not just as the occurrence of a diagnose code, but also require records of antidiabetic treatments, or blood glucose values exceeding certain thresholds. We can construct a complicated cohort definition, for example using the OHDSI ATLAS tool, encoding this logic. We can instantiate this cohort, and then construct covariates based on the presence or absence of this cohort in a patient's history.
 
 # Overview
 
