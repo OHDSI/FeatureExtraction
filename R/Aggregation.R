@@ -23,15 +23,15 @@
 #' @return
 #' An object of class \code{covariateData}.
 #'
-#' @export
-#' 
 #' @examples
 #' \dontrun{
 #' covariateData <- FeatureExtraction:::createEmptyCovariateData(cohortId = 1, 
 #'                                                               aggregated = FALSE, 
 #'                                                               temporal = FALSE)
-#' aggregateCovariates(covariateData)
+#' aggregatedCovariateData <- aggregateCovariates(covariateData)
 #' }
+#' 
+#' @export
 aggregateCovariates <- function(covariateData) {
   if (!isCovariateData(covariateData))
     stop("Data not of class CovariateData")

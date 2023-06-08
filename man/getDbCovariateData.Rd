@@ -75,3 +75,25 @@ cohort. The cohort is assumed to be in an existing table with these fields: 'sub
 'cohort_definition_id', 'cohort_start_date'. Optionally, an extra field can be added containing the
 unique identifier that will be used as rowID in the output.
 }
+\examples{
+\dontrun{
+eunomiaConnectionDetails <- Eunomia::getEunomiaConnectionDetails()
+covSettings <- createDefaultCovariateSettings()
+Eunomia::createCohorts(connectionDetails = eunomiaConnectionDetails,
+                       cdmDatabaseSchema = "main",
+                       cohortDatabaseSchema = "main",
+                       cohortTable = "cohort")
+covData <- getDbCovariateData(connectionDetails = eunomiaConnectionDetails,
+                              oracleTempSchema = NULL,
+                              cdmDatabaseSchema = "main",
+                              cdmVersion = "5",
+                              cohortTable = "cohort",
+                              cohortDatabaseSchema = "main",
+                              cohortTableIsTemp = FALSE,
+                              cohortId = -1,
+                              rowIdField = "subject_id",
+                              covariateSettings = covSettings,
+                              aggregated = FALSE)
+}
+
+}

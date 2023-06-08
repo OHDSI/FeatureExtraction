@@ -21,6 +21,7 @@ Aggregate covariate data
 covariateData <- FeatureExtraction:::createEmptyCovariateData(cohortId = 1, 
                                                               aggregated = FALSE, 
                                                               temporal = FALSE)
-aggregateCovariates(covariateData)
+aggregatedCovariateData <- aggregateCovariates(covariateData)
 }
+
 }

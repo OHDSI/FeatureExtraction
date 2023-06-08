@@ -19,3 +19,10 @@ Convert prespecified covariate settings into detailed covariate settings
 \details{
 For advanced users only.
 }
+\examples{
+\dontrun{
+covSettings <- createDefaultCovariateSettings()
+detailedSettings <- convertPrespecSettingsToDetailedSettings(covariateSettings = covSettings)
+}
+
+}
