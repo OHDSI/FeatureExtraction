@@ -45,6 +45,7 @@ runSpotChecks <- function(connection, cdmDatabaseSchema, ohdsiDatabaseSchema, co
                            cdmDatabaseSchema = cdmDatabaseSchema,
                            cohortTable = cohortTable)
   sql <- SqlRender::translate(sql, targetDialect = attr(connection, "dbms"))
+  print(sql)
   results <- as_tibble(DatabaseConnector::querySql(connection, sql))
   colnames(results) <- c("rowId", "covariateId")
   results$covariateId <- results$covariateId*1000 + 1
