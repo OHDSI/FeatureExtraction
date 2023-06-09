@@ -107,7 +107,7 @@ if (runTestsOnOracle) {
   oracleCdmDatabaseSchema <- Sys.getenv("CDM5_ORACLE_CDM_SCHEMA")
   oracleOhdsiDatabaseSchema <- Sys.getenv("CDM5_ORACLE_OHDSI_SCHEMA")
   # Set the tempEmulationSchema globally
-  options(tempEmulationSchema = oracleOhdsiDatabaseSchema)
+  options(sqlRenderTempEmulationSchema = oracleOhdsiDatabaseSchema)
 }
 
 # impala
