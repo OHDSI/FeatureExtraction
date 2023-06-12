@@ -26,7 +26,7 @@ covariateData <- FeatureExtraction:::createEmptyCovariateData(cohortId = 1,
                                                               temporal = FALSE)
 # For this example we'll use a temporary file location:
 fileName <- tempfile()
-saveCovariateData(covariateData = covariateData, file = "covData")
+saveCovariateData(covariateData = covariateData, file = fileName)
 # Cleaning up the file used in this example:
 unlink(fileName)
 }
