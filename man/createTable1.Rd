@@ -52,3 +52,47 @@ A data frame, or, when \code{output = "list"} a list of two data frames.
 Creates a formatted table of cohort characteristics, to be included in publications or reports.
 Allows for creating a table describing a single cohort, or a table comparing two cohorts.
 }
+\examples{
+\dontrun{
+eunomiaConnectionDetails <- Eunomia::getEunomiaConnectionDetails()
+covSettings <- createDefaultCovariateSettings()
+Eunomia::createCohorts(connectionDetails = eunomiaConnectionDetails,
+                      cdmDatabaseSchema = "main",
+                      cohortDatabaseSchema = "main",
+                      cohortTable = "cohort")
+covData1 <- getDbCovariateData(connectionDetails = eunomiaConnectionDetails,
+                              oracleTempSchema = NULL,
+                              cdmDatabaseSchema = "main",
+                              cdmVersion = "5",
+                              cohortTable = "cohort",
+                              cohortDatabaseSchema = "main",
+                              cohortTableIsTemp = FALSE,
+                              cohortId = 1,
+                              rowIdField = "subject_id",
+                              covariateSettings = covSettings,
+                              aggregated = TRUE)
+covData2 <- getDbCovariateData(connectionDetails = eunomiaConnectionDetails,
+                              oracleTempSchema = NULL,
+                              cdmDatabaseSchema = "main",
+                              cdmVersion = "5",
+                              cohortTable = "cohort",
+                              cohortDatabaseSchema = "main",
+                              cohortTableIsTemp = FALSE,
+                              cohortId = 2,
+                              rowIdField = "subject_id",
+                              covariateSettings = covSettings,
+                              aggregated = TRUE)
+table1 <- createTable1(covariateData1 = covData1,
+                      covariateData2 = covData2,
+                      cohortId1 = 1,
+                      cohortId2 = 2,
+                      specifications = getDefaultTable1Specifications(),
+                      output = "one column",
+                      showCounts = FALSE,
+                      showPercent = TRUE,
+                      percentDigits = 1,
+                      valueDigits = 1,
+                      stdDiffDigits = 2)
+}
+
+}
