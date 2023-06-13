@@ -579,7 +579,7 @@ createTable1 <- function(covariateData1,
 #' A covariate settings object, for example to be used when calling the
 #' \code{\link{getDbCovariateData}} function.
 #'
-#' #' @examples
+#' @examples
 #' \dontrun{
 #' table1CovSettings <- createTable1CovariateSettings(specifications = getDefaultTable1Specifications(),
 #'                                                    covariateSettings = createDefaultCovariateSettings(),

@@ -38,8 +38,13 @@ to exclude?}
 \value{
 A covariate settings object, for example to be used when calling the
 \code{\link{getDbCovariateData}} function.
-
-#' @examples
+}
+\description{
+Creates a covariate settings object for generating only those covariates that will be included in a
+table 1. This function works by filtering the \code{covariateSettings} object for the covariates in
+the \code{specifications} object.
+}
+\examples{
 \dontrun{
 table1CovSettings <- createTable1CovariateSettings(specifications = getDefaultTable1Specifications(),
                                                    covariateSettings = createDefaultCovariateSettings(),
@@ -49,9 +54,4 @@ table1CovSettings <- createTable1CovariateSettings(specifications = getDefaultTa
                                                    addDescendantsToExclude = FALSE,
                                                    includedCovariateIds = c())
 }
-}
-\description{
-Creates a covariate settings object for generating only those covariates that will be included in a
-table 1. This function works by filtering the \code{covariateSettings} object for the covariates in
-the \code{specifications} object.
 }
