@@ -44,3 +44,14 @@ Creates a covariate settings object for generating only those covariates that wi
 table 1. This function works by filtering the \code{covariateSettings} object for the covariates in
 the \code{specifications} object.
 }
+\examples{
+\dontrun{
+table1CovSettings <- createTable1CovariateSettings(specifications = getDefaultTable1Specifications(),
+                                                   covariateSettings = createDefaultCovariateSettings(),
+                                                   includedCovariateConceptIds = c(),
+                                                   addDescendantsToInclude = FALSE,
+                                                   excludedCovariateConceptIds = c(),
+                                                   addDescendantsToExclude = FALSE,
+                                                   includedCovariateIds = c())
+}
+}

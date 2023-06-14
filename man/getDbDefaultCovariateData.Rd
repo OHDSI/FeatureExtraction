@@ -88,3 +88,19 @@ cohort. The cohort is assumed to be in an existing temp table with these fields:
 unique identifier that will be used as rowID in the output. Typically, users don't call this
 function directly but rather use the \code{\link{getDbCovariateData}} function instead.
 }
+\examples{
+\dontrun{
+connection <- DatabaseConnector::connect(connectionDetails)
+Eunomia::createCohorts(connectionDetails)
+  
+results <- getDbDefaultCovariateData(connection = connection,
+                                     cdmDatabaseSchema = "main",
+                                     cohortTable = "cohort",
+                                     covariateSettings = createDefaultCovariateSettings(),
+                                     targetDatabaseSchema = "main",
+                                     targetCovariateTable = "ut_cov",
+                                     targetCovariateRefTable = "ut_cov_ref",
+                                     targetAnalysisRefTable = "ut_cov_analysis_ref")
+}
+
+}

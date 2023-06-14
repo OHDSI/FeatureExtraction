@@ -21,6 +21,17 @@
 #'
 #' @return
 #' An object of type \code{covariateData}.
+#' 
+#' @examples
+#' \dontrun{
+#' covariateData <- FeatureExtraction:::createEmptyCovariateData(cohortId = 1,
+#'                                                               aggregated = FALSE,
+#'                                                               temporal = FALSE)
+#'   
+#' covData <- filterByRowId(covariateData = covariateData,
+#'                          rowIds = 1)
+#' }
+#' 
 #' @export
 filterByRowId <- function(covariateData, rowIds) {
   if (!isCovariateData(covariateData))
@@ -49,6 +60,17 @@ filterByRowId <- function(covariateData, rowIds) {
 #'
 #' @return
 #' An object of type \code{covariateData}.
+#' 
+#' @examples
+#' \dontrun{
+#' covariateData <- FeatureExtraction:::createEmptyCovariateData(cohortId = 1,
+#'                                                               aggregated = FALSE,
+#'                                                               temporal = FALSE)
+#'   
+#' covData <- filterByCohortDefinitionId(covariateData = covariateData,
+#'                                       cohortId = 1)
+#' }
+#' 
 #' @export
 filterByCohortDefinitionId <- function(covariateData, cohortId) {
   if (!isCovariateData(covariateData))

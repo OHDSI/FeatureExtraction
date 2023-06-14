@@ -15,3 +15,12 @@ A logical value.
 \description{
 Check whether covariate data is temporal
 }
+\examples{
+\dontrun{
+covariateData <- FeatureExtraction:::createEmptyCovariateData(cohortId = 1,
+                                                              aggregated = FALSE,
+                                                              temporal = FALSE)
+isTempCovData <- isTemporalCovariateData(covariateData)
+}
+
+}

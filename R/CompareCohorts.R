@@ -31,6 +31,14 @@
 #' A data frame with means and standard deviations per cohort as well as the standardized difference
 #' of mean.
 #'
+#' @examples
+#' \dontrun{
+#' binaryCovDataFile <- system.file("testdata/binaryCovariateData.zip", 
+#'                                  package = "FeatureExtraction")
+#' covariateData1 <- loadCovariateData(binaryCovDataFile)
+#' covariateData2 <- loadCovariateData(binaryCovDataFile)
+#' covDataDiff <- computeStandardizedDifference(covariateData1, covariateData2, cohortId1 = 1, cohortId2 = 2)
+#' }
 #' @export
 computeStandardizedDifference <- function(covariateData1, covariateData2, cohortId1 = NULL, cohortId2 = NULL) {
   if (!isCovariateData(covariateData1))

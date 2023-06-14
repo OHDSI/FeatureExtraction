@@ -50,3 +50,15 @@ these columns: \describe{ \item{cohort_definition_id}{A key to link to the cohor
 cohort table.} \item{attribute_definition_id}{An foreign key linking to the attribute definition
 table.} \item{value_as_number}{A real number.} }
 }
+\examples{
+\dontrun{
+covariateSettings <- createCohortAttrCovariateSettings(analysisId = 1,
+                                                       attrDatabaseSchema = "main",
+                                                       attrDefinitionTable = "attribute_definition",
+                                                       cohortAttrTable = "cohort_attribute",
+                                                       includeAttrIds = c(1),
+                                                       isBinary = FALSE,
+                                                       missingMeansZero = FALSE)
+}
+
+}

@@ -27,6 +27,18 @@
 #'                           frequency.
 #' @param normalize          Normalize the covariates? (dividing by the max).
 #' @param removeRedundancy   Should redundant covariates be removed?
+#' 
+#' @examples
+#' \dontrun{
+#' covariateData <- FeatureExtraction:::createEmptyCovariateData(cohortId = 1,
+#'                                                               aggregated = FALSE,
+#'                                                               temporal = FALSE)
+#'   
+#' covData <- tidyCovariateData(covariateData = covariateData,
+#'                              minFraction = 0.001,
+#'                              normalize = TRUE,
+#'                              removeRedundancy = TRUE)
+#' }
 #'
 #' @export
 tidyCovariateData <- function(covariateData,
