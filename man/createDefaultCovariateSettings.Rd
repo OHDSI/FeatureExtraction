@@ -33,3 +33,13 @@ An object of type \code{covariateSettings}, to be used in other functions.
 \description{
 Create default covariate settings
 }
+\examples{
+\dontrun{
+covSettings <- createDefaultCovariateSettings(includedCovariateConceptIds = c(1),
+                                              addDescendantsToInclude = FALSE,
+                                              excludedCovariateConceptIds = c(2),
+                                              addDescendantsToExclude = FALSE,
+                                              includedCovariateIds = c(1))
+}
+
+}

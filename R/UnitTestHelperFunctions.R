@@ -15,6 +15,19 @@
 # limitations under the License.
 
 # These functions are used in support of unit tests
+
+#' Get covariate settings
+#'
+#' @param useLengthOfObs if length of observations should be used
+#'
+#' @return
+#' Returns an object of type \code{covariateSettings}, containing settings for the covariates.
+#'
+#' @examples
+#' \dontrun{
+#' looCovariateSettings <- .createLooCovariateSettings(useLengthOfObs = TRUE)
+#' }
+#'
 .createLooCovariateSettings <- function(useLengthOfObs = TRUE) {
   covariateSettings <- list(useLengthOfObs = useLengthOfObs)
   attr(covariateSettings, "fun") <- "FeatureExtraction:::.getDbLooCovariateData"
@@ -22,6 +35,54 @@
   return(covariateSettings)
 }
 
+#' Get covariate information from the database
+#'
+#' @param connection             A connection to the server containing the schema as created using the
+#'                               \code{connect} function in the \code{DatabaseConnector} package.
+#'                               Either the \code{connection} or \code{connectionDetails} argument
+#'                               should be specified.
+#' @param oracleTempSchema       A schema where temp tables can be created in Oracle.
+#' @param cdmDatabaseSchema      The name of the database schema that contains the OMOP CDM instance.
+#'                               Requires read permissions to this database. On SQL Server, this should
+#'                               specifiy both the database and the schema, so for example
+#'                               'cdm_instance.dbo'.
+#' @param cohortTable            Name of the (temp) table holding the cohort for which we want to
+#'                               construct covariates
+#' @param cohortId               For which cohort ID(s) should covariates be constructed? If set to -1,
+#'                               covariates will be constructed for all cohorts in the specified cohort
+#'                               table.
+#' @param cdmVersion             Define the OMOP CDM version used: currently supported is "5".
+#' @param rowIdField             The name of the field in the cohort table that is to be used as the
+#'                               row_id field in the output table. This can be especially usefull if
+#'                               there is more than one period per person.
+#' @param covariateSettings      Either an object of type \code{covariateSettings} as created using one
+#'                               of the createCovariate functions, or a list of such objects.
+#' @param aggregated             Should aggregate statistics be computed instead of covariates per
+#'                               cohort entry?
+#'
+#' @return
+#' Returns an object of type \code{covariateData}, containing information on the covariates.
+#'
+#' @examples
+#' \dontrun{
+#' eunomiaConnectionDetails <- Eunomia::getEunomiaConnectionDetails()
+#' covSettings <- .createLooCovariateSettings(useLengthOfObs = TRUE)
+#' Eunomia::createCohorts(connectionDetails = eunomiaConnectionDetails,
+#'                        cdmDatabaseSchema = "main",
+#'                        cohortDatabaseSchema = "main",
+#'                        cohortTable = "cohort")
+#' connection <- DatabaseConnector::connect(connectionDetails)
+#' looCovariateData <- .getDbLooCovariateData(connection,
+#'                                            oracleTempSchema = NULL,
+#'                                            cdmDatabaseSchema = "main",
+#'                                            cohortTable = "cohort",
+#'                                            cohortId = 1,
+#'                                            cdmVersion = "5",
+#'                                            rowIdField = "subject_id",
+#'                                            covariateSettings = covSettings,
+#'                                            aggregated = FALSE)
+#' }
+#'
 .getDbLooCovariateData <- function(connection,
                                    oracleTempSchema = NULL,
                                    cdmDatabaseSchema,

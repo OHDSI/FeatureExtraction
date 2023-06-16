@@ -60,6 +60,27 @@
 #' @return
 #' Returns an object of type \code{covariateData}, containing information on the covariates.
 #'
+#' @examples
+#' \dontrun{
+#' eunomiaConnectionDetails <- Eunomia::getEunomiaConnectionDetails()
+#' covSettings <- createDefaultCovariateSettings()
+#' Eunomia::createCohorts(connectionDetails = eunomiaConnectionDetails,
+#'                        cdmDatabaseSchema = "main",
+#'                        cohortDatabaseSchema = "main",
+#'                        cohortTable = "cohort")
+#' covData <- getDbCovariateData(connectionDetails = eunomiaConnectionDetails,
+#'                               oracleTempSchema = NULL,
+#'                               cdmDatabaseSchema = "main",
+#'                               cdmVersion = "5",
+#'                               cohortTable = "cohort",
+#'                               cohortDatabaseSchema = "main",
+#'                               cohortTableIsTemp = FALSE,
+#'                               cohortId = -1,
+#'                               rowIdField = "subject_id",
+#'                               covariateSettings = covSettings,
+#'                               aggregated = FALSE)
+#' }
+#' 
 #' @export
 getDbCovariateData <- function(connectionDetails = NULL,
                                connection = NULL,

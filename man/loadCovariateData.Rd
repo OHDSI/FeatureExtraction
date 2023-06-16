@@ -21,6 +21,10 @@ An object of class \code{CovariateData}.
 The data will be written to a set of files in the folder specified by the user.
 }
 \examples{
-# todo
+\dontrun{
+binaryCovDataFile <- system.file("testdata/binaryCovariateData.zip", 
+                                 package = "FeatureExtraction")
+covData <- loadCovariateData(binaryCovDataFile)
+}
 
 }

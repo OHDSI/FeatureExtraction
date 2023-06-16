@@ -30,3 +30,12 @@ of mean.
 Computes the standardized difference for all covariates between two cohorts. The standardized
 difference is defined as the difference between the mean divided by the overall standard deviation.
 }
+\examples{
+\dontrun{
+binaryCovDataFile <- system.file("testdata/binaryCovariateData.zip", 
+                                 package = "FeatureExtraction")
+covariateData1 <- loadCovariateData(binaryCovDataFile)
+covariateData2 <- loadCovariateData(binaryCovDataFile)
+covDataDiff <- computeStandardizedDifference(covariateData1, covariateData2, cohortId1 = 1, cohortId2 = 2)
+}
+}

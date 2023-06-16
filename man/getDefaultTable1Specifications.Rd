@@ -13,3 +13,9 @@ A specifications objects.
 Loads the default specifications for a table 1, to be used with the \code{\link{createTable1}}
 function.
 }
+\examples{
+\dontrun{
+defaultTable1Specs <- getDefaultTable1Specifications()
+}
+
+}

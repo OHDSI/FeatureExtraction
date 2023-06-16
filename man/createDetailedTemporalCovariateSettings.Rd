@@ -32,3 +32,21 @@ Create detailed temporal covariate settings
 creates an object specifying in detail how temporal covariates should be contructed from data in
 the CDM model. Warning: this function is for advanced users only.
 }
+\examples{
+\dontrun{
+analysisDetails <- createAnalysisDetails(analysisId = 1,
+                                         sqlFileName = "DemographicsGender.sql",
+                                         parameters = list(analysisId = 1,
+                                                            analysisName = "Gender",
+                                                            domainId = "Demographics"),
+                                         includedCovariateConceptIds = c(),
+                                         addDescendantsToInclude = FALSE,
+                                         excludedCovariateConceptIds = c(),
+                                         addDescendantsToExclude = FALSE,
+                                         includedCovariateIds = c())
+covSettings <- createDetailedTemporalCovariateSettings(analyses = analysisDetails,
+                                                       temporalStartDays = -365:-1,
+                                                       temporalEndDays = -365:-1)
+}
+
+}

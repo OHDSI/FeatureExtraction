@@ -53,7 +53,16 @@ setClass("CovariateData", contains = "Andromeda")
 #' The data will be written to a set of files in the folder specified by the user.
 #'
 #' @examples
-#' # todo
+#' \dontrun{
+#' covariateData <- FeatureExtraction:::createEmptyCovariateData(cohortId = 1,
+#'                                                               aggregated = FALSE,
+#'                                                               temporal = FALSE)
+#' # For this example we'll use a temporary file location:
+#' fileName <- tempfile()
+#' saveCovariateData(covariateData = covariateData, file = fileName)
+#' # Cleaning up the file used in this example:
+#' unlink(fileName)
+#' }
 #'
 #' @export
 saveCovariateData <- function(covariateData, file) {
@@ -82,7 +91,11 @@ saveCovariateData <- function(covariateData, file) {
 #' An object of class \code{CovariateData}.
 #'
 #' @examples
-#' # todo
+#' \dontrun{
+#' binaryCovDataFile <- system.file("testdata/binaryCovariateData.zip", 
+#'                                  package = "FeatureExtraction")
+#' covData <- loadCovariateData(binaryCovDataFile)
+#' }
 #'
 #' @export
 loadCovariateData <- function(file, readOnly) {
@@ -151,10 +164,18 @@ print.summary.CovariateData <- function(x, ...) {
 
 #' Check whether an object is a CovariateData object
 #'
-#' @param x  The object to check.
+#' @param x The object to check.
 #'
 #' @return
 #' A logical value.
+#' 
+#' @examples
+#' \dontrun{
+#' binaryCovDataFile <- system.file("testdata/binaryCovariateData.zip", 
+#'                                  package = "FeatureExtraction")
+#' covData <- loadCovariateData(binaryCovDataFile)
+#' isCovData <- isCovariateData(covData)
+#' }
 #' 
 #' @export
 isCovariateData <- function(x) {
@@ -167,6 +188,14 @@ isCovariateData <- function(x) {
 #'
 #' @return
 #' A logical value.
+#' 
+#' @examples
+#' \dontrun{
+#' covariateData <- FeatureExtraction:::createEmptyCovariateData(cohortId = 1,
+#'                                                               aggregated = FALSE,
+#'                                                               temporal = FALSE)
+#' isAggrCovData <- isAggregatedCovariateData(covariateData)
+#' }
 #' 
 #' @export
 isAggregatedCovariateData <- function(x) {
@@ -184,6 +213,14 @@ isAggregatedCovariateData <- function(x) {
 #' @return
 #' A logical value.
 #' 
+#' @examples
+#' \dontrun{
+#' covariateData <- FeatureExtraction:::createEmptyCovariateData(cohortId = 1,
+#'                                                               aggregated = FALSE,
+#'                                                               temporal = FALSE)
+#' isTempCovData <- isTemporalCovariateData(covariateData)
+#' }
+#' 
 #' @export
 isTemporalCovariateData <- function(x) {
   if (!isCovariateData(x))
@@ -193,6 +230,19 @@ isTemporalCovariateData <- function(x) {
   return("timeId" %in% colnames(x$covariates))
 }
 
+#' Creates an empty covariate data object
+#'
+#' @param cohortId cohort number
+#' @param aggregated if the data should be aggregated
+#' @param temporal if the data is temporary
+#' 
+#' @examples
+#' \dontrun{
+#' covariateData <- FeatureExtraction:::createEmptyCovariateData(cohortId = 1,
+#'                                                               aggregated = FALSE,
+#'                                                               temporal = FALSE)
+#' }
+#' 
 createEmptyCovariateData <- function(cohortId, aggregated, temporal) {
   dummy <- tibble(covariateId = 1,
                   covariateValue = 1)
