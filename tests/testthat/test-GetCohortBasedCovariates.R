@@ -3,10 +3,9 @@
 # covr::file_report(covr::file_coverage("R/GetCovariates.R", "tests/testthat/test-GetCohortBasedCovariates.R"))
 library(testthat)
 
-if (runTestsOnEunomia) {
-  connectionDetails <- Eunomia::getEunomiaConnectionDetails()
-  connection <- DatabaseConnector::connect(connectionDetails)
-  
+createCohortBasedCovariateTestData <- function(connection,
+                                               databaseSchema,
+                                               cohortTableName) {
   cohort <- data.frame(cohortDefinitionId = c(1, 1, 101, 101),
                        cohortStartDate = as.Date(c("2000-02-01", "2000-01-01", "2000-01-01", "2000-01-02")),
                        cohortEndDate = as.Date(c("2000-02-14", "2000-01-14", "2000-01-01", "2000-01-02")),
@@ -21,18 +20,25 @@ if (runTestsOnEunomia) {
                                  camelCaseToSnakeCase = TRUE)
 }
 
+if (runTestsOnEunomia) {
+  createCohortBasedCovariateTestData(connection = eunomiaConnection,
+                                     databaseSchema = eunomiaOhdsiDatabaseSchema,
+                                     cohortTableName = "cohort")  
+}
+
 covariateCohorts <- data.frame(cohortId = c(101, 102),
                                cohortName = c("Foo", "Bar"))
 
-test_that("Cohort-based covariates: binary, non-aggregated", {
+# Database specific tests ---------------
+test_that("Cohort-based covariates: binary, non-aggregated on Eunomia", {
   skip_if_not(runTestsOnEunomia)
   settings <- createCohortBasedCovariateSettings(analysisId = 999,
                                                  covariateCohorts = covariateCohorts,
                                                  valueType = "binary")
   
-  covs <- getDbCovariateData(connection = connection,
-                             oracleTempSchema = NULL,
-                             cdmDatabaseSchema = "main",
+  covs <- getDbCovariateData(connection = eunomiaConnection,
+                             oracleTempSchema = getOption("sqlRenderTempEmulationSchema"),
+                             cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
                              cohortTable = "cohort",
                              cohortId = 1,
                              cdmVersion = "5",
@@ -46,15 +52,15 @@ test_that("Cohort-based covariates: binary, non-aggregated", {
   expect_equivalent(covariates, expectedCovariates)
 })
 
-test_that("Cohort-based covariates: binary, aggregated", {
+test_that("Cohort-based covariates: binary, aggregated on Eunomia", {
   skip_if_not(runTestsOnEunomia)
   settings <- createCohortBasedCovariateSettings(analysisId = 999,
                                                  covariateCohorts = covariateCohorts,
                                                  valueType = "binary")
   
-  covs <- getDbCovariateData(connection = connection,
-                             oracleTempSchema = NULL,
-                             cdmDatabaseSchema = "main",
+  covs <- getDbCovariateData(connection = eunomiaConnection,
+                             oracleTempSchema = getOption("sqlRenderTempEmulationSchema"),
+                             cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
                              cohortTable = "cohort",
                              cohortId = 1,
                              cdmVersion = "5",
@@ -69,13 +75,13 @@ test_that("Cohort-based covariates: binary, aggregated", {
   expect_equivalent(covariates, expectedCovariates)
 })
 
-test_that("Cohort-based covariates: binary, non-aggregated, temporal", {
+test_that("Cohort-based covariates: binary, non-aggregated, temporal on Eunomia", {
   skip_if_not(runTestsOnEunomia)
   settings <- createCohortBasedTemporalCovariateSettings(analysisId = 999,
                                                          covariateCohorts = covariateCohorts)
-  covs <- getDbCovariateData(connection = connection,
-                             oracleTempSchema = NULL,
-                             cdmDatabaseSchema = "main",
+  covs <- getDbCovariateData(connection = eunomiaConnection,
+                             oracleTempSchema = getOption("sqlRenderTempEmulationSchema"),
+                             cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
                              cohortTable = "cohort",
                              cohortId = 1,
                              cdmVersion = "5",
@@ -90,13 +96,13 @@ test_that("Cohort-based covariates: binary, non-aggregated, temporal", {
   expect_equivalent(covariates, expectedCovariates)
 })
 
-test_that("Cohort-based covariates: binary, aggregated, temporal", {
+test_that("Cohort-based covariates: binary, aggregated, temporal on Eunomia", {
   skip_if_not(runTestsOnEunomia)
   settings <- createCohortBasedTemporalCovariateSettings(analysisId = 999,
                                                          covariateCohorts = covariateCohorts)
-  covs <- getDbCovariateData(connection = connection,
-                             oracleTempSchema = NULL,
-                             cdmDatabaseSchema = "main",
+  covs <- getDbCovariateData(connection = eunomiaConnection,
+                             oracleTempSchema = getOption("sqlRenderTempEmulationSchema"),
+                             cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
                              cohortTable = "cohort",
                              cohortId = 1,
                              cdmVersion = "5",
@@ -112,15 +118,15 @@ test_that("Cohort-based covariates: binary, aggregated, temporal", {
   expect_equivalent(covariates, expectedCovariates)
 })
 
-test_that("Cohort-based covariates: counts, non-aggregated", {
+test_that("Cohort-based covariates: counts, non-aggregated on Eunomia", {
   skip_if_not(runTestsOnEunomia)
   settings <- createCohortBasedCovariateSettings(analysisId = 999,
                                                  covariateCohorts = covariateCohorts,
                                                  valueType = "count")
   
-  covs <- getDbCovariateData(connection = connection,
-                             oracleTempSchema = NULL,
-                             cdmDatabaseSchema = "main",
+  covs <- getDbCovariateData(connection = eunomiaConnection,
+                             oracleTempSchema = getOption("sqlRenderTempEmulationSchema"),
+                             cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
                              cohortTable = "cohort",
                              cohortId = 1,
                              cdmVersion = "5",
@@ -134,15 +140,15 @@ test_that("Cohort-based covariates: counts, non-aggregated", {
   expect_equivalent(covariates, expectedCovariates)
 })
 
-test_that("Cohort-based covariates: counts, aggregated", {
+test_that("Cohort-based covariates: counts, aggregated on Eunomia", {
   skip_if_not(runTestsOnEunomia)
   settings <- createCohortBasedCovariateSettings(analysisId = 999,
                                                  covariateCohorts = covariateCohorts,
                                                  valueType = "count")
   
-  covs <- getDbCovariateData(connection = connection,
-                             oracleTempSchema = NULL,
-                             cdmDatabaseSchema = "main",
+  covs <- getDbCovariateData(connection = eunomiaConnection,
+                             oracleTempSchema = getOption("sqlRenderTempEmulationSchema"),
+                             cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
                              cohortTable = "cohort",
                              cohortId = 1,
                              cdmVersion = "5",
@@ -159,14 +165,14 @@ test_that("Cohort-based covariates: counts, aggregated", {
   expect_equivalent(expectedCovariates[, names(expectedCovariates)], expectedCovariates)
 })
 
-test_that("Cohort-based covariates: counts, non-aggregated, temporal", {
+test_that("Cohort-based covariates: counts, non-aggregated, temporal on Eunomia", {
   skip_if_not(runTestsOnEunomia)
   settings <- createCohortBasedTemporalCovariateSettings(analysisId = 999,
                                                          covariateCohorts = covariateCohorts,
                                                          valueType = "count")
-  covs <- getDbCovariateData(connection = connection,
-                             oracleTempSchema = NULL,
-                             cdmDatabaseSchema = "main",
+  covs <- getDbCovariateData(connection = eunomiaConnection,
+                             oracleTempSchema = getOption("sqlRenderTempEmulationSchema"),
+                             cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
                              cohortTable = "cohort",
                              cohortId = 1,
                              cdmVersion = "5",
@@ -186,9 +192,9 @@ test_that("Cohort-based covariates: counts, aggregated, temporal", {
   settings <- createCohortBasedTemporalCovariateSettings(analysisId = 999,
                                                          covariateCohorts = covariateCohorts,
                                                          valueType = "count")
-  covs <- getDbCovariateData(connection = connection,
-                             oracleTempSchema = NULL,
-                             cdmDatabaseSchema = "main",
+  covs <- getDbCovariateData(connection = eunomiaConnection,
+                             oracleTempSchema = getOption("sqlRenderTempEmulationSchema"),
+                             cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
                              cohortTable = "cohort",
                              cohortId = 1,
                              cdmVersion = "5",
@@ -206,15 +212,15 @@ test_that("Cohort-based covariates: counts, aggregated, temporal", {
   expect_equivalent(expectedCovariates[, names(expectedCovariates)], expectedCovariates)
 })
 
-test_that("Cohort-based covariates: counts, aggregated, using multiple cohort IDs", {
+test_that("Cohort-based covariates: counts, aggregated, using multiple cohort IDs on Eunomia", {
   skip_if_not(runTestsOnEunomia)
   settings <- createCohortBasedCovariateSettings(analysisId = 999,
                                                  covariateCohorts = covariateCohorts,
                                                  valueType = "count")
   
-  covs <- getDbCovariateData(connection = connection,
-                             oracleTempSchema = NULL,
-                             cdmDatabaseSchema = "main",
+  covs <- getDbCovariateData(connection = eunomiaConnection,
+                             oracleTempSchema = getOption("sqlRenderTempEmulationSchema"),
+                             cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
                              cohortTable = "cohort",
                              cohortId = c(1, 101),
                              cdmVersion = "5",
@@ -230,12 +236,13 @@ test_that("Cohort-based covariates: counts, aggregated, using multiple cohort ID
                                    averageValue = c(1, 1.5))
   expect_equivalent(expectedCovariates[, names(expectedCovariates)], expectedCovariates)
 })
+# 
+# if (runTestsOnEunomia) {
+#   DatabaseConnector::disconnect(connection)
+# }
 
-if (runTestsOnEunomia) {
-  DatabaseConnector::disconnect(connection)
-}
 
-
+# Non-database specific tests ---------------
 test_that("Cohort-based covariates: warning if using pre-defined analysis ID", {
   expect_warning(createCohortBasedCovariateSettings(analysisId = 1,
                                                     covariateCohorts = covariateCohorts,
