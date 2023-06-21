@@ -24,11 +24,25 @@ createCohortBasedCovariateTestData <- function(connection,
                                  camelCaseToSnakeCase = TRUE)
 }
 
+dropCohortBasedCovariateTestData <- function(connection,
+                                             databaseSchema,
+                                             cohortTableName) {
+  DatabaseConnector::renderTranslateExecuteSql(connection = connection,
+                                               sql = "DROP TABLE IF EXISTS @database_schema.@cohort_table;",
+                                               progressBar = FALSE,
+                                               reportOverallTime = FALSE,
+                                               database_schema = databaseSchema,
+                                               cohort_table = cohortTableName)
+}
+
 # Database specific tests ---------------
 runCohortBasedBinaryNonAggTest <- function(connection, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortTable) {
   createCohortBasedCovariateTestData(connection = connection,
                                      databaseSchema = ohdsiDatabaseSchema,
                                      cohortTableName = cohortTable)
+  on.exit(dropCohortBasedCovariateTestData(connection = connection,
+                                           databaseSchema = ohdsiDatabaseSchema,
+                                           cohortTableName = cohortTable))
   settings <- createCohortBasedCovariateSettings(analysisId = 999,
                                                  covariateCohorts = covariateCohorts,
                                                  valueType = "binary")
@@ -54,6 +68,9 @@ runCohortBasedBinaryAggTest <- function(connection, cdmDatabaseSchema, ohdsiData
   createCohortBasedCovariateTestData(connection = connection,
                                      databaseSchema = ohdsiDatabaseSchema,
                                      cohortTableName = cohortTable)
+  on.exit(dropCohortBasedCovariateTestData(connection = connection,
+                                           databaseSchema = ohdsiDatabaseSchema,
+                                           cohortTableName = cohortTable))
   settings <- createCohortBasedCovariateSettings(analysisId = 999,
                                                  covariateCohorts = covariateCohorts,
                                                  valueType = "binary")
@@ -80,7 +97,11 @@ runCohortBasedBinaryNonAggTemporalTest <- function(connection, cdmDatabaseSchema
   createCohortBasedCovariateTestData(connection = connection,
                                      databaseSchema = ohdsiDatabaseSchema,
                                      cohortTableName = cohortTable)
-
+  
+  on.exit(dropCohortBasedCovariateTestData(connection = connection,
+                                           databaseSchema = ohdsiDatabaseSchema,
+                                           cohortTableName = cohortTable))
+  
   settings <- createCohortBasedTemporalCovariateSettings(analysisId = 999,
                                                          covariateCohorts = covariateCohorts)
   covs <- getDbCovariateData(connection = connection,
@@ -105,6 +126,11 @@ runCohortBasedBinaryAggTemporalTest <- function(connection, cdmDatabaseSchema, o
   createCohortBasedCovariateTestData(connection = connection,
                                      databaseSchema = ohdsiDatabaseSchema,
                                      cohortTableName = cohortTable)
+
+  on.exit(dropCohortBasedCovariateTestData(connection = connection,
+                                           databaseSchema = ohdsiDatabaseSchema,
+                                           cohortTableName = cohortTable))
+  
   settings <- createCohortBasedTemporalCovariateSettings(analysisId = 999,
                                                          covariateCohorts = covariateCohorts)
   covs <- getDbCovariateData(connection = connection,
@@ -131,6 +157,10 @@ runCohortBasedCountsNonAggTest <- function(connection, cdmDatabaseSchema, ohdsiD
                                      databaseSchema = ohdsiDatabaseSchema,
                                      cohortTableName = cohortTable)
 
+  on.exit(dropCohortBasedCovariateTestData(connection = connection,
+                                           databaseSchema = ohdsiDatabaseSchema,
+                                           cohortTableName = cohortTable))
+  
   settings <- createCohortBasedCovariateSettings(analysisId = 999,
                                                  covariateCohorts = covariateCohorts,
                                                  valueType = "count")
@@ -156,6 +186,11 @@ runCohortBasedCountsAggTest <- function(connection, cdmDatabaseSchema, ohdsiData
   createCohortBasedCovariateTestData(connection = connection,
                                      databaseSchema = ohdsiDatabaseSchema,
                                      cohortTableName = cohortTable)
+
+  on.exit(dropCohortBasedCovariateTestData(connection = connection,
+                                           databaseSchema = ohdsiDatabaseSchema,
+                                           cohortTableName = cohortTable))
+  
   settings <- createCohortBasedCovariateSettings(analysisId = 999,
                                                  covariateCohorts = covariateCohorts,
                                                  valueType = "count")
@@ -185,6 +220,10 @@ runCohortBasedCountsNonAggTemporalTest <- function(connection, cdmDatabaseSchema
                                      databaseSchema = ohdsiDatabaseSchema,
                                      cohortTableName = cohortTable)
 
+  on.exit(dropCohortBasedCovariateTestData(connection = connection,
+                                           databaseSchema = ohdsiDatabaseSchema,
+                                           cohortTableName = cohortTable))
+  
   settings <- createCohortBasedTemporalCovariateSettings(analysisId = 999,
                                                          covariateCohorts = covariateCohorts,
                                                          valueType = "count")
@@ -210,6 +249,11 @@ runCohortBasedCountsAggTemporalTest <- function(connection, cdmDatabaseSchema, o
   createCohortBasedCovariateTestData(connection = connection,
                                      databaseSchema = ohdsiDatabaseSchema,
                                      cohortTableName = cohortTable)
+  
+  on.exit(dropCohortBasedCovariateTestData(connection = connection,
+                                           databaseSchema = ohdsiDatabaseSchema,
+                                           cohortTableName = cohortTable))
+  
   settings <- createCohortBasedTemporalCovariateSettings(analysisId = 999,
                                                          covariateCohorts = covariateCohorts,
                                                          valueType = "count")
@@ -238,6 +282,11 @@ runCohortBasedCountsAggMultiCohortTest <- function(connection, cdmDatabaseSchema
   createCohortBasedCovariateTestData(connection = connection,
                                      databaseSchema = ohdsiDatabaseSchema,
                                      cohortTableName = cohortTable)
+  
+  on.exit(dropCohortBasedCovariateTestData(connection = connection,
+                                           databaseSchema = ohdsiDatabaseSchema,
+                                           cohortTableName = cohortTable))
+  
   settings <- createCohortBasedCovariateSettings(analysisId = 999,
                                                  covariateCohorts = covariateCohorts,
                                                  valueType = "count")
@@ -262,6 +311,7 @@ runCohortBasedCountsAggMultiCohortTest <- function(connection, cdmDatabaseSchema
   expect_equivalent(expectedCovariates[, names(expectedCovariates)], expectedCovariates)
 }
 
+# Eunomia tests ------------
 test_that("Cohort-based covariates: binary, non-aggregated on Eunomia", {
   skip_if_not(runTestsOnEunomia)
   runCohortBasedBinaryNonAggTest(connection = eunomiaConnection,
@@ -318,7 +368,7 @@ test_that("Cohort-based covariates: counts, non-aggregated, temporal on Eunomia"
                                          cohortTable = "cohort_cov")
 })
 
-test_that("Cohort-based covariates: counts, aggregated, temporal", {
+test_that("Cohort-based covariates: counts, aggregated, temporal on Eunomia", {
   skip_if_not(runTestsOnEunomia)
   runCohortBasedCountsAggTemporalTest(connection = eunomiaConnection,
                                       cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
@@ -334,6 +384,96 @@ test_that("Cohort-based covariates: counts, aggregated, using multiple cohort ID
                                          cohortTable = "cohort_cov")
 })
 
+# Postgres tests ------------
+test_that("Cohort-based covariates: binary, non-aggregated on Postgres", {
+  skip_if_not(runTestsOnPostgreSQL)
+  connection <- DatabaseConnector::connect(pgConnectionDetails)
+  on.exit(DatabaseConnector::disconnect(connection))
+  runCohortBasedBinaryNonAggTest(connection = connection,
+                                 cdmDatabaseSchema = pgCdmDatabaseSchema,
+                                 ohdsiDatabaseSchema = pgOhdsiDatabaseSchema,
+                                 cohortTable = cohortTable)
+})
+
+test_that("Cohort-based covariates: binary, aggregated on Postgres", {
+  skip_if_not(runTestsOnPostgreSQL)
+  connection <- DatabaseConnector::connect(pgConnectionDetails)
+  on.exit(DatabaseConnector::disconnect(connection))
+  runCohortBasedBinaryAggTest(connection = connection,
+                              cdmDatabaseSchema = pgCdmDatabaseSchema,
+                              ohdsiDatabaseSchema = pgOhdsiDatabaseSchema,
+                              cohortTable = cohortTable)
+})
+
+test_that("Cohort-based covariates: binary, non-aggregated, temporal on Postgres", {
+  skip_if_not(runTestsOnPostgreSQL)
+  connection <- DatabaseConnector::connect(pgConnectionDetails)
+  on.exit(DatabaseConnector::disconnect(connection))
+  runCohortBasedBinaryNonAggTemporalTest(connection = connection,
+                                         cdmDatabaseSchema = pgCdmDatabaseSchema,
+                                         ohdsiDatabaseSchema = pgOhdsiDatabaseSchema,
+                                         cohortTable = cohortTable)
+})
+
+test_that("Cohort-based covariates: binary, aggregated, temporal on Postgres", {
+  skip_if_not(runTestsOnPostgreSQL)
+  connection <- DatabaseConnector::connect(pgConnectionDetails)
+  on.exit(DatabaseConnector::disconnect(connection))
+  runCohortBasedBinaryAggTemporalTest(connection = connection,
+                                      cdmDatabaseSchema = pgCdmDatabaseSchema,
+                                      ohdsiDatabaseSchema = pgOhdsiDatabaseSchema,
+                                      cohortTable = cohortTable)
+})
+
+test_that("Cohort-based covariates: counts, non-aggregated on Postgres", {
+  skip_if_not(runTestsOnPostgreSQL)
+  connection <- DatabaseConnector::connect(pgConnectionDetails)
+  on.exit(DatabaseConnector::disconnect(connection))
+  runCohortBasedCountsNonAggTest(connection = connection,
+                                 cdmDatabaseSchema = pgCdmDatabaseSchema,
+                                 ohdsiDatabaseSchema = pgOhdsiDatabaseSchema,
+                                 cohortTable = cohortTable)
+})
+
+test_that("Cohort-based covariates: counts, aggregated on Postgres", {
+  skip_if_not(runTestsOnPostgreSQL)
+  connection <- DatabaseConnector::connect(pgConnectionDetails)
+  on.exit(DatabaseConnector::disconnect(connection))
+  runCohortBasedCountsAggTest(connection = connection,
+                              cdmDatabaseSchema = pgCdmDatabaseSchema,
+                              ohdsiDatabaseSchema = pgOhdsiDatabaseSchema,
+                              cohortTable = cohortTable)
+})
+
+test_that("Cohort-based covariates: counts, non-aggregated, temporal on Postgres", {
+  skip_if_not(runTestsOnPostgreSQL)
+  connection <- DatabaseConnector::connect(pgConnectionDetails)
+  on.exit(DatabaseConnector::disconnect(connection))
+  runCohortBasedCountsNonAggTemporalTest(connection = connection,
+                                         cdmDatabaseSchema = pgCdmDatabaseSchema,
+                                         ohdsiDatabaseSchema = pgOhdsiDatabaseSchema,
+                                         cohortTable = cohortTable)
+})
+
+test_that("Cohort-based covariates: counts, aggregated, temporal on Postgres", {
+  skip_if_not(runTestsOnPostgreSQL)
+  connection <- DatabaseConnector::connect(pgConnectionDetails)
+  on.exit(DatabaseConnector::disconnect(connection))
+  runCohortBasedCountsAggTemporalTest(connection = connection,
+                                      cdmDatabaseSchema = pgCdmDatabaseSchema,
+                                      ohdsiDatabaseSchema = pgOhdsiDatabaseSchema,
+                                      cohortTable = cohortTable)
+})
+
+test_that("Cohort-based covariates: counts, aggregated, using multiple cohort IDs on Postgres", {
+  skip_if_not(runTestsOnPostgreSQL)
+  connection <- DatabaseConnector::connect(pgConnectionDetails)
+  on.exit(DatabaseConnector::disconnect(connection))
+  runCohortBasedCountsAggMultiCohortTest(connection = connection,
+                                         cdmDatabaseSchema = pgCdmDatabaseSchema,
+                                         ohdsiDatabaseSchema = pgOhdsiDatabaseSchema,
+                                         cohortTable = cohortTable)
+})
 
 # Non-database specific tests ---------------
 test_that("Cohort-based covariates: warning if using pre-defined analysis ID", {
