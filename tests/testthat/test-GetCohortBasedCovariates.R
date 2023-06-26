@@ -14,25 +14,47 @@ createCohortBasedCovariateTestData <- function(connection,
                        cohortStartDate = as.Date(c("2000-02-01", "2000-01-01", "2000-01-01", "2000-01-02")),
                        cohortEndDate = as.Date(c("2000-02-14", "2000-01-14", "2000-01-01", "2000-01-02")),
                        subjectId = c(1, 2, 1, 1))
-  DatabaseConnector::insertTable(connection = connection,
-                                 databaseSchema = databaseSchema,
-                                 tableName = cohortTableName,
-                                 data = cohort,
-                                 dropTableIfExists = TRUE,
-                                 createTable = TRUE,
-                                 progressBar = FALSE,
-                                 camelCaseToSnakeCase = TRUE)
+  tempTable <- substr(cohortTableName, 1, 1) == "#"
+  if (tempTable) {
+    DatabaseConnector::insertTable(connection = connection,
+                                   tableName = cohortTableName,
+                                   data = cohort,
+                                   dropTableIfExists = TRUE,
+                                   tempTable = tempTable,
+                                   createTable = TRUE,
+                                   progressBar = FALSE,
+                                   camelCaseToSnakeCase = TRUE)
+  } else {
+    DatabaseConnector::insertTable(connection = connection,
+                                   databaseSchema = databaseSchema,
+                                   tableName = cohortTableName,
+                                   data = cohort,
+                                   dropTableIfExists = TRUE,
+                                   tempTable = tempTable,
+                                   createTable = TRUE,
+                                   progressBar = FALSE,
+                                   camelCaseToSnakeCase = TRUE)
+  }
 }
 
 dropCohortBasedCovariateTestData <- function(connection,
                                              databaseSchema,
                                              cohortTableName) {
-  DatabaseConnector::renderTranslateExecuteSql(connection = connection,
-                                               sql = "DROP TABLE IF EXISTS @database_schema.@cohort_table;",
-                                               progressBar = FALSE,
-                                               reportOverallTime = FALSE,
-                                               database_schema = databaseSchema,
-                                               cohort_table = cohortTableName)
+  # Handle temp table
+  if (substr(cohortTableName, 1, 1) == "#") {
+    DatabaseConnector::renderTranslateExecuteSql(connection = connection,
+                                                 sql = "DROP TABLE IF EXISTS @cohort_table;",
+                                                 progressBar = FALSE,
+                                                 reportOverallTime = FALSE,
+                                                 cohort_table = cohortTableName)
+  } else {
+    DatabaseConnector::renderTranslateExecuteSql(connection = connection,
+                                                 sql = "DROP TABLE IF EXISTS @database_schema.@cohort_table;",
+                                                 progressBar = FALSE,
+                                                 reportOverallTime = FALSE,
+                                                 database_schema = databaseSchema,
+                                                 cohort_table = cohortTableName)
+  }
 }
 
 # Database specific tests ---------------
@@ -47,17 +69,21 @@ runCohortBasedBinaryNonAggTest <- function(connection, cdmDatabaseSchema, ohdsiD
                                                  covariateCohorts = covariateCohorts,
                                                  valueType = "binary")
 
+  tempTable <- substr(cohortTable, 1, 1) == "#"
   covs <- getDbCovariateData(connection = connection,
                              oracleTempSchema = getOption("sqlRenderTempEmulationSchema"),
                              cdmDatabaseSchema = cdmDatabaseSchema,
                              cohortDatabaseSchema = ohdsiDatabaseSchema,
+                             cohortTableIsTemp = tempTable,
                              cohortTable = cohortTable,
                              cohortId = 1,
                              cdmVersion = "5",
                              rowIdField = "subject_id",
                              covariateSettings = settings,
                              aggregated = FALSE)
-  covariates <- dplyr::collect(covs$covariates)
+
+  covariates <- dplyr::collect(covs$covariates) 
+
   expectedCovariates <- data.frame(rowId = 1,
                                    covariateId = 101999,
                                    covariateValue = 1)
@@ -75,17 +101,21 @@ runCohortBasedBinaryAggTest <- function(connection, cdmDatabaseSchema, ohdsiData
                                                  covariateCohorts = covariateCohorts,
                                                  valueType = "binary")
 
+  tempTable <- substr(cohortTable, 1, 1) == "#"
   covs <- getDbCovariateData(connection = connection,
                              oracleTempSchema = getOption("sqlRenderTempEmulationSchema"),
                              cdmDatabaseSchema = cdmDatabaseSchema,
                              cohortDatabaseSchema = ohdsiDatabaseSchema,
+                             cohortTableIsTemp = tempTable,
                              cohortTable = cohortTable,
                              cohortId = 1,
                              cdmVersion = "5",
                              rowIdField = "subject_id",
                              covariateSettings = settings,
                              aggregated = TRUE)
+  
   covariates <- dplyr::collect(covs$covariates)
+
   expectedCovariates <- data.frame(cohortDefinitionId  = 1,
                                    covariateId = 101999,
                                    sumValue  = 1,
@@ -104,17 +134,22 @@ runCohortBasedBinaryNonAggTemporalTest <- function(connection, cdmDatabaseSchema
   
   settings <- createCohortBasedTemporalCovariateSettings(analysisId = 999,
                                                          covariateCohorts = covariateCohorts)
+  tempTable <- substr(cohortTable, 1, 1) == "#"
   covs <- getDbCovariateData(connection = connection,
                              oracleTempSchema = getOption("sqlRenderTempEmulationSchema"),
                              cdmDatabaseSchema = cdmDatabaseSchema,
                              cohortDatabaseSchema = ohdsiDatabaseSchema,
+                             cohortTableIsTemp = tempTable,
                              cohortTable = cohortTable,
                              cohortId = 1,
                              cdmVersion = "5",
                              rowIdField = "subject_id",
                              covariateSettings = settings,
                              aggregated = FALSE)
+  
   covariates <- dplyr::collect(covs$covariates)
+  covariates <- dplyr::arrange(covariates, timeId)
+  
   expectedCovariates <- data.frame(rowId = c(1, 1),
                                    covariateId = c(101999, 101999),
                                    covariateValue = c(1,1),
@@ -133,17 +168,22 @@ runCohortBasedBinaryAggTemporalTest <- function(connection, cdmDatabaseSchema, o
   
   settings <- createCohortBasedTemporalCovariateSettings(analysisId = 999,
                                                          covariateCohorts = covariateCohorts)
+  tempTable <- substr(cohortTable, 1, 1) == "#"
   covs <- getDbCovariateData(connection = connection,
                              oracleTempSchema = getOption("sqlRenderTempEmulationSchema"),
                              cdmDatabaseSchema = cdmDatabaseSchema,
                              cohortDatabaseSchema = ohdsiDatabaseSchema,
+                             cohortTableIsTemp = tempTable,
                              cohortTable = cohortTable,
                              cohortId = 1,
                              cdmVersion = "5",
                              rowIdField = "subject_id",
                              covariateSettings = settings,
                              aggregated = TRUE)
+  
   covariates <- dplyr::collect(covs$covariates)
+  covariates <- dplyr::arrange(covariates, timeId)
+  
   expectedCovariates <- data.frame(cohortDefinitionId = c(1, 1),
                                    covariateId = c(101999, 101999),
                                    timeId = c(335,336),
@@ -165,17 +205,21 @@ runCohortBasedCountsNonAggTest <- function(connection, cdmDatabaseSchema, ohdsiD
                                                  covariateCohorts = covariateCohorts,
                                                  valueType = "count")
 
+  tempTable <- substr(cohortTable, 1, 1) == "#"
   covs <- getDbCovariateData(connection = connection,
                              oracleTempSchema = getOption("sqlRenderTempEmulationSchema"),
                              cdmDatabaseSchema = cdmDatabaseSchema,
                              cohortDatabaseSchema = ohdsiDatabaseSchema,
                              cohortTable = cohortTable,
+                             cohortTableIsTemp = tempTable,
                              cohortId = 1,
                              cdmVersion = "5",
                              rowIdField = "subject_id",
                              covariateSettings = settings,
                              aggregated = FALSE)
+  
   covariates <- dplyr::collect(covs$covariates)
+
   expectedCovariates <- data.frame(rowId = 1,
                                    covariateId = 101999,
                                    covariateValue = 2)
@@ -195,24 +239,28 @@ runCohortBasedCountsAggTest <- function(connection, cdmDatabaseSchema, ohdsiData
                                                  covariateCohorts = covariateCohorts,
                                                  valueType = "count")
 
+  tempTable <- substr(cohortTable, 1, 1) == "#"
   covs <- getDbCovariateData(connection = connection,
                              oracleTempSchema = getOption("sqlRenderTempEmulationSchema"),
                              cdmDatabaseSchema = cdmDatabaseSchema,
                              cohortDatabaseSchema = ohdsiDatabaseSchema,
+                             cohortTableIsTemp = tempTable,
                              cohortTable = cohortTable,
                              cohortId = 1,
                              cdmVersion = "5",
                              rowIdField = "subject_id",
                              covariateSettings = settings,
                              aggregated = TRUE)
+  
   covariatesContinuous <- dplyr::collect(covs$covariatesContinuous)
+  
   expectedCovariates <- data.frame(cohortDefinitionId  = 1,
                                    covariateId = 101999,
                                    countValue  = 1,
                                    minValue = 0,
                                    maxValue = 2,
                                    averageValue = 1)
-  expect_equivalent(expectedCovariates[, names(expectedCovariates)], expectedCovariates)
+  expect_equivalent(covariatesContinuous[, names(expectedCovariates)], expectedCovariates)
 }
 
 runCohortBasedCountsNonAggTemporalTest <- function(connection, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortTable) {
@@ -227,17 +275,22 @@ runCohortBasedCountsNonAggTemporalTest <- function(connection, cdmDatabaseSchema
   settings <- createCohortBasedTemporalCovariateSettings(analysisId = 999,
                                                          covariateCohorts = covariateCohorts,
                                                          valueType = "count")
+  tempTable <- substr(cohortTable, 1, 1) == "#"
   covs <- getDbCovariateData(connection = connection,
                              oracleTempSchema = getOption("sqlRenderTempEmulationSchema"),
                              cdmDatabaseSchema = cdmDatabaseSchema,
                              cohortDatabaseSchema = ohdsiDatabaseSchema,
+                             cohortTableIsTemp = tempTable,
                              cohortTable = cohortTable,
                              cohortId = 1,
                              cdmVersion = "5",
                              rowIdField = "subject_id",
                              covariateSettings = settings,
                              aggregated = FALSE)
+  
   covariates <- dplyr::collect(covs$covariates)
+  covariates <- dplyr::arrange(covariates, timeId)
+  
   expectedCovariates <- data.frame(rowId = c(1, 1),
                                    covariateId = c(101999, 101999),
                                    covariateValue = c(1,1),
@@ -257,25 +310,30 @@ runCohortBasedCountsAggTemporalTest <- function(connection, cdmDatabaseSchema, o
   settings <- createCohortBasedTemporalCovariateSettings(analysisId = 999,
                                                          covariateCohorts = covariateCohorts,
                                                          valueType = "count")
+  tempTable <- substr(cohortTable, 1, 1) == "#"
   covs <- getDbCovariateData(connection = connection,
                              oracleTempSchema = getOption("sqlRenderTempEmulationSchema"),
                              cdmDatabaseSchema = cdmDatabaseSchema,
                              cohortDatabaseSchema = ohdsiDatabaseSchema,
                              cohortTable = cohortTable,
+                             cohortTableIsTemp = tempTable,
                              cohortId = 1,
                              cdmVersion = "5",
                              rowIdField = "subject_id",
                              covariateSettings = settings,
                              aggregated = TRUE)
-  covariates <- dplyr::collect(covs$covariatesContinuous)
+  
+  covariatesContinuous <- dplyr::collect(covs$covariatesContinuous)
+  covariatesContinuous <- dplyr::arrange(covariatesContinuous, timeId)
+  
   expectedCovariates <- data.frame(cohortDefinitionId  = 1,
                                    covariateId = 101999,
                                    countValue  = 1,
                                    minValue = 0,
                                    maxValue = 1,
-                                   averageValue = 1,
+                                   averageValue = c(0.5, 0.5),
                                    timeId = c(335,336))
-  expect_equivalent(expectedCovariates[, names(expectedCovariates)], expectedCovariates)
+  expect_equivalent(covariatesContinuous[, names(expectedCovariates)], expectedCovariates)
 }
 
 runCohortBasedCountsAggMultiCohortTest <- function(connection, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortTable) {
@@ -291,10 +349,12 @@ runCohortBasedCountsAggMultiCohortTest <- function(connection, cdmDatabaseSchema
                                                  covariateCohorts = covariateCohorts,
                                                  valueType = "count")
 
+  tempTable <- substr(cohortTable, 1, 1) == "#"
   covs <- getDbCovariateData(connection = connection,
                              oracleTempSchema = getOption("sqlRenderTempEmulationSchema"),
                              cdmDatabaseSchema = cdmDatabaseSchema,
                              cohortDatabaseSchema = ohdsiDatabaseSchema,
+                             cohortTableIsTemp = tempTable,
                              cohortTable = cohortTable,
                              cohortId = c(1, 101),
                              cdmVersion = "5",
@@ -308,7 +368,7 @@ runCohortBasedCountsAggMultiCohortTest <- function(connection, cdmDatabaseSchema
                                    minValue = c(0, 1),
                                    maxValue = c(2, 2),
                                    averageValue = c(1, 1.5))
-  expect_equivalent(expectedCovariates[, names(expectedCovariates)], expectedCovariates)
+  expect_equivalent(covariatesContinuous[, names(expectedCovariates)], expectedCovariates)
 }
 
 # Eunomia tests ------------
