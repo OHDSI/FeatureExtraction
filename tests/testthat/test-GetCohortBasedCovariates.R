@@ -362,6 +362,7 @@ runCohortBasedCountsAggMultiCohortTest <- function(connection, cdmDatabaseSchema
                              covariateSettings = settings,
                              aggregated = TRUE)
   covariatesContinuous <- dplyr::collect(covs$covariatesContinuous)
+  covariatesContinuous <- dplyr::arrange(covariatesContinuous, cohortDefinitionId)  
   expectedCovariates <- data.frame(cohortDefinitionId  = c(1, 101),
                                    covariateId = c(101999, 101999),
                                    countValue  = c(1, 2),
