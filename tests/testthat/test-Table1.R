@@ -41,7 +41,7 @@ test_that("createTable1 works with categorical covariates", {
   covariateData2 <- getDbCovariateData(connection = eunomiaConnection,
                                        cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
                                        cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
-                                       cohortId = 1, #2,
+                                       cohortId = 2,
                                        covariateSettings = settings,
                                        aggregated = TRUE)
   
