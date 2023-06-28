@@ -1,3 +1,26 @@
+FeatureExtraction 3.3.0
+=======================
+
+New Features:
+
+- Adds the ability to create cohort-based covariates (#96)
+- Add covariates based on care_site_id (#164)
+
+Bug Fixes
+
+- Cast demographic index year and month-year to properly format the covariate name (#158) 
+- Fix vignette output to include code blocks (#163)
+- Fix failing unit tests (#178)
+- Switch unit tests to use temp cohorts tables (#166)
+- Fix typo in UsingFeatureExtraction vignette (#186)
+- Fix duplicate analysis IDs in PrespectTemporalAnalysis (#144)
+- Fix duplicate cdmVersion arguments in vignette (#176)
+
+Other:
+
+- Add examples to all function documentation (#201)
+- Standardize Maven libraries (#197)
+
 FeatureExtraction 3.2.0
 =======================
 
