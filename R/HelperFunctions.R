@@ -102,3 +102,12 @@ filterByCohortDefinitionId <- function(covariateData, cohortId) {
   attr(class(result), "package") <- "FeatureExtraction"
   return(result)
 }
+
+.assertCovariateId <- function(covariateId, len = NULL, min.len = NULL, null.ok = FALSE, add = NULL) {
+  checkmate::assertNumeric(covariateId, null.ok = null.ok, len = len, min.len = 1, add = add)
+  if (!is.null(covariateId)) {
+    message <- sprintf("Variable '%s' is a (64-bit) integer",
+                       paste0(deparse(eval.parent(substitute(substitute(covariateId))), width.cutoff = 500L),collapse = "\n"))
+    checkmate::assertTRUE(all(covariateId == round(covariateId)), .var.name = message, add = add)
+  }
+}

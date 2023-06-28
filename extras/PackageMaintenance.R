@@ -57,6 +57,13 @@ rmarkdown::render("vignettes/UsingFeatureExtraction.Rmd",
                                           number_sections = TRUE))
 unlink("inst/doc/UsingFeatureExtraction.tex")
 
+rmarkdown::render("vignettes/CreatingCovariatesBasedOnOtherCohorts.Rmd",
+                  output_file = "../inst/doc/CreatingCovariatesBasedOnOtherCohorts.pdf",
+                  rmarkdown::pdf_document(latex_engine = "pdflatex",
+                                          toc = TRUE,
+                                          number_sections = TRUE))
+unlink("inst/doc/CreatingCovariatesBasedOnOtherCohorts.tex")
+
 # Note: these LaTex packages are required to render the Korean vignettes, but for 
 # some reason are not installed automatically:
 # - kotex*

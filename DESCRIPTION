@@ -29,7 +29,8 @@ Imports:
   readr,
   rlang,
   RSQLite,
-  DBI
+  DBI,
+  checkmate
 Suggests:
   testthat,
   knitr,
