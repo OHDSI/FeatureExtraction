@@ -51,7 +51,7 @@ getDbCohortBasedCovariatesData <- function(connection,
   message("Constructing covariates from other cohorts")
   
   covariateCohorts <- covariateSettings$covariateCohorts %>%
-    select(.data$cohortId, .data$cohortName)
+    select(cohortId, cohortName)
   
   DatabaseConnector::insertTable(connection,
                                  tableName = "#covariate_cohort_ref",
