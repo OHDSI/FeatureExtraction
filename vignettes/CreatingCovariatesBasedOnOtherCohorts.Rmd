@@ -116,27 +116,33 @@ We substitute the arguments in this SQL with actual values, translate it to the 
 library(SqlRender)
 sql <- readSql("covariateCohorts.sql")
 connection <- connect(connectionDetails)
-renderTranslateExecuteSql(connection = connection,
-                          sql = sql,
-                          cdm_database_schema = cdmDatabaseSchema,
-                          cohort_database_schema = cohortDatabaseSchema,
-                          cohort_table = cohortTable)
+renderTranslateExecuteSql(
+  connection = connection,
+  sql = sql,
+  cdm_database_schema = cdmDatabaseSchema,
+  cohort_database_schema = cohortDatabaseSchema,
+  cohort_table = cohortTable
+)
 ```
 
 If all went well, we now have a table with the cohorts. We can see how many cohorts per type:
 
 ```{r eval=FALSE}
-sql <- paste("SELECT cohort_definition_id, 
+sql <- paste(
+  "SELECT cohort_definition_id,
                 COUNT(*) AS count",
-             "FROM @cohort_database_schema.@cohort_table",
-             "GROUP BY cohort_definition_id")
-renderTranslateQuerySql(connection = connection,
-                        sql = sql,
-                        cohort_database_schema = cohortDatabaseSchema,
-                        cohort_table = cohortTable)
+  "FROM @cohort_database_schema.@cohort_table",
+  "GROUP BY cohort_definition_id"
+)
+renderTranslateQuerySql(
+  connection = connection,
+  sql = sql,
+  cohort_database_schema = cohortDatabaseSchema,
+  cohort_table = cohortTable
+)
 ```
 ```{r echo=FALSE,message=FALSE}
-data.frame(cohort_concept_id = c(1, 2),count = c(954179, 979874))
+data.frame(cohort_concept_id = c(1, 2), count = c(954179, 979874))
 ```
 
 ## Using the cohort as covariate
@@ -144,14 +150,18 @@ data.frame(cohort_concept_id = c(1, 2),count = c(954179, 979874))
 To use the constructed diabetes cohort as a covariate, we need to create a `covariateSettings` object:
 
 ```{r eval=FALSE}
-covariateCohorts <- tibble(cohortId = 2,
-                           cohortName = "Type 2 diabetes")
+covariateCohorts <- tibble(
+  cohortId = 2,
+  cohortName = "Type 2 diabetes"
+)
 
-covariateSettings <- createCohortBasedCovariateSettings(analysisId = 999,
-                                                        covariateCohorts = covariateCohorts,
-                                                        valueType = "binary",
-                                                        startDay = -365,
-                                                        endDay = 0)
+covariateSettings <- createCohortBasedCovariateSettings(
+  analysisId = 999,
+  covariateCohorts = covariateCohorts,
+  valueType = "binary",
+  startDay = -365,
+  endDay = 0
+)
 ```
 
 Here we first create a tibble containing two columns. The `cohortId` column lists the cohort definition IDs used in our cohort table. The `cohortName` column will be used to create the covariate names. In this case, we only have one cohort in this table, but there could be many. A separate covariate will be created for each cohort.
@@ -163,13 +173,15 @@ We could also specify the cohort database schema and table where the cohorts for
 We can now construct the covariates:
 
 ```{r eval=FALSE}
-covariateData <- getDbCovariateData(connectionDetails = connectionDetails,
-                                    cdmDatabaseSchema = cdmDatabaseSchema,
-                                    cohortDatabaseSchema = cohortDatabaseSchema,
-                                    cohortTable = cohortTable,
-                                    cohortId = 1,
-                                    rowIdField = "subject_id",
-                                    covariateSettings = covariateSettings)
+covariateData <- getDbCovariateData(
+  connectionDetails = connectionDetails,
+  cdmDatabaseSchema = cdmDatabaseSchema,
+  cohortDatabaseSchema = cohortDatabaseSchema,
+  cohortTable = cohortTable,
+  cohortId = 1,
+  rowIdField = "subject_id",
+  covariateSettings = covariateSettings
+)
 summary(covariateData)
 ```
 ```{r echo=FALSE,message=FALSE}
@@ -190,32 +202,40 @@ if (file.exists(file.path(vignetteFolder, "covariatesPerPerson"))) {
 In this case we will have only one covariate, diabetes in the year before index. In most cases, we will want our custom covariates in addition to the default covariates. We can do this by creating a list of covariate settings:
 
 ```{r eval=FALSE}
-covariateSettings1 <- createCovariateSettings(useDemographicsGender = TRUE,
-                                             useDemographicsAgeGroup = TRUE,
-                                             useDemographicsRace = TRUE,
-                                             useDemographicsEthnicity = TRUE,
-                                             useDemographicsIndexYear = TRUE,
-                                             useDemographicsIndexMonth = TRUE)
+covariateSettings1 <- createCovariateSettings(
+  useDemographicsGender = TRUE,
+  useDemographicsAgeGroup = TRUE,
+  useDemographicsRace = TRUE,
+  useDemographicsEthnicity = TRUE,
+  useDemographicsIndexYear = TRUE,
+  useDemographicsIndexMonth = TRUE
+)
 
-covariateCohorts <- tibble(cohortId = 2,
-                           cohortName = "Type 2 diabetes")
+covariateCohorts <- tibble(
+  cohortId = 2,
+  cohortName = "Type 2 diabetes"
+)
 
-covariateSettings2 <- createCohortBasedCovariateSettings(analysisId = 999,
-                                                        covariateCohorts = covariateCohorts,
-                                                        valueType = "binary",
-                                                        startDay = -365,
-                                                        endDay = 0)
+covariateSettings2 <- createCohortBasedCovariateSettings(
+  analysisId = 999,
+  covariateCohorts = covariateCohorts,
+  valueType = "binary",
+  startDay = -365,
+  endDay = 0
+)
 
 covariateSettingsList <- list(covariateSettings1, covariateSettings2)
 
-covariateData <- getDbCovariateData(connectionDetails = connectionDetails,
-                                    cdmDatabaseSchema = cdmDatabaseSchema,
-                                    cohortDatabaseSchema = cohortDatabaseSchema,
-                                    cohortTable = cohortTable,
-                                    cohortId = 1,
-                                    rowIdField = "subject_id",
-                                    covariateSettings = covariateSettingsList,
-                                    aggregated = TRUE)
+covariateData <- getDbCovariateData(
+  connectionDetails = connectionDetails,
+  cdmDatabaseSchema = cdmDatabaseSchema,
+  cohortDatabaseSchema = cohortDatabaseSchema,
+  cohortTable = cohortTable,
+  cohortId = 1,
+  rowIdField = "subject_id",
+  covariateSettings = covariateSettingsList,
+  aggregated = TRUE
+)
 summary(covariateData)
 ```
 ```{r echo=FALSE,message=FALSE}

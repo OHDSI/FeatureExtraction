@@ -64,23 +64,27 @@
 #' \dontrun{
 #' eunomiaConnectionDetails <- Eunomia::getEunomiaConnectionDetails()
 #' covSettings <- createDefaultCovariateSettings()
-#' Eunomia::createCohorts(connectionDetails = eunomiaConnectionDetails,
-#'                        cdmDatabaseSchema = "main",
-#'                        cohortDatabaseSchema = "main",
-#'                        cohortTable = "cohort")
-#' covData <- getDbCovariateData(connectionDetails = eunomiaConnectionDetails,
-#'                               oracleTempSchema = NULL,
-#'                               cdmDatabaseSchema = "main",
-#'                               cdmVersion = "5",
-#'                               cohortTable = "cohort",
-#'                               cohortDatabaseSchema = "main",
-#'                               cohortTableIsTemp = FALSE,
-#'                               cohortId = -1,
-#'                               rowIdField = "subject_id",
-#'                               covariateSettings = covSettings,
-#'                               aggregated = FALSE)
+#' Eunomia::createCohorts(
+#'   connectionDetails = eunomiaConnectionDetails,
+#'   cdmDatabaseSchema = "main",
+#'   cohortDatabaseSchema = "main",
+#'   cohortTable = "cohort"
+#' )
+#' covData <- getDbCovariateData(
+#'   connectionDetails = eunomiaConnectionDetails,
+#'   oracleTempSchema = NULL,
+#'   cdmDatabaseSchema = "main",
+#'   cdmVersion = "5",
+#'   cohortTable = "cohort",
+#'   cohortDatabaseSchema = "main",
+#'   cohortTableIsTemp = FALSE,
+#'   cohortId = -1,
+#'   rowIdField = "subject_id",
+#'   covariateSettings = covSettings,
+#'   aggregated = FALSE
+#' )
 #' }
-#' 
+#'
 #' @export
 getDbCovariateData <- function(connectionDetails = NULL,
                                connection = NULL,
@@ -117,12 +121,16 @@ getDbCovariateData <- function(connectionDetails = NULL,
     cohortDatabaseSchemaTable <- paste(cohortDatabaseSchema, cohortTable, sep = ".")
   }
   sql <- "SELECT cohort_definition_id, COUNT_BIG(*) AS population_size FROM @cohort_database_schema_table {@cohort_id != -1} ? {WHERE cohort_definition_id IN (@cohort_id)} GROUP BY cohort_definition_id;"
-  sql <- SqlRender::render(sql = sql,
-                           cohort_database_schema_table = cohortDatabaseSchemaTable,
-                           cohort_id = cohortId)
-  sql <- SqlRender::translate(sql = sql,
-                              targetDialect = attr(connection, "dbms"),
-                              oracleTempSchema = oracleTempSchema)
+  sql <- SqlRender::render(
+    sql = sql,
+    cohort_database_schema_table = cohortDatabaseSchemaTable,
+    cohort_id = cohortId
+  )
+  sql <- SqlRender::translate(
+    sql = sql,
+    targetDialect = attr(connection, "dbms"),
+    oracleTempSchema = oracleTempSchema
+  )
   temp <- DatabaseConnector::querySql(connection, sql, snakeCaseToCamelCase = TRUE)
   if (aggregated) {
     populationSize <- temp$populationSize
@@ -144,15 +152,17 @@ getDbCovariateData <- function(connectionDetails = NULL,
       }
       for (i in 1:length(covariateSettings)) {
         fun <- attr(covariateSettings[[i]], "fun")
-        args <- list(connection = connection,
-                     oracleTempSchema = oracleTempSchema,
-                     cdmDatabaseSchema = cdmDatabaseSchema,
-                     cohortTable = cohortDatabaseSchemaTable,
-                     cohortId = cohortId,
-                     cdmVersion = cdmVersion,
-                     rowIdField = rowIdField,
-                     covariateSettings = covariateSettings[[i]],
-                     aggregated = aggregated)
+        args <- list(
+          connection = connection,
+          oracleTempSchema = oracleTempSchema,
+          cdmDatabaseSchema = cdmDatabaseSchema,
+          cohortTable = cohortDatabaseSchemaTable,
+          cohortId = cohortId,
+          cdmVersion = cdmVersion,
+          rowIdField = rowIdField,
+          covariateSettings = covariateSettings[[i]],
+          aggregated = aggregated
+        )
         tempCovariateData <- do.call(eval(parse(text = fun)), args)
         if (is.null(covariateData)) {
           covariateData <- tempCovariateData
@@ -160,7 +170,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
           if (hasData(covariateData$covariates)) {
             if (hasData(tempCovariateData$covariates)) {
               Andromeda::appendToTable(covariateData$covariates, tempCovariateData$covariates)
-            } 
+            }
           } else if (hasData(tempCovariateData$covariates)) {
             covariateData$covariates <- tempCovariateData$covariates
           }
@@ -170,15 +180,17 @@ getDbCovariateData <- function(connectionDetails = NULL,
             } else if (hasData(tempCovariateData$covariatesContinuous)) {
               covariateData$covariatesContinuous <- tempCovariateData$covariatesContinuous
             }
-          } 
+          }
           Andromeda::appendToTable(covariateData$covariateRef, tempCovariateData$covariateRef)
           Andromeda::appendToTable(covariateData$analysisRef, tempCovariateData$analysisRef)
           for (name in names(attr(tempCovariateData, "metaData"))) {
             if (is.null(attr(covariateData, "metaData")[name])) {
               attr(covariateData, "metaData")[[name]] <- attr(tempCovariateData, "metaData")[[name]]
             } else {
-              attr(covariateData, "metaData")[[name]] <- list(attr(covariateData, "metaData")[[name]],
-                                                              attr(tempCovariateData, "metaData")[[name]])
+              attr(covariateData, "metaData")[[name]] <- list(
+                attr(covariateData, "metaData")[[name]],
+                attr(tempCovariateData, "metaData")[[name]]
+              )
             }
           }
         }

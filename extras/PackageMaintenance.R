@@ -25,7 +25,7 @@ unlink(folder, recursive = TRUE, force = TRUE)
 file.exists(folder)
 
 # Format and check code
-OhdsiRTools::formatRFolder("./R")
+styler::style_pkg()
 OhdsiRTools::checkUsagePackage("FeatureExtraction")
 OhdsiRTools::updateCopyrightYearFolder()
 OhdsiRTools::findNonAsciiStringsInFolder()

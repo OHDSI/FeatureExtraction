@@ -20,7 +20,7 @@
 #' Constructs  covariates using other cohorts.
 #'
 #' @param covariateSettings   An object of type \code{covariateSettings} as created using the
-#'                            \code{\link{createCohortBasedCovariateSettings}} or 
+#'                            \code{\link{createCohortBasedCovariateSettings}} or
 #'                            \code{\link{createCohortBasedTemporalCovariateSettings}} functions.
 #'
 #' @template GetCovarParams
@@ -46,51 +46,59 @@ getDbCohortBasedCovariatesData <- function(connection,
   checkmate::assertClass(covariateSettings, "covariateSettings", add = errorMessages)
   checkmate::assertLogical(aggregated, len = 1, add = errorMessages)
   checkmate::reportAssertions(collection = errorMessages)
-  
+
   start <- Sys.time()
   message("Constructing covariates from other cohorts")
-  
+
   covariateCohorts <- covariateSettings$covariateCohorts %>%
     select("cohortId", "cohortName")
-  
+
   DatabaseConnector::insertTable(connection,
-                                 tableName = "#covariate_cohort_ref",
-                                 data = covariateCohorts,
-                                 dropTableIfExists = TRUE,
-                                 createTable = TRUE,
-                                 tempTable = TRUE,
-                                 oracleTempSchema = oracleTempSchema,
-                                 camelCaseToSnakeCase = TRUE)
+    tableName = "#covariate_cohort_ref",
+    data = covariateCohorts,
+    dropTableIfExists = TRUE,
+    createTable = TRUE,
+    tempTable = TRUE,
+    oracleTempSchema = oracleTempSchema,
+    camelCaseToSnakeCase = TRUE
+  )
   if (is.null(covariateSettings$covariateCohortTable)) {
     covariateCohortTable <- cohortTable
   } else if (is.null(covariateSettings$covariateCohortDatabaseSchema)) {
     covariateCohortTable <- covariateSettings$covariateCohortTable
   } else {
     covariateCohortTable <- paste(covariateSettings$covariateCohortDatabaseSchema,
-                                  covariateSettings$covariateCohortTable,
-                                  sep = ".")
+      covariateSettings$covariateCohortTable,
+      sep = "."
+    )
   }
-  
+
   if (covariateSettings$temporal) {
     if (covariateSettings$valueType == "binary") {
       sqlFileName <- "CohortBasedBinaryCovariates.sql"
     } else {
       sqlFileName <- "CohortBasedCountCovariates.sql"
     }
-    parameters <- list(covariateCohortTable = covariateCohortTable,
-                       analysisId = covariateSettings$analysisId,
-                       analysisName = "CohortTemporal")
-    detail <- createAnalysisDetails(analysisId = covariateSettings$analysisId,
-                                    sqlFileName = sqlFileName,
-                                    parameters = parameters,
-                                    includedCovariateConceptIds = covariateSettings$includedCovariateIds,
-                                    addDescendantsToInclude = FALSE,
-                                    excludedCovariateConceptIds = c(),
-                                    addDescendantsToExclude = FALSE,
-                                    includedCovariateIds = c())
-    detailledSettings <- createDetailedTemporalCovariateSettings(analyses = list(detail),
-                                                                 temporalStartDays = covariateSettings$temporalStartDays,
-                                                                 temporalEndDays = covariateSettings$temporalEndDays)
+    parameters <- list(
+      covariateCohortTable = covariateCohortTable,
+      analysisId = covariateSettings$analysisId,
+      analysisName = "CohortTemporal"
+    )
+    detail <- createAnalysisDetails(
+      analysisId = covariateSettings$analysisId,
+      sqlFileName = sqlFileName,
+      parameters = parameters,
+      includedCovariateConceptIds = covariateSettings$includedCovariateIds,
+      addDescendantsToInclude = FALSE,
+      excludedCovariateConceptIds = c(),
+      addDescendantsToExclude = FALSE,
+      includedCovariateIds = c()
+    )
+    detailledSettings <- createDetailedTemporalCovariateSettings(
+      analyses = list(detail),
+      temporalStartDays = covariateSettings$temporalStartDays,
+      temporalEndDays = covariateSettings$temporalEndDays
+    )
   } else {
     # Not temporal
     if (covariateSettings$valueType == "binary") {
@@ -98,36 +106,44 @@ getDbCohortBasedCovariatesData <- function(connection,
     } else {
       sqlFileName <- "CohortBasedCountCovariates.sql"
     }
-    parameters <- list(covariateCohortTable = covariateCohortTable,
-                       analysisId = covariateSettings$analysisId,
-                       analysisName = "Cohort",
-                       startDay = covariateSettings$startDay,
-                       endDay = covariateSettings$endDay)
-    detail <- createAnalysisDetails(analysisId = covariateSettings$analysisId,
-                                    sqlFileName = sqlFileName,
-                                    parameters = parameters,
-                                    includedCovariateConceptIds = covariateSettings$includedCovariateIds,
-                                    addDescendantsToInclude = FALSE,
-                                    excludedCovariateConceptIds = c(),
-                                    addDescendantsToExclude = FALSE,
-                                    includedCovariateIds = c())
+    parameters <- list(
+      covariateCohortTable = covariateCohortTable,
+      analysisId = covariateSettings$analysisId,
+      analysisName = "Cohort",
+      startDay = covariateSettings$startDay,
+      endDay = covariateSettings$endDay
+    )
+    detail <- createAnalysisDetails(
+      analysisId = covariateSettings$analysisId,
+      sqlFileName = sqlFileName,
+      parameters = parameters,
+      includedCovariateConceptIds = covariateSettings$includedCovariateIds,
+      addDescendantsToInclude = FALSE,
+      excludedCovariateConceptIds = c(),
+      addDescendantsToExclude = FALSE,
+      includedCovariateIds = c()
+    )
     detailledSettings <- createDetailedCovariateSettings(analyses = list(detail))
   }
-  result <- getDbDefaultCovariateData(connection = connection,
-                                      oracleTempSchema = oracleTempSchema,
-                                      cdmDatabaseSchema = cdmDatabaseSchema,
-                                      cohortTable = cohortTable,
-                                      cohortId = cohortId,
-                                      cdmVersion = cdmVersion,
-                                      rowIdField = rowIdField,
-                                      detailledSettings,
-                                      aggregated = aggregated)
-  
+  result <- getDbDefaultCovariateData(
+    connection = connection,
+    oracleTempSchema = oracleTempSchema,
+    cdmDatabaseSchema = cdmDatabaseSchema,
+    cohortTable = cohortTable,
+    cohortId = cohortId,
+    cdmVersion = cdmVersion,
+    rowIdField = rowIdField,
+    detailledSettings,
+    aggregated = aggregated
+  )
+
   sql <- "TRUNCATE TABLE #covariate_cohort_ref; DROP TABLE #covariate_cohort_ref;"
-  DatabaseConnector::renderTranslateExecuteSql(connection = connection,
-                                               sql = sql,
-                                               progressBar = FALSE,
-                                               reportOverallTime = FALSE)
+  DatabaseConnector::renderTranslateExecuteSql(
+    connection = connection,
+    sql = sql,
+    progressBar = FALSE,
+    reportOverallTime = FALSE
+  )
   return(result)
 }
 
@@ -137,21 +153,21 @@ getDbCohortBasedCovariatesData <- function(connection,
 #' Creates an object specifying covariates to be constructed based on the presence of other cohorts.
 #'
 #' @param analysisId                    A unique identifier for this analysis.
-#' @param covariateCohortDatabaseSchema The database schema where the cohorts used to define the covariates 
-#'                                      can be found. If set to \code{NULL}, the database schema will be 
+#' @param covariateCohortDatabaseSchema The database schema where the cohorts used to define the covariates
+#'                                      can be found. If set to \code{NULL}, the database schema will be
 #'                                      guessed, for example using the same one as for the main cohorts.
-#' @param covariateCohortTable          The table where the cohorts used to define the covariates 
-#'                                      can be found. If set to \code{NULL}, the table will be 
+#' @param covariateCohortTable          The table where the cohorts used to define the covariates
+#'                                      can be found. If set to \code{NULL}, the table will be
 #'                                      guessed, for example using the same one as for the main cohorts.
-#' @param covariateCohorts              A data frame with at least two columns: 'cohortId' and 'cohortName'. The 
+#' @param covariateCohorts              A data frame with at least two columns: 'cohortId' and 'cohortName'. The
 #'                                      cohort  ID should correspond to the \code{cohort_definition_id} of the cohort
 #'                                      to use for creating a covariate.
-#' @param valueType                     Either 'binary' or 'count'. When \code{valueType = 'count'}, the covariate 
+#' @param valueType                     Either 'binary' or 'count'. When \code{valueType = 'count'}, the covariate
 #'                                      value will be the number of times the cohort was observed in the window.
 #' @param startDay                      What is the start day (relative to the index date) of the covariate window?
 #' @param endDay                        What is the end day (relative to the index date) of the covariate window?
 #' @param includedCovariateIds          A list of covariate IDs that should be restricted to.
-#' @param warnOnAnalysisIdOverlap       Warn if the provided `analysisId` overlaps with any predefined analysis as 
+#' @param warnOnAnalysisIdOverlap       Warn if the provided `analysisId` overlaps with any predefined analysis as
 #'                                      available in the `createCoverateSettings()` function.
 #'
 #' @return
@@ -180,14 +196,16 @@ createCohortBasedCovariateSettings <- function(analysisId,
   .assertCovariateId(includedCovariateIds, null.ok = TRUE, add = errorMessages)
   checkmate::assertLogical(warnOnAnalysisIdOverlap, len = 1, add = errorMessages)
   checkmate::reportAssertions(collection = errorMessages)
-  
+
   if (warnOnAnalysisIdOverlap) {
     warnIfPredefined(analysisId)
   }
-  
-  covariateSettings <- list(temporal = FALSE,
-                            temporalSequence = FALSE)
-  
+
+  covariateSettings <- list(
+    temporal = FALSE,
+    temporalSequence = FALSE
+  )
+
   formalNames <- names(formals(createCohortBasedCovariateSettings))
   for (name in formalNames) {
     value <- get(name)
@@ -204,16 +222,16 @@ createCohortBasedCovariateSettings <- function(analysisId,
 #' Creates an object specifying temporal covariates to be constructed based on the presence of other cohorts.
 #'
 #' @param analysisId                    A unique identifier for this analysis.
-#' @param covariateCohortDatabaseSchema The database schema where the cohorts used to define the covariates 
-#'                                      can be found. If set to \code{NULL}, the database schema will be 
+#' @param covariateCohortDatabaseSchema The database schema where the cohorts used to define the covariates
+#'                                      can be found. If set to \code{NULL}, the database schema will be
 #'                                      guessed, for example using the same one as for the main cohorts.
-#' @param covariateCohortTable          The table where the cohorts used to define the covariates 
-#'                                      can be found. If set to \code{NULL}, the table will be 
+#' @param covariateCohortTable          The table where the cohorts used to define the covariates
+#'                                      can be found. If set to \code{NULL}, the table will be
 #'                                      guessed, for example using the same one as for the main cohorts.
-#' @param covariateCohorts              A data frame with at least two columns: 'cohortId' and 'cohortName'. The 
+#' @param covariateCohorts              A data frame with at least two columns: 'cohortId' and 'cohortName'. The
 #'                                      cohort  ID should correspond to the \code{cohort_definition_id} of the cohort
 #'                                      to use for creating a covariate.
-#' @param valueType                     Either 'binary' or 'count'. When \code{valueType = 'count'}, the covariate 
+#' @param valueType                     Either 'binary' or 'count'. When \code{valueType = 'count'}, the covariate
 #'                                      value will be the number of times the cohort was observed in the window.
 #' @param temporalStartDays                        A list of integers representing the start of a time
 #'                                                 period, relative to the index date. 0 indicates the
@@ -226,7 +244,7 @@ createCohortBasedCovariateSettings <- function(analysisId,
 #'                                                 date, etc. The end day is included in the time
 #'                                                 period.
 #' @param includedCovariateIds          A list of covariate IDs that should be restricted to.
-#' @param warnOnAnalysisIdOverlap       Warn if the provided `analysisId` overlaps with any predefined analysis as 
+#' @param warnOnAnalysisIdOverlap       Warn if the provided `analysisId` overlaps with any predefined analysis as
 #'                                      available in the `createTemporalCovariateSettings()` function.
 #'
 #' @return
@@ -255,13 +273,15 @@ createCohortBasedTemporalCovariateSettings <- function(analysisId,
   .assertCovariateId(includedCovariateIds, null.ok = TRUE, add = errorMessages)
   checkmate::assertLogical(warnOnAnalysisIdOverlap, len = 1, add = errorMessages)
   checkmate::reportAssertions(collection = errorMessages)
-  
+
   if (warnOnAnalysisIdOverlap) {
     warnIfPredefined(analysisId, TRUE)
   }
-  
-  covariateSettings <- list(temporal = TRUE,
-                            temporalSequence = FALSE)
+
+  covariateSettings <- list(
+    temporal = TRUE,
+    temporalSequence = FALSE
+  )
   formalNames <- names(formals(createCohortBasedTemporalCovariateSettings))
   for (name in formalNames) {
     value <- get(name)

@@ -46,12 +46,14 @@ the \code{specifications} object.
 }
 \examples{
 \dontrun{
-table1CovSettings <- createTable1CovariateSettings(specifications = getDefaultTable1Specifications(),
-                                                   covariateSettings = createDefaultCovariateSettings(),
-                                                   includedCovariateConceptIds = c(),
-                                                   addDescendantsToInclude = FALSE,
-                                                   excludedCovariateConceptIds = c(),
-                                                   addDescendantsToExclude = FALSE,
-                                                   includedCovariateIds = c())
+table1CovSettings <- createTable1CovariateSettings(
+  specifications = getDefaultTable1Specifications(),
+  covariateSettings = createDefaultCovariateSettings(),
+  includedCovariateConceptIds = c(),
+  addDescendantsToInclude = FALSE,
+  excludedCovariateConceptIds = c(),
+  addDescendantsToExclude = FALSE,
+  includedCovariateIds = c()
+)
 }
 }
