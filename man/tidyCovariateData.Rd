@@ -30,3 +30,20 @@ Tidy covariate data
 Normalize covariate values by dividing by the max and/or remove redundant covariates and/or remove
 infrequent covariates. For temporal covariates, redundancy is evaluated per time ID.
 }
+\examples{
+\dontrun{
+covariateData <- FeatureExtraction:::createEmptyCovariateData(
+  cohortId = 1,
+  aggregated = FALSE,
+  temporal = FALSE
+)
+
+covData <- tidyCovariateData(
+  covariateData = covariateData,
+  minFraction = 0.001,
+  normalize = TRUE,
+  removeRedundancy = TRUE
+)
+}
+
+}

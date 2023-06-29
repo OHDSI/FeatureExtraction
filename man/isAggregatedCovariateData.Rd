@@ -15,3 +15,14 @@ A logical value.
 \description{
 Check whether covariate data is aggregated
 }
+\examples{
+\dontrun{
+covariateData <- FeatureExtraction:::createEmptyCovariateData(
+  cohortId = 1,
+  aggregated = FALSE,
+  temporal = FALSE
+)
+isAggrCovData <- isAggregatedCovariateData(covariateData)
+}
+
+}

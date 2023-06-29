@@ -70,3 +70,48 @@ cohort. The cohort is assumed to be in an existing temp table with these fields:
 unique identifier that will be used as rowID in the output. Typically, users don't call this
 function directly but rather use the \code{\link{getDbCovariateData}} function instead.
 }
+\examples{
+\dontrun{
+connectionDetails <- Eunomia::getEunomiaConnectionDetails()
+Eunomia::createCohorts(
+  connectionDetails = connectionDetails,
+  cdmDatabaseSchema = "main",
+  cohortDatabaseSchema = "main",
+  cohortTable = "cohort"
+)
+connection <- DatabaseConnector::connect(connectionDetails)
+sql <- "SELECT 1 AS attribute_definition_id, 'Length of observation in days' AS attribute_name
+       INTO @cohort_database_schema.@attribute_definition_table;"
+sql <- SqlRender::render(
+  sql,
+  cohort_database_schema = "main",
+  attribute_definition_table = "attribute_definition"
+)
+sql <- SqlRender::translate(
+  sql = sql,
+  targetDialect = attr(connection, "dbms")
+)
+DatabaseConnector::executeSql(connection, sql)
+covariateSettings <- createCohortAttrCovariateSettings(
+  attrDatabaseSchema = "main",
+  cohortAttrTable = "cohort_attribute",
+  attrDefinitionTable = "attribute_definition",
+  includeAttrIds = c(1),
+  isBinary = FALSE,
+  missingMeansZero = FALSE
+)
+
+covData <- getDbCohortAttrCovariatesData(
+  connection = connection,
+  oracleTempSchema = NULL,
+  cdmDatabaseSchema = "main",
+  cdmVersion = "5",
+  cohortTable = "cohort",
+  cohortId = 1,
+  rowIdField = "subject_id",
+  covariateSettings = covariateSettings,
+  aggregated = FALSE
+)
+}
+
+}

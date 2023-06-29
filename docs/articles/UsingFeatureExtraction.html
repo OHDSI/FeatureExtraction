@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,32 +33,26 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">FeatureExtraction</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">3.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.3.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li>
-  <a href="../news/index.html">Changelog</a>
-</li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/CreatingCovariatesBasedOnOtherCohorts.html">Creating covariates based on other cohorts</a>
+    </li>
+    <li>
       <a href="../articles/CreatingCovariatesUsingCohortAttributes.html">Creating covariates using cohort attributes</a>
     </li>
     <li>
@@ -73,13 +69,16 @@
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://ohdsi.github.io/Hades"><img src='https://ohdsi.github.io/Hades/images/hadesMini.png' width=80 height=17 style='vertical-align: top;'></a>
+  <a href="https://ohdsi.github.io/Hades" class="external-link"><img src='https://ohdsi.github.io/Hades/images/hadesMini.png' width=80 height=17 style='vertical-align: top;'></a>
 </li>
 <li>
-  <a href="https://github.com/OHDSI/FeatureExtraction/">
+  <a href="https://github.com/OHDSI/FeatureExtraction/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -94,450 +93,705 @@
 
       
 
-      </header><script src="UsingFeatureExtraction_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Using FeatureExtraction</h1>
-                        <h4 class="author">Martijn J. Schuemie</h4>
+                        <h4 data-toc-skip class="author">Martijn J.
+Schuemie</h4>
             
-            <h4 class="date">2021-12-16</h4>
+            <h4 data-toc-skip class="date">2023-06-29</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/OHDSI/FeatureExtraction/blob/master/vignettes/UsingFeatureExtraction.Rmd"><code>vignettes/UsingFeatureExtraction.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/OHDSI/FeatureExtraction/blob/HEAD/vignettes/UsingFeatureExtraction.Rmd" class="external-link"><code>vignettes/UsingFeatureExtraction.Rmd</code></a></small>
       <div class="hidden name"><code>UsingFeatureExtraction.Rmd</code></div>
 
     </div>
 
     
     
-<div id="introduction" class="section level1">
-<h1 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>Introduction</h1>
-<p>The <code>FeatureExtraction</code> package can be used to create features for a cohort, using the information stored in the Common Data Model. A cohort is defined a set of persons who satisfy one or more inclusion criteria for a duration of time. Features can for example be diagnoses observed prior to entering the cohort. Some people might also refer to such features as ‘baseline characteristics’, or to features in general as ‘covariates’, and we will use those terms interchangeably throughout this vignette.</p>
-<p>This vignette describes how features can be constructed using the default covariate definitions embedded in the package. Although these definitions allow quite some customization through predefined parameters, it is possible that someone needs more customization. In this case, the reader is referred to the other vignettes included in this package that deal with constructing completely custom covariates.</p>
-<p>This vignette will first describe how to specify which features to construct. In many situations, for example when using <code>FeatureExtraction</code> as part of another package such as <code>CohortMethod</code> or <code>PatientLevelPrediction</code>, that is all one needs to know about the <code>FeatureExtraction</code> package, as the actual calling of the package is done by the other package. However, it is also possible to use this package on its own, for example to create a descriptive characterization of a cohort to include in a paper.</p>
+<div class="section level2">
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
+<p>The <code>FeatureExtraction</code> package can be used to create
+features for a cohort, using the information stored in the Common Data
+Model. A cohort is defined a set of persons who satisfy one or more
+inclusion criteria for a duration of time. Features can for example be
+diagnoses observed prior to entering the cohort. Some people might also
+refer to such features as ‘baseline characteristics’, or to features in
+general as ‘covariates’, and we will use those terms interchangeably
+throughout this vignette.</p>
+<p>This vignette describes how features can be constructed using the
+default covariate definitions embedded in the package. Although these
+definitions allow quite some customization through predefined
+parameters, it is possible that someone needs more customization. In
+this case, the reader is referred to the other vignettes included in
+this package that deal with constructing completely custom
+covariates.</p>
+<p>This vignette will first describe how to specify which features to
+construct. In many situations, for example when using
+<code>FeatureExtraction</code> as part of another package such as
+<code>CohortMethod</code> or <code>PatientLevelPrediction</code>, that
+is all one needs to know about the <code>FeatureExtraction</code>
+package, as the actual calling of the package is done by the other
+package. However, it is also possible to use this package on its own,
+for example to create a descriptive characterization of a cohort to
+include in a paper.</p>
 </div>
-<div id="covariate-settings" class="section level1">
-<h1 class="hasAnchor">
-<a href="#covariate-settings" class="anchor"></a>Covariate settings</h1>
+<div class="section level2">
+<h2 id="covariate-settings">Covariate settings<a class="anchor" aria-label="anchor" href="#covariate-settings"></a>
+</h2>
 <p>Users can specify which covariates to construct in three ways:</p>
 <ol style="list-style-type: decimal">
 <li>Choose the default set of covariates.</li>
 <li>Choose from a set of prespecified analyses.</li>
 <li>Create a set of custom analyses.</li>
 </ol>
-<p>An <strong>analysis</strong> is a process that creates one or more similar covariates. For example, one analysis might create a binary covariate for each condition observed in the condition_occurrence table in the year prior to cohort start, and another analysis might create a single covariate representing the Charlson comorbidity index.</p>
-<p>Note that it is always possible to specify a set of concept IDs that can or can’t be used to construct features. When choosing the default set (option 1) or the prespecified analysis (option 2) this can only be done across all analysis. When creating custom analyses (option 3) this can be specified per analysis.</p>
-<p>For <strong>advanced users</strong>: It is also possible to specify a set of covariate IDs that need to be constructed. A covariate ID identifies a specific covariate, for example the Charlson comorbidity index, or the occurrence of a specific condition concept in a specific time window. A covariate ID is therefore not to be confused with a concept ID. The typical scenario where one might want to specify covariate IDs to construct is when someone already constructed covariates in one population, found a subset of covariates to be of interest, and would like to have only those covariates constructed in another population.</p>
-<div id="using-the-default-set-of-covariates" class="section level2">
-<h2 class="hasAnchor">
-<a href="#using-the-default-set-of-covariates" class="anchor"></a>Using the default set of covariates</h2>
+<p>An <strong>analysis</strong> is a process that creates one or more
+similar covariates. For example, one analysis might create a binary
+covariate for each condition observed in the condition_occurrence table
+in the year prior to cohort start, and another analysis might create a
+single covariate representing the Charlson comorbidity index.</p>
+<p>Note that it is always possible to specify a set of concept IDs that
+can or can’t be used to construct features. When choosing the default
+set (option 1) or the prespecified analysis (option 2) this can only be
+done across all analysis. When creating custom analyses (option 3) this
+can be specified per analysis.</p>
+<p>For <strong>advanced users</strong>: It is also possible to specify a
+set of covariate IDs that need to be constructed. A covariate ID
+identifies a specific covariate, for example the Charlson comorbidity
+index, or the occurrence of a specific condition concept in a specific
+time window. A covariate ID is therefore not to be confused with a
+concept ID. The typical scenario where one might want to specify
+covariate IDs to construct is when someone already constructed
+covariates in one population, found a subset of covariates to be of
+interest, and would like to have only those covariates constructed in
+another population.</p>
+<div class="section level3">
+<h3 id="using-the-default-set-of-covariates">Using the default set of covariates<a class="anchor" aria-label="anchor" href="#using-the-default-set-of-covariates"></a>
+</h3>
 <p>Using the default set of covariates is straightforward:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDefaultCovariateSettings.html">createDefaultCovariateSettings</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<p>This will create a wide array of features, ranging from demographics, through conditions and drugs, to several risk scores.</p>
-<p>Note that we could specify a set of concepts that should not be used to create covariates, for example:</p>
+<code class="sourceCode R"><span><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDefaultCovariateSettings.html">createDefaultCovariateSettings</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>This will create a wide array of features, ranging from demographics,
+through conditions and drugs, to several risk scores.</p>
+<p>Note that we could specify a set of concepts that should not be used
+to create covariates, for example:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDefaultCovariateSettings.html">createDefaultCovariateSettings</a></span><span class="op">(</span>excludedCovariateConceptIds <span class="op">=</span> <span class="fl">1124300</span>, 
-                                           addDescendantsToExclude <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<p>This will create the default set of covariates, except those derived from concept 1124300 (the ingredient diclofenac) and any of its descendants (ie. all drugs containing the ingredient diclofenac).</p>
+<code class="sourceCode R"><span><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDefaultCovariateSettings.html">createDefaultCovariateSettings</a></span><span class="op">(</span></span>
+<span>  excludedCovariateConceptIds <span class="op">=</span> <span class="fl">1124300</span>,</span>
+<span>  addDescendantsToExclude <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>This will create the default set of covariates, except those derived
+from concept 1124300 (the ingredient diclofenac) and any of its
+descendants (ie. all drugs containing the ingredient diclofenac).</p>
 </div>
-<div id="using-prespecified-analyses" class="section level2">
-<h2 class="hasAnchor">
-<a href="#using-prespecified-analyses" class="anchor"></a>Using prespecified analyses</h2>
-<p>The function <code>createCovariateSettings</code> allow the user to choose from a large set of predefined covariates. Type <code><a href="../reference/createCovariateSettings.html">?createCovariateSettings</a></code> to get an overview of the available options. For example:</p>
+<div class="section level3">
+<h3 id="using-prespecified-analyses">Using prespecified analyses<a class="anchor" aria-label="anchor" href="#using-prespecified-analyses"></a>
+</h3>
+<p>The function <code>createCovariateSettings</code> allow the user to
+choose from a large set of predefined covariates. Type
+<code><a href="../reference/createCovariateSettings.html">?createCovariateSettings</a></code> to get an overview of the
+available options. For example:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCovariateSettings.html">createCovariateSettings</a></span><span class="op">(</span>useDemographicsGender <span class="op">=</span> <span class="cn">TRUE</span>,
-                                    useDemographicsAgeGroup <span class="op">=</span> <span class="cn">TRUE</span>,
-                                    useConditionOccurrenceAnyTimePrior <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<p>This will create binary covariates for gender, age (in 5 year age groups), and each concept observed in the <code>condition_occurrence</code> table any time prior to (and including) the cohort start date.</p>
-<p>Many of the prespecified analyses refer to a short, medium, or long term time window. By default, these windows are defined as:</p>
+<code class="sourceCode R"><span><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCovariateSettings.html">createCovariateSettings</a></span><span class="op">(</span></span>
+<span>  useDemographicsGender <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  useDemographicsAgeGroup <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  useConditionOccurrenceAnyTimePrior <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>This will create binary covariates for gender, age (in 5 year age
+groups), and each concept observed in the
+<code>condition_occurrence</code> table any time prior to (and
+including) the cohort start date.</p>
+<p>Many of the prespecified analyses refer to a short, medium, or long
+term time window. By default, these windows are defined as:</p>
 <ul>
-<li>Long term: 365 days prior up to and including the cohort start date.</li>
-<li>Medium term: 180 days prior up to and including the cohort start date.</li>
-<li>Short term: 30 days prior up to and including the cohort start date.</li>
+<li>Long term: 365 days prior up to and including the cohort start
+date.</li>
+<li>Medium term: 180 days prior up to and including the cohort start
+date.</li>
+<li>Short term: 30 days prior up to and including the cohort start
+date.</li>
 </ul>
 <p>However, the user can change these values. For example:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCovariateSettings.html">createCovariateSettings</a></span><span class="op">(</span>useConditionEraLongTerm <span class="op">=</span> <span class="cn">TRUE</span>,
-                                    useConditionEraShortTerm <span class="op">=</span> <span class="cn">TRUE</span>,
-                                    useDrugEraLongTerm <span class="op">=</span> <span class="cn">TRUE</span>,
-                                    useDrugEraShortTerm <span class="op">=</span> <span class="cn">TRUE</span>,
-                                    longTermStartDays <span class="op">=</span> <span class="op">-</span><span class="fl">180</span>,
-                                    shortTermStartDays <span class="op">=</span> <span class="op">-</span><span class="fl">14</span>,
-                                    endDays <span class="op">=</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span></code></pre></div>
-<p>This redefines the long term window as 180 days prior up to (but not including) the cohort start date, and redefines the short term window as 14 days prior up to (but not including) the cohort start date.</p>
-<p>Again, we can also specify which concept IDs should or should not be used to construct covariates:</p>
+<code class="sourceCode R"><span><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCovariateSettings.html">createCovariateSettings</a></span><span class="op">(</span></span>
+<span>  useConditionEraLongTerm <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  useConditionEraShortTerm <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  useDrugEraLongTerm <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  useDrugEraShortTerm <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  longTermStartDays <span class="op">=</span> <span class="op">-</span><span class="fl">180</span>,</span>
+<span>  shortTermStartDays <span class="op">=</span> <span class="op">-</span><span class="fl">14</span>,</span>
+<span>  endDays <span class="op">=</span> <span class="op">-</span><span class="fl">1</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>This redefines the long term window as 180 days prior up to (but not
+including) the cohort start date, and redefines the short term window as
+14 days prior up to (but not including) the cohort start date.</p>
+<p>Again, we can also specify which concept IDs should or should not be
+used to construct covariates:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCovariateSettings.html">createCovariateSettings</a></span><span class="op">(</span>useConditionEraLongTerm <span class="op">=</span> <span class="cn">TRUE</span>,
-                                    useConditionEraShortTerm <span class="op">=</span> <span class="cn">TRUE</span>,
-                                    useDrugEraLongTerm <span class="op">=</span> <span class="cn">TRUE</span>,
-                                    useDrugEraShortTerm <span class="op">=</span> <span class="cn">TRUE</span>,
-                                    longTermStartDays <span class="op">=</span> <span class="op">-</span><span class="fl">180</span>,
-                                    shortTermStartDays <span class="op">=</span> <span class="op">-</span><span class="fl">14</span>,
-                                    endDays <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>,
-                                    excludedCovariateConceptIds <span class="op">=</span> <span class="fl">1124300</span>, 
-                                    addDescendantsToExclude <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCovariateSettings.html">createCovariateSettings</a></span><span class="op">(</span></span>
+<span>  useConditionEraLongTerm <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  useConditionEraShortTerm <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  useDrugEraLongTerm <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  useDrugEraShortTerm <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  longTermStartDays <span class="op">=</span> <span class="op">-</span><span class="fl">180</span>,</span>
+<span>  shortTermStartDays <span class="op">=</span> <span class="op">-</span><span class="fl">14</span>,</span>
+<span>  endDays <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>,</span>
+<span>  excludedCovariateConceptIds <span class="op">=</span> <span class="fl">1124300</span>,</span>
+<span>  addDescendantsToExclude <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="creating-a-set-of-custom-covariates" class="section level2">
-<h2 class="hasAnchor">
-<a href="#creating-a-set-of-custom-covariates" class="anchor"></a>Creating a set of custom covariates</h2>
-<p>This option should only be used by <strong>advanced users</strong>. It requires one to understand that at the implementation level, an analysis is a combination of a piece of highly parameterized SQL together with a specification of the parameter values. The best way to understand the available options is to take a prespecified analysis as starting point, and convert it to a detailed setting object:</p>
+<div class="section level3">
+<h3 id="creating-a-set-of-custom-covariates">Creating a set of custom covariates<a class="anchor" aria-label="anchor" href="#creating-a-set-of-custom-covariates"></a>
+</h3>
+<p>This option should only be used by <strong>advanced users</strong>.
+It requires one to understand that at the implementation level, an
+analysis is a combination of a piece of highly parameterized SQL
+together with a specification of the parameter values. The best way to
+understand the available options is to take a prespecified analysis as
+starting point, and convert it to a detailed setting object:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCovariateSettings.html">createCovariateSettings</a></span><span class="op">(</span>useConditionEraLongTerm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="va">settings2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/convertPrespecSettingsToDetailedSettings.html">convertPrespecSettingsToDetailedSettings</a></span><span class="op">(</span><span class="va">settings</span><span class="op">)</span>
-<span class="va">settings2</span><span class="op">$</span><span class="va">analyses</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></code></pre></div>
-<pre><code>## $analysisId
-## [1] 202
-## 
-## $sqlFileName
-## [1] "DomainConcept.sql"
-## 
-## $parameters
-## $parameters$analysisId
-## [1] 202
-## 
-## $parameters$analysisName
-## [1] "ConditionEraLongTerm"
-## 
-## $parameters$startDay
-## [1] -365
-## 
-## $parameters$endDay
-## [1] 0
-## 
-## $parameters$subType
-## [1] "all"
-## 
-## $parameters$domainId
-## [1] "Condition"
-## 
-## $parameters$domainTable
-## [1] "condition_era"
-## 
-## $parameters$domainConceptId
-## [1] "condition_concept_id"
-## 
-## $parameters$domainStartDate
-## [1] "condition_era_start_date"
-## 
-## $parameters$domainEndDate
-## [1] "condition_era_end_date"
-## 
-## $parameters$description
-## [1] "One covariate per condition in the condition_era table overlapping with any part of the long term window."
-## 
-## 
-## $includedCovariateConceptIds
-## list()
-## 
-## $includedCovariateIds
-## list()
-## 
-## $addDescendantsToInclude
-## [1] FALSE
-## 
-## $excludedCovariateConceptIds
-## list()
-## 
-## $addDescendantsToExclude
-## [1] FALSE</code></pre>
-<p>One can create a detailed analysis settings object from scratch, and use it to create a detailed settings object:</p>
+<code class="sourceCode R"><span><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCovariateSettings.html">createCovariateSettings</a></span><span class="op">(</span>useConditionEraLongTerm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">settings2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/convertPrespecSettingsToDetailedSettings.html">convertPrespecSettingsToDetailedSettings</a></span><span class="op">(</span><span class="va">settings</span><span class="op">)</span></span>
+<span><span class="va">settings2</span><span class="op">$</span><span class="va">analyses</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
+<pre><code><span><span class="co">## $analysisId</span></span>
+<span><span class="co">## [1] 202</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $sqlFileName</span></span>
+<span><span class="co">## [1] "DomainConcept.sql"</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $parameters</span></span>
+<span><span class="co">## $parameters$analysisId</span></span>
+<span><span class="co">## [1] 202</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $parameters$analysisName</span></span>
+<span><span class="co">## [1] "ConditionEraLongTerm"</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $parameters$startDay</span></span>
+<span><span class="co">## [1] -365</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $parameters$endDay</span></span>
+<span><span class="co">## [1] 0</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $parameters$subType</span></span>
+<span><span class="co">## [1] "all"</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $parameters$domainId</span></span>
+<span><span class="co">## [1] "Condition"</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $parameters$domainTable</span></span>
+<span><span class="co">## [1] "condition_era"</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $parameters$domainConceptId</span></span>
+<span><span class="co">## [1] "condition_concept_id"</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $parameters$domainStartDate</span></span>
+<span><span class="co">## [1] "condition_era_start_date"</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $parameters$domainEndDate</span></span>
+<span><span class="co">## [1] "condition_era_end_date"</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $parameters$description</span></span>
+<span><span class="co">## [1] "One covariate per condition in the condition_era table overlapping with any part of the long term window."</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $includedCovariateConceptIds</span></span>
+<span><span class="co">## list()</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $includedCovariateIds</span></span>
+<span><span class="co">## list()</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $addDescendantsToInclude</span></span>
+<span><span class="co">## [1] FALSE</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $excludedCovariateConceptIds</span></span>
+<span><span class="co">## list()</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $addDescendantsToExclude</span></span>
+<span><span class="co">## [1] FALSE</span></span></code></pre>
+<p>One can create a detailed analysis settings object from scratch, and
+use it to create a detailed settings object:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">analysisDetails</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createAnalysisDetails.html">createAnalysisDetails</a></span><span class="op">(</span>analysisId <span class="op">=</span> <span class="fl">1</span>,
-                                         sqlFileName <span class="op">=</span> <span class="st">"DemographicsGender.sql"</span>,
-                                         parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>analysisId <span class="op">=</span> <span class="fl">1</span>,
-                                                           analysisName <span class="op">=</span> <span class="st">"Gender"</span>,
-                                                           domainId <span class="op">=</span> <span class="st">"Demographics"</span><span class="op">)</span>,
-                                         includedCovariateConceptIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span>,
-                                         addDescendantsToInclude <span class="op">=</span> <span class="cn">FALSE</span>,
-                                         excludedCovariateConceptIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span>,
-                                         addDescendantsToExclude <span class="op">=</span> <span class="cn">FALSE</span>,
-                                         includedCovariateIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-
-<span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDetailedCovariateSettings.html">createDetailedCovariateSettings</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">analysisDetails</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">analysisDetails</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createAnalysisDetails.html">createAnalysisDetails</a></span><span class="op">(</span></span>
+<span>  analysisId <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  sqlFileName <span class="op">=</span> <span class="st">"DemographicsGender.sql"</span>,</span>
+<span>  parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    analysisId <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>    analysisName <span class="op">=</span> <span class="st">"Gender"</span>,</span>
+<span>    domainId <span class="op">=</span> <span class="st">"Demographics"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  includedCovariateConceptIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  addDescendantsToInclude <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  excludedCovariateConceptIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  addDescendantsToExclude <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  includedCovariateIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDetailedCovariateSettings.html">createDetailedCovariateSettings</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">analysisDetails</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="temporal-covariates" class="section level2">
-<h2 class="hasAnchor">
-<a href="#temporal-covariates" class="anchor"></a>Temporal covariates</h2>
-<p>Ordinarily, covariates are created for just a few time windows of interest, for example the short, medium, and long term windows described earlier. However, sometimes a more fine-grained temporal resolution is required, for example creating covariates for each day separately, in the 365 days prior to cohort start. We will refer to this type of covariates as <em>temporal covariates</em>. Temporal covariates share the same covariate ID across the time windows, and use a separate time ID to distinguish between time windows. There currently aren’t many applications that are able to handle temporal covariates. For example, the <code>CohortMethod</code> package will break when provided with temporal covariates. However, there are some machine learning algorithms in the <code>PatientLevelPrediction</code> package that require temporal covariates.</p>
+<div class="section level3">
+<h3 id="temporal-covariates">Temporal covariates<a class="anchor" aria-label="anchor" href="#temporal-covariates"></a>
+</h3>
+<p>Ordinarily, covariates are created for just a few time windows of
+interest, for example the short, medium, and long term windows described
+earlier. However, sometimes a more fine-grained temporal resolution is
+required, for example creating covariates for each day separately, in
+the 365 days prior to cohort start. We will refer to this type of
+covariates as <em>temporal covariates</em>. Temporal covariates share
+the same covariate ID across the time windows, and use a separate time
+ID to distinguish between time windows. There currently aren’t many
+applications that are able to handle temporal covariates. For example,
+the <code>CohortMethod</code> package will break when provided with
+temporal covariates. However, there are some machine learning algorithms
+in the <code>PatientLevelPrediction</code> package that require temporal
+covariates.</p>
 <p>Again, we can just choose to use the default settings:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDefaultTemporalCovariateSettings.html">createDefaultTemporalCovariateSettings</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDefaultTemporalCovariateSettings.html">createDefaultTemporalCovariateSettings</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>Or, we can choose from a set of prespecified temporal covariates:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createTemporalCovariateSettings.html">createTemporalCovariateSettings</a></span><span class="op">(</span>useConditionOccurrence <span class="op">=</span> <span class="cn">TRUE</span>,
-                                            useMeasurementValue <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<p>In this case we’ve chosen to create binary covariates for each concept in the <code>condition_occurrence</code> table, and continuous covariates for each measurement - unit combination in the <code>measurement</code> table in the CDM. By default, temporal covariates are created for each day separately in the 365 days before (but not including) the cohort start date. Different time windows can also be specified, for example creating 7 day intervals instead:</p>
+<code class="sourceCode R"><span><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createTemporalCovariateSettings.html">createTemporalCovariateSettings</a></span><span class="op">(</span></span>
+<span>  useConditionOccurrence <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  useMeasurementValue <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>In this case we’ve chosen to create binary covariates for each
+concept in the <code>condition_occurrence</code> table, and continuous
+covariates for each measurement - unit combination in the
+<code>measurement</code> table in the CDM. By default, temporal
+covariates are created for each day separately in the 365 days before
+(but not including) the cohort start date. Different time windows can
+also be specified, for example creating 7 day intervals instead:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createTemporalCovariateSettings.html">createTemporalCovariateSettings</a></span><span class="op">(</span>useConditionOccurrence <span class="op">=</span> <span class="cn">TRUE</span>,
-                                            useMeasurementValue <span class="op">=</span> <span class="cn">TRUE</span>,
-                                            temporalStartDays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">364</span>, <span class="op">-</span><span class="fl">7</span>, by <span class="op">=</span> <span class="fl">7</span><span class="op">)</span>,
-                                            temporalEndDays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">358</span>, <span class="op">-</span><span class="fl">1</span>, by <span class="op">=</span> <span class="fl">7</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createTemporalCovariateSettings.html">createTemporalCovariateSettings</a></span><span class="op">(</span></span>
+<span>  useConditionOccurrence <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  useMeasurementValue <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  temporalStartDays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">364</span>, <span class="op">-</span><span class="fl">7</span>, by <span class="op">=</span> <span class="fl">7</span><span class="op">)</span>,</span>
+<span>  temporalEndDays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">358</span>, <span class="op">-</span><span class="fl">1</span>, by <span class="op">=</span> <span class="fl">7</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>Each time window includes the specified start and end day.</p>
-<p>Similar to ordinary covariates, <strong>advanced users</strong> can also define custom analyses:</p>
+<p>Similar to ordinary covariates, <strong>advanced users</strong> can
+also define custom analyses:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">analysisDetails</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createAnalysisDetails.html">createAnalysisDetails</a></span><span class="op">(</span>analysisId <span class="op">=</span> <span class="fl">1</span>,
-                                         sqlFileName <span class="op">=</span> <span class="st">"MeasurementValue.sql"</span>,
-                                         parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>analysisId <span class="op">=</span> <span class="fl">1</span>,
-                                                           analysisName <span class="op">=</span> <span class="st">"MeasurementValue"</span>,
-                                                           domainId <span class="op">=</span> <span class="st">"Measurement"</span><span class="op">)</span>,
-                                         includedCovariateConceptIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span>,
-                                         addDescendantsToInclude <span class="op">=</span> <span class="cn">FALSE</span>,
-                                         excludedCovariateConceptIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span>,
-                                         addDescendantsToExclude <span class="op">=</span> <span class="cn">FALSE</span>,
-                                         includedCovariateIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-
-<span class="va">settings</span> <span class="op">&lt;-</span>  <span class="fu"><a href="../reference/createDetailedTemporalCovariateSettings.html">createDetailedTemporalCovariateSettings</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">analysisDetails</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">analysisDetails</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createAnalysisDetails.html">createAnalysisDetails</a></span><span class="op">(</span></span>
+<span>  analysisId <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  sqlFileName <span class="op">=</span> <span class="st">"MeasurementValue.sql"</span>,</span>
+<span>  parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    analysisId <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>    analysisName <span class="op">=</span> <span class="st">"MeasurementValue"</span>,</span>
+<span>    domainId <span class="op">=</span> <span class="st">"Measurement"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  includedCovariateConceptIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  addDescendantsToInclude <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  excludedCovariateConceptIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  addDescendantsToExclude <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  includedCovariateIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDetailedTemporalCovariateSettings.html">createDetailedTemporalCovariateSettings</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">analysisDetails</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
-<div id="constructing-covariates-for-a-cohort-of-interest" class="section level1">
-<h1 class="hasAnchor">
-<a href="#constructing-covariates-for-a-cohort-of-interest" class="anchor"></a>Constructing covariates for a cohort of interest</h1>
-<p>Here we will walk through an example, creating covariates for two cohorts of interest: new users of diclofenac and new users of celecoxib.</p>
-<div id="configuring-the-connection-to-the-server" class="section level2">
-<h2 class="hasAnchor">
-<a href="#configuring-the-connection-to-the-server" class="anchor"></a>Configuring the connection to the server</h2>
-<p>We need to tell R how to connect to the server where the data are. <code>CohortMethod</code> uses the <code>DatabaseConnector</code> package, which provides the <code>createConnectionDetails</code> function. Type <code>?createConnectionDetails</code> for the specific settings required for the various database management systems (DBMS). For example, one might connect to a PostgreSQL database using this code:</p>
+<div class="section level2">
+<h2 id="constructing-covariates-for-a-cohort-of-interest">Constructing covariates for a cohort of interest<a class="anchor" aria-label="anchor" href="#constructing-covariates-for-a-cohort-of-interest"></a>
+</h2>
+<p>Here we will walk through an example, creating covariates for two
+cohorts of interest: new users of diclofenac and new users of
+celecoxib.</p>
+<div class="section level3">
+<h3 id="configuring-the-connection-to-the-server">Configuring the connection to the server<a class="anchor" aria-label="anchor" href="#configuring-the-connection-to-the-server"></a>
+</h3>
+<p>We need to tell R how to connect to the server where the data are.
+<code>CohortMethod</code> uses the <code>DatabaseConnector</code>
+package, which provides the <code>createConnectionDetails</code>
+function. Type <code>?createConnectionDetails</code> for the specific
+settings required for the various database management systems (DBMS).
+For example, one might connect to a PostgreSQL database using this
+code:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">connectionDetails</span> <span class="op">&lt;-</span> <span class="fu">createConnectionDetails</span><span class="op">(</span>dbms <span class="op">=</span> <span class="st">"postgresql"</span>, 
-                                             server <span class="op">=</span> <span class="st">"localhost/ohdsi"</span>, 
-                                             user <span class="op">=</span> <span class="st">"joe"</span>, 
-                                             password <span class="op">=</span> <span class="st">"supersecret"</span><span class="op">)</span>
-
-<span class="va">cdmDatabaseSchema</span> <span class="op">&lt;-</span> <span class="st">"my_cdm_data"</span>
-<span class="va">resultsDatabaseSchema</span> <span class="op">&lt;-</span> <span class="st">"my_results"</span></code></pre></div>
-<p>The last two lines define the <code>cdmDatabaseSchema</code> and <code>resultSchema</code> variables. We’ll use these later to tell R where the data in CDM format live, and where we want to write intermediate and result tables. Note that for Microsoft SQL Server, databaseschemas need to specify both the database and the schema, so for example <code>cdmDatabaseSchema &lt;- "my_cdm_data.dbo"</code>.</p>
+<code class="sourceCode R"><span><span class="va">connectionDetails</span> <span class="op">&lt;-</span> <span class="fu">createConnectionDetails</span><span class="op">(</span></span>
+<span>  dbms <span class="op">=</span> <span class="st">"postgresql"</span>,</span>
+<span>  server <span class="op">=</span> <span class="st">"localhost/ohdsi"</span>,</span>
+<span>  user <span class="op">=</span> <span class="st">"joe"</span>,</span>
+<span>  password <span class="op">=</span> <span class="st">"supersecret"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">cdmDatabaseSchema</span> <span class="op">&lt;-</span> <span class="st">"my_cdm_data"</span></span>
+<span><span class="va">resultsDatabaseSchema</span> <span class="op">&lt;-</span> <span class="st">"my_results"</span></span></code></pre></div>
+<p>The last two lines define the <code>cdmDatabaseSchema</code> and
+<code>resultSchema</code> variables. We’ll use these later to tell R
+where the data in CDM format live, and where we want to write
+intermediate and result tables. Note that for Microsoft SQL Server,
+database schemas need to specify both the database and the schema, so
+for example <code>cdmDatabaseSchema &lt;- "my_cdm_data.dbo"</code>.</p>
 </div>
-<div id="creating-a-cohort-of-interest" class="section level2">
-<h2 class="hasAnchor">
-<a href="#creating-a-cohort-of-interest" class="anchor"></a>Creating a cohort of interest</h2>
-<p>FeatureExtraction requires the cohorts to be instantiated in the <code>cohort</code> table in the Common Data Model, or in a table that has the same structure as the <code>cohort</code> table. We could create cohorts using a cohort definition tool, but here we’ll just use some simple SQL to find the first drug era per person. Note that because we will be creating covariates based on data before cohort start, we are requiring 365 days of observation before the first exposure. FeatureExtraction will not check if a subject is observed during the specified time windows.</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">/***********************************</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co">File cohortsOfInterest.sql</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co">***********************************/</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="cf">IF</span> OBJECT_ID(<span class="st">'@resultsDatabaseSchema.cohorts_of_interest'</span>, <span class="st">'U'</span>) <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="kw">DROP</span> <span class="kw">TABLE</span> @resultsDatabaseSchema.cohorts_of_interest;</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> first_use.<span class="op">*</span></span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="kw">INTO</span> @resultsDatabaseSchema.cohorts_of_interest</span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> (</span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> drug_concept_id <span class="kw">AS</span> cohort_definition_id,</span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="fu">MIN</span>(drug_era_start_date) <span class="kw">AS</span> cohort_start_date,</span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="fu">MIN</span>(drug_era_end_date) <span class="kw">AS</span> cohort_end_date,</span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>person_id </span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> @cdmDatabaseSchema.drug_era</span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> drug_concept_id <span class="op">=</span> <span class="dv">1118084</span><span class="co">-- celecoxib</span></span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="kw">OR</span> drug_concept_id <span class="op">=</span> <span class="dv">1124300</span> <span class="co">--diclofenac</span></span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span> drug_concept_id, </span>
-<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>person_id</span>
-<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>) first_use </span>
-<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a><span class="kw">INNER</span> <span class="kw">JOIN</span> @cdmDatabaseSchema.observation_period</span>
-<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a><span class="kw">ON</span> first_use.person_id <span class="op">=</span> observation_period.person_id</span>
-<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a><span class="kw">AND</span> cohort_start_date <span class="op">&gt;=</span> observation_period_start_date</span>
-<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a><span class="kw">AND</span> cohort_end_date <span class="op">&lt;=</span> observation_period_end_date</span>
-<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> DATEDIFF(<span class="dt">DAY</span>, observation_period_start_date, cohort_start_date) <span class="op">&gt;=</span> <span class="dv">365</span>;</span></code></pre></div>
-<p>This is parameterized SQL which can be used by the <code>SqlRender</code> package. We use parameterized SQL so we do not have to pre-specify the names of the CDM and result schemas. That way, if we want to run the SQL on a different schema, we only need to change the parameter values; we do not have to change the SQL code. By also making use of translation functionality in <code>SqlRender</code>, we can make sure the SQL code can be run in many different environments.</p>
+<div class="section level3">
+<h3 id="creating-a-cohort-of-interest">Creating a cohort of interest<a class="anchor" aria-label="anchor" href="#creating-a-cohort-of-interest"></a>
+</h3>
+<p>FeatureExtraction requires the cohorts to be instantiated in the
+<code>cohort</code> table in the Common Data Model, or in a table that
+has the same structure as the <code>cohort</code> table. We could create
+cohorts using a cohort definition tool, but here we’ll just use some
+simple SQL to find the first drug era per person. Note that because we
+will be creating covariates based on data before cohort start, we are
+requiring 365 days of observation before the first exposure.
+FeatureExtraction will not check if a subject is observed during the
+specified time windows.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="co">/***********************************</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="co">File cohortsOfInterest.sql</span></span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="co">***********************************/</span></span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a><span class="cf">IF</span> OBJECT_ID(<span class="st">'@resultsDatabaseSchema.cohorts_of_interest'</span>, <span class="st">'U'</span>) <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span></span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a><span class="kw">DROP</span> <span class="kw">TABLE</span> @resultsDatabaseSchema.cohorts_of_interest;</span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a><span class="kw">SELECT</span> first_use.<span class="op">*</span></span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a><span class="kw">INTO</span> @resultsDatabaseSchema.cohorts_of_interest</span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a><span class="kw">FROM</span> (</span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a><span class="kw">SELECT</span> drug_concept_id <span class="kw">AS</span> cohort_definition_id,</span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a><span class="fu">MIN</span>(drug_era_start_date) <span class="kw">AS</span> cohort_start_date,</span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a><span class="fu">MIN</span>(drug_era_end_date) <span class="kw">AS</span> cohort_end_date,</span>
+<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a>person_id </span>
+<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a><span class="kw">FROM</span> @cdmDatabaseSchema.drug_era</span>
+<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a><span class="kw">WHERE</span> drug_concept_id <span class="op">=</span> <span class="dv">1118084</span><span class="co">-- celecoxib</span></span>
+<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a><span class="kw">OR</span> drug_concept_id <span class="op">=</span> <span class="dv">1124300</span> <span class="co">--diclofenac</span></span>
+<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span> drug_concept_id, </span>
+<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a>person_id</span>
+<span id="cb14-20"><a href="#cb14-20" tabindex="-1"></a>) first_use </span>
+<span id="cb14-21"><a href="#cb14-21" tabindex="-1"></a><span class="kw">INNER</span> <span class="kw">JOIN</span> @cdmDatabaseSchema.observation_period</span>
+<span id="cb14-22"><a href="#cb14-22" tabindex="-1"></a><span class="kw">ON</span> first_use.person_id <span class="op">=</span> observation_period.person_id</span>
+<span id="cb14-23"><a href="#cb14-23" tabindex="-1"></a><span class="kw">AND</span> cohort_start_date <span class="op">&gt;=</span> observation_period_start_date</span>
+<span id="cb14-24"><a href="#cb14-24" tabindex="-1"></a><span class="kw">AND</span> cohort_end_date <span class="op">&lt;=</span> observation_period_end_date</span>
+<span id="cb14-25"><a href="#cb14-25" tabindex="-1"></a><span class="kw">WHERE</span> DATEDIFF(<span class="dt">DAY</span>, observation_period_start_date, cohort_start_date) <span class="op">&gt;=</span> <span class="dv">365</span>;</span></code></pre></div>
+<p>This is parameterized SQL which can be used by the
+<code>SqlRender</code> package. We use parameterized SQL so we do not
+have to pre-specify the names of the CDM and result schemas. That way,
+if we want to run the SQL on a different schema, we only need to change
+the parameter values; we do not have to change the SQL code. By also
+making use of translation functionality in <code>SqlRender</code>, we
+can make sure the SQL code can be run in many different
+environments.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ohdsi.github.io/SqlRender/">SqlRender</a></span><span class="op">)</span>
-<span class="va">sql</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ohdsi.github.io/SqlRender/reference/readSql.html">readSql</a></span><span class="op">(</span><span class="st">"cohortsOfInterest.sql"</span><span class="op">)</span>
-<span class="va">sql</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ohdsi.github.io/SqlRender/reference/render.html">render</a></span><span class="op">(</span><span class="va">sql</span>,
-              cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>, 
-              resultsDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span><span class="op">)</span>
-<span class="va">sql</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ohdsi.github.io/SqlRender/reference/translate.html">translate</a></span><span class="op">(</span><span class="va">sql</span>, targetDialect <span class="op">=</span> <span class="va">connectionDetails</span><span class="op">$</span><span class="va">dbms</span><span class="op">)</span>
-
-<span class="va">connection</span> <span class="op">&lt;-</span> <span class="fu">connect</span><span class="op">(</span><span class="va">connectionDetails</span><span class="op">)</span>
-<span class="fu">executeSql</span><span class="op">(</span><span class="va">connection</span>, <span class="va">sql</span><span class="op">)</span></code></pre></div>
-<p>In this code, we first read the SQL from the file into memory. In the next line, we replace the two parameter names with the actual values. We then translate the SQL into the dialect appropriate for the DBMS we already specified in the <code>connectionDetails</code>. Next, we connect to the server, and submit the rendered and translated SQL.</p>
-<p>If all went well, we now have a table with the cohorts of interest. We can see how many events per type:</p>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ohdsi.github.io/SqlRender/" class="external-link">SqlRender</a></span><span class="op">)</span></span>
+<span><span class="va">sql</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ohdsi.github.io/SqlRender/reference/readSql.html" class="external-link">readSql</a></span><span class="op">(</span><span class="st">"cohortsOfInterest.sql"</span><span class="op">)</span></span>
+<span><span class="va">sql</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ohdsi.github.io/SqlRender/reference/render.html" class="external-link">render</a></span><span class="op">(</span><span class="va">sql</span>,</span>
+<span>  cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>,</span>
+<span>  resultsDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">sql</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ohdsi.github.io/SqlRender/reference/translate.html" class="external-link">translate</a></span><span class="op">(</span><span class="va">sql</span>, targetDialect <span class="op">=</span> <span class="va">connectionDetails</span><span class="op">$</span><span class="va">dbms</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">connection</span> <span class="op">&lt;-</span> <span class="fu">connect</span><span class="op">(</span><span class="va">connectionDetails</span><span class="op">)</span></span>
+<span><span class="fu">executeSql</span><span class="op">(</span><span class="va">connection</span>, <span class="va">sql</span><span class="op">)</span></span></code></pre></div>
+<p>In this code, we first read the SQL from the file into memory. In the
+next line, we replace the two parameter names with the actual values. We
+then translate the SQL into the dialect appropriate for the DBMS we
+already specified in the <code>connectionDetails</code>. Next, we
+connect to the server, and submit the rendered and translated SQL.</p>
+<p>If all went well, we now have a table with the cohorts of interest.
+We can see how many events per type:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sql</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"SELECT cohort_definition_id, COUNT(*) AS count"</span>,
-             <span class="st">"FROM @resultsDatabaseSchema.cohorts_of_interest"</span>,
-             <span class="st">"GROUP BY cohort_definition_id"</span><span class="op">)</span>
-<span class="va">sql</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ohdsi.github.io/SqlRender/reference/render.html">render</a></span><span class="op">(</span><span class="va">sql</span>, resultsDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span><span class="op">)</span>
-<span class="va">sql</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ohdsi.github.io/SqlRender/reference/translate.html">translate</a></span><span class="op">(</span><span class="va">sql</span>, targetDialect <span class="op">=</span> <span class="va">connectionDetails</span><span class="op">$</span><span class="va">dbms</span><span class="op">)</span>
-
-<span class="fu">querySql</span><span class="op">(</span><span class="va">connection</span>, <span class="va">sql</span><span class="op">)</span></code></pre></div>
-<pre><code>##   cohort_concept_id  count
-## 1           1124300 240761
-## 2           1118084  47293</code></pre>
+<code class="sourceCode R"><span><span class="va">sql</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span></span>
+<span>  <span class="st">"SELECT cohort_definition_id, COUNT(*) AS count"</span>,</span>
+<span>  <span class="st">"FROM @resultsDatabaseSchema.cohorts_of_interest"</span>,</span>
+<span>  <span class="st">"GROUP BY cohort_definition_id"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">sql</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ohdsi.github.io/SqlRender/reference/render.html" class="external-link">render</a></span><span class="op">(</span><span class="va">sql</span>, resultsDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span><span class="op">)</span></span>
+<span><span class="va">sql</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ohdsi.github.io/SqlRender/reference/translate.html" class="external-link">translate</a></span><span class="op">(</span><span class="va">sql</span>, targetDialect <span class="op">=</span> <span class="va">connectionDetails</span><span class="op">$</span><span class="va">dbms</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">querySql</span><span class="op">(</span><span class="va">connection</span>, <span class="va">sql</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##   cohort_concept_id  count</span></span>
+<span><span class="co">## 1           1124300 240761</span></span>
+<span><span class="co">## 2           1118084  47293</span></span></code></pre>
 </div>
-<div id="creating-per-person-covariates-for-a-cohort-of-interest" class="section level2">
-<h2 class="hasAnchor">
-<a href="#creating-per-person-covariates-for-a-cohort-of-interest" class="anchor"></a>Creating per-person covariates for a cohort of interest</h2>
-<p>We can create per-person covariates for one of the cohorts of interest, for example using the default settings:</p>
+<div class="section level3">
+<h3 id="creating-per-person-covariates-for-a-cohort-of-interest">Creating per-person covariates for a cohort of interest<a class="anchor" aria-label="anchor" href="#creating-per-person-covariates-for-a-cohort-of-interest"></a>
+</h3>
+<p>We can create per-person covariates for one of the cohorts of
+interest, for example using the default settings:</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">covariateSettings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDefaultCovariateSettings.html">createDefaultCovariateSettings</a></span><span class="op">(</span><span class="op">)</span>
-
-<span class="va">covariateData</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span><span class="op">(</span>connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>,
-                                    cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>,
-                                    cohortDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span>,
-                                    cohortTable <span class="op">=</span> <span class="st">"cohorts_of_interest"</span>,
-                                    cohortId <span class="op">=</span> <span class="fl">1118084</span>,
-                                    rowIdField <span class="op">=</span> <span class="st">"subject_id"</span>,
-                                    covariateSettings <span class="op">=</span> <span class="va">covariateSettings</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">covariateData</span><span class="op">)</span></code></pre></div>
-<div id="per-person-covariate-output-format" class="section level3">
-<h3 class="hasAnchor">
-<a href="#per-person-covariate-output-format" class="anchor"></a>Per-person covariate output format</h3>
-<p>The main component of the <code>covariateData</code> object is <code>covariates</code>:</p>
+<code class="sourceCode R"><span><span class="va">covariateSettings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDefaultCovariateSettings.html">createDefaultCovariateSettings</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">covariateData</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span><span class="op">(</span></span>
+<span>  connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>,</span>
+<span>  cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>,</span>
+<span>  cohortDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span>,</span>
+<span>  cohortTable <span class="op">=</span> <span class="st">"cohorts_of_interest"</span>,</span>
+<span>  cohortId <span class="op">=</span> <span class="fl">1118084</span>,</span>
+<span>  rowIdField <span class="op">=</span> <span class="st">"subject_id"</span>,</span>
+<span>  covariateSettings <span class="op">=</span> <span class="va">covariateSettings</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">covariateData</span><span class="op">)</span></span></code></pre></div>
+<div class="section level4">
+<h4 id="per-person-covariate-output-format">Per-person covariate output format<a class="anchor" aria-label="anchor" href="#per-person-covariate-output-format"></a>
+</h4>
+<p>The main component of the <code>covariateData</code> object is
+<code>covariates</code>:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">covariateData</span><span class="op">$</span><span class="va">covariates</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">covariateData</span><span class="op">$</span><span class="va">covariates</span></span></code></pre></div>
 <p>The columns are defined as follows:</p>
 <ul>
 <li>
-<code>rowId</code> uniquely identifies a cohort entry. When calling <code>getDbCovariateData</code> we defined <code>rowIdField = "subject_id"</code>, so in this case the <code>rowId</code> is the same as the <code>subject_id</code> in the cohort table. In cases where a single subject can appear in the cohort more than once it is up to the user to create a field in the cohort table that uniquely identifies each cohort entry, and use that as <code>rowIdField</code>.</li>
+<code>rowId</code> uniquely identifies a cohort entry. When calling
+<code>getDbCovariateData</code> we defined
+<code>rowIdField = "subject_id"</code>, so in this case the
+<code>rowId</code> is the same as the <code>subject_id</code> in the
+cohort table. In cases where a single subject can appear in the cohort
+more than once it is up to the user to create a field in the cohort
+table that uniquely identifies each cohort entry, and use that as
+<code>rowIdField</code>.</li>
 <li>
-<code>covariateId</code> identifies the covariate, and definitions of covariates can be found in the <code>cohortData$covariateRef</code> object.</li>
+<code>covariateId</code> identifies the covariate, and definitions
+of covariates can be found in the <code>cohortData$covariateRef</code>
+object.</li>
 <li>
 <code>covariateValue</code> field provides the value.</li>
 </ul>
 </div>
-<div id="saving-the-data-to-file" class="section level3">
-<h3 class="hasAnchor">
-<a href="#saving-the-data-to-file" class="anchor"></a>Saving the data to file</h3>
-<p>Creating covariates can take considerable computing time, and it is probably a good idea to save them for future sessions. Because <code>covariateData</code> objects use <code>Andromeda</code>, we cannot use R’s regular save function. Instead, we’ll have to use the <code><a href="../reference/saveCovariateData.html">saveCovariateData()</a></code> function:</p>
+<div class="section level4">
+<h4 id="saving-the-data-to-file">Saving the data to file<a class="anchor" aria-label="anchor" href="#saving-the-data-to-file"></a>
+</h4>
+<p>Creating covariates can take considerable computing time, and it is
+probably a good idea to save them for future sessions. Because
+<code>covariateData</code> objects use <code>Andromeda</code>, we cannot
+use R’s regular save function. Instead, we’ll have to use the
+<code><a href="../reference/saveCovariateData.html">saveCovariateData()</a></code> function:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/saveCovariateData.html">saveCovariateData</a></span><span class="op">(</span><span class="va">covariateData</span>, <span class="st">"covariates"</span><span class="op">)</span></code></pre></div>
-<p>We can use the <code><a href="../reference/loadCovariateData.html">loadCovariateData()</a></code> function to load the data in a future session.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/saveCovariateData.html">saveCovariateData</a></span><span class="op">(</span><span class="va">covariateData</span>, <span class="st">"covariates"</span><span class="op">)</span></span></code></pre></div>
+<p>We can use the <code><a href="../reference/loadCovariateData.html">loadCovariateData()</a></code> function to load the
+data in a future session.</p>
 </div>
-<div id="removing-infrequent-covariates-normalizing-and-removing-redundancy" class="section level3">
-<h3 class="hasAnchor">
-<a href="#removing-infrequent-covariates-normalizing-and-removing-redundancy" class="anchor"></a>Removing infrequent covariates, normalizing, and removing redundancy</h3>
-<p>One reason for generating per-person covariates may be to use them in some form of machine learning. In that case it may be necessary to tidy the data before proceeding. The <code>tidyCovariateData</code> function can perform three tasks:</p>
+<div class="section level4">
+<h4 id="removing-infrequent-covariates-normalizing-and-removing-redundancy">Removing infrequent covariates, normalizing, and removing
+redundancy<a class="anchor" aria-label="anchor" href="#removing-infrequent-covariates-normalizing-and-removing-redundancy"></a>
+</h4>
+<p>One reason for generating per-person covariates may be to use them in
+some form of machine learning. In that case it may be necessary to tidy
+the data before proceeding. The <code>tidyCovariateData</code> function
+can perform three tasks:</p>
 <ol style="list-style-type: decimal">
 <li>
-<strong>Remove infrequent covariates</strong>: Oftentimes the majority of features have non-zero values for only one or a few subjects in the cohort. These features are unlikely to end up in any fitted model, but can increase the computational burden, so removing them could increase performance. By default, covariates appearing in less than .1% of the subjects are removed.</li>
+<strong>Remove infrequent covariates</strong>: Oftentimes the
+majority of features have non-zero values for only one or a few subjects
+in the cohort. These features are unlikely to end up in any fitted
+model, but can increase the computational burden, so removing them could
+increase performance. By default, covariates appearing in less than .1%
+of the subjects are removed.</li>
 <li>
-<strong>Normalization</strong>: Scales all covariate values to a value between 0 and 1 (by dividing by the max value for each covariate).</li>
+<strong>Normalization</strong>: Scales all covariate values to a
+value between 0 and 1 (by dividing by the max value for each
+covariate).</li>
 <li>
-<strong>Removal of redundancy</strong>: If every person in the cohort has the same value for a covariate (e.g. a cohort that is restricted to women will have the same gender covariate value for all) that covariate is redundant. Redundant covariates may pose a problem for some machine learning algorithms, for example causing a simple regression to no longer have a single solution. Similarly, groups of covariates may be redundant (e.g. every person will belong to at least one age group, making one group redundant as it can be defined as the absence of the other groups).</li>
+<strong>Removal of redundancy</strong>: If every person in the
+cohort has the same value for a covariate (e.g. a cohort that is
+restricted to women will have the same gender covariate value for all)
+that covariate is redundant. Redundant covariates may pose a problem for
+some machine learning algorithms, for example causing a simple
+regression to no longer have a single solution. Similarly, groups of
+covariates may be redundant (e.g. every person will belong to at least
+one age group, making one group redundant as it can be defined as the
+absence of the other groups).</li>
 </ol>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">tidyCovariates</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tidyCovariateData.html">tidyCovariateData</a></span><span class="op">(</span><span class="va">covariateData</span>,
-                                    minFraction <span class="op">=</span> <span class="fl">0.001</span>,
-                                    normalize <span class="op">=</span> <span class="cn">TRUE</span>,
-                                    removeRedundancy <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<p>If we want to know how many infrequent covariates were removed we can query the <code>metaData</code> object:</p>
+<code class="sourceCode R"><span><span class="va">tidyCovariates</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tidyCovariateData.html">tidyCovariateData</a></span><span class="op">(</span><span class="va">covariateData</span>,</span>
+<span>  minFraction <span class="op">=</span> <span class="fl">0.001</span>,</span>
+<span>  normalize <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  removeRedundancy <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>If we want to know how many infrequent covariates were removed we can
+query the <code>metaData</code> object:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">deletedCovariateIds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">tidyCovariates</span>, <span class="st">"metaData"</span><span class="op">)</span><span class="op">$</span><span class="va">deletedInfrequentCovariateIds</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">deletedCovariateIds</span><span class="op">)</span></code></pre></div>
-<p>Similarly, if we want to know which redundant covariates were removed we can also query the <code>metaData</code> object:</p>
+<code class="sourceCode R"><span><span class="va">deletedCovariateIds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">tidyCovariates</span>, <span class="st">"metaData"</span><span class="op">)</span><span class="op">$</span><span class="va">deletedInfrequentCovariateIds</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">deletedCovariateIds</span><span class="op">)</span></span></code></pre></div>
+<p>Similarly, if we want to know which redundant covariates were removed
+we can also query the <code>metaData</code> object:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">deletedCovariateIds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">tidyCovariates</span>, <span class="st">"metaData"</span><span class="op">)</span><span class="op">$</span><span class="va">deletedRedundantCovariateIds</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">deletedCovariateIds</span><span class="op">)</span></code></pre></div>
-<p>If we want to know what these numbers mean, we can use the <code>covariateRef</code> object that is part of any <code>covariateData</code> object. Remember that the covariate data is stored in an <code>Andromeda</code> object, so we should use the proper syntax for querying these objects (see the <code>Andromeda</code> package documentation):</p>
+<code class="sourceCode R"><span><span class="va">deletedCovariateIds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">tidyCovariates</span>, <span class="st">"metaData"</span><span class="op">)</span><span class="op">$</span><span class="va">deletedRedundantCovariateIds</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">deletedCovariateIds</span><span class="op">)</span></span></code></pre></div>
+<p>If we want to know what these numbers mean, we can use the
+<code>covariateRef</code> object that is part of any
+<code>covariateData</code> object. Remember that the covariate data is
+stored in an <code>Andromeda</code> object, so we should use the proper
+syntax for querying these objects (see the <code>Andromeda</code>
+package documentation):</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ohdsi.github.io/Andromeda/">Andromeda</a></span><span class="op">)</span>
-<span class="va">covariateData</span><span class="op">$</span><span class="va">covariateRef</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">covariateId</span> <span class="op">%in%</span> <span class="va">deletedCovariateIds</span>, <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">collect</span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/OHDSI/Andromeda" class="external-link">Andromeda</a></span><span class="op">)</span></span>
+<span><span class="va">covariateData</span><span class="op">$</span><span class="va">covariateRef</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">covariateId</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">deletedCovariateIds</span>, <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
-<div id="creating-aggregated-covariates-for-a-cohort-of-interest" class="section level2">
-<h2 class="hasAnchor">
-<a href="#creating-aggregated-covariates-for-a-cohort-of-interest" class="anchor"></a>Creating aggregated covariates for a cohort of interest</h2>
-<p>Often we do not need to have per-person covariates, but instead we are interested in aggregated statistics instead. For example, we may not need to know which persons are male, but would like to know what proportion of the cohort is male. We can aggregate per-person covariates:</p>
+<div class="section level3">
+<h3 id="creating-aggregated-covariates-for-a-cohort-of-interest">Creating aggregated covariates for a cohort of interest<a class="anchor" aria-label="anchor" href="#creating-aggregated-covariates-for-a-cohort-of-interest"></a>
+</h3>
+<p>Often we do not need to have per-person covariates, but instead we
+are interested in aggregated statistics instead. For example, we may not
+need to know which persons are male, but would like to know what
+proportion of the cohort is male. We can aggregate per-person
+covariates:</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">covariateData2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/aggregateCovariates.html">aggregateCovariates</a></span><span class="op">(</span><span class="va">covariateData</span><span class="op">)</span></code></pre></div>
-<p>Of course, if all we wanted was aggregated statistics it would have been more efficient to aggregate them during creation:</p>
+<code class="sourceCode R"><span><span class="va">covariateData2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/aggregateCovariates.html">aggregateCovariates</a></span><span class="op">(</span><span class="va">covariateData</span><span class="op">)</span></span></code></pre></div>
+<p>Of course, if all we wanted was aggregated statistics it would have
+been more efficient to aggregate them during creation:</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">covariateSettings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDefaultCovariateSettings.html">createDefaultCovariateSettings</a></span><span class="op">(</span><span class="op">)</span>
-
-<span class="va">covariateData2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span><span class="op">(</span>connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>,
-                                     cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>,
-                                     cohortDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span>,
-                                     cohortTable <span class="op">=</span> <span class="st">"cohorts_of_interest"</span>,
-                                     cohortId <span class="op">=</span> <span class="fl">1118084</span>,
-                                     covariateSettings <span class="op">=</span> <span class="va">covariateSettings</span>,
-                                     aggregated <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">covariateData2</span><span class="op">)</span></code></pre></div>
-<p>Note that we specified <code>aggregated = TRUE</code>. Also, we are no longer required to define a <code>rowIdField</code> because we will no longer receive per-person data.</p>
-<div id="aggregated-covariate-output-format" class="section level3">
-<h3 class="hasAnchor">
-<a href="#aggregated-covariate-output-format" class="anchor"></a>Aggregated covariate output format</h3>
-<p>The two main components of the aggregated <code>covariateData</code> object are <code>covariates</code> and <code>covariatesContinuous</code>, for binary and continuous covariates respectively:</p>
+<code class="sourceCode R"><span><span class="va">covariateSettings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDefaultCovariateSettings.html">createDefaultCovariateSettings</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">covariateData2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span><span class="op">(</span></span>
+<span>  connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>,</span>
+<span>  cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>,</span>
+<span>  cohortDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span>,</span>
+<span>  cohortTable <span class="op">=</span> <span class="st">"cohorts_of_interest"</span>,</span>
+<span>  cohortId <span class="op">=</span> <span class="fl">1118084</span>,</span>
+<span>  covariateSettings <span class="op">=</span> <span class="va">covariateSettings</span>,</span>
+<span>  aggregated <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">covariateData2</span><span class="op">)</span></span></code></pre></div>
+<p>Note that we specified <code>aggregated = TRUE</code>. Also, we are
+no longer required to define a <code>rowIdField</code> because we will
+no longer receive per-person data.</p>
+<div class="section level4">
+<h4 id="aggregated-covariate-output-format">Aggregated covariate output format<a class="anchor" aria-label="anchor" href="#aggregated-covariate-output-format"></a>
+</h4>
+<p>The two main components of the aggregated <code>covariateData</code>
+object are <code>covariates</code> and
+<code>covariatesContinuous</code>, for binary and continuous covariates
+respectively:</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">covariateData2</span><span class="op">$</span><span class="va">covariates</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">covariateData2</span><span class="op">$</span><span class="va">covariates</span></span></code></pre></div>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">covariateData2</span><span class="op">$</span><span class="va">covariatesContinuous</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">covariateData2</span><span class="op">$</span><span class="va">covariatesContinuous</span></span></code></pre></div>
 <p>The columns of <code>covariates</code> are defined as follows:</p>
 <ul>
 <li>
-<code>covariateId</code> identifies the covariate, and definitions of covariates can be found in the <code>cohortData$covariateRef</code> object.</li>
+<code>covariateId</code> identifies the covariate, and definitions
+of covariates can be found in the
+<code>covariateData$covariateRef</code> object.</li>
 <li>
-<code>sumValue</code> is the sum of the covariate values. Because these are binary features, this is equivalent to the number of people that have the covariate with a value of 1.</li>
+<code>sumValue</code> is the sum of the covariate values. Because
+these are binary features, this is equivalent to the number of people
+that have the covariate with a value of 1.</li>
 <li>
-<code>averageValue</code> is the average covariate value. Because these are binary features, this is equivalent to the proportion of people that have the covariate with a value of 1.</li>
+<code>averageValue</code> is the average covariate value. Because
+these are binary features, this is equivalent to the proportion of
+people that have the covariate with a value of 1.</li>
 </ul>
-<p>The columns of <code>covariatesContinuous</code> are defined as follows:</p>
+<p>The columns of <code>covariatesContinuous</code> are defined as
+follows:</p>
 <ul>
 <li>
-<code>covariateId</code> identifies the covariate, and definitions of covariates can be found in the <code>cohortData$covariateRef</code> object.</li>
+<code>covariateId</code> identifies the covariate, and definitions
+of covariates can be found in the <code>cohortData$covariateRef</code>
+object.</li>
 <li>
-<code>countValue</code> is the number of people that have a value (for continuous variables).</li>
+<code>countValue</code> is the number of people that have a value
+(for continuous variables).</li>
 <li>
-<code>minValue</code>, <code>maxValue</code>, <code>averageValue</code>, <code>standardDeviation</code>, <code>medianValue</code>, <code>p10Value</code>, <code>p25Value</code>, <code>p75Value</code>, and <code>p90Value</code> all inform on the distribution of covariate values. Note that for some covariates (such as the Charlson comorbidity index) a value of 0 is interpreted as the value 0, while for other covariates (Such as blood pressure) 0 is interpreted as missing, and the distribution statistics are only computed over non-missing values. To learn which continuous covariates fall into which category one can consult the <code>missingMeansZero</code> field in the <code>covariateData$analysisRef</code> object.</li>
+<code>minValue</code>, <code>maxValue</code>,
+<code>averageValue</code>, <code>standardDeviation</code>,
+<code>medianValue</code>, <code>p10Value</code>, <code>p25Value</code>,
+<code>p75Value</code>, and <code>p90Value</code> all inform on the
+distribution of covariate values. Note that for some covariates (such as
+the Charlson comorbidity index) a value of 0 is interpreted as the value
+0, while for other covariates (Such as blood pressure) 0 is interpreted
+as missing, and the distribution statistics are only computed over
+non-missing values. To learn which continuous covariates fall into which
+category one can consult the <code>missingMeansZero</code> field in the
+<code>covariateData$analysisRef</code> object.</li>
 </ul>
 </div>
 </div>
-<div id="creating-a-table-1" class="section level2">
-<h2 class="hasAnchor">
-<a href="#creating-a-table-1" class="anchor"></a>Creating a table 1</h2>
-<p>One task supported by the <code>FeatureExtraction</code> package is creating a table of overall study population characteristics that can be include in a paper. Since this is typically the first table in a paper we refer to such a table as ‘table 1’. A default table 1 is available in the <code>FeatureExtraction</code> package:</p>
+<div class="section level3">
+<h3 id="creating-a-table-1">Creating a table 1<a class="anchor" aria-label="anchor" href="#creating-a-table-1"></a>
+</h3>
+<p>One task supported by the <code>FeatureExtraction</code> package is
+creating a table of overall study population characteristics that can be
+include in a paper. Since this is typically the first table in a paper
+we refer to such a table as ‘table 1’. A default table 1 is available in
+the <code>FeatureExtraction</code> package:</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createTable1.html">createTable1</a></span><span class="op">(</span><span class="va">covariateData2</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">result</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span>, right <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
-<p>Where applicable, these characteristics are drawn from analyses pertaining the ‘long-term’ windows, so concepts observed in the 365 days before up to and included the cohort start date.</p>
-<p>The <code>createTable1</code> function requires a simple specification of what variables to include in the table. The default specifications included in the package can be reviewed by calling the <code>getDefaultTable1Specifications</code> function. The specification reference analysis IDs and covariate IDs, and in the default specification these IDs refer to those in the default covariate settings. It is possible to create custom table 1 specifications and use those instead.</p>
-<p>Here we based table 1 on a <code>covariateData</code> object containing all default covariates, even though only a small fraction of covariates are used in the table. If we only want to extract those covariates needed for the table, we can use the <code>createTable1CovariateSettings</code> function:</p>
+<code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createTable1.html">createTable1</a></span><span class="op">(</span></span>
+<span>  covariateData1 <span class="op">=</span> <span class="va">covariateData2</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">result</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span>, right <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<p>Where applicable, these characteristics are drawn from analyses
+pertaining the ‘long-term’ windows, so concepts observed in the 365 days
+before up to and included the cohort start date.</p>
+<p>The <code>createTable1</code> function requires a simple
+specification of what variables to include in the table. The default
+specifications included in the package can be reviewed by calling the
+<code>getDefaultTable1Specifications</code> function. The specification
+reference analysis IDs and covariate IDs, and in the default
+specification these IDs refer to those in the default covariate
+settings. It is possible to create custom table 1 specifications and use
+those instead.</p>
+<p>Here we based table 1 on a <code>covariateData</code> object
+containing all default covariates, even though only a small fraction of
+covariates are used in the table. If we only want to extract those
+covariates needed for the table, we can use the
+<code>createTable1CovariateSettings</code> function:</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">covariateSettings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createTable1CovariateSettings.html">createTable1CovariateSettings</a></span><span class="op">(</span><span class="op">)</span>
-
-<span class="va">covariateData2b</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span><span class="op">(</span>connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>,
-                                      cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>,
-                                      cohortDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span>,
-                                      cohortTable <span class="op">=</span> <span class="st">"cohorts_of_interest"</span>,
-                                      cohortId <span class="op">=</span> <span class="fl">1118084</span>,
-                                      covariateSettings <span class="op">=</span> <span class="va">covariateSettings</span>,
-                                      aggregated <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">covariateData2b</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">covariateSettings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createTable1CovariateSettings.html">createTable1CovariateSettings</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">covariateData2b</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span><span class="op">(</span></span>
+<span>  connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>,</span>
+<span>  cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>,</span>
+<span>  cohortDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span>,</span>
+<span>  cohortTable <span class="op">=</span> <span class="st">"cohorts_of_interest"</span>,</span>
+<span>  cohortId <span class="op">=</span> <span class="fl">1118084</span>,</span>
+<span>  covariateSettings <span class="op">=</span> <span class="va">covariateSettings</span>,</span>
+<span>  aggregated <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">covariateData2b</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
-<div id="comparing-two-cohorts" class="section level1">
-<h1 class="hasAnchor">
-<a href="#comparing-two-cohorts" class="anchor"></a>Comparing two cohorts</h1>
-<p>Another task supported by the <code>FeatureExtraction</code> package is comparing two cohorts of interest. Suppose we want to compare two cohorts only on the variables included in the default table 1:</p>
+<div class="section level2">
+<h2 id="comparing-two-cohorts">Comparing two cohorts<a class="anchor" aria-label="anchor" href="#comparing-two-cohorts"></a>
+</h2>
+<p>Another task supported by the <code>FeatureExtraction</code> package
+is comparing two cohorts of interest. Suppose we want to compare two
+cohorts only on the variables included in the default table 1:</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createTable1CovariateSettings.html">createTable1CovariateSettings</a></span><span class="op">(</span>excludedCovariateConceptIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1118084</span>, <span class="fl">1124300</span><span class="op">)</span>,
-                                          addDescendantsToExclude <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="va">covCelecoxib</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span><span class="op">(</span>connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>,
-                                   cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>,
-                                   cohortDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span>,
-                                   cohortTable <span class="op">=</span> <span class="st">"cohorts_of_interest"</span>,
-                                   cohortId <span class="op">=</span> <span class="fl">1118084</span>,
-                                   covariateSettings <span class="op">=</span> <span class="va">settings</span>,
-                                   aggregated <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="va">covDiclofenac</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span><span class="op">(</span>connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>,
-                                    cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>,
-                                    cohortDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span>,
-                                    cohortTable <span class="op">=</span> <span class="st">"cohorts_of_interest"</span>,
-                                    cohortId <span class="op">=</span> <span class="fl">1124300</span>,
-                                    covariateSettings <span class="op">=</span> <span class="va">settings</span>,
-                                    aggregated <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="va">std</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/computeStandardizedDifference.html">computeStandardizedDifference</a></span><span class="op">(</span><span class="va">covCelecoxib</span>, <span class="va">covDiclofenac</span><span class="op">)</span></code></pre></div>
-<p>In this example we have chosen to exclude any covariates derived from the two concepts that were used to define the two cohorts: celecoxib (1118084), and diclofenac (1124300). We compute the standardized difference between the remaining covariates.</p>
+<code class="sourceCode R"><span><span class="va">settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createTable1CovariateSettings.html">createTable1CovariateSettings</a></span><span class="op">(</span></span>
+<span>  excludedCovariateConceptIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1118084</span>, <span class="fl">1124300</span><span class="op">)</span>,</span>
+<span>  addDescendantsToExclude <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">covCelecoxib</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span><span class="op">(</span></span>
+<span>  connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>,</span>
+<span>  cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>,</span>
+<span>  cohortDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span>,</span>
+<span>  cohortTable <span class="op">=</span> <span class="st">"cohorts_of_interest"</span>,</span>
+<span>  cohortId <span class="op">=</span> <span class="fl">1118084</span>,</span>
+<span>  covariateSettings <span class="op">=</span> <span class="va">settings</span>,</span>
+<span>  aggregated <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">covDiclofenac</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span><span class="op">(</span></span>
+<span>  connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>,</span>
+<span>  cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>,</span>
+<span>  cohortDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span>,</span>
+<span>  cohortTable <span class="op">=</span> <span class="st">"cohorts_of_interest"</span>,</span>
+<span>  cohortId <span class="op">=</span> <span class="fl">1124300</span>,</span>
+<span>  covariateSettings <span class="op">=</span> <span class="va">settings</span>,</span>
+<span>  aggregated <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">std</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/computeStandardizedDifference.html">computeStandardizedDifference</a></span><span class="op">(</span><span class="va">covCelecoxib</span>, <span class="va">covDiclofenac</span><span class="op">)</span></span></code></pre></div>
+<p>In this example we have chosen to exclude any covariates derived from
+the two concepts that were used to define the two cohorts: celecoxib
+(1118084), and diclofenac (1124300). We compute the standardized
+difference between the remaining covariates.</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">std</span><span class="op">)</span></code></pre></div>
-<p>The <code>stdDiff</code> column contains the standardized difference. By default the data is ranked in descending order of the absolute value of the standardized difference, showing the covariate with the largest difference first.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">std</span><span class="op">)</span></span></code></pre></div>
+<p>The <code>stdDiff</code> column contains the standardized difference.
+By default the data is ranked in descending order of the absolute value
+of the standardized difference, showing the covariate with the largest
+difference first.</p>
 <p>We can also show the comparison as a standard table 1:</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createTable1.html">createTable1</a></span><span class="op">(</span><span class="va">covCelecoxib</span>, <span class="va">covDiclofenac</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">result</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span>, right <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createTable1.html">createTable1</a></span><span class="op">(</span></span>
+<span>  covariateData1 <span class="op">=</span> <span class="va">covCelecoxib</span>,</span>
+<span>  covariateData2 <span class="op">=</span> <span class="va">covDiclofenac</span>,</span>
+<span>  output <span class="op">=</span> <span class="st">"two columns"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">result</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span>, right <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </div>
   </div>
 
@@ -552,11 +806,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Martijn Schuemie, Marc Suchard, Patrick Ryan, Jenna Reps, Anthony Sena.</p>
+  <p></p>
+<p>Developed by Martijn Schuemie, Marc Suchard, Patrick Ryan, Jenna Reps, Anthony Sena, Ger Inberg.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -564,6 +820,8 @@
 
   
 
+
+  
 
   </body>
 </html>

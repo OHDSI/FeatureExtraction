@@ -20,7 +20,7 @@ vignette: >
 ```{r set-options,echo=FALSE,message=FALSE,warning=FALSE,eval=TRUE}
 options(width = 200)
 library(FeatureExtraction)
-vignetteFolder <- "s:/temp/vignetteFeatureExtraction"
+vignetteFolder <- "c:/temp/vignetteFeatureExtraction"
 ```
 \fontsize{10}{12}
 \selectfont
@@ -60,8 +60,10 @@ This will create a wide array of features, ranging from demographics, through co
 Note that we could specify a set of concepts that should not be used to create covariates, for example:
 
 ```{r}
-settings <- createDefaultCovariateSettings(excludedCovariateConceptIds = 1124300, 
-                                           addDescendantsToExclude = TRUE)
+settings <- createDefaultCovariateSettings(
+  excludedCovariateConceptIds = 1124300,
+  addDescendantsToExclude = TRUE
+)
 ```
 
 This will create the default set of covariates, except those derived from concept 1124300 (the ingredient diclofenac) and any of its descendants (ie. all drugs containing the ingredient diclofenac).
@@ -71,9 +73,11 @@ This will create the default set of covariates, except those derived from concep
 The function `createCovariateSettings` allow the user to choose from a large set of predefined covariates. Type `?createCovariateSettings` to get an overview of the available options. For example:
 
 ```{r}
-settings <- createCovariateSettings(useDemographicsGender = TRUE,
-                                    useDemographicsAgeGroup = TRUE,
-                                    useConditionOccurrenceAnyTimePrior = TRUE)
+settings <- createCovariateSettings(
+  useDemographicsGender = TRUE,
+  useDemographicsAgeGroup = TRUE,
+  useConditionOccurrenceAnyTimePrior = TRUE
+)
 ```
 This will create binary covariates for gender, age (in 5 year age groups), and each concept observed in the `condition_occurrence` table any time prior to (and including) the cohort start date.
 
@@ -86,28 +90,32 @@ Many of the prespecified analyses refer to a short, medium, or long term time wi
 However, the user can change these values. For example:
 
 ```{r}
-settings <- createCovariateSettings(useConditionEraLongTerm = TRUE,
-                                    useConditionEraShortTerm = TRUE,
-                                    useDrugEraLongTerm = TRUE,
-                                    useDrugEraShortTerm = TRUE,
-                                    longTermStartDays = -180,
-                                    shortTermStartDays = -14,
-                                    endDays = -1)
+settings <- createCovariateSettings(
+  useConditionEraLongTerm = TRUE,
+  useConditionEraShortTerm = TRUE,
+  useDrugEraLongTerm = TRUE,
+  useDrugEraShortTerm = TRUE,
+  longTermStartDays = -180,
+  shortTermStartDays = -14,
+  endDays = -1
+)
 ```
 
 This redefines the long term window as 180 days prior up to (but not including) the cohort start date, and redefines the short term window as 14 days prior up to (but not including) the cohort start date.
 
 Again, we can also specify which concept IDs should or should not be used to construct covariates:
 ```{r}
-settings <- createCovariateSettings(useConditionEraLongTerm = TRUE,
-                                    useConditionEraShortTerm = TRUE,
-                                    useDrugEraLongTerm = TRUE,
-                                    useDrugEraShortTerm = TRUE,
-                                    longTermStartDays = -180,
-                                    shortTermStartDays = -14,
-                                    endDays = -1,
-                                    excludedCovariateConceptIds = 1124300, 
-                                    addDescendantsToExclude = TRUE)
+settings <- createCovariateSettings(
+  useConditionEraLongTerm = TRUE,
+  useConditionEraShortTerm = TRUE,
+  useDrugEraLongTerm = TRUE,
+  useDrugEraShortTerm = TRUE,
+  longTermStartDays = -180,
+  shortTermStartDays = -14,
+  endDays = -1,
+  excludedCovariateConceptIds = 1124300,
+  addDescendantsToExclude = TRUE
+)
 ```
 
 ## Creating a set of custom covariates
@@ -123,16 +131,20 @@ settings2$analyses[[1]]
 One can create a detailed analysis settings object from scratch, and use it to create a detailed settings object:
 
 ```{r}
-analysisDetails <- createAnalysisDetails(analysisId = 1,
-                                         sqlFileName = "DemographicsGender.sql",
-                                         parameters = list(analysisId = 1,
-                                                           analysisName = "Gender",
-                                                           domainId = "Demographics"),
-                                         includedCovariateConceptIds = c(),
-                                         addDescendantsToInclude = FALSE,
-                                         excludedCovariateConceptIds = c(),
-                                         addDescendantsToExclude = FALSE,
-                                         includedCovariateIds = c())
+analysisDetails <- createAnalysisDetails(
+  analysisId = 1,
+  sqlFileName = "DemographicsGender.sql",
+  parameters = list(
+    analysisId = 1,
+    analysisName = "Gender",
+    domainId = "Demographics"
+  ),
+  includedCovariateConceptIds = c(),
+  addDescendantsToInclude = FALSE,
+  excludedCovariateConceptIds = c(),
+  addDescendantsToExclude = FALSE,
+  includedCovariateIds = c()
+)
 
 settings <- createDetailedCovariateSettings(list(analysisDetails))
 ```
@@ -150,17 +162,21 @@ settings <- createDefaultTemporalCovariateSettings()
 Or, we can choose from a set of prespecified temporal covariates:
 
 ```{r}
-settings <- createTemporalCovariateSettings(useConditionOccurrence = TRUE,
-                                            useMeasurementValue = TRUE)
+settings <- createTemporalCovariateSettings(
+  useConditionOccurrence = TRUE,
+  useMeasurementValue = TRUE
+)
 ```
 
 In this case we've chosen to create binary covariates for each concept in the `condition_occurrence` table, and continuous covariates for each measurement - unit combination in the `measurement` table in the CDM. By default, temporal covariates are created for each day separately in the 365 days before (but not including) the cohort start date. Different time windows can also be specified, for example creating 7 day intervals instead:
 
 ```{r}
-settings <- createTemporalCovariateSettings(useConditionOccurrence = TRUE,
-                                            useMeasurementValue = TRUE,
-                                            temporalStartDays = seq(-364, -7, by = 7),
-                                            temporalEndDays = seq(-358, -1, by = 7))
+settings <- createTemporalCovariateSettings(
+  useConditionOccurrence = TRUE,
+  useMeasurementValue = TRUE,
+  temporalStartDays = seq(-364, -7, by = 7),
+  temporalEndDays = seq(-358, -1, by = 7)
+)
 ```
 
 Each time window includes the specified start and end day.
@@ -168,18 +184,22 @@ Each time window includes the specified start and end day.
 Similar to ordinary covariates, **advanced users** can also define custom analyses:
 
 ```{r}
-analysisDetails <- createAnalysisDetails(analysisId = 1,
-                                         sqlFileName = "MeasurementValue.sql",
-                                         parameters = list(analysisId = 1,
-                                                           analysisName = "MeasurementValue",
-                                                           domainId = "Measurement"),
-                                         includedCovariateConceptIds = c(),
-                                         addDescendantsToInclude = FALSE,
-                                         excludedCovariateConceptIds = c(),
-                                         addDescendantsToExclude = FALSE,
-                                         includedCovariateIds = c())
+analysisDetails <- createAnalysisDetails(
+  analysisId = 1,
+  sqlFileName = "MeasurementValue.sql",
+  parameters = list(
+    analysisId = 1,
+    analysisName = "MeasurementValue",
+    domainId = "Measurement"
+  ),
+  includedCovariateConceptIds = c(),
+  addDescendantsToInclude = FALSE,
+  excludedCovariateConceptIds = c(),
+  addDescendantsToExclude = FALSE,
+  includedCovariateIds = c()
+)
 
-settings <-  createDetailedTemporalCovariateSettings(list(analysisDetails))
+settings <- createDetailedTemporalCovariateSettings(list(analysisDetails))
 ```
 
 # Constructing covariates for a cohort of interest
@@ -191,16 +211,18 @@ Here we will walk through an example, creating covariates for two cohorts of int
 We need to tell R how to connect to the server where the data are. `CohortMethod` uses the `DatabaseConnector` package, which provides the `createConnectionDetails` function. Type `?createConnectionDetails` for the specific settings required for the various database management systems (DBMS). For example, one might connect to a PostgreSQL database using this code:
 
 ```{r tidy=FALSE,eval=FALSE}
-connectionDetails <- createConnectionDetails(dbms = "postgresql", 
-                                             server = "localhost/ohdsi", 
-                                             user = "joe", 
-                                             password = "supersecret")
+connectionDetails <- createConnectionDetails(
+  dbms = "postgresql",
+  server = "localhost/ohdsi",
+  user = "joe",
+  password = "supersecret"
+)
 
 cdmDatabaseSchema <- "my_cdm_data"
 resultsDatabaseSchema <- "my_results"
 ```
 
-The last two lines define the `cdmDatabaseSchema` and `resultSchema` variables. We'll use these later to tell R where the data in CDM format live, and where we want to write intermediate and result tables. Note that for Microsoft SQL Server, databaseschemas need to specify both the database and the schema, so for example `cdmDatabaseSchema <- "my_cdm_data.dbo"`.
+The last two lines define the `cdmDatabaseSchema` and `resultSchema` variables. We'll use these later to tell R where the data in CDM format live, and where we want to write intermediate and result tables. Note that for Microsoft SQL Server, database schemas need to specify both the database and the schema, so for example `cdmDatabaseSchema <- "my_cdm_data.dbo"`.
 
 
 ## Creating a cohort of interest
@@ -241,8 +263,9 @@ This is parameterized SQL which can be used by the `SqlRender` package. We use p
 library(SqlRender)
 sql <- readSql("cohortsOfInterest.sql")
 sql <- render(sql,
-              cdmDatabaseSchema = cdmDatabaseSchema, 
-              resultsDatabaseSchema = resultsDatabaseSchema)
+  cdmDatabaseSchema = cdmDatabaseSchema,
+  resultsDatabaseSchema = resultsDatabaseSchema
+)
 sql <- translate(sql, targetDialect = connectionDetails$dbms)
 
 connection <- connect(connectionDetails)
@@ -254,9 +277,11 @@ In this code, we first read the SQL from the file into memory. In the next line,
 If all went well, we now have a table with the cohorts of interest. We can see how many events per type:
 
 ```{r tidy=FALSE,eval=FALSE}
-sql <- paste("SELECT cohort_definition_id, COUNT(*) AS count",
-             "FROM @resultsDatabaseSchema.cohorts_of_interest",
-             "GROUP BY cohort_definition_id")
+sql <- paste(
+  "SELECT cohort_definition_id, COUNT(*) AS count",
+  "FROM @resultsDatabaseSchema.cohorts_of_interest",
+  "GROUP BY cohort_definition_id"
+)
 sql <- render(sql, resultsDatabaseSchema = resultsDatabaseSchema)
 sql <- translate(sql, targetDialect = connectionDetails$dbms)
 
@@ -273,13 +298,15 @@ We can create per-person covariates for one of the cohorts of interest, for exam
 ```{r eval=FALSE}
 covariateSettings <- createDefaultCovariateSettings()
 
-covariateData <- getDbCovariateData(connectionDetails = connectionDetails,
-                                    cdmDatabaseSchema = cdmDatabaseSchema,
-                                    cohortDatabaseSchema = resultsDatabaseSchema,
-                                    cohortTable = "cohorts_of_interest",
-                                    cohortId = 1118084,
-                                    rowIdField = "subject_id",
-                                    covariateSettings = covariateSettings)
+covariateData <- getDbCovariateData(
+  connectionDetails = connectionDetails,
+  cdmDatabaseSchema = cdmDatabaseSchema,
+  cohortDatabaseSchema = resultsDatabaseSchema,
+  cohortTable = "cohorts_of_interest",
+  cohortId = 1118084,
+  rowIdField = "subject_id",
+  covariateSettings = covariateSettings
+)
 
 summary(covariateData)
 ```
@@ -329,9 +356,10 @@ One reason for generating per-person covariates may be to use them in some form 
 
 ```{r eval=FALSE}
 tidyCovariates <- tidyCovariateData(covariateData,
-                                    minFraction = 0.001,
-                                    normalize = TRUE,
-                                    removeRedundancy = TRUE)
+  minFraction = 0.001,
+  normalize = TRUE,
+  removeRedundancy = TRUE
+)
 ```
 
 If we want to know how many infrequent covariates were removed we can query the `metaData` object:
@@ -352,7 +380,7 @@ deletedCovariateIds <- attr(tidyCovariates, "metaData")$deletedRedundantCovariat
 head(deletedCovariateIds)
 ```
 ```{r echo=FALSE,message=FALSE}
-if (file.exists(file.path(vignetteFolder, "deletedRedundantCovariateIds.rds"))){
+if (file.exists(file.path(vignetteFolder, "deletedRedundantCovariateIds.rds"))) {
   deletedCovariateIds <- readRDS(file.path(vignetteFolder, "deletedRedundantCovariateIds.rds"))
   head(deletedCovariateIds)
 }
@@ -371,7 +399,7 @@ library(Andromeda)
 if (file.exists(file.path(vignetteFolder, "deletedRedundantCovariateIds.rds"))) {
   truncRight <- function(x, n) {
     nc <- nchar(x)
-    x[nc > (n - 3)] <- paste('...',substr(x[nc > (n - 3)], nc[nc > (n - 3)] - n + 1, nc[nc > (n - 3)]), sep = "")
+    x[nc > (n - 3)] <- paste("...", substr(x[nc > (n - 3)], nc[nc > (n - 3)] - n + 1, nc[nc > (n - 3)]), sep = "")
     x
   }
   cr <- covariateData$covariateRef %>%
@@ -395,13 +423,15 @@ Of course, if all we wanted was aggregated statistics it would have been more ef
 ```{r eval=FALSE}
 covariateSettings <- createDefaultCovariateSettings()
 
-covariateData2 <- getDbCovariateData(connectionDetails = connectionDetails,
-                                     cdmDatabaseSchema = cdmDatabaseSchema,
-                                     cohortDatabaseSchema = resultsDatabaseSchema,
-                                     cohortTable = "cohorts_of_interest",
-                                     cohortId = 1118084,
-                                     covariateSettings = covariateSettings,
-                                     aggregated = TRUE)
+covariateData2 <- getDbCovariateData(
+  connectionDetails = connectionDetails,
+  cdmDatabaseSchema = cdmDatabaseSchema,
+  cohortDatabaseSchema = resultsDatabaseSchema,
+  cohortTable = "cohorts_of_interest",
+  cohortId = 1118084,
+  covariateSettings = covariateSettings,
+  aggregated = TRUE
+)
 summary(covariateData2)
 ```
 ```{r echo=FALSE,message=FALSE}
@@ -433,7 +463,7 @@ if (file.exists(file.path(vignetteFolder, "aggregatedCovariates"))) {
 ```
 The columns of `covariates` are defined as follows:
 
-- `covariateId` identifies the covariate, and definitions of covariates can be found in the `cohortData$covariateRef` object. 
+- `covariateId` identifies the covariate, and definitions of covariates can be found in the `covariateData$covariateRef` object. 
 - `sumValue` is the sum of the covariate values. Because these are binary features, this is equivalent to the number of people that have the covariate with a value of 1.
 - `averageValue` is the average covariate value.  Because these are binary features, this is equivalent to the proportion of people that have the covariate with a value of 1.
 
@@ -448,14 +478,19 @@ The columns of `covariatesContinuous` are defined as follows:
 
 One task supported by the `FeatureExtraction` package is creating a table of overall study population characteristics that can be include in a paper. Since this is typically the first table in a paper we refer to such a table as 'table 1'. A default table 1 is available in the `FeatureExtraction` package:
 ```{r eval=FALSE}
-result <- createTable1(covariateData2)
+result <- createTable1(
+  covariateData1 = covariateData2
+)
 print(result, row.names = FALSE, right = FALSE)
 ```
 \fontsize{6}{6}
 \selectfont
 ```{r comment=NA,echo=FALSE,message=FALSE}
 if (file.exists(file.path(vignetteFolder, "aggregatedCovariates"))) {
-  result <- createTable1(covariateData2)
+  result <- createTable1(
+    covariateData1 = covariateData2,
+    output = "one column"
+  )
   print(result, row.names = FALSE, right = FALSE)
 }
 ```
@@ -471,13 +506,15 @@ Here we based table 1 on a `covariateData` object containing all default covaria
 ```{r eval=FALSE}
 covariateSettings <- createTable1CovariateSettings()
 
-covariateData2b <- getDbCovariateData(connectionDetails = connectionDetails,
-                                      cdmDatabaseSchema = cdmDatabaseSchema,
-                                      cohortDatabaseSchema = resultsDatabaseSchema,
-                                      cohortTable = "cohorts_of_interest",
-                                      cohortId = 1118084,
-                                      covariateSettings = covariateSettings,
-                                      aggregated = TRUE)
+covariateData2b <- getDbCovariateData(
+  connectionDetails = connectionDetails,
+  cdmDatabaseSchema = cdmDatabaseSchema,
+  cohortDatabaseSchema = resultsDatabaseSchema,
+  cohortTable = "cohorts_of_interest",
+  cohortId = 1118084,
+  covariateSettings = covariateSettings,
+  aggregated = TRUE
+)
 summary(covariateData2b)
 ```
 ```{r echo=FALSE,message=FALSE}
@@ -492,24 +529,30 @@ if (file.exists(file.path(vignetteFolder, "table1Covariates"))) {
 Another task supported by the `FeatureExtraction` package is comparing two cohorts of interest. Suppose we want to compare two cohorts only on the variables included in the default table 1:
 
 ```{r eval=FALSE}
-settings <- createTable1CovariateSettings(excludedCovariateConceptIds = c(1118084, 1124300),
-                                          addDescendantsToExclude = TRUE)
+settings <- createTable1CovariateSettings(
+  excludedCovariateConceptIds = c(1118084, 1124300),
+  addDescendantsToExclude = TRUE
+)
 
-covCelecoxib <- getDbCovariateData(connectionDetails = connectionDetails,
-                                   cdmDatabaseSchema = cdmDatabaseSchema,
-                                   cohortDatabaseSchema = resultsDatabaseSchema,
-                                   cohortTable = "cohorts_of_interest",
-                                   cohortId = 1118084,
-                                   covariateSettings = settings,
-                                   aggregated = TRUE)
+covCelecoxib <- getDbCovariateData(
+  connectionDetails = connectionDetails,
+  cdmDatabaseSchema = cdmDatabaseSchema,
+  cohortDatabaseSchema = resultsDatabaseSchema,
+  cohortTable = "cohorts_of_interest",
+  cohortId = 1118084,
+  covariateSettings = settings,
+  aggregated = TRUE
+)
 
-covDiclofenac <- getDbCovariateData(connectionDetails = connectionDetails,
-                                    cdmDatabaseSchema = cdmDatabaseSchema,
-                                    cohortDatabaseSchema = resultsDatabaseSchema,
-                                    cohortTable = "cohorts_of_interest",
-                                    cohortId = 1124300,
-                                    covariateSettings = settings,
-                                    aggregated = TRUE)
+covDiclofenac <- getDbCovariateData(
+  connectionDetails = connectionDetails,
+  cdmDatabaseSchema = cdmDatabaseSchema,
+  cohortDatabaseSchema = resultsDatabaseSchema,
+  cohortTable = "cohorts_of_interest",
+  cohortId = 1124300,
+  covariateSettings = settings,
+  aggregated = TRUE
+)
 
 std <- computeStandardizedDifference(covCelecoxib, covDiclofenac)
 ```
@@ -528,7 +571,7 @@ if (file.exists(file.path(vignetteFolder, "covDiclofenac"))) {
   std <- computeStandardizedDifference(covCelecoxib, covDiclofenac)
   truncRight <- function(x, n) {
     nc <- nchar(x)
-    x[nc > (n - 3)] <- paste('...',substr(x[nc > (n - 3)], nc[nc > (n - 3)] - n + 1, nc[nc > (n - 3)]), sep = "")
+    x[nc > (n - 3)] <- paste("...", substr(x[nc > (n - 3)], nc[nc > (n - 3)] - n + 1, nc[nc > (n - 3)]), sep = "")
     x
   }
   std$covariateName <- truncRight(as.character(std$covariateName), 30)
@@ -543,14 +586,22 @@ The `stdDiff` column contains the standardized difference. By default the data i
 We can also show the comparison as a standard table 1:
 
 ```{r eval=FALSE}
-result <- createTable1(covCelecoxib, covDiclofenac)
+result <- createTable1(
+  covariateData1 = covCelecoxib,
+  covariateData2 = covDiclofenac,
+  output = "two columns"
+)
 print(result, row.names = FALSE, right = FALSE)
 ```
 \fontsize{5}{5}
 \selectfont
 ```{r comment=NA,echo=FALSE,message=FALSE}
 if (file.exists(file.path(vignetteFolder, "covDiclofenac"))) {
-  result <- createTable1(covCelecoxib, covDiclofenac)
+  result <- createTable1(
+    covariateData1 = covCelecoxib,
+    covariateData2 = covDiclofenac,
+    output = "one column"
+  )
   print(result, row.names = FALSE, right = FALSE)
 }
 ```

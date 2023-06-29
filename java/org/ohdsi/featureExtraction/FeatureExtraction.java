@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2021 Observational Health Data Sciences and Informatics
+ * Copyright 2023 Observational Health Data Sciences and Informatics
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -76,20 +75,20 @@ public class FeatureExtraction {
 	private static String									ADD_DESCENDANTS_SQL				= "SELECT descendant_concept_id AS id\nINTO @target_temp\nFROM @cdm_database_schema.concept_ancestor\nINNER JOIN @source_temp\n\tON ancestor_concept_id = id;\n\n";
 	
 	public static void main(String[] args) {
-		//init("C:/Users/mschuemi/git/FeatureExtraction/inst");
+		init("C:/Users/mschuemi/git/FeatureExtraction/inst");
 		// init("C:/R/R-3.3.1/library/FeatureExtraction");
-		init("D:/git/OHDSI/FeatureExtraction/inst");
+//		init("D:/git/OHDSI/FeatureExtraction/inst");
 		// System.out.println(convertSettingsPrespecToDetails("{\"temporal\":false,\"DemographicsGender\":true,\"DemographicsAge\":true,\"longTermStartDays\":-365,\"mediumTermStartDays\":-180,\"shortTermStartDays\":-30,\"endDays\":0,\"includedCovariateConceptIds\":[],\"addDescendantsToInclude\":false,\"excludedCovariateConceptIds\":[1,2,3],\"addDescendantsToExclude\":false,\"includedCovariateIds\":[]}"));
 		// System.out.println(getDefaultPrespecAnalyses());
 		//
 		// System.out.println(getDefaultPrespecAnalyses());
 		//
 		//String settings = getDefaultPrespecTemporalAnalyses();
-		String settings = getDefaultPrespecTemporalSequenceAnalyses();
+//		String settings = getDefaultPrespecTemporalSequenceAnalyses();
 		// String settings = convertSettingsPrespecToDetails(getDefaultPrespecTemporalAnalyses());
 		// System.out.println(convertSettingsPrespecToDetails(getDefaultPrespecAnalyses()));
-		// String settings =
-		// "{\"temporal\":false,\"analyses\":[{\"analysisId\":301,\"sqlFileName\":\"DomainConcept.sql\",\"parameters\":{\"analysisId\":301,\"startDay\":-365,\"endDay\":0,\"inpatient\":\"\",\"domainTable\":\"drug_exposure\",\"domainConceptId\":\"drug_concept_id\",\"domainStartDate\":\"drug_exposure_start_date\",\"domainEndDate\":\"drug_exposure_start_date\"},\"addDescendantsToExclude\":true,\"includedCovariateConceptIds\":[1,2,21600537410],\"excludedCovariateConceptIds\":{},\"addDescendantsToInclude\":true,\"includedCovariateIds\":12301}]}";
+		 String settings =
+		 "{\"temporal\":false,\"temporalSequence\":false,\"analyses\":[{\"analysisId\":999,\"sqlFileName\":\"CohortBasedBinaryCovariates.sql\",\"parameters\":{\"covariateCohortTable\":\"cohort\",\"analysisId\":999,\"analysisName\":\"Cohort\",\"startDay\":-365,\"endDay\":0},\"includedCovariateConceptIds\":[],\"addDescendantsToInclude\":false,\"excludedCovariateConceptIds\":[],\"addDescendantsToExclude\":false,\"includedCovariateIds\":[]}]}";
 		// String settings = convertSettingsPrespecToDetails(getDefaultPrespecAnalyses());
 		System.out.println(createSql(settings, true, "#temp_cohort", "row_id", -1, "cdm_synpuf"));
 		// System.out.println(createSql(getDefaultPrespecAnalyses(), true, "#temp_cohort", "row_id", -1, "cdm_synpuf"));
@@ -115,6 +114,7 @@ public class FeatureExtraction {
 					nameToPrespecAnalysis = loadPrespecAnalysis(packageFolder, "PrespecAnalyses.csv");
 					nameToPrespecTemporalAnalysis = loadPrespecAnalysis(packageFolder, "PrespecTemporalAnalyses.csv");
 					nameToPrespecTemporalSequenceAnalysis = loadPrespecAnalysis(packageFolder, "PrespecTemporalSequenceAnalyses.csv");
+					loadPrespecAnalysis(packageFolder, "OtherSqlToLoad.csv"); // Called for side-effect of adding SQL filenames to nameToSql keys.
 					loadTemplateSql(packageFolder);
 					createCovRefTableSql = loadSqlFile(packageFolder, "CreateCovAnalysisRefTables.sql");
 				}

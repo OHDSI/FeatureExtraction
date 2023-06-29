@@ -16,6 +16,7 @@ createTemporalCovariateSettings(
   useDemographicsPostObservationTime = FALSE,
   useDemographicsTimeInCohort = FALSE,
   useDemographicsIndexYearMonth = FALSE,
+  useCareSiteId = FALSE,
   useConditionOccurrence = FALSE,
   useConditionOccurrencePrimaryInpatient = FALSE,
   useConditionEraStart = FALSE,
@@ -82,6 +83,10 @@ index date. (analysis ID 10)}
 
 \item{useDemographicsIndexYearMonth}{Calendar month of the index date. (analysis ID 11)}
 
+\item{useCareSiteId}{Care site associated with the cohort start, pulled
+from the visit_detail, visit_occurrence, or person
+table, in that order. (analysis ID 12)}
+
 \item{useConditionOccurrence}{One covariate per condition in the
 condition_occurrence table starting in the time
 window. (analysis ID 101)}
@@ -104,7 +109,7 @@ time window. (analysis ID 203)}
 
 \item{useConditionEraGroupOverlap}{One covariate per condition era rolled up to SNOMED
 groups in the condition_era table overlapping with
-any part of the time window. (analysis ID 203)}
+any part of the time window. (analysis ID 204)}
 
 \item{useDrugExposure}{One covariate per drug in the drug_exposure table
 starting in the time window. (analysis ID 301)}
@@ -117,12 +122,12 @@ overlapping with any part of the time window.
 (analysis ID 402)}
 
 \item{useDrugEraGroupStart}{One covariate per drug rolled up to ATC groups in
-the drug_era table starting in thetime window.
+the drug_era table starting in the time window.
 (analysis ID 403)}
 
 \item{useDrugEraGroupOverlap}{One covariate per drug rolled up to ATC groups in
 the drug_era table overlapping with any part of
-thetime window. (analysis ID 403)}
+the time window. (analysis ID 404)}
 
 \item{useProcedureOccurrence}{One covariate per procedure in the
 procedure_occurrence table in the time window.
@@ -219,55 +224,58 @@ An object of type \code{covariateSettings}, to be used in other functions.
 Create covariate settings
 }
 \details{
-creates an object specifying how covariates should be contructed from data in the CDM model.
+creates an object specifying how covariates should be constructed from data in the CDM model.
 }
 \examples{
-settings <- createTemporalCovariateSettings(useDemographicsGender = TRUE,
-                                            useDemographicsAge = FALSE,
-                                            useDemographicsAgeGroup = TRUE,
-                                            useDemographicsRace = TRUE,
-                                            useDemographicsEthnicity = TRUE,
-                                            useDemographicsIndexYear = TRUE,
-                                            useDemographicsIndexMonth = TRUE,
-                                            useDemographicsPriorObservationTime = FALSE,
-                                            useDemographicsPostObservationTime = FALSE,
-                                            useDemographicsTimeInCohort = FALSE,
-                                            useDemographicsIndexYearMonth = FALSE,
-                                            useConditionOccurrence = FALSE,
-                                            useConditionOccurrencePrimaryInpatient = FALSE,
-                                            useConditionEraStart = FALSE,
-                                            useConditionEraOverlap = FALSE,
-                                            useConditionEraGroupStart = FALSE,
-                                            useConditionEraGroupOverlap = TRUE,
-                                            useDrugExposure = FALSE,
-                                            useDrugEraStart = FALSE,
-                                            useDrugEraOverlap = FALSE,
-                                            useDrugEraGroupStart = FALSE,
-                                            useDrugEraGroupOverlap = TRUE,
-                                            useProcedureOccurrence = TRUE,
-                                            useDeviceExposure = TRUE,
-                                            useMeasurement = TRUE,
-                                            useMeasurementValue = FALSE,
-                                            useMeasurementRangeGroup = TRUE,
-                                            useObservation = TRUE,
-                                            useCharlsonIndex = TRUE,
-                                            useDcsi = TRUE,
-                                            useChads2 = TRUE,
-                                            useChads2Vasc = TRUE,
-                                            useHfrs = FALSE,
-                                            useDistinctConditionCount = FALSE,
-                                            useDistinctIngredientCount = FALSE,
-                                            useDistinctProcedureCount = FALSE,
-                                            useDistinctMeasurementCount = FALSE,
-                                            useDistinctObservationCount = FALSE,
-                                            useVisitCount = FALSE,
-                                            useVisitConceptCount = FALSE,
-                                            temporalStartDays = -365:-1,
-                                            temporalEndDays = -365:-1,
-                                            includedCovariateConceptIds = c(),
-                                            addDescendantsToInclude = FALSE,
-                                            excludedCovariateConceptIds = c(),
-                                            addDescendantsToExclude = FALSE,
-                                            includedCovariateIds = c())
+settings <- createTemporalCovariateSettings(
+  useDemographicsGender = TRUE,
+  useDemographicsAge = FALSE,
+  useDemographicsAgeGroup = TRUE,
+  useDemographicsRace = TRUE,
+  useDemographicsEthnicity = TRUE,
+  useDemographicsIndexYear = TRUE,
+  useDemographicsIndexMonth = TRUE,
+  useDemographicsPriorObservationTime = FALSE,
+  useDemographicsPostObservationTime = FALSE,
+  useDemographicsTimeInCohort = FALSE,
+  useDemographicsIndexYearMonth = FALSE,
+  useCareSiteId = FALSE,
+  useConditionOccurrence = FALSE,
+  useConditionOccurrencePrimaryInpatient = FALSE,
+  useConditionEraStart = FALSE,
+  useConditionEraOverlap = FALSE,
+  useConditionEraGroupStart = FALSE,
+  useConditionEraGroupOverlap = TRUE,
+  useDrugExposure = FALSE,
+  useDrugEraStart = FALSE,
+  useDrugEraOverlap = FALSE,
+  useDrugEraGroupStart = FALSE,
+  useDrugEraGroupOverlap = TRUE,
+  useProcedureOccurrence = TRUE,
+  useDeviceExposure = TRUE,
+  useMeasurement = TRUE,
+  useMeasurementValue = FALSE,
+  useMeasurementRangeGroup = TRUE,
+  useObservation = TRUE,
+  useCharlsonIndex = TRUE,
+  useDcsi = TRUE,
+  useChads2 = TRUE,
+  useChads2Vasc = TRUE,
+  useHfrs = FALSE,
+  useDistinctConditionCount = FALSE,
+  useDistinctIngredientCount = FALSE,
+  useDistinctProcedureCount = FALSE,
+  useDistinctMeasurementCount = FALSE,
+  useDistinctObservationCount = FALSE,
+  useVisitCount = FALSE,
+  useVisitConceptCount = FALSE,
+  temporalStartDays = -365:-1,
+  temporalEndDays = -365:-1,
+  includedCovariateConceptIds = c(),
+  addDescendantsToInclude = FALSE,
+  excludedCovariateConceptIds = c(),
+  addDescendantsToExclude = FALSE,
+  includedCovariateIds = c()
+)
 
 }

@@ -1,11 +1,12 @@
-pandoc: '2.13'
-pkgdown: 1.6.1
+pandoc: 3.1.1
+pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
+  CreatingCovariatesBasedOnOtherCohorts: CreatingCovariatesBasedOnOtherCohorts.html
   CreatingCovariatesUsingCohortAttributes: CreatingCovariatesUsingCohortAttributes.html
   CreatingCustomCovariateBuilders: CreatingCustomCovariateBuilders.html
   CreatingCustomCovariateBuildersKorean: CreatingCustomCovariateBuildersKorean.html
   UsingFeatureExtraction: UsingFeatureExtraction.html
   UsingFeatureExtractionKorean: UsingFeatureExtractionKorean.html
-last_built: 2021-12-16T14:33Z
+last_built: 2023-06-29T14:50Z
 
