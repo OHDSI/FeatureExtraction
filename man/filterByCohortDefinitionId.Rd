@@ -19,12 +19,16 @@ Filter covariates by cohort definition ID
 }
 \examples{
 \dontrun{
-covariateData <- FeatureExtraction:::createEmptyCovariateData(cohortId = 1,
-                                                              aggregated = FALSE,
-                                                              temporal = FALSE)
-  
-covData <- filterByCohortDefinitionId(covariateData = covariateData,
-                                      cohortId = 1)
+covariateData <- FeatureExtraction:::createEmptyCovariateData(
+  cohortId = 1,
+  aggregated = FALSE,
+  temporal = FALSE
+)
+
+covData <- filterByCohortDefinitionId(
+  covariateData = covariateData,
+  cohortId = 1
+)
 }
 
 }

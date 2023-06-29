@@ -9,10 +9,13 @@ tempJdbcDriverFolder <- tempfile("jdbcDrivers")
 dir.create(tempJdbcDriverFolder, recursive = TRUE)
 Sys.setenv("DATABASECONNECTOR_JAR_FOLDER" = tempJdbcDriverFolder)
 
-withr::defer({
-  unlink(Sys.getenv("DATABASECONNECTOR_JAR_FOLDER"), recursive = TRUE, force = TRUE)
-  Sys.setenv("DATABASECONNECTOR_JAR_FOLDER" = oldJarFolder)
-}, testthat::teardown_env())
+withr::defer(
+  {
+    unlink(Sys.getenv("DATABASECONNECTOR_JAR_FOLDER"), recursive = TRUE, force = TRUE)
+    Sys.setenv("DATABASECONNECTOR_JAR_FOLDER" = oldJarFolder)
+  },
+  testthat::teardown_env()
+)
 
 
 # Get all environment variables to determine which DBMS to use for testing
@@ -35,7 +38,7 @@ getTestResourceFilePath <- function(fileName) {
   return(system.file("testdata", fileName, package = "FeatureExtraction"))
 }
 
-# Use this instead of SqlRender directly to avoid errors when running 
+# Use this instead of SqlRender directly to avoid errors when running
 # individual test files
 loadRenderTranslateUnitTestSql <- function(sqlFileName, targetDialect, tempEmulationSchema = NULL, ...) {
   sql <- SqlRender::readSql(system.file("sql/sql_server/unit_tests/", sqlFileName, package = "FeatureExtraction"))
@@ -47,27 +50,31 @@ loadRenderTranslateUnitTestSql <- function(sqlFileName, targetDialect, tempEmula
 # create unit test data
 createUnitTestData <- function(connectionDetails, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable, cohortDefinitionIds = c(1)) {
   connection <- DatabaseConnector::connect(connectionDetails)
-  sql <- loadRenderTranslateUnitTestSql(sqlFileName = "createTestingData.sql",
-                                        targetDialect = connectionDetails$dbms,
-                                        tempEmulationSchema = ohdsiDatabaseSchema,
-                                        attribute_definition_table = attributeDefinitionTable,
-                                        cdm_database_schema = cdmDatabaseSchema,
-                                        cohort_attribute_table =  cohortAttributeTable,
-                                        cohort_database_schema = ohdsiDatabaseSchema,
-                                        cohort_definition_ids = cohortDefinitionIds,
-                                        cohort_table = cohortTable)
+  sql <- loadRenderTranslateUnitTestSql(
+    sqlFileName = "createTestingData.sql",
+    targetDialect = connectionDetails$dbms,
+    tempEmulationSchema = ohdsiDatabaseSchema,
+    attribute_definition_table = attributeDefinitionTable,
+    cdm_database_schema = cdmDatabaseSchema,
+    cohort_attribute_table = cohortAttributeTable,
+    cohort_database_schema = ohdsiDatabaseSchema,
+    cohort_definition_ids = cohortDefinitionIds,
+    cohort_table = cohortTable
+  )
   DatabaseConnector::executeSql(connection, sql)
   return(connection)
 }
 
 dropUnitTestData <- function(connection, ohdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable) {
-  sql <- loadRenderTranslateUnitTestSql(sqlFileName = "dropTestingData.sql",
-                                        targetDialect = connection@dbms,
-                                        tempEmulationSchema = ohdsiDatabaseSchema,
-                                        attribute_definition_table = attributeDefinitionTable,
-                                        cohort_attribute_table = cohortAttributeTable, 
-                                        cohort_database_schema = ohdsiDatabaseSchema,
-                                        cohort_table = cohortTable)
+  sql <- loadRenderTranslateUnitTestSql(
+    sqlFileName = "dropTestingData.sql",
+    targetDialect = connection@dbms,
+    tempEmulationSchema = ohdsiDatabaseSchema,
+    attribute_definition_table = attributeDefinitionTable,
+    cohort_attribute_table = cohortAttributeTable,
+    cohort_database_schema = ohdsiDatabaseSchema,
+    cohort_table = cohortTable
+  )
   DatabaseConnector::executeSql(connection, sql)
   DatabaseConnector::disconnect(connection)
 }
@@ -75,11 +82,13 @@ dropUnitTestData <- function(connection, ohdsiDatabaseSchema, cohortTable, cohor
 # Database Test Settings -----------
 # postgres
 if (runTestsOnPostgreSQL) {
-  DatabaseConnector::downloadJdbcDrivers("postgresql")  
-  pgConnectionDetails <- createConnectionDetails(dbms = "postgresql",
-                                                 user = Sys.getenv("CDM5_POSTGRESQL_USER"),
-                                                 password = URLdecode(Sys.getenv("CDM5_POSTGRESQL_PASSWORD")),
-                                                 server = Sys.getenv("CDM5_POSTGRESQL_SERVER"))
+  DatabaseConnector::downloadJdbcDrivers("postgresql")
+  pgConnectionDetails <- createConnectionDetails(
+    dbms = "postgresql",
+    user = Sys.getenv("CDM5_POSTGRESQL_USER"),
+    password = URLdecode(Sys.getenv("CDM5_POSTGRESQL_PASSWORD")),
+    server = Sys.getenv("CDM5_POSTGRESQL_SERVER")
+  )
   pgCdmDatabaseSchema <- Sys.getenv("CDM5_POSTGRESQL_CDM_SCHEMA")
   pgOhdsiDatabaseSchema <- Sys.getenv("CDM5_POSTGRESQL_OHDSI_SCHEMA")
 }
@@ -87,21 +96,25 @@ if (runTestsOnPostgreSQL) {
 # sql server
 if (runTestsOnSQLServer) {
   DatabaseConnector::downloadJdbcDrivers("sql server")
-  sqlServerConnectionDetails <- createConnectionDetails(dbms = "sql server",
-                                                        user = Sys.getenv("CDM5_SQL_SERVER_USER"),
-                                                        password = URLdecode(Sys.getenv("CDM5_SQL_SERVER_PASSWORD")),
-                                                        server = Sys.getenv("CDM5_SQL_SERVER_SERVER"))
+  sqlServerConnectionDetails <- createConnectionDetails(
+    dbms = "sql server",
+    user = Sys.getenv("CDM5_SQL_SERVER_USER"),
+    password = URLdecode(Sys.getenv("CDM5_SQL_SERVER_PASSWORD")),
+    server = Sys.getenv("CDM5_SQL_SERVER_SERVER")
+  )
   sqlServerCdmDatabaseSchema <- Sys.getenv("CDM5_SQL_SERVER_CDM_SCHEMA")
   sqlServerOhdsiDatabaseSchema <- Sys.getenv("CDM5_SQL_SERVER_OHDSI_SCHEMA")
 }
 
 # oracle
 if (runTestsOnOracle) {
-  DatabaseConnector::downloadJdbcDrivers("oracle")  
-  oracleConnectionDetails <- createConnectionDetails(dbms = "oracle",
-                                                     user = Sys.getenv("CDM5_ORACLE_USER"),
-                                                     password = URLdecode(Sys.getenv("CDM5_ORACLE_PASSWORD")),
-                                                     server = Sys.getenv("CDM5_ORACLE_SERVER"))
+  DatabaseConnector::downloadJdbcDrivers("oracle")
+  oracleConnectionDetails <- createConnectionDetails(
+    dbms = "oracle",
+    user = Sys.getenv("CDM5_ORACLE_USER"),
+    password = URLdecode(Sys.getenv("CDM5_ORACLE_PASSWORD")),
+    server = Sys.getenv("CDM5_ORACLE_SERVER")
+  )
   oracleCdmDatabaseSchema <- Sys.getenv("CDM5_ORACLE_CDM_SCHEMA")
   oracleOhdsiDatabaseSchema <- Sys.getenv("CDM5_ORACLE_OHDSI_SCHEMA")
   # Set the tempEmulationSchema globally
@@ -111,22 +124,26 @@ if (runTestsOnOracle) {
 # impala
 if (runTestsOnImpala) {
   # NOTE: Driver for IMPALA requires manual installation
-  impalaConnectionDetails <- createConnectionDetails(dbms = "impala",
-                                                     user = Sys.getenv("CDM5_IMPALA_USER"),
-                                                     password = URLdecode(Sys.getenv("CDM5_IMPALA_PASSWORD")),
-                                                     server = Sys.getenv("CDM5_IMPALA_SERVER"),
-                                                     pathToDriver = Sys.getenv("CDM5_IMPALA_PATH_TO_DRIVER"))
+  impalaConnectionDetails <- createConnectionDetails(
+    dbms = "impala",
+    user = Sys.getenv("CDM5_IMPALA_USER"),
+    password = URLdecode(Sys.getenv("CDM5_IMPALA_PASSWORD")),
+    server = Sys.getenv("CDM5_IMPALA_SERVER"),
+    pathToDriver = Sys.getenv("CDM5_IMPALA_PATH_TO_DRIVER")
+  )
   impalaCdmDatabaseSchema <- Sys.getenv("CDM5_IMPALA_CDM_SCHEMA")
   impalaOhdsiDatabaseSchema <- Sys.getenv("CDM5_IMPALA_OHDSI_SCHEMA")
 }
 
 # redshift
 if (runTestsOnRedshift) {
-  DatabaseConnector::downloadJdbcDrivers("redshift")  
-  redshiftConnectionDetails <- createConnectionDetails(dbms = "redshift",
-                                                       user = Sys.getenv("CDM5_REDSHIFT_USER"),
-                                                       password = URLdecode(Sys.getenv("CDM5_REDSHIFT_PASSWORD")),
-                                                       server = Sys.getenv("CDM5_REDSHIFT_SERVER"))
+  DatabaseConnector::downloadJdbcDrivers("redshift")
+  redshiftConnectionDetails <- createConnectionDetails(
+    dbms = "redshift",
+    user = Sys.getenv("CDM5_REDSHIFT_USER"),
+    password = URLdecode(Sys.getenv("CDM5_REDSHIFT_PASSWORD")),
+    server = Sys.getenv("CDM5_REDSHIFT_SERVER")
+  )
   redshiftCdmDatabaseSchema <- Sys.getenv("CDM5_REDSHIFT_CDM_SCHEMA")
   redshiftOhdsiDatabaseSchema <- Sys.getenv("CDM5_REDSHIFT_OHDSI_SCHEMA")
 }
@@ -137,15 +154,17 @@ if (runTestsOnEunomia) {
   eunomiaCdmDatabaseSchema <- "main"
   eunomiaOhdsiDatabaseSchema <- "main"
   eunomiaConnection <- createUnitTestData(eunomiaConnectionDetails, eunomiaCdmDatabaseSchema, eunomiaOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
-  Eunomia::createCohorts(connectionDetails = eunomiaConnectionDetails,
-                         cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
-                         cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
-                         cohortTable = "cohort")
+  Eunomia::createCohorts(
+    connectionDetails = eunomiaConnectionDetails,
+    cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
+    cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
+    cohortTable = "cohort"
+  )
   withr::defer(
     {
       dropUnitTestData(eunomiaConnection, eunomiaOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
-      unlink("testEunomia.sqlite", recursive = TRUE, force = TRUE)  
+      unlink("testEunomia.sqlite", recursive = TRUE, force = TRUE)
     },
     testthat::teardown_env()
-  )  
+  )
 }

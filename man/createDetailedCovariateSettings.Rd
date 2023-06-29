@@ -17,21 +17,25 @@ An object of type \code{covariateSettings}, to be used in other functions.
 Create detailed covariate settings
 }
 \details{
-creates an object specifying in detail how covariates should be contructed from data in the CDM
+creates an object specifying in detail how covariates should be constructed from data in the CDM
 model. Warning: this function is for advanced users only.
 }
 \examples{
 \dontrun{
-analysisDetails <- createAnalysisDetails(analysisId = 1,
-                                         sqlFileName = "DemographicsGender.sql",
-                                         parameters = list(analysisId = 1,
-                                                            analysisName = "Gender",
-                                                            domainId = "Demographics"),
-                                         includedCovariateConceptIds = c(),
-                                         addDescendantsToInclude = FALSE,
-                                         excludedCovariateConceptIds = c(),
-                                         addDescendantsToExclude = FALSE,
-                                         includedCovariateIds = c())
+analysisDetails <- createAnalysisDetails(
+  analysisId = 1,
+  sqlFileName = "DemographicsGender.sql",
+  parameters = list(
+    analysisId = 1,
+    analysisName = "Gender",
+    domainId = "Demographics"
+  ),
+  includedCovariateConceptIds = c(),
+  addDescendantsToInclude = FALSE,
+  excludedCovariateConceptIds = c(),
+  addDescendantsToExclude = FALSE,
+  includedCovariateIds = c()
+)
 covSettings <- createDetailedCovariateSettings(analyses = analysisDetails)
 }
 

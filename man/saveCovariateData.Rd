@@ -21,9 +21,11 @@ The data will be written to a set of files in the folder specified by the user.
 }
 \examples{
 \dontrun{
-covariateData <- FeatureExtraction:::createEmptyCovariateData(cohortId = 1,
-                                                              aggregated = FALSE,
-                                                              temporal = FALSE)
+covariateData <- FeatureExtraction:::createEmptyCovariateData(
+  cohortId = 1,
+  aggregated = FALSE,
+  temporal = FALSE
+)
 # For this example we'll use a temporary file location:
 fileName <- tempfile()
 saveCovariateData(covariateData = covariateData, file = fileName)

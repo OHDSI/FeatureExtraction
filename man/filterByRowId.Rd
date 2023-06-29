@@ -19,12 +19,16 @@ Filter covariates by row ID
 }
 \examples{
 \dontrun{
-covariateData <- FeatureExtraction:::createEmptyCovariateData(cohortId = 1,
-                                                              aggregated = FALSE,
-                                                              temporal = FALSE)
-  
-covData <- filterByRowId(covariateData = covariateData,
-                         rowIds = 1)
+covariateData <- FeatureExtraction:::createEmptyCovariateData(
+  cohortId = 1,
+  aggregated = FALSE,
+  temporal = FALSE
+)
+
+covData <- filterByRowId(
+  covariateData = covariateData,
+  rowIds = 1
+)
 }
 
 }

@@ -44,7 +44,7 @@ row_id field in the output table. This can be especially usefull if there
 is more than one period per person.}
 
 \item{covariateSettings}{An object of type \code{covariateSettings} as created using the
-\code{\link{createCohortBasedCovariateSettings}} or 
+\code{\link{createCohortBasedCovariateSettings}} or
 \code{\link{createCohortBasedTemporalCovariateSettings}} functions.}
 
 \item{aggregated}{Should aggregate statistics be computed instead of covariates per

@@ -32,10 +32,16 @@ difference is defined as the difference between the mean divided by the overall 
 }
 \examples{
 \dontrun{
-binaryCovDataFile <- system.file("testdata/binaryCovariateData.zip", 
-                                 package = "FeatureExtraction")
+binaryCovDataFile <- system.file("testdata/binaryCovariateData.zip",
+  package = "FeatureExtraction"
+)
 covariateData1 <- loadCovariateData(binaryCovDataFile)
 covariateData2 <- loadCovariateData(binaryCovDataFile)
-covDataDiff <- computeStandardizedDifference(covariateData1, covariateData2, cohortId1 = 1, cohortId2 = 2)
+covDataDiff <- computeStandardizedDifference(
+  covariateData1,
+  covariateData2,
+  cohortId1 = 1,
+  cohortId2 = 2
+)
 }
 }

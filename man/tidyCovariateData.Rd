@@ -32,14 +32,18 @@ infrequent covariates. For temporal covariates, redundancy is evaluated per time
 }
 \examples{
 \dontrun{
-covariateData <- FeatureExtraction:::createEmptyCovariateData(cohortId = 1,
-                                                              aggregated = FALSE,
-                                                              temporal = FALSE)
-  
-covData <- tidyCovariateData(covariateData = covariateData,
-                             minFraction = 0.001,
-                             normalize = TRUE,
-                             removeRedundancy = TRUE)
+covariateData <- FeatureExtraction:::createEmptyCovariateData(
+  cohortId = 1,
+  aggregated = FALSE,
+  temporal = FALSE
+)
+
+covData <- tidyCovariateData(
+  covariateData = covariateData,
+  minFraction = 0.001,
+  normalize = TRUE,
+  removeRedundancy = TRUE
+)
 }
 
 }

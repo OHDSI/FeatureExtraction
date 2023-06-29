@@ -18,9 +18,11 @@ Creates an empty covariate data object
 }
 \examples{
 \dontrun{
-covariateData <- FeatureExtraction:::createEmptyCovariateData(cohortId = 1,
-                                                              aggregated = FALSE,
-                                                              temporal = FALSE)
+covariateData <- FeatureExtraction:::createEmptyCovariateData(
+  cohortId = 1,
+  aggregated = FALSE,
+  temporal = FALSE
+)
 }
 
 }
