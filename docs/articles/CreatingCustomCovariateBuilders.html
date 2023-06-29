@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,32 +33,26 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">FeatureExtraction</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">3.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.3.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li>
-  <a href="../news/index.html">Changelog</a>
-</li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/CreatingCovariatesBasedOnOtherCohorts.html">Creating covariates based on other cohorts</a>
+    </li>
+    <li>
       <a href="../articles/CreatingCovariatesUsingCohortAttributes.html">Creating covariates using cohort attributes</a>
     </li>
     <li>
@@ -73,13 +69,16 @@
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://ohdsi.github.io/Hades"><img src='https://ohdsi.github.io/Hades/images/hadesMini.png' width=80 height=17 style='vertical-align: top;'></a>
+  <a href="https://ohdsi.github.io/Hades" class="external-link"><img src='https://ohdsi.github.io/Hades/images/hadesMini.png' width=80 height=17 style='vertical-align: top;'></a>
 </li>
 <li>
-  <a href="https://github.com/OHDSI/FeatureExtraction/">
+  <a href="https://github.com/OHDSI/FeatureExtraction/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -94,205 +93,309 @@
 
       
 
-      </header><script src="CreatingCustomCovariateBuilders_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Creating custom covariate builders</h1>
-                        <h4 class="author">Martijn J. Schuemie</h4>
+                        <h4 data-toc-skip class="author">Martijn J.
+Schuemie</h4>
             
-            <h4 class="date">2021-12-16</h4>
+            <h4 data-toc-skip class="date">2023-06-29</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/OHDSI/FeatureExtraction/blob/master/vignettes/CreatingCustomCovariateBuilders.Rmd"><code>vignettes/CreatingCustomCovariateBuilders.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/OHDSI/FeatureExtraction/blob/HEAD/vignettes/CreatingCustomCovariateBuilders.Rmd" class="external-link"><code>vignettes/CreatingCustomCovariateBuilders.Rmd</code></a></small>
       <div class="hidden name"><code>CreatingCustomCovariateBuilders.Rmd</code></div>
 
     </div>
 
     
     
-<div id="introduction" class="section level1">
-<h1 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>Introduction</h1>
-<p>This vignette assumes you are already familiar with the <code>FeatureExtraction</code> package.</p>
-<p>The <code>FeatureExtraction</code> package can generate a default set of covariates, such as one covariate for each condition found in the <code>condition_occurrence</code> table. However, for some reasons one might need other covariates than those included in the default set. Sometimes it might make sense to request the new covariates be added to the standard list, but other times there is good reason to keep them separated.</p>
-<p>The <code>FeatureExtraction</code> package has a mechanism for including custom covariate builders to either replace or complement the covariate builders included in the package. This vignette describes that mechanism.</p>
-<p>Note: another way to add custom covariates is by using the <code>cohort_attribute</code> table in the common data model. This approach is described in the vignette called <code>creating covariates using cohort attributes</code>, and might be more suitable if you are likely to need the covariates only once, or when you are less familiar with advanced R programming. Creating a custom covariate builder as described in this vignette is more complicated, but once completed can easily be reused in many studies.</p>
+<div class="section level2">
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
+<p>This vignette assumes you are already familiar with the
+<code>FeatureExtraction</code> package.</p>
+<p>The <code>FeatureExtraction</code> package can generate a default set
+of covariates, such as one covariate for each condition found in the
+<code>condition_occurrence</code> table. However, for some reasons one
+might need other covariates than those included in the default set.
+Sometimes it might make sense to request the new covariates be added to
+the standard list, but other times there is good reason to keep them
+separated.</p>
+<p>The <code>FeatureExtraction</code> package has a mechanism for
+including custom covariate builders to either replace or complement the
+covariate builders included in the package. This vignette describes that
+mechanism.</p>
+<p>Note: another way to add custom covariates is by using the
+<code>cohort_attribute</code> table in the common data model. This
+approach is described in the vignette called
+<code>creating covariates using cohort attributes</code>, and might be
+more suitable if you are likely to need the covariates only once, or
+when you are less familiar with advanced R programming. Creating a
+custom covariate builder as described in this vignette is more
+complicated, but once completed can easily be reused in many
+studies.</p>
 </div>
-<div id="overview" class="section level1">
-<h1 class="hasAnchor">
-<a href="#overview" class="anchor"></a>Overview</h1>
-<p>To add a custom covariate builder, two things need to be implemented:</p>
+<div class="section level2">
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h2>
+<p>To add a custom covariate builder, two things need to be
+implemented:</p>
 <ol style="list-style-type: decimal">
-<li>A function that creates a <code>covariateSettings</code> object for the custom covariates.</li>
-<li>A function that uses the covariate settings to construct the new covariates.</li>
+<li>A function that creates a <code>covariateSettings</code> object for
+the custom covariates.</li>
+<li>A function that uses the covariate settings to construct the new
+covariates.</li>
 </ol>
 </div>
-<div id="covariate-settings-function" class="section level1">
-<h1 class="hasAnchor">
-<a href="#covariate-settings-function" class="anchor"></a>Covariate settings function</h1>
-<p>The covariate settings function must create an object that meets two requirements:</p>
+<div class="section level2">
+<h2 id="covariate-settings-function">Covariate settings function<a class="anchor" aria-label="anchor" href="#covariate-settings-function"></a>
+</h2>
+<p>The covariate settings function must create an object that meets two
+requirements:</p>
 <ol style="list-style-type: decimal">
 <li>The object must be of class <code>covariateSettings</code>.</li>
-<li>The object must have an attribute <code>fun</code> that specifies the name of the function for generating the covariates.</li>
+<li>The object must have an attribute <code>fun</code> that specifies
+the name of the function for generating the covariates.</li>
 </ol>
-<div id="example-function" class="section level2">
-<h2 class="hasAnchor">
-<a href="#example-function" class="anchor"></a>Example function</h2>
+<div class="section level3">
+<h3 id="example-function">Example function<a class="anchor" aria-label="anchor" href="#example-function"></a>
+</h3>
 <p>Here is an example covariate settings function:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">createLooCovariateSettings</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">useLengthOfObs</span> <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">{</span>
-  <span class="va">covariateSettings</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>useLengthOfObs <span class="op">=</span> <span class="va">useLengthOfObs</span><span class="op">)</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">covariateSettings</span>, <span class="st">"fun"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"getDbLooCovariateData"</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">covariateSettings</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"covariateSettings"</span>
-  <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">covariateSettings</span><span class="op">)</span>
-<span class="op">}</span></code></pre></div>
-<p>In this example the function has only one argument: <code>useLengthOfObs</code>. This argument is stored in the <code>covariateSettings</code> object. We specify that the name of the function that will construct the covariates corresponding to these options is <code>getDbLooCovariateData</code>.</p>
+<code class="sourceCode R"><span><span class="va">createLooCovariateSettings</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">useLengthOfObs</span> <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">covariateSettings</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>useLengthOfObs <span class="op">=</span> <span class="va">useLengthOfObs</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">covariateSettings</span>, <span class="st">"fun"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"getDbLooCovariateData"</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">covariateSettings</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"covariateSettings"</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">covariateSettings</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p>In this example the function has only one argument:
+<code>useLengthOfObs</code>. This argument is stored in the
+<code>covariateSettings</code> object. We specify that the name of the
+function that will construct the covariates corresponding to these
+options is <code>getDbLooCovariateData</code>.</p>
 </div>
 </div>
-<div id="covariate-construction-function" class="section level1">
-<h1 class="hasAnchor">
-<a href="#covariate-construction-function" class="anchor"></a>Covariate construction function</h1>
-<div id="function-inputs" class="section level2">
-<h2 class="hasAnchor">
-<a href="#function-inputs" class="anchor"></a>Function inputs</h2>
-<p>The covariate construction function has to accept the following arguments:</p>
+<div class="section level2">
+<h2 id="covariate-construction-function">Covariate construction function<a class="anchor" aria-label="anchor" href="#covariate-construction-function"></a>
+</h2>
+<div class="section level3">
+<h3 id="function-inputs">Function inputs<a class="anchor" aria-label="anchor" href="#function-inputs"></a>
+</h3>
+<p>The covariate construction function has to accept the following
+arguments:</p>
 <ul>
 <li>
-<code>connection</code>: A connection to the server containing the schema as created using the <code>connect</code> function in the <code>DatabaseConnector</code> package.</li>
+<code>connection</code>: A connection to the server containing the
+schema as created using the <code>connect</code> function in the
+<code>DatabaseConnector</code> package.</li>
 <li>
-<code>oracleTempSchema</code>: A schema where temp tables can be created in Oracle.</li>
+<code>oracleTempSchema</code>: A schema where temp tables can be
+created in Oracle.</li>
 <li>
-<code>cdmDatabaseSchema</code>: The name of the database schema that contains the OMOP CDM instance. On SQL Server, this will specify both the database and the schema, so for example ‘cdm_instance.dbo’.</li>
+<code>cdmDatabaseSchema</code>: The name of the database schema that
+contains the OMOP CDM instance. On SQL Server, this will specify both
+the database and the schema, so for example ‘cdm_instance.dbo’.</li>
 <li>
-<code>cdmVersion</code>: Defines the OMOP CDM version used: currently supports “4” and “5”.</li>
+<code>cdmVersion</code>: Defines the OMOP CDM version used:
+currently supports “4” and “5”.</li>
 <li>
-<code>cohortTable</code>: Name of the table holding the cohort for which we want to construct covariates. This is a fully specified name, so either the name of a temp table (e.g. ‘#cohort_table’), or a permanent table including its database schema (e.g. ‘cdm_schema.dbo.cohort’).</li>
+<code>cohortTable</code>: Name of the table holding the cohort for
+which we want to construct covariates. This is a fully specified name,
+so either the name of a temp table (e.g. ‘#cohort_table’), or a
+permanent table including its database schema
+(e.g. ‘cdm_schema.dbo.cohort’).</li>
 <li>
-<code>cohortId</code>: The cohort definition ID of the cohort. If set to -1, use all entries in the cohort table.</li>
+<code>cohortId</code>: The cohort definition ID of the cohort. If
+set to -1, use all entries in the cohort table.</li>
 <li>
-<code>cdmVersion</code>: The version of the Common Data Model.</li>
+<code>rowIdField</code>: The name of the field in the cohort temp
+table that is to be used as the row_id field in the output table. This
+can be especially usefull if there is more than one period per
+person.</li>
 <li>
-<code>rowIdField</code>: The name of the field in the cohort temp table that is to be used as the row_id field in the output table. This can be especially usefull if there is more than one period per person.</li>
+<code>covariateSettings</code>: The object created in your covariate
+settings function.</li>
 <li>
-<code>covariateSettings</code>: The object created in your covariate settings function.</li>
-<li>
-<code>aggregated</code>: Should covariates be constructed per-person, or aggregated across the cohort?</li>
+<code>aggregated</code>: Should covariates be constructed
+per-person, or aggregated across the cohort?</li>
 </ul>
-<p>The function can expect that a table exists with the name specified in the <code>cohortTable</code> argument. This table will identify the persons and the index dates for which we want to construct the covariates, and will have the following fields: <code>subject_id</code>, <code>cohort_start_date</code>, and <code>cohort_definition_id</code>. Because sometimes there can be more than one index date (i.e. <code>cohort_start_date</code>) per person, an additional field can be included with a unique identifier for each <code>subject_id</code> - <code>cohort_start_date</code> combination. The name of this field will be specified in the <code>rowIdField</code> argument</p>
+<p>The function can expect that a table exists with the name specified
+in the <code>cohortTable</code> argument. This table will identify the
+persons and the index dates for which we want to construct the
+covariates, and will have the following fields: <code>subject_id</code>,
+<code>cohort_start_date</code>, and <code>cohort_definition_id</code>.
+Because sometimes there can be more than one index date
+(i.e. <code>cohort_start_date</code>) per person, an additional field
+can be included with a unique identifier for each
+<code>subject_id</code> - <code>cohort_start_date</code> combination.
+The name of this field will be specified in the <code>rowIdField</code>
+argument</p>
 </div>
-<div id="function-outputs" class="section level2">
-<h2 class="hasAnchor">
-<a href="#function-outputs" class="anchor"></a>Function outputs</h2>
-<p>The function must return an object of type <code>CovariateData</code>, which is an Andromeda object with the following members:</p>
+<div class="section level3">
+<h3 id="function-outputs">Function outputs<a class="anchor" aria-label="anchor" href="#function-outputs"></a>
+</h3>
+<p>The function must return an object of type
+<code>CovariateData</code>, which is an Andromeda object with the
+following members:</p>
 <ul>
 <li>
-<code>covariates</code>, listing the covariates per row ID. This is done using a sparse representation; covariates with a value of 0 are omitted to save space. The covariates object must have three columns: <code>rowId</code>, <code>covariateId</code>, and <code>covariateValue</code>.</li>
+<code>covariates</code>, listing the covariates per row ID. This is
+done using a sparse representation; covariates with a value of 0 are
+omitted to save space. The covariates object must have three columns:
+<code>rowId</code>, <code>covariateId</code>, and
+<code>covariateValue</code>.</li>
 <li>
-<code>covariateRef</code>, describing the covariates that have been extracted. This should have the following columns: <code>covariateId</code>, <code>covariateName</code>, <code>analysisId</code>, <code>conceptId</code>.</li>
+<code>covariateRef</code>, describing the covariates that have been
+extracted. This should have the following columns:
+<code>covariateId</code>, <code>covariateName</code>,
+<code>analysisId</code>, <code>conceptId</code>.</li>
 <li>
-<code>analysisRef</code>, dscribing the analyses performed by the function. This should have the following columns: <code>analysisId</code>, <code>analysisName</code>, <code>domainIdsta</code>, <code>startDay</code>, <code>endDay</code>, <code>isBinary</code>, <code>missingMeansZero</code>.</li>
+<code>analysisRef</code>, dscribing the analyses performed by the
+function. This should have the following columns:
+<code>analysisId</code>, <code>analysisName</code>,
+<code>domainIdsta</code>, <code>startDay</code>, <code>endDay</code>,
+<code>isBinary</code>, <code>missingMeansZero</code>.</li>
 </ul>
-<p>Additionally, the object should have an attribute called <code>metaData</code>, which is a (potentially empty) list of objects with information on how the <code>CovariateData</code> object was constructed.</p>
+<p>Additionally, the object should have an attribute called
+<code>metaData</code>, which is a (potentially empty) list of objects
+with information on how the <code>CovariateData</code> object was
+constructed.</p>
 </div>
-<div id="example-function-1" class="section level2">
-<h2 class="hasAnchor">
-<a href="#example-function-1" class="anchor"></a>Example function</h2>
+<div class="section level3">
+<h3 id="example-function-1">Example function<a class="anchor" aria-label="anchor" href="#example-function-1"></a>
+</h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">getDbLooCovariateData</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">connection</span>,
-                                  <span class="va">oracleTempSchema</span> <span class="op">=</span> <span class="cn">NULL</span>,
-                                  <span class="va">cdmDatabaseSchema</span>,
-                                  <span class="va">cohortTable</span> <span class="op">=</span> <span class="st">"#cohort_person"</span>,
-                                  <span class="va">cohortId</span> <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>,
-                                  <span class="va">cdmVersion</span> <span class="op">=</span> <span class="st">"5"</span>,
-                                  <span class="va">rowIdField</span> <span class="op">=</span> <span class="st">"subject_id"</span>,
-                                  <span class="va">covariateSettings</span>,
-                                  <span class="va">aggregated</span> <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/writeLines.html">writeLines</a></span><span class="op">(</span><span class="st">"Constructing length of observation covariates"</span><span class="op">)</span>
-  <span class="kw">if</span> <span class="op">(</span><span class="va">covariateSettings</span><span class="op">$</span><span class="va">useLengthOfObs</span> <span class="op">==</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span>
-    <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span>
-  <span class="op">}</span>
-  <span class="kw">if</span> <span class="op">(</span><span class="va">aggregated</span><span class="op">)</span>
-    <span class="kw"><a href="https://rdrr.io/r/base/stop.html">stop</a></span><span class="op">(</span><span class="st">"Aggregation not supported"</span><span class="op">)</span>
-  
-  <span class="co"># Some SQL to construct the covariate:</span>
-  <span class="va">sql</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"SELECT @row_id_field AS row_id, 1 AS covariate_id,"</span>,
-               <span class="st">"DATEDIFF(DAY, observation_period_start_date, cohort_start_date)"</span>,
-               <span class="st">"AS covariate_value"</span>,
-               <span class="st">"FROM @cohort_table c"</span>,
-               <span class="st">"INNER JOIN @cdm_database_schema.observation_period op"</span>,
-               <span class="st">"ON op.person_id = c.subject_id"</span>,
-               <span class="st">"WHERE cohort_start_date &gt;= observation_period_start_date"</span>,
-               <span class="st">"AND cohort_start_date &lt;= observation_period_end_date"</span>,
-               <span class="st">"{@cohort_id != -1} ? {AND cohort_definition_id = @cohort_id}"</span><span class="op">)</span>
-  <span class="va">sql</span> <span class="op">&lt;-</span> <span class="fu">SqlRender</span><span class="fu">::</span><span class="fu"><a href="https://ohdsi.github.io/SqlRender/reference/render.html">render</a></span><span class="op">(</span><span class="va">sql</span>,
-                           cohort_table <span class="op">=</span> <span class="va">cohortTable</span>,
-                           cohort_id <span class="op">=</span> <span class="va">cohortId</span>,
-                           row_id_field <span class="op">=</span> <span class="va">rowIdField</span>,
-                           cdm_database_schema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span><span class="op">)</span>
-  <span class="va">sql</span> <span class="op">&lt;-</span> <span class="fu">SqlRender</span><span class="fu">::</span><span class="fu"><a href="https://ohdsi.github.io/SqlRender/reference/translate.html">translate</a></span><span class="op">(</span><span class="va">sql</span>, targetDialect <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">connection</span>, <span class="st">"dbms"</span><span class="op">)</span><span class="op">)</span>
-  
-  <span class="co"># Retrieve the covariate:</span>
-  <span class="va">covariates</span> <span class="op">&lt;-</span> <span class="fu">DatabaseConnector</span><span class="fu">::</span><span class="fu"><a href="https://ohdsi.github.io/DatabaseConnector/reference/querySql.html">querySql</a></span><span class="op">(</span><span class="va">connection</span>, <span class="va">sql</span>, snakeCaseToCamelCase <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-  
-  <span class="co"># Construct covariate reference:</span>
-  <span class="va">covariateRef</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>covariateId <span class="op">=</span> <span class="fl">1</span>,
-                             covariateName <span class="op">=</span> <span class="st">"Length of observation"</span>,
-                             analysisId <span class="op">=</span> <span class="fl">1</span>,
-                             conceptId <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
-  
-  <span class="co"># Construct analysis reference:</span>
-  <span class="va">analysisRef</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>analysisId <span class="op">=</span> <span class="fl">1</span>,
-                            analysisName <span class="op">=</span> <span class="st">"Length of observation"</span>,
-                            domainId <span class="op">=</span> <span class="st">"Demographics"</span>,
-                            startDay <span class="op">=</span> <span class="fl">0</span>,
-                            endDay <span class="op">=</span> <span class="fl">0</span>,
-                            isBinary <span class="op">=</span> <span class="st">"N"</span>,
-                            missingMeansZero <span class="op">=</span> <span class="st">"Y"</span><span class="op">)</span>
-  
-  <span class="co"># Construct analysis reference:</span>
-  <span class="va">metaData</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>sql <span class="op">=</span> <span class="va">sql</span>, call <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/match.call.html">match.call</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-  <span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">Andromeda</span><span class="fu">::</span><span class="fu"><a href="https://ohdsi.github.io/Andromeda/reference/andromeda_constructor.html">andromeda</a></span><span class="op">(</span>covariates <span class="op">=</span> <span class="va">covariates</span>, 
-                                 covariateRef <span class="op">=</span> <span class="va">covariateRef</span>, 
-                                 analysisRef <span class="op">=</span> <span class="va">analysisRef</span><span class="op">)</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">result</span>, <span class="st">"metaData"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">metaData</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"CovariateData"</span>
-  <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span>
-<span class="op">}</span></code></pre></div>
-<p>In this example function, we construct a single covariate called ‘Length of observation’, which is the number of days between the <code>observation_period_start_date</code> and the index date. We use parameterized SQL and the <code>SqlRender</code> package to generate the appropriate SQL statement for the database to which we are connected. We also create the covariate reference and analysis reference objects, which have one row each, specifying our one covariate and one analysis. We then wrap up the <code>covariate</code>, <code>covariateRef</code>, and <code>analysisRef</code> objects in a single result Andromeda object, together with some meta-data.</p>
+<code class="sourceCode R"><span><span class="va">getDbLooCovariateData</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">connection</span>,</span>
+<span>                                  <span class="va">oracleTempSchema</span> <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>                                  <span class="va">cdmDatabaseSchema</span>,</span>
+<span>                                  <span class="va">cdmVersion</span> <span class="op">=</span> <span class="st">"5"</span>,</span>
+<span>                                  <span class="va">cohortTable</span> <span class="op">=</span> <span class="st">"#cohort_person"</span>,</span>
+<span>                                  <span class="va">cohortId</span> <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>,</span>
+<span>                                  <span class="va">rowIdField</span> <span class="op">=</span> <span class="st">"subject_id"</span>,</span>
+<span>                                  <span class="va">covariateSettings</span>,</span>
+<span>                                  <span class="va">aggregated</span> <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines</a></span><span class="op">(</span><span class="st">"Constructing length of observation covariates"</span><span class="op">)</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="va">covariateSettings</span><span class="op">$</span><span class="va">useLengthOfObs</span> <span class="op">==</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="va">aggregated</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"Aggregation not supported"</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span></span>
+<span>  <span class="co"># Some SQL to construct the covariate:</span></span>
+<span>  <span class="va">sql</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span></span>
+<span>    <span class="st">"SELECT @row_id_field AS row_id, 1 AS covariate_id,"</span>,</span>
+<span>    <span class="st">"DATEDIFF(DAY, observation_period_start_date, cohort_start_date)"</span>,</span>
+<span>    <span class="st">"AS covariate_value"</span>,</span>
+<span>    <span class="st">"FROM @cohort_table c"</span>,</span>
+<span>    <span class="st">"INNER JOIN @cdm_database_schema.observation_period op"</span>,</span>
+<span>    <span class="st">"ON op.person_id = c.subject_id"</span>,</span>
+<span>    <span class="st">"WHERE cohort_start_date &gt;= observation_period_start_date"</span>,</span>
+<span>    <span class="st">"AND cohort_start_date &lt;= observation_period_end_date"</span>,</span>
+<span>    <span class="st">"{@cohort_id != -1} ? {AND cohort_definition_id = @cohort_id}"</span></span>
+<span>  <span class="op">)</span></span>
+<span>  <span class="va">sql</span> <span class="op">&lt;-</span> <span class="fu">SqlRender</span><span class="fu">::</span><span class="fu"><a href="https://ohdsi.github.io/SqlRender/reference/render.html" class="external-link">render</a></span><span class="op">(</span><span class="va">sql</span>,</span>
+<span>    cohort_table <span class="op">=</span> <span class="va">cohortTable</span>,</span>
+<span>    cohort_id <span class="op">=</span> <span class="va">cohortId</span>,</span>
+<span>    row_id_field <span class="op">=</span> <span class="va">rowIdField</span>,</span>
+<span>    cdm_database_schema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span></span>
+<span>  <span class="op">)</span></span>
+<span>  <span class="va">sql</span> <span class="op">&lt;-</span> <span class="fu">SqlRender</span><span class="fu">::</span><span class="fu"><a href="https://ohdsi.github.io/SqlRender/reference/translate.html" class="external-link">translate</a></span><span class="op">(</span><span class="va">sql</span>, targetDialect <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">connection</span>, <span class="st">"dbms"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># Retrieve the covariate:</span></span>
+<span>  <span class="va">covariates</span> <span class="op">&lt;-</span> <span class="fu">DatabaseConnector</span><span class="fu">::</span><span class="fu"><a href="https://ohdsi.github.io/DatabaseConnector/reference/querySql.html" class="external-link">querySql</a></span><span class="op">(</span><span class="va">connection</span>, <span class="va">sql</span>, snakeCaseToCamelCase <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># Construct covariate reference:</span></span>
+<span>  <span class="va">covariateRef</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>    covariateId <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>    covariateName <span class="op">=</span> <span class="st">"Length of observation"</span>,</span>
+<span>    analysisId <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>    conceptId <span class="op">=</span> <span class="fl">0</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># Construct analysis reference:</span></span>
+<span>  <span class="va">analysisRef</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>    analysisId <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>    analysisName <span class="op">=</span> <span class="st">"Length of observation"</span>,</span>
+<span>    domainId <span class="op">=</span> <span class="st">"Demographics"</span>,</span>
+<span>    startDay <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>    endDay <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>    isBinary <span class="op">=</span> <span class="st">"N"</span>,</span>
+<span>    missingMeansZero <span class="op">=</span> <span class="st">"Y"</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># Construct analysis reference:</span></span>
+<span>  <span class="va">metaData</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>sql <span class="op">=</span> <span class="va">sql</span>, call <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/match.call.html" class="external-link">match.call</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">Andromeda</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Andromeda/man/andromeda_constructor.html" class="external-link">andromeda</a></span><span class="op">(</span></span>
+<span>    covariates <span class="op">=</span> <span class="va">covariates</span>,</span>
+<span>    covariateRef <span class="op">=</span> <span class="va">covariateRef</span>,</span>
+<span>    analysisRef <span class="op">=</span> <span class="va">analysisRef</span></span>
+<span>  <span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">result</span>, <span class="st">"metaData"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">metaData</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"CovariateData"</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p>In this example function, we construct a single covariate called
+‘Length of observation’, which is the number of days between the
+<code>observation_period_start_date</code> and the index date. We use
+parameterized SQL and the <code>SqlRender</code> package to generate the
+appropriate SQL statement for the database to which we are connected. We
+also create the covariate reference and analysis reference objects,
+which have one row each, specifying our one covariate and one analysis.
+We then wrap up the <code>covariate</code>, <code>covariateRef</code>,
+and <code>analysisRef</code> objects in a single result Andromeda
+object, together with some meta-data.</p>
 </div>
 </div>
-<div id="using-the-custom-covariate-builder" class="section level1">
-<h1 class="hasAnchor">
-<a href="#using-the-custom-covariate-builder" class="anchor"></a>Using the custom covariate builder</h1>
-<p>We can use our custom covariate builder in the <code>PatientLevelPrediction</code> package, as well other packages that depend on the <code>FeatureExtraction</code> package, such as the <code>CohortMethod</code> package. If we want to use only our custom defined covariate builder, we can simply replace the existing <code>covariateSettings</code> with our own, for example:</p>
+<div class="section level2">
+<h2 id="using-the-custom-covariate-builder">Using the custom covariate builder<a class="anchor" aria-label="anchor" href="#using-the-custom-covariate-builder"></a>
+</h2>
+<p>We can use our custom covariate builder in the
+<code>PatientLevelPrediction</code> package, as well other packages that
+depend on the <code>FeatureExtraction</code> package, such as the
+<code>CohortMethod</code> package. If we want to use only our custom
+defined covariate builder, we can simply replace the existing
+<code>covariateSettings</code> with our own, for example:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">looCovSet</span> <span class="op">&lt;-</span> <span class="fu">createLooCovariateSettings</span><span class="op">(</span>useLengthOfObs <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="va">covariates</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span><span class="op">(</span>connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>,
-                                 cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>,
-                                 cohortDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span>,
-                                 cohortTable <span class="op">=</span> <span class="st">"rehospitalization"</span>,
-                                 cohortId <span class="op">=</span> <span class="fl">1</span>,
-                                 covariateSettings <span class="op">=</span> <span class="va">looCovSet</span><span class="op">)</span></code></pre></div>
-<p>In this case we will have only one covariate for our predictive model, the length of observation. In most cases, we will want our custom covariates in addition to the default covariates. We can do this by creating a list of covariate settings:</p>
+<code class="sourceCode R"><span><span class="va">looCovSet</span> <span class="op">&lt;-</span> <span class="fu">createLooCovariateSettings</span><span class="op">(</span>useLengthOfObs <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">covariates</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span><span class="op">(</span></span>
+<span>  connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>,</span>
+<span>  cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>,</span>
+<span>  cohortDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span>,</span>
+<span>  cohortTable <span class="op">=</span> <span class="st">"rehospitalization"</span>,</span>
+<span>  cohortId <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  covariateSettings <span class="op">=</span> <span class="va">looCovSet</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>In this case we will have only one covariate for our predictive
+model, the length of observation. In most cases, we will want our custom
+covariates in addition to the default covariates. We can do this by
+creating a list of covariate settings:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">covariateSettings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCovariateSettings.html">createCovariateSettings</a></span><span class="op">(</span>useDemographicsGender <span class="op">=</span> <span class="cn">TRUE</span>,
-                                             useDemographicsAgeGroup <span class="op">=</span> <span class="cn">TRUE</span>,
-                                             useDemographicsRace <span class="op">=</span> <span class="cn">TRUE</span>,
-                                             useDemographicsEthnicity <span class="op">=</span> <span class="cn">TRUE</span>,
-                                             useDemographicsIndexYear <span class="op">=</span> <span class="cn">TRUE</span>,
-                                             useDemographicsIndexMonth <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="va">looCovSet</span> <span class="op">&lt;-</span> <span class="fu">createLooCovariateSettings</span><span class="op">(</span>useLengthOfObs <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="va">covariateSettingsList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">covariateSettings</span>, <span class="va">looCovSet</span><span class="op">)</span>
-
-<span class="va">covariates</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span><span class="op">(</span>connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>,
-                                 cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>,
-                                 cohortDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span>,
-                                 cohortTable <span class="op">=</span> <span class="st">"rehospitalization"</span>,
-                                 cohortId <span class="op">=</span> <span class="fl">1</span>,
-                                 covariateSettings <span class="op">=</span> <span class="va">covariateSettingsList</span><span class="op">)</span></code></pre></div>
-<p>In this example both demographic covariates and our length of observation covariate will be generated and can be used in our predictive model.</p>
+<code class="sourceCode R"><span><span class="va">covariateSettings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCovariateSettings.html">createCovariateSettings</a></span><span class="op">(</span></span>
+<span>  useDemographicsGender <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  useDemographicsAgeGroup <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  useDemographicsRace <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  useDemographicsEthnicity <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  useDemographicsIndexYear <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  useDemographicsIndexMonth <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">looCovSet</span> <span class="op">&lt;-</span> <span class="fu">createLooCovariateSettings</span><span class="op">(</span>useLengthOfObs <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">covariateSettingsList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">covariateSettings</span>, <span class="va">looCovSet</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">covariates</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span><span class="op">(</span></span>
+<span>  connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>,</span>
+<span>  cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>,</span>
+<span>  cohortDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span>,</span>
+<span>  cohortTable <span class="op">=</span> <span class="st">"rehospitalization"</span>,</span>
+<span>  cohortId <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  covariateSettings <span class="op">=</span> <span class="va">covariateSettingsList</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>In this example both demographic covariates and our length of
+observation covariate will be generated and can be used in our
+predictive model.</p>
 </div>
   </div>
 
@@ -307,11 +410,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Martijn Schuemie, Marc Suchard, Patrick Ryan, Jenna Reps, Anthony Sena.</p>
+  <p></p>
+<p>Developed by Martijn Schuemie, Marc Suchard, Patrick Ryan, Jenna Reps, Anthony Sena, Ger Inberg.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -319,6 +424,8 @@
 
   
 
+
+  
 
   </body>
 </html>
