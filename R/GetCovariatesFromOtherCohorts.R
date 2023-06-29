@@ -51,7 +51,7 @@ getDbCohortBasedCovariatesData <- function(connection,
   message("Constructing covariates from other cohorts")
   
   covariateCohorts <- covariateSettings$covariateCohorts %>%
-    select(cohortId, cohortName)
+    select("cohortId", "cohortName")
   
   DatabaseConnector::insertTable(connection,
                                  tableName = "#covariate_cohort_ref",
@@ -279,7 +279,7 @@ warnIfPredefined <- function(analysisId, temporal = FALSE) {
     csvFile <- system.file("csv", "PrespecAnalyses.csv", package = "FeatureExtraction")
   }
   preSpecAnalysis <- read.csv(csvFile) %>%
-    filter(.data$analysisId == !!analysisId)
+    filter(analysisId == !!analysisId)
   if (nrow(preSpecAnalysis) > 0) {
     warning(sprintf("Analysis ID %d also used for prespecified analysis '%s'.", analysisId, preSpecAnalysis$analysisName))
   }

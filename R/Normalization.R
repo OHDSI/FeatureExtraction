@@ -62,14 +62,14 @@ tidyCovariateData <- function(covariateData,
   } else {
     newCovariates <- covariateData$covariates
     covariateData$maxValuePerCovariateId <- covariateData$covariates %>% 
-      group_by(.data$covariateId) %>% 
-      summarise(maxValue = max(.data$covariateValue, na.rm = TRUE))
+      group_by(covariateId) %>% 
+      summarise(maxValue = max(covariateValue, na.rm = TRUE))
     on.exit(covariateData$maxValuePerCovariateId <- NULL)
     
     if (removeRedundancy || minFraction != 0) {
       covariateData$valueCounts <- covariateData$covariates %>% 
-        group_by(.data$covariateId) %>% 
-        summarise(n = count(), nDistinct = n_distinct(.data$covariateValue))
+        group_by(covariateId) %>% 
+        summarise(n = count(), nDistinct = n_distinct(covariateValue))
       on.exit(covariateData$valueCounts <- NULL, add = TRUE)
     }
     
@@ -78,8 +78,8 @@ tidyCovariateData <- function(covariateData,
     if (removeRedundancy) {
       covariateData$binaryCovariateIds <- covariateData$maxValuePerCovariateId %>% 
         inner_join(covariateData$valueCounts, by = "covariateId") %>%
-        filter(.data$maxValue == 1 & .data$nDistinct == 1) %>%
-        select(covariateId = .data$covariateId)
+        filter(maxValue == 1 & nDistinct == 1) %>%
+        select(covariateId = covariateId)
       on.exit(covariateData$binaryCovariateIds <- NULL, add = TRUE)
       
       if (covariateData$binaryCovariateIds %>% count() %>% pull() != 0) {
@@ -87,30 +87,30 @@ tidyCovariateData <- function(covariateData,
           # Temporal
           covariateData$temporalValueCounts <- covariateData$covariates %>% 
             inner_join(covariateData$binaryCovariateIds, by = "covariateId") %>% 
-            group_by(.data$covariateId, .data$timeId) %>% 
+            group_by(covariateId, timeId) %>% 
             count()
           on.exit(covariateData$temporalValueCounts <- NULL, add = TRUE)
           
           # First, find all single covariates that, for every timeId, appear in every row with the same value
           covariateData$deleteCovariateTimeIds <-  covariateData$temporalValueCounts %>% 
             filter(n == populationSize) %>% 
-            select(.data$covariateId, .data$timeId)
+            select(covariateId, timeId)
           on.exit(covariateData$deleteCovariateTimeIds <- NULL, add = TRUE)
           
           # Next, find groups of covariates (analyses) that together cover everyone:
           analysisIds <- covariateData$temporalValueCounts %>%
             anti_join(covariateData$deleteCovariateTimeIds, by = c("covariateId", "timeId")) %>%
             inner_join(covariateData$covariateRef, by = "covariateId") %>%
-            group_by(.data$analysisId) %>%
-            summarise(n = sum(.data$n, na.rm = TRUE)) %>%
+            group_by(analysisId) %>%
+            summarise(n = sum(n, na.rm = TRUE)) %>%
             filter(n == populationSize) %>% 
-            select(.data$analysisId) 
+            select(analysisId) 
           
           # For those, find most prevalent covariate, and mark it for deletion:
           valueCounts <- analysisIds %>%
             inner_join(covariateData$covariateRef, by = "analysisId") %>%
             inner_join(covariateData$temporalValueCounts, by = "covariateId") %>%
-            select(.data$analysisId, .data$covariateId, .data$timeId, .data$n) %>%
+            select(analysisId, covariateId, timeId, n) %>%
             collect()
           valueCounts <- valueCounts[order(valueCounts$analysisId, -valueCounts$n), ]
           Andromeda::appendToTable(covariateData$deleteCovariateTimeIds, 
@@ -127,24 +127,24 @@ tidyCovariateData <- function(covariateData,
           toDelete <-  covariateData$valueCounts %>% 
             inner_join(covariateData$binaryCovariateIds, by = "covariateId") %>% 
             filter(n == populationSize) %>% 
-            select(.data$covariateId) %>% 
+            select(covariateId) %>% 
             collect()
           deleteCovariateIds <- toDelete$covariateId
           
           # Next, find groups of covariates (analyses) that together cover everyone:
           analysisIds <- covariateData$valueCounts %>%
             inner_join(covariateData$binaryCovariateIds, by = "covariateId") %>% 
-            filter(!.data$covariateId %in% deleteCovariateIds) %>%
+            filter(!covariateId %in% deleteCovariateIds) %>%
             inner_join(covariateData$covariateRef, by = "covariateId") %>%
-            group_by(.data$analysisId) %>%
-            summarise(n = sum(.data$n, na.rm = TRUE)) %>%
+            group_by(analysisId) %>%
+            summarise(n = sum(n, na.rm = TRUE)) %>%
             filter(n == populationSize) %>% 
-            select(.data$analysisId) 
+            select(analysisId) 
           # For those, find most prevalent covariate, and mark it for deletion:
           valueCounts <- analysisIds %>%
             inner_join(covariateData$covariateRef, by = "analysisId") %>%
             inner_join(covariateData$valueCounts, by = "covariateId") %>%
-            select(.data$analysisId, .data$covariateId, .data$n) %>%
+            select(analysisId, covariateId, n) %>%
             collect()
           valueCounts <- valueCounts[order(valueCounts$analysisId, -valueCounts$n), ]
           deleteCovariateIds <- c(deleteCovariateIds, valueCounts$covariateId[!duplicated(valueCounts$analysisId)])
@@ -157,9 +157,9 @@ tidyCovariateData <- function(covariateData,
     if (minFraction != 0) {
       minCount <- floor(minFraction * populationSize)
       toDelete <- covariateData$valueCounts %>%
-        filter(.data$n < minCount) %>%
-        filter(!.data$covariateId %in% ignoreCovariateIds) %>%
-        select(.data$covariateId) %>%
+        filter(n < minCount) %>%
+        filter(!covariateId %in% ignoreCovariateIds) %>%
+        select(covariateId) %>%
         collect()
       
       metaData$deletedInfrequentCovariateIds <- toDelete$covariateId
@@ -168,15 +168,15 @@ tidyCovariateData <- function(covariateData,
     }
     if (length(deleteCovariateIds) > 0) {
       newCovariates <- newCovariates %>% 
-        filter(!.data$covariateId %in% deleteCovariateIds)
+        filter(!covariateId %in% deleteCovariateIds)
     }
     
     if (normalize) {
       ParallelLogger::logInfo("Normalizing covariates")
       newCovariates <- newCovariates %>% 
         inner_join(covariateData$maxValuePerCovariateId, by = "covariateId") %>%
-        mutate(covariateValue = .data$covariateValue / .data$maxValue) %>%
-        select(-.data$maxValue)
+        mutate(covariateValue = covariateValue / maxValue) %>%
+        select(-maxValue)
       metaData$normFactors <- covariateData$maxValuePerCovariateId %>%
         collect()
     } 

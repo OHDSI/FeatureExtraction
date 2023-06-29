@@ -165,7 +165,8 @@ test_that("getDbCovariateData care site from visit_occurrence tests", {
     inner_join(visitOccurrence %>%
                  select(subjectId = personId,
                         visitStartDate),
-               by = "subjectId") %>%
+               by = "subjectId",
+               relationship = "many-to-many") %>%
     mutate(cohortStartDate = visitStartDate, cohortEndDate = visitStartDate) %>%
     select(-visitStartDate) %>%
     filter(!duplicated(subjectId))

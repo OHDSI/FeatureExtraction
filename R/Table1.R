@@ -581,13 +581,15 @@ createTable1 <- function(covariateData1,
 #'
 #' @examples
 #' \dontrun{
-#' table1CovSettings <- createTable1CovariateSettings(specifications = getDefaultTable1Specifications(),
-#'                                                    covariateSettings = createDefaultCovariateSettings(),
-#'                                                    includedCovariateConceptIds = c(),
-#'                                                    addDescendantsToInclude = FALSE,
-#'                                                    excludedCovariateConceptIds = c(),
-#'                                                    addDescendantsToExclude = FALSE,
-#'                                                    includedCovariateIds = c())
+#' table1CovSettings <- createTable1CovariateSettings(
+#'   specifications = getDefaultTable1Specifications(),
+#'   covariateSettings = createDefaultCovariateSettings(),
+#'   includedCovariateConceptIds = c(),
+#'   addDescendantsToInclude = FALSE,
+#'   excludedCovariateConceptIds = c(),
+#'   addDescendantsToExclude = FALSE,
+#'   includedCovariateIds = c()
+#' )
 #' }
 #' @export
 createTable1CovariateSettings <- function(specifications = getDefaultTable1Specifications(),
