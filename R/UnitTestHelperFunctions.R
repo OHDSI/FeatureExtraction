@@ -44,7 +44,7 @@
 #' @param oracleTempSchema       A schema where temp tables can be created in Oracle.
 #' @param cdmDatabaseSchema      The name of the database schema that contains the OMOP CDM instance.
 #'                               Requires read permissions to this database. On SQL Server, this should
-#'                               specifiy both the database and the schema, so for example
+#'                               specify both the database and the schema, so for example
 #'                               'cdm_instance.dbo'.
 #' @param cohortTable            Name of the (temp) table holding the cohort for which we want to
 #'                               construct covariates

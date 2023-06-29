@@ -224,10 +224,10 @@ getDbHdpsCovariateData <- function(connection,
 #' Create HDPS covariate settings
 #'
 #' @details
-#' creates an object specifying how covariates should be contructed from data in the CDM model.
+#' creates an object specifying how covariates should be constructed from data in the CDM model.
 #'
 #' @param useCovariateCohortIdIs1                             A boolean value (TRUE/FALSE) to determine
-#'                                                            if a covariate should be contructed for
+#'                                                            if a covariate should be constructed for
 #'                                                            whether the cohort ID is 1 (currently
 #'                                                            primarily used in CohortMethod).
 #' @param useCovariateDemographics                            A boolean value (TRUE/FALSE) to determine

@@ -19,7 +19,7 @@
 #' Create covariate settings
 #'
 #' @details
-#' creates an object specifying how covariates should be contructed from data in the CDM model.
+#' creates an object specifying how covariates should be constructed from data in the CDM model.
 #'
 #' @param useDemographicsGender                                Gender of the subject. (analysis ID 1)
 #' @param useDemographicsAge                                   Age of the subject on the index date (in

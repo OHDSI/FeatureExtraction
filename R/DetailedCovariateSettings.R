@@ -19,7 +19,7 @@
 #' Create detailed covariate settings
 #'
 #' @details
-#' creates an object specifying in detail how covariates should be contructed from data in the CDM
+#' creates an object specifying in detail how covariates should be constructed from data in the CDM
 #' model. Warning: this function is for advanced users only.
 #'
 #' @param analyses   A list of \code{analysisDetail} objects as created using
@@ -62,7 +62,7 @@ createDetailedCovariateSettings <- function(analyses = list()) {
 #' Create detailed temporal covariate settings
 #'
 #' @details
-#' creates an object specifying in detail how temporal covariates should be contructed from data in
+#' creates an object specifying in detail how temporal covariates should be constructed from data in
 #' the CDM model. Warning: this function is for advanced users only.
 #'
 #' @param analyses            A list of analysis detail objects as created using
@@ -120,7 +120,7 @@ createDetailedTemporalCovariateSettings <- function(analyses = list(),
 #' Create detailed covariate settings
 #'
 #' @details
-#' creates an object specifying in detail how covariates should be contructed from data in the CDM
+#' creates an object specifying in detail how covariates should be constructed from data in the CDM
 #' model. Warning: this function is for advanced users only.
 #'
 #' @param analysisId                    An integer between 0 and 999 that uniquely identifies this

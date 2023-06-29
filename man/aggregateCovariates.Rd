@@ -18,9 +18,11 @@ Aggregate covariate data
 }
 \examples{
 \dontrun{
-covariateData <- FeatureExtraction:::createEmptyCovariateData(cohortId = 1, 
-                                                              aggregated = FALSE, 
-                                                              temporal = FALSE)
+covariateData <- FeatureExtraction:::createEmptyCovariateData(
+  cohortId = 1,
+  aggregated = FALSE,
+  temporal = FALSE
+)
 aggregatedCovariateData <- aggregateCovariates(covariateData)
 }
 

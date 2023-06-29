@@ -35,11 +35,13 @@ Create default covariate settings
 }
 \examples{
 \dontrun{
-covSettings <- createDefaultTemporalCovariateSettings(includedCovariateConceptIds = c(1),
-                                                      addDescendantsToInclude = FALSE,
-                                                      excludedCovariateConceptIds = c(2),
-                                                      addDescendantsToExclude = FALSE,
-                                                      includedCovariateIds = c(1))
+covSettings <- createDefaultTemporalCovariateSettings(
+  includedCovariateConceptIds = c(1),
+  addDescendantsToInclude = FALSE,
+  excludedCovariateConceptIds = c(2),
+  addDescendantsToExclude = FALSE,
+  includedCovariateIds = c(1)
+)
 }
 
 }

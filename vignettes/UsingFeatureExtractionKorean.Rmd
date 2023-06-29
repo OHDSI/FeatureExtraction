@@ -468,7 +468,7 @@ covariatesContinuous의 컬럼은 다음과 같이 정의된다
 
 - covariateId는 공변량을 식별하며, 공변량의 정의는 cohortData$covariateRef 객체에서 찾을 수 있다
 - countValue는 값이 있는 사람의 수입니다(연속된 변수일 경우)
-- minValue,maxValue,averageValue,standardDeviation,medianValue,p10Value,p25Value,p75Value,p90Value 들은 공변량 값의 분포를 알려준다. 일부 공변량(예: Charlson comorbitity index)의 경우 0 값은 0으로 해석되지만 다른 공변량(예: 혈압)의 경우 0은 누락된 값으로 해석되며 분포 통계는 비누락 값에 대해서만 계산된다는 점을 유의해야 한다. 어떤 연속 공변량이 어떤 범주에 속하는지 알아보려면  covariateData$analysisRef 객체의 missingMeansZero 필드를 참조하면 된다.
+- minValue,maxValue,averageValue,standardDeviation,medianValue,p10Value,p25Value,p75Value,p90Value 들은 공변량 값의 분포를 알려준다. 일부 공변량(예: Charlson comorbidity index)의 경우 0 값은 0으로 해석되지만 다른 공변량(예: 혈압)의 경우 0은 누락된 값으로 해석되며 분포 통계는 비누락 값에 대해서만 계산된다는 점을 유의해야 한다. 어떤 연속 공변량이 어떤 범주에 속하는지 알아보려면  covariateData$analysisRef 객체의 missingMeansZero 필드를 참조하면 된다.
 
 ##  테이블 만들기 1
 

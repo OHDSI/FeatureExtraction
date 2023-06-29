@@ -19,19 +19,19 @@ createCohortBasedTemporalCovariateSettings(
 \arguments{
 \item{analysisId}{A unique identifier for this analysis.}
 
-\item{covariateCohortDatabaseSchema}{The database schema where the cohorts used to define the covariates 
-can be found. If set to \code{NULL}, the database schema will be 
+\item{covariateCohortDatabaseSchema}{The database schema where the cohorts used to define the covariates
+can be found. If set to \code{NULL}, the database schema will be
 guessed, for example using the same one as for the main cohorts.}
 
-\item{covariateCohortTable}{The table where the cohorts used to define the covariates 
-can be found. If set to \code{NULL}, the table will be 
+\item{covariateCohortTable}{The table where the cohorts used to define the covariates
+can be found. If set to \code{NULL}, the table will be
 guessed, for example using the same one as for the main cohorts.}
 
-\item{covariateCohorts}{A data frame with at least two columns: 'cohortId' and 'cohortName'. The 
+\item{covariateCohorts}{A data frame with at least two columns: 'cohortId' and 'cohortName'. The
 cohort  ID should correspond to the \code{cohort_definition_id} of the cohort
 to use for creating a covariate.}
 
-\item{valueType}{Either 'binary' or 'count'. When \code{valueType = 'count'}, the covariate 
+\item{valueType}{Either 'binary' or 'count'. When \code{valueType = 'count'}, the covariate
 value will be the number of times the cohort was observed in the window.}
 
 \item{temporalStartDays}{A list of integers representing the start of a time
@@ -48,7 +48,7 @@ period.}
 
 \item{includedCovariateIds}{A list of covariate IDs that should be restricted to.}
 
-\item{warnOnAnalysisIdOverlap}{Warn if the provided `analysisId` overlaps with any predefined analysis as 
+\item{warnOnAnalysisIdOverlap}{Warn if the provided `analysisId` overlaps with any predefined analysis as
 available in the `createTemporalCovariateSettings()` function.}
 }
 \value{

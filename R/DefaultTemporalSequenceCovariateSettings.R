@@ -19,7 +19,7 @@
 #' Create covariate settings
 #'
 #' @details
-#' creates an object specifying how covariates should be contructed from data in the CDM model.
+#' creates an object specifying how covariates should be constructed from data in the CDM model.
 #'
 #' @param useDemographicsGender                    Gender of the subject. (analysis ID 1)
 #' @param useDemographicsAge                       Age of the subject on the index date (in years).
@@ -47,7 +47,7 @@
 #' @param useDrugEraStart                          One covariate per drug in the drug_era table
 #'                                                 starting in the time window. (analysis ID 401)
 #' @param useDrugEraGroupStart                     One covariate per drug rolled up to ATC groups in
-#'                                                 the drug_era table starting in thetime window.
+#'                                                 the drug_era table starting in the time window.
 #'                                                 (analysis ID 403)
 #' @param useProcedureOccurrence                   One covariate per procedure in the
 #'                                                 procedure_occurrence table in the time window.

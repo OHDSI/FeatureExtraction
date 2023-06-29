@@ -26,7 +26,7 @@ should be specified.}
 
 \item{cdmDatabaseSchema}{The name of the database schema that contains the OMOP CDM instance.
 Requires read permissions to this database. On SQL Server, this should
-specifiy both the database and the schema, so for example
+specify both the database and the schema, so for example
 'cdm_instance.dbo'.}
 
 \item{cohortTable}{Name of the (temp) table holding the cohort for which we want to
@@ -58,20 +58,23 @@ Get covariate information from the database
 \dontrun{
 eunomiaConnectionDetails <- Eunomia::getEunomiaConnectionDetails()
 covSettings <- .createLooCovariateSettings(useLengthOfObs = TRUE)
-Eunomia::createCohorts(connectionDetails = eunomiaConnectionDetails,
-                       cdmDatabaseSchema = "main",
-                       cohortDatabaseSchema = "main",
-                       cohortTable = "cohort")
+Eunomia::createCohorts(
+  connectionDetails = eunomiaConnectionDetails,
+  cdmDatabaseSchema = "main",
+  cohortDatabaseSchema = "main",
+  cohortTable = "cohort"
+)
 connection <- DatabaseConnector::connect(connectionDetails)
 looCovariateData <- .getDbLooCovariateData(connection,
-                                           oracleTempSchema = NULL,
-                                           cdmDatabaseSchema = "main",
-                                           cohortTable = "cohort",
-                                           cohortId = 1,
-                                           cdmVersion = "5",
-                                           rowIdField = "subject_id",
-                                           covariateSettings = covSettings,
-                                           aggregated = FALSE)
+  oracleTempSchema = NULL,
+  cdmDatabaseSchema = "main",
+  cohortTable = "cohort",
+  cohortId = 1,
+  cdmVersion = "5",
+  rowIdField = "subject_id",
+  covariateSettings = covSettings,
+  aggregated = FALSE
+)
 }
 
 }

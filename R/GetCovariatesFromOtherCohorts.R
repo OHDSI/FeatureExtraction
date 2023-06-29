@@ -168,7 +168,7 @@ getDbCohortBasedCovariatesData <- function(connection,
 #' @param endDay                        What is the end day (relative to the index date) of the covariate window?
 #' @param includedCovariateIds          A list of covariate IDs that should be restricted to.
 #' @param warnOnAnalysisIdOverlap       Warn if the provided `analysisId` overlaps with any predefined analysis as
-#'                                      available in the `createCoverateSettings()` function.
+#'                                      available in the `createCovariateSettings()` function.
 #'
 #' @return
 #' An object of type \code{covariateSettings}, to be used in other functions.
