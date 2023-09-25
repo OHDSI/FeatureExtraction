@@ -1,3 +1,10 @@
+FeatureExtraction 3.3.1
+=======================
+
+Bug Fixes:
+
+- Fixes unit tests running on GitHub Actions (#211) 
+
 FeatureExtraction 3.3.0
 =======================
 
