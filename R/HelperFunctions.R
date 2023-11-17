@@ -1,4 +1,4 @@
-# Copyright 2021 Observational Health Data Sciences and Informatics
+# Copyright 2023 Observational Health Data Sciences and Informatics
 #
 # This file is part of FeatureExtraction
 #
@@ -21,20 +21,40 @@
 #'
 #' @return
 #' An object of type \code{covariateData}.
+#'
+#' @examples
+#' \dontrun{
+#' covariateData <- FeatureExtraction:::createEmptyCovariateData(
+#'   cohortId = 1,
+#'   aggregated = FALSE,
+#'   temporal = FALSE
+#' )
+#'
+#' covData <- filterByRowId(
+#'   covariateData = covariateData,
+#'   rowIds = 1
+#' )
+#' }
+#'
 #' @export
 filterByRowId <- function(covariateData, rowIds) {
-  if (!isCovariateData(covariateData))
+  if (!isCovariateData(covariateData)) {
     stop("Data not of class CovariateData")
-  if (!Andromeda::isValidAndromeda(covariateData)) 
+  }
+  if (!Andromeda::isValidAndromeda(covariateData)) {
     stop("CovariateData object is closed")
-  if (isAggregatedCovariateData(covariateData))
+  }
+  if (isAggregatedCovariateData(covariateData)) {
     stop("Cannot filter aggregated data by rowId")
+  }
   covariates <- covariateData$covariates %>%
-    filter(.data$rowId %in% rowIds)
-  
-  result <- Andromeda::andromeda(covariates = covariates,
-                                 covariateRef = covariateData$covariateRef,
-                                 analysisRef = covariateData$analysisRef)
+    filter(rowId %in% rowIds)
+
+  result <- Andromeda::andromeda(
+    covariates = covariates,
+    covariateRef = covariateData$covariateRef,
+    analysisRef = covariateData$analysisRef
+  )
   metaData <- attr(covariateData, "metaData")
   metaData$populationSize <- length(rowIds)
   attr(result, "metaData") <- metaData
@@ -42,33 +62,39 @@ filterByRowId <- function(covariateData, rowIds) {
   return(result)
 }
 
-#' Filter covariates by cohort definition ID
-#'
-#' @param covariateData  An object of type \code{CovariateData}
-#' @param cohortId       The cohort definition ID to keep.
-#'
-#' @return
-#' An object of type \code{covariateData}.
-#' @export
-filterByCohortDefinitionId <- function(covariateData, cohortId) {
-    stop("filterByCohortDefinitionId has been deprecated, please use filterByCohortDefinitionIds")
-}
-  
 #' Filter covariates by cohort definition IDs
 #'
 #' @param covariateData  An object of type \code{CovariateData}
-#' @param cohortIds      The cohort definitions IDs to keep.
+#' @param cohortIds      The cohort definition IDs to keep.
 #'
 #' @return
 #' An object of type \code{covariateData}.
+#'
+#' @examples
+#' \dontrun{
+#' covariateData <- FeatureExtraction:::createEmptyCovariateData(
+#'   cohortId = 1,
+#'   aggregated = FALSE,
+#'   temporal = FALSE
+#' )
+#'
+#' covData <- filterByCohortDefinitionIds(
+#'   covariateData = covariateData,
+#'   cohortIds = c(1)
+#' )
+#' }
+#'
 #' @export
 filterByCohortDefinitionIds <- function(covariateData, cohortIds) {
-  if (!isCovariateData(covariateData))
+  if (!isCovariateData(covariateData)) {
     stop("Data not of class CovariateData")
-  if (!Andromeda::isValidAndromeda(covariateData)) 
+  }
+  if (!Andromeda::isValidAndromeda(covariateData)) {
     stop("CovariateData object is closed")
-  if (!isAggregatedCovariateData(covariateData))
+  }
+  if (!isAggregatedCovariateData(covariateData)) {
     stop("Can only filter aggregated data by cohortIds")
+  }
   if (is.null(covariateData$covariates)) {
     covariates <- NULL
   } else {
@@ -81,14 +107,27 @@ filterByCohortDefinitionIds <- function(covariateData, cohortIds) {
     covariatesContinuous <- covariateData$covariatesContinuous %>%
       filter(.data$cohortDefinitionId %in% cohortIds)
   }
-  result <- Andromeda::andromeda(covariates = covariates,
-                                 covariatesContinuous = covariatesContinuous,
-                                 covariateRef = covariateData$covariateRef,
-                                 analysisRef = covariateData$analysisRef)
+  result <- Andromeda::andromeda(
+    covariates = covariates,
+    covariatesContinuous = covariatesContinuous,
+    covariateRef = covariateData$covariateRef,
+    analysisRef = covariateData$analysisRef
+  )
   metaData <- attr(covariateData, "metaData")
   metaData$populationSize <- metaData$populationSize[as.numeric(names(metaData$populationSize)) %in% cohortIds]
   attr(result, "metaData") <- metaData
   class(result) <- "CovariateData"
   attr(class(result), "package") <- "FeatureExtraction"
   return(result)
+}
+
+.assertCovariateId <- function(covariateId, len = NULL, min.len = NULL, null.ok = FALSE, add = NULL) {
+  checkmate::assertNumeric(covariateId, null.ok = null.ok, len = len, min.len = 1, add = add)
+  if (!is.null(covariateId)) {
+    message <- sprintf(
+      "Variable '%s' is a (64-bit) integer",
+      paste0(deparse(eval.parent(substitute(substitute(covariateId))), width.cutoff = 500L), collapse = "\n")
+    )
+    checkmate::assertTRUE(all(covariateId == round(covariateId)), .var.name = message, add = add)
+  }
 }

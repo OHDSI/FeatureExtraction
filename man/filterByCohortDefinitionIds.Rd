@@ -9,11 +9,26 @@ filterByCohortDefinitionIds(covariateData, cohortIds)
 \arguments{
 \item{covariateData}{An object of type \code{CovariateData}}
 
-\item{cohortIds}{The cohort definitions IDs to keep.}
+\item{cohortIds}{The cohort definition IDs to keep.}
 }
 \value{
 An object of type \code{covariateData}.
 }
 \description{
 Filter covariates by cohort definition IDs
+}
+\examples{
+\dontrun{
+covariateData <- FeatureExtraction:::createEmptyCovariateData(
+  cohortId = 1,
+  aggregated = FALSE,
+  temporal = FALSE
+)
+
+covData <- filterByCohortDefinitionIds(
+  covariateData = covariateData,
+  cohortIds = c(1)
+)
+}
+
 }

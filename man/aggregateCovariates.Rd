@@ -16,3 +16,14 @@ An object of class \code{covariateData}.
 \description{
 Aggregate covariate data
 }
+\examples{
+\dontrun{
+covariateData <- FeatureExtraction:::createEmptyCovariateData(
+  cohortId = 1,
+  aggregated = FALSE,
+  temporal = FALSE
+)
+aggregatedCovariateData <- aggregateCovariates(covariateData)
+}
+
+}

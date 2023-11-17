@@ -2,20 +2,29 @@
 % Please edit documentation in R/CovariateData.R
 \name{createEmptyCovariateData}
 \alias{createEmptyCovariateData}
-\title{Create an empty CovariateData object}
+\title{Creates an empty covariate data object}
 \usage{
 createEmptyCovariateData(cohortIds, aggregated, temporal)
 }
 \arguments{
 \item{cohortIds}{For which cohort IDs should the covariate data be created?}
 
-\item{aggregated}{if the covariate data is aggregated}
+\item{aggregated}{if the data should be aggregated}
 
-\item{temporal}{if the covariate data is temporal}
+\item{temporal}{if the data is temporary}
 }
 \value{
 the empty CovariateData object
 }
 \description{
-Create an empty CovariateData object
+Creates an empty covariate data object
+}
+\examples{
+\dontrun{
+covariateData <- FeatureExtraction:::createEmptyCovariateData(
+  cohortId = 1,
+  aggregated = FALSE,
+  temporal = FALSE
+)
+}
 }

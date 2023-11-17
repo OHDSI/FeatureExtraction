@@ -29,8 +29,10 @@ test_that("Test empty covariateData", {
 test_that("tidyCovariates works", {
   # Generate some data:
   createCovariate <- function(i, analysisId) {
-    return(tibble(covariateId = rep(i * 1000 + analysisId, i),
-                          covariateValue = rep(1,i)))
+    return(tibble(
+      covariateId = rep(i * 1000 + analysisId, i),
+      covariateValue = rep(1, i)
+    ))
   }
   covariates <- lapply(1:10, createCovariate, analysisId = 1)
   covariates <- do.call("rbind", covariates)
@@ -42,11 +44,15 @@ test_that("tidyCovariates works", {
   infrequentCovariate$rowId <- sample.int(metaData$populationSize, nrow(infrequentCovariate), replace = FALSE)
   covariates <- rbind(covariates, frequentCovariate, infrequentCovariate)
 
-  covariateRef <- tibble(covariateId = c(1:10 * 1000 + 1, 40002, 1003),
-                                 analysisId = c(rep(1, 10), 2, 3))
+  covariateRef <- tibble(
+    covariateId = c(1:10 * 1000 + 1, 40002, 1003),
+    analysisId = c(rep(1, 10), 2, 3)
+  )
 
-  covariateData <- Andromeda::andromeda(covariates = covariates,
-                                        covariateRef = covariateRef)
+  covariateData <- Andromeda::andromeda(
+    covariates = covariates,
+    covariateRef = covariateRef
+  )
   attr(covariateData, "metaData") <- metaData
   class(covariateData) <- "CovariateData"
 

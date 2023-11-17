@@ -1,12 +1,12 @@
 # This file covers the code in CovariateData.R. View coverage for this file using
-#library(testthat); library(FeatureExtraction)
-#covr::file_report(covr::file_coverage("R/CovariateData.R", "tests/testthat/test-CovariateData.R"))
+# library(testthat); library(FeatureExtraction)
+# covr::file_report(covr::file_coverage("R/CovariateData.R", "tests/testthat/test-CovariateData.R"))
 
 test_that("test CovariateData Class on Empty", {
   skip_if_not(runTestsOnEunomia)
-  #create 4 scenarios of Covariate Data
-  #1) error (non class), 2) covariate data, 3) aggregatedCovariate Data,
-  #4) temporalCovariate Data
+  # create 4 scenarios of Covariate Data
+  # 1) error (non class), 2) covariate data, 3) aggregatedCovariate Data,
+  # 4) temporalCovariate Data
 
   errCovData <- list()
 
@@ -21,20 +21,20 @@ test_that("test CovariateData Class on Empty", {
                                                               aggregated = FALSE,
                                                               temporal = TRUE)
 
-  #check that objects are covariate Data class
+  # check that objects are covariate Data class
   expect_false(isCovariateData(errCovData))
   expect_true(isCovariateData(covData))
   expect_true(isCovariateData(aggCovData))
   expect_true(isCovariateData(tempCovData))
 
-  #check that objects are aggregate covariate data class
+  # check that objects are aggregate covariate data class
   expect_error(isAggregatedCovariateData(errCovData))
   expect_false(isAggregatedCovariateData(covData))
   expect_true(isAggregatedCovariateData(aggCovData))
   expect_false(isAggregatedCovariateData(tempCovData))
 
 
-  #check that objects are temporal covariate data class
+  # check that objects are temporal covariate data class
   expect_error(isTemporalCovariateData(errCovData))
   expect_false(isTemporalCovariateData(covData))
   expect_false(isTemporalCovariateData(aggCovData))
@@ -58,11 +58,13 @@ test_that("test saveCovariateData error cases", {
   #create error for test
   errCovData <- list()
 
-  expect_error(saveCovariateData()) #empty call error
-  expect_error(saveCovariateData(covariateData)) #no file error
-  expect_error(saveCovariateData(errCovData, file = saveFileTest)) #non covariateData class error
-  expect_message(saveCovariateData(covariateData, file = saveFileTest),
-                        "Disconnected Andromeda. This data object can no longer be used")
+  expect_error(saveCovariateData()) # empty call error
+  expect_error(saveCovariateData(covariateData)) # no file error
+  expect_error(saveCovariateData(errCovData, file = saveFileTest)) # non covariateData class error
+  expect_message(
+    saveCovariateData(covariateData, file = saveFileTest),
+    "Disconnected Andromeda. This data object can no longer be used"
+  )
   Andromeda::close(covariateData)
   unlink(saveFileTest)
 })
@@ -91,7 +93,7 @@ test_that("Test exit/warning conditions", {
   tempDir <- tempdir()
   expect_error(loadCovariateData(file = tempDir))
   on.exit(unlink(tempDir))
-  
+
   # ReadOnly parameter depreciated  
   cvData <- FeatureExtraction:::createEmptyCovariateData(cohortIds = 1, aggregated = FALSE, temporal = FALSE)
   tempFile <- tempfile()

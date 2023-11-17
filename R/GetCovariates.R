@@ -1,4 +1,4 @@
-# Copyright 2021 Observational Health Data Sciences and Informatics
+# Copyright 2023 Observational Health Data Sciences and Informatics
 #
 # This file is part of FeatureExtraction
 #
@@ -36,14 +36,14 @@
 #' @param oracleTempSchema       A schema where temp tables can be created in Oracle.
 #' @param cdmDatabaseSchema      The name of the database schema that contains the OMOP CDM instance.
 #'                               Requires read permissions to this database. On SQL Server, this should
-#'                               specifiy both the database and the schema, so for example
+#'                               specify both the database and the schema, so for example
 #'                               'cdm_instance.dbo'.
 #' @param cdmVersion             Define the OMOP CDM version used: currently supported is "5".
 #' @param cohortTable            Name of the (temp) table holding the cohort for which we want to
 #'                               construct covariates
 #' @param cohortDatabaseSchema   If the cohort table is not a temp table, specify the database schema
 #'                               where the cohort table can be found. On SQL Server, this should
-#'                               specifiy both the database and the schema, so for example
+#'                               specify both the database and the schema, so for example
 #'                               'cdm_instance.dbo'.
 #' @param cohortTableIsTemp      Is the cohort table a temp table?
 #' @param cohortId               DEPRECATED:For which cohort ID(s) should covariates be constructed? If set to -1,
@@ -62,6 +62,31 @@
 #'
 #' @return
 #' Returns an object of type \code{covariateData}, containing information on the covariates.
+#'
+#' @examples
+#' \dontrun{
+#' eunomiaConnectionDetails <- Eunomia::getEunomiaConnectionDetails()
+#' covSettings <- createDefaultCovariateSettings()
+#' Eunomia::createCohorts(
+#'   connectionDetails = eunomiaConnectionDetails,
+#'   cdmDatabaseSchema = "main",
+#'   cohortDatabaseSchema = "main",
+#'   cohortTable = "cohort"
+#' )
+#' covData <- getDbCovariateData(
+#'   connectionDetails = eunomiaConnectionDetails,
+#'   oracleTempSchema = NULL,
+#'   cdmDatabaseSchema = "main",
+#'   cdmVersion = "5",
+#'   cohortTable = "cohort",
+#'   cohortDatabaseSchema = "main",
+#'   cohortTableIsTemp = FALSE,
+#'   cohortId = -1,
+#'   rowIdField = "subject_id",
+#'   covariateSettings = covSettings,
+#'   aggregated = FALSE
+#' )
+#' }
 #'
 #' @export
 getDbCovariateData <- function(connectionDetails = NULL,
@@ -146,7 +171,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
           if (hasData(covariateData$covariates)) {
             if (hasData(tempCovariateData$covariates)) {
               Andromeda::appendToTable(covariateData$covariates, tempCovariateData$covariates)
-            } 
+            }
           } else if (hasData(tempCovariateData$covariates)) {
             covariateData$covariates <- tempCovariateData$covariates
           }
@@ -156,15 +181,17 @@ getDbCovariateData <- function(connectionDetails = NULL,
             } else if (hasData(tempCovariateData$covariatesContinuous)) {
               covariateData$covariatesContinuous <- tempCovariateData$covariatesContinuous
             }
-          } 
+          }
           Andromeda::appendToTable(covariateData$covariateRef, tempCovariateData$covariateRef)
           Andromeda::appendToTable(covariateData$analysisRef, tempCovariateData$analysisRef)
           for (name in names(attr(tempCovariateData, "metaData"))) {
             if (is.null(attr(covariateData, "metaData")[name])) {
               attr(covariateData, "metaData")[[name]] <- attr(tempCovariateData, "metaData")[[name]]
             } else {
-              attr(covariateData, "metaData")[[name]] <- list(attr(covariateData, "metaData")[[name]],
-                                                              attr(tempCovariateData, "metaData")[[name]])
+              attr(covariateData, "metaData")[[name]] <- list(
+                attr(covariateData, "metaData")[[name]],
+                attr(tempCovariateData, "metaData")[[name]]
+              )
             }
           }
         }

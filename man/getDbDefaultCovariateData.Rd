@@ -59,8 +59,8 @@ of the createCovariate functions, or a list of such objects.}
 should be stored.}
 
 \item{targetCovariateTable}{(Optional) The name of the table where the resulting covariates will
-be stored. If not provided, results will be fetched to R. The table can be 
-a permanent table in the \code{targetDatabaseSchema} or a temp table. If 
+be stored. If not provided, results will be fetched to R. The table can be
+a permanent table in the \code{targetDatabaseSchema} or a temp table. If
 it is a temp table, do not specify \code{targetDatabaseSchema}.}
 
 \item{targetCovariateRefTable}{(Optional) The name of the table where the covariate reference will be stored.}
@@ -92,4 +92,22 @@ cohort. The cohort is assumed to be in an existing temp table with these fields:
 'cohort_definition_id', 'cohort_start_date'. Optionally, an extra field can be added containing the
 unique identifier that will be used as rowID in the output. Typically, users don't call this
 function directly but rather use the \code{\link{getDbCovariateData}} function instead.
+}
+\examples{
+\dontrun{
+connection <- DatabaseConnector::connect(connectionDetails)
+Eunomia::createCohorts(connectionDetails)
+
+results <- getDbDefaultCovariateData(
+  connection = connection,
+  cdmDatabaseSchema = "main",
+  cohortTable = "cohort",
+  covariateSettings = createDefaultCovariateSettings(),
+  targetDatabaseSchema = "main",
+  targetCovariateTable = "ut_cov",
+  targetCovariateRefTable = "ut_cov_ref",
+  targetAnalysisRefTable = "ut_cov_analysis_ref"
+)
+}
+
 }

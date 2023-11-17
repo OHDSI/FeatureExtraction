@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,32 +33,26 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">FeatureExtraction</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">3.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.3.1</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li>
-  <a href="../news/index.html">Changelog</a>
-</li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/CreatingCovariatesBasedOnOtherCohorts.html">Creating covariates based on other cohorts</a>
+    </li>
+    <li>
       <a href="../articles/CreatingCovariatesUsingCohortAttributes.html">Creating covariates using cohort attributes</a>
     </li>
     <li>
@@ -73,13 +69,16 @@
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://ohdsi.github.io/Hades"><img src='https://ohdsi.github.io/Hades/images/hadesMini.png' width=80 height=17 style='vertical-align: top;'></a>
+  <a href="https://ohdsi.github.io/Hades" class="external-link"><img src='https://ohdsi.github.io/Hades/images/hadesMini.png' width=80 height=17 style='vertical-align: top;'></a>
 </li>
 <li>
-  <a href="https://github.com/OHDSI/FeatureExtraction/">
+  <a href="https://github.com/OHDSI/FeatureExtraction/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -94,152 +93,203 @@
 
       
 
-      </header><script src="CreatingCovariatesUsingCohortAttributes_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Creating covariates using cohort attributes</h1>
-                        <h4 class="author">Martijn J. Schuemie</h4>
+                        <h4 data-toc-skip class="author">Martijn J.
+Schuemie</h4>
             
-            <h4 class="date">2021-12-16</h4>
+            <h4 data-toc-skip class="date">2023-09-25</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/OHDSI/FeatureExtraction/blob/master/vignettes/CreatingCovariatesUsingCohortAttributes.Rmd"><code>vignettes/CreatingCovariatesUsingCohortAttributes.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/OHDSI/FeatureExtraction/blob/HEAD/vignettes/CreatingCovariatesUsingCohortAttributes.Rmd" class="external-link"><code>vignettes/CreatingCovariatesUsingCohortAttributes.Rmd</code></a></small>
       <div class="hidden name"><code>CreatingCovariatesUsingCohortAttributes.Rmd</code></div>
 
     </div>
 
     
     
-<div id="introduction" class="section level1">
-<h1 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>Introduction</h1>
-<p>This vignette assumes you are already familiar with the <code>FeatureExtraction</code> package.</p>
-<p>The <code>FeatureExtraction</code> package can generate a default set of covariates, such as one covariate for each condition found in the <code>condition_occurrence</code> table. However, for some reasons one might need other covariates than those included in the default set.</p>
-<p>In the vignette called <code>Creating custom covariate builders</code> a process is described for creating custom covariate builders that create covariates on the fly and can be re-used across studies. In contrast, this vignette describes a process that is probably simpler to use, making use of the <code>cohort_attribute</code> table in the common data model. It assumes the user has already generated the covariates and loaded them in this table. Below we show a simple example of how this can be done.</p>
+<div class="section level2">
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
+<p>This vignette assumes you are already familiar with the
+<code>FeatureExtraction</code> package.</p>
+<p>The <code>FeatureExtraction</code> package can generate a default set
+of covariates, such as one covariate for each condition found in the
+<code>condition_occurrence</code> table. However, for some reasons one
+might need other covariates than those included in the default set.</p>
+<p>In the vignette called
+<code>Creating custom covariate builders</code> a process is described
+for creating custom covariate builders that create covariates on the fly
+and can be re-used across studies. In contrast, this vignette describes
+a process that is probably simpler to use, making use of the
+<code>cohort_attribute</code> table in the common data model. It assumes
+the user has already generated the covariates and loaded them in this
+table. Below we show a simple example of how this can be done.</p>
 </div>
-<div id="overview" class="section level1">
-<h1 class="hasAnchor">
-<a href="#overview" class="anchor"></a>Overview</h1>
-<p>To construct custom covariates, the following steps must be taken:</p>
+<div class="section level2">
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h2>
+<p>To construct custom covariates, the following steps must be
+taken:</p>
 <ol style="list-style-type: decimal">
-<li>Populate a table with the same structure as the <code>cohort_attribute</code> table in the common data model.</li>
-<li>Populate a table with the same structure as the <code>attribute_definition</code> table in the common data model.</li>
-<li>Use the <code>createCohortAttrCovariateSettings</code> function to create a <code>covariateSettings</code> object pointing to the two tables mentioned in the previous steps.</li>
+<li>Populate a table with the same structure as the
+<code>cohort_attribute</code> table in the common data model.</li>
+<li>Populate a table with the same structure as the
+<code>attribute_definition</code> table in the common data model.</li>
+<li>Use the <code>createCohortAttrCovariateSettings</code> function to
+create a <code>covariateSettings</code> object pointing to the two
+tables mentioned in the previous steps.</li>
 </ol>
-<div id="populating-the-cohort_attribute-and-attribute_definition-tables" class="section level2">
-<h2 class="hasAnchor">
-<a href="#populating-the-cohort_attribute-and-attribute_definition-tables" class="anchor"></a>Populating the cohort_attribute and attribute_definition tables</h2>
-<p>The <code>cohort_attribute</code> should specify the values of the covariates for every person-<code>cohort_start_date</code> combination in the cohort(s) of interest. It should at least have the following fields:</p>
+<div class="section level3">
+<h3 id="populating-the-cohort_attribute-and-attribute_definition-tables">Populating the cohort_attribute and attribute_definition tables<a class="anchor" aria-label="anchor" href="#populating-the-cohort_attribute-and-attribute_definition-tables"></a>
+</h3>
+<p>The <code>cohort_attribute</code> should specify the values of the
+covariates for every person-<code>cohort_start_date</code> combination
+in the cohort(s) of interest. It should at least have the following
+fields:</p>
 <ul>
 <li>
-<code>cohort_definition_id</code>, A key to link to the cohort table. Note that this will be come the covariate ID, so you should take care that these IDs do not overlap with IDs of other covariate builders that may be used as well.</li>
+<code>cohort_definition_id</code>, A key to link to the cohort
+table. Note that this will be come the covariate ID, so you should take
+care that these IDs do not overlap with IDs of other covariate builders
+that may be used as well.</li>
 <li>‘subject_id’, A key to link to the cohort table.</li>
 <li>‘cohort_start_date’, A key to link to the cohort table.</li>
-<li>‘attribute_definition_id’, An foreign key linking to the attribute definition table.</li>
+<li>‘attribute_definition_id’, An foreign key linking to the attribute
+definition table.</li>
 <li>‘value_as_number’, A real number.</li>
 </ul>
-<p>The first three fields act as a combined key to link the record to an entry in the <code>cohort</code> table.</p>
+<p>The first three fields act as a combined key to link the record to an
+entry in the <code>cohort</code> table.</p>
 <p>Note that records with zero values can be omitted.</p>
-<p>The <code>attribute_definition</code> table defines the attributes. It should have at least the following fields:</p>
+<p>The <code>attribute_definition</code> table defines the attributes.
+It should have at least the following fields:</p>
 <ul>
 <li>‘attribute_definition_id’, A unique identifier of type integer.</li>
 <li>‘attribute_name’, A short description of the attribute.</li>
 </ul>
-<p>The first field links to the <code>cohort_attribute</code> table, the second field is used as the covariate name.</p>
+<p>The first field links to the <code>cohort_attribute</code> table, the
+second field is used as the covariate name.</p>
 </div>
 </div>
-<div id="example" class="section level1">
-<h1 class="hasAnchor">
-<a href="#example" class="anchor"></a>Example</h1>
-<div id="creating-the-cohort-attributes-and-attributes-definitions" class="section level2">
-<h2 class="hasAnchor">
-<a href="#creating-the-cohort-attributes-and-attributes-definitions" class="anchor"></a>Creating the cohort attributes and attributes definitions</h2>
-<p>In this example we will create a single covariate: the length of observation (LOO) prior to the <code>cohort_start_date</code>. We use the following SQL to construct a <code>cohort_attribute</code> table and a <code>attribute_definition</code> table:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">/***********************************</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">File LengthOfObsCohortAttr.sql </span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">***********************************/</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="cf">IF</span> OBJECT_ID(<span class="st">'@cohort_database_schema.@cohort_attribute_table'</span>, <span class="st">'U'</span>) <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">DROP</span> <span class="kw">TABLE</span> @cohort_database_schema.@cohort_attribute_table;</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="cf">IF</span> OBJECT_ID(<span class="st">'@cohort_database_schema.@attribute_definition_table'</span>, <span class="st">'U'</span>) <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">DROP</span> <span class="kw">TABLE</span> @cohort_database_schema.@attribute_definition_table;</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> cohort_definition_id,</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    subject_id,</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    cohort_start_date,</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span> <span class="kw">AS</span> attribute_definition_id,</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    DATEDIFF(<span class="dt">DAY</span>, observation_period_start_date, cohort_start_date) <span class="kw">AS</span> value_as_number</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="kw">INTO</span> @cohort_database_schema.@cohort_attribute_table</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> @cohort_database_schema.@cohort_table cohort</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="kw">INNER</span> <span class="kw">JOIN</span> @cdm_database_schema.observation_period op</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">ON</span> op.person_id <span class="op">=</span> cohort.subject_id</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> cohort_start_date <span class="op">&gt;=</span> observation_period_start_date</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">AND</span> cohort_start_date <span class="op">&lt;=</span> observation_period_end_date</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>{@cohort_definition_ids <span class="op">!=</span> <span class="st">''</span>} ? {</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="kw">AND</span> cohort_definition_id <span class="kw">IN</span> (@cohort_definition_ids)</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>;</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> <span class="dv">1</span> <span class="kw">AS</span> attribute_definition_id,</span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  <span class="st">'Length of observation in days'</span> <span class="kw">AS</span> attribute_name</span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="kw">INTO</span> @cohort_database_schema.@attribute_definition_table;</span></code></pre></div>
-<p>We substitute the arguments in this SQL with actual values, translate it to the right SQL dialect, and execute the SQL using <code>SqlRender</code>:</p>
+<div class="section level2">
+<h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
+</h2>
+<div class="section level3">
+<h3 id="creating-the-cohort-attributes-and-attributes-definitions">Creating the cohort attributes and attributes definitions<a class="anchor" aria-label="anchor" href="#creating-the-cohort-attributes-and-attributes-definitions"></a>
+</h3>
+<p>In this example we will create a single covariate: the length of
+observation (LOO) prior to the <code>cohort_start_date</code>. We use
+the following SQL to construct a <code>cohort_attribute</code> table and
+a <code>attribute_definition</code> table:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co">/***********************************</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="co">File LengthOfObsCohortAttr.sql </span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="co">***********************************/</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="cf">IF</span> OBJECT_ID(<span class="st">'@cohort_database_schema.@cohort_attribute_table'</span>, <span class="st">'U'</span>) <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>    <span class="kw">DROP</span> <span class="kw">TABLE</span> @cohort_database_schema.@cohort_attribute_table;</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>    </span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="cf">IF</span> OBJECT_ID(<span class="st">'@cohort_database_schema.@attribute_definition_table'</span>, <span class="st">'U'</span>) <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>    <span class="kw">DROP</span> <span class="kw">TABLE</span> @cohort_database_schema.@attribute_definition_table;</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>    </span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="kw">SELECT</span> cohort_definition_id,</span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>    subject_id,</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>    cohort_start_date,</span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>    <span class="dv">1</span> <span class="kw">AS</span> attribute_definition_id,</span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>    DATEDIFF(<span class="dt">DAY</span>, observation_period_start_date, cohort_start_date) <span class="kw">AS</span> value_as_number</span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a><span class="kw">INTO</span> @cohort_database_schema.@cohort_attribute_table</span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a><span class="kw">FROM</span> @cohort_database_schema.@cohort_table cohort</span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a><span class="kw">INNER</span> <span class="kw">JOIN</span> @cdm_database_schema.observation_period op</span>
+<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a>    <span class="kw">ON</span> op.person_id <span class="op">=</span> cohort.subject_id</span>
+<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a><span class="kw">WHERE</span> cohort_start_date <span class="op">&gt;=</span> observation_period_start_date</span>
+<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a>    <span class="kw">AND</span> cohort_start_date <span class="op">&lt;=</span> observation_period_end_date</span>
+<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a>{@cohort_definition_ids <span class="op">!=</span> <span class="st">''</span>} ? {</span>
+<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a>    <span class="kw">AND</span> cohort_definition_id <span class="kw">IN</span> (@cohort_definition_ids)</span>
+<span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a>}</span>
+<span id="cb1-24"><a href="#cb1-24" tabindex="-1"></a>;</span>
+<span id="cb1-25"><a href="#cb1-25" tabindex="-1"></a>    </span>
+<span id="cb1-26"><a href="#cb1-26" tabindex="-1"></a><span class="kw">SELECT</span> <span class="dv">1</span> <span class="kw">AS</span> attribute_definition_id,</span>
+<span id="cb1-27"><a href="#cb1-27" tabindex="-1"></a>  <span class="st">'Length of observation in days'</span> <span class="kw">AS</span> attribute_name</span>
+<span id="cb1-28"><a href="#cb1-28" tabindex="-1"></a><span class="kw">INTO</span> @cohort_database_schema.@attribute_definition_table;</span></code></pre></div>
+<p>We substitute the arguments in this SQL with actual values, translate
+it to the right SQL dialect, and execute the SQL using
+<code>SqlRender</code>:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ohdsi.github.io/SqlRender/">SqlRender</a></span><span class="op">)</span>
-<span class="va">sql</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ohdsi.github.io/SqlRender/reference/readSql.html">readSql</a></span><span class="op">(</span><span class="st">"LengthOfObsCohortAttr.sql"</span><span class="op">)</span>
-<span class="va">sql</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ohdsi.github.io/SqlRender/reference/render.html">render</a></span><span class="op">(</span><span class="va">sql</span>,
-                 cdm_database_schema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>,
-                 cohort_database_schema <span class="op">=</span> <span class="va">cohortDatabaseSchema</span>,
-                 cohort_table <span class="op">=</span> <span class="st">"rehospitalization"</span>,
-                 cohort_attribute_table <span class="op">=</span> <span class="st">"loo_cohort_attr"</span>,
-                 attribute_definition_table <span class="op">=</span> <span class="st">"loo_attr_def"</span>,
-                 cohort_definition_ids <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span>
-<span class="va">sql</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ohdsi.github.io/SqlRender/reference/translate.html">translate</a></span><span class="op">(</span><span class="va">sql</span>, targetDialect <span class="op">=</span> <span class="va">connectionDetails</span><span class="op">$</span><span class="va">dbms</span><span class="op">)</span>
-
-<span class="va">connection</span> <span class="op">&lt;-</span> <span class="fu">connect</span><span class="op">(</span><span class="va">connectionDetails</span><span class="op">)</span>
-<span class="fu">executeSql</span><span class="op">(</span><span class="va">connection</span>, <span class="va">sql</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ohdsi.github.io/SqlRender/" class="external-link">SqlRender</a></span><span class="op">)</span></span>
+<span><span class="va">sql</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ohdsi.github.io/SqlRender/reference/readSql.html" class="external-link">readSql</a></span><span class="op">(</span><span class="st">"LengthOfObsCohortAttr.sql"</span><span class="op">)</span></span>
+<span><span class="va">sql</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ohdsi.github.io/SqlRender/reference/render.html" class="external-link">render</a></span><span class="op">(</span><span class="va">sql</span>,</span>
+<span>  cdm_database_schema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>,</span>
+<span>  cohort_database_schema <span class="op">=</span> <span class="va">cohortDatabaseSchema</span>,</span>
+<span>  cohort_table <span class="op">=</span> <span class="st">"rehospitalization"</span>,</span>
+<span>  cohort_attribute_table <span class="op">=</span> <span class="st">"loo_cohort_attr"</span>,</span>
+<span>  attribute_definition_table <span class="op">=</span> <span class="st">"loo_attr_def"</span>,</span>
+<span>  cohort_definition_ids <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">sql</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ohdsi.github.io/SqlRender/reference/translate.html" class="external-link">translate</a></span><span class="op">(</span><span class="va">sql</span>, targetDialect <span class="op">=</span> <span class="va">connectionDetails</span><span class="op">$</span><span class="va">dbms</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">connection</span> <span class="op">&lt;-</span> <span class="fu">connect</span><span class="op">(</span><span class="va">connectionDetails</span><span class="op">)</span></span>
+<span><span class="fu">executeSql</span><span class="op">(</span><span class="va">connection</span>, <span class="va">sql</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="using-the-attributes-as-covariates" class="section level2">
-<h2 class="hasAnchor">
-<a href="#using-the-attributes-as-covariates" class="anchor"></a>Using the attributes as covariates</h2>
-<p>To use the constructed attributes as covariates in a predictive model, we need to create a <code>covariateSettings</code> object:</p>
+<div class="section level3">
+<h3 id="using-the-attributes-as-covariates">Using the attributes as covariates<a class="anchor" aria-label="anchor" href="#using-the-attributes-as-covariates"></a>
+</h3>
+<p>To use the constructed attributes as covariates in a predictive
+model, we need to create a <code>covariateSettings</code> object:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">looCovSet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCohortAttrCovariateSettings.html">createCohortAttrCovariateSettings</a></span><span class="op">(</span>attrDatabaseSchema <span class="op">=</span> <span class="va">cohortDatabaseSchema</span>,
-                                               cohortAttrTable <span class="op">=</span> <span class="st">"loo_cohort_attr"</span>,
-                                               attrDefinitionTable <span class="op">=</span> <span class="st">"loo_attr_def"</span>,
-                                               includeAttrIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span>,
-                                               isBinary <span class="op">=</span> <span class="cn">FALSE</span>,
-                                               missingMeansZero <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
-<p>Setting <code>isBinary</code> and <code>missingMeansZero</code> is only necessary if we want to aggregate the covariates. We can then use these settings to fetch the <code>covariates</code> object:</p>
+<code class="sourceCode R"><span><span class="va">looCovSet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCohortAttrCovariateSettings.html">createCohortAttrCovariateSettings</a></span><span class="op">(</span></span>
+<span>  attrDatabaseSchema <span class="op">=</span> <span class="va">cohortDatabaseSchema</span>,</span>
+<span>  cohortAttrTable <span class="op">=</span> <span class="st">"loo_cohort_attr"</span>,</span>
+<span>  attrDefinitionTable <span class="op">=</span> <span class="st">"loo_attr_def"</span>,</span>
+<span>  includeAttrIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  isBinary <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  missingMeansZero <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>Setting <code>isBinary</code> and <code>missingMeansZero</code> is
+only necessary if we want to aggregate the covariates. We can then use
+these settings to fetch the <code>covariates</code> object:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">covariates</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span><span class="op">(</span>connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>,
-                                 cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>,
-                                 cohortDatabaseSchema <span class="op">=</span> <span class="va">cohortDatabaseSchema</span>,
-                                 cohortTable <span class="op">=</span> <span class="st">"rehospitalization"</span>,
-                                 cohortId <span class="op">=</span> <span class="fl">1</span>,
-                                 covariateSettings <span class="op">=</span> <span class="va">looCovSet</span><span class="op">)</span></code></pre></div>
-<p>In this case we will have only one covariate for our predictive model, the length of observation. In most cases, we will want our custom covariates in addition to the default covariates. We can do this by creating a list of covariate settings:</p>
+<code class="sourceCode R"><span><span class="va">covariates</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span><span class="op">(</span></span>
+<span>  connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>,</span>
+<span>  cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>,</span>
+<span>  cohortDatabaseSchema <span class="op">=</span> <span class="va">cohortDatabaseSchema</span>,</span>
+<span>  cohortTable <span class="op">=</span> <span class="st">"rehospitalization"</span>,</span>
+<span>  cohortId <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  covariateSettings <span class="op">=</span> <span class="va">looCovSet</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>In this case we will have only one covariate for our predictive
+model, the length of observation. In most cases, we will want our custom
+covariates in addition to the default covariates. We can do this by
+creating a list of covariate settings:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">covariateSettings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCovariateSettings.html">createCovariateSettings</a></span><span class="op">(</span>useDemographicsGender <span class="op">=</span> <span class="cn">TRUE</span>,
-                                             useDemographicsAgeGroup <span class="op">=</span> <span class="cn">TRUE</span>,
-                                             useDemographicsRace <span class="op">=</span> <span class="cn">TRUE</span>,
-                                             useDemographicsEthnicity <span class="op">=</span> <span class="cn">TRUE</span>,
-                                             useDemographicsIndexYear <span class="op">=</span> <span class="cn">TRUE</span>,
-                                             useDemographicsIndexMonth <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="va">looCovSet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCohortAttrCovariateSettings.html">createCohortAttrCovariateSettings</a></span><span class="op">(</span>attrDatabaseSchema <span class="op">=</span> <span class="va">cohortDatabaseSchema</span>,
-                                               cohortAttrTable <span class="op">=</span> <span class="st">"loo_cohort_attr"</span>,
-                                               attrDefinitionTable <span class="op">=</span> <span class="st">"loo_attr_def"</span>,
-                                               includeAttrIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-
-<span class="va">covariateSettingsList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">covariateSettings</span>, <span class="va">looCovSet</span><span class="op">)</span>
-
-<span class="va">covariates</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span><span class="op">(</span>connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>,
-                                 cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>,
-                                 cohortDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span>,
-                                 cohortTable <span class="op">=</span> <span class="st">"rehospitalization"</span>,
-                                 cohortId <span class="op">=</span> <span class="fl">1</span>,
-                                 covariateSettings <span class="op">=</span> <span class="va">covariateSettingsList</span><span class="op">)</span></code></pre></div>
-<p>In this example both demographic covariates and our length of observation covariate will be generated and can be used in our predictive model.</p>
+<code class="sourceCode R"><span><span class="va">covariateSettings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCovariateSettings.html">createCovariateSettings</a></span><span class="op">(</span></span>
+<span>  useDemographicsGender <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  useDemographicsAgeGroup <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  useDemographicsRace <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  useDemographicsEthnicity <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  useDemographicsIndexYear <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  useDemographicsIndexMonth <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">looCovSet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCohortAttrCovariateSettings.html">createCohortAttrCovariateSettings</a></span><span class="op">(</span></span>
+<span>  attrDatabaseSchema <span class="op">=</span> <span class="va">cohortDatabaseSchema</span>,</span>
+<span>  cohortAttrTable <span class="op">=</span> <span class="st">"loo_cohort_attr"</span>,</span>
+<span>  attrDefinitionTable <span class="op">=</span> <span class="st">"loo_attr_def"</span>,</span>
+<span>  includeAttrIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">covariateSettingsList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">covariateSettings</span>, <span class="va">looCovSet</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">covariates</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span><span class="op">(</span></span>
+<span>  connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>,</span>
+<span>  cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>,</span>
+<span>  cohortDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span>,</span>
+<span>  cohortTable <span class="op">=</span> <span class="st">"rehospitalization"</span>,</span>
+<span>  cohortId <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  covariateSettings <span class="op">=</span> <span class="va">covariateSettingsList</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>In this example both demographic covariates and our length of
+observation covariate will be generated and can be used in our
+predictive model.</p>
 </div>
 </div>
   </div>
@@ -255,11 +305,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Martijn Schuemie, Marc Suchard, Patrick Ryan, Jenna Reps, Anthony Sena.</p>
+  <p></p>
+<p>Developed by Martijn Schuemie, Marc Suchard, Patrick Ryan, Jenna Reps, Anthony Sena, Ger Inberg.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -267,6 +319,8 @@
 
   
 
+
+  
 
   </body>
 </html>

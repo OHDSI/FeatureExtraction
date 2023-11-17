@@ -1,15 +1,15 @@
 # @file FeatureExtraction.R
 #
-# Copyright 2021 Observational Health Data Sciences and Informatics
+# Copyright 2023 Observational Health Data Sciences and Informatics
 #
 # This file is part of FeatureExtraction
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,6 +21,7 @@
 
 #' @importFrom SqlRender loadRenderTranslateSql translate render
 #' @importFrom methods is
+#' @importFrom utils read.csv
 #' @importFrom stats aggregate quantile sd
 #' @importFrom rlang .data
 #' @import DatabaseConnector
@@ -28,16 +29,19 @@
 NULL
 
 .onLoad <- function(libname, pkgname) {
-  
   rJava::.jpackage(pkgname, lib.loc = libname)
-  
+
   # Verify checksum of JAR:
   storedChecksum <- scan(file = system.file("csv", "jarChecksum.txt", package = "FeatureExtraction"), what = character(), quiet = TRUE)
-  computedChecksum <- tryCatch(rJava::J("org.ohdsi.featureExtraction.JarChecksum","computeJarChecksum"),
-                               error = function(e) {warning("Problem connecting to Java. This is normal when runing roxygen."); return("")})
+  computedChecksum <- tryCatch(rJava::J("org.ohdsi.featureExtraction.JarChecksum", "computeJarChecksum"),
+    error = function(e) {
+      warning("Problem connecting to Java. This is normal when runing roxygen.")
+      return("")
+    }
+  )
   if (computedChecksum != "" && (storedChecksum != computedChecksum)) {
     warning("Java library version does not match R package version! Please try reinstalling the FeatureExtraction package.
-            Make sure to close all instances of R, and open only one instance before reinstalling. Also make sure your 
+            Make sure to close all instances of R, and open only one instance before reinstalling. Also make sure your
             R workspace is not reloaded on startup. Delete your .Rdata file if necessary")
   }
 }

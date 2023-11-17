@@ -15,7 +15,7 @@ test_that("Test helper functions for non-aggregated covariate data", {
   
   covariateDataFiltered <- filterByRowId(covariateData, rowIds = 1)
   expect_equal(unique(pull(covariateDataFiltered$covariates, rowId)), 1)
-  
+
   locallyAggregated <- aggregateCovariates(covariateData)
   expect_error(filterByCohortDefinitionIds(locallyAggregated, cohortIds = c(1)), "no such column")
 
@@ -42,4 +42,3 @@ test_that("Test helper functions for aggregated covariate data", {
   Andromeda::close(aggregatedCovariateData)
   expect_error(filterByCohortDefinitionIds(aggregatedCovariateData, cohortIds = c(1)), "closed")
 })
-
