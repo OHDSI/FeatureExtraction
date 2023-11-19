@@ -10,6 +10,7 @@ getDbCohortBasedCovariatesData(
   cdmDatabaseSchema,
   cohortTable = "#cohort_person",
   cohortId = -1,
+  cohortIds = c(-1),
   cdmVersion = "5",
   rowIdField = "subject_id",
   covariateSettings,
@@ -36,6 +37,10 @@ database schema, e.g. 'cdm_database.cohort'.}
 covariates will be constructed for all cohorts in the specified cohort
 table.}
 
+\item{cohortIds}{For which cohort ID(s) should covariates be constructed? If set to c(-1),
+covariates will be constructed for all cohorts in the specified cohort
+table.}
+
 \item{cdmVersion}{The version of the Common Data Model used. Currently only 
 \code{cdmVersion = "5"} is supported.}
 
@@ -49,10 +54,6 @@ is more than one period per person.}
 
 \item{aggregated}{Should aggregate statistics be computed instead of covariates per
 cohort entry?}
-
-\item{cohortIds}{For which cohort ID(s) should covariates be constructed? If set to c(-1),
-covariates will be constructed for all cohorts in the specified cohort
-table.}
 }
 \value{
 Returns an object of type \code{CovariateData}, which is an Andromeda object containing information on the baseline covariates.

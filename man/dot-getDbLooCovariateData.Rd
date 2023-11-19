@@ -32,6 +32,10 @@ specify both the database and the schema, so for example
 \item{cohortTable}{Name of the (temp) table holding the cohort for which we want to
 construct covariates}
 
+\item{cohortIds}{For which cohort ID(s) should covariates be constructed? If set to -1,
+covariates will be constructed for all cohorts in the specified cohort
+table.}
+
 \item{cdmVersion}{Define the OMOP CDM version used: currently supported is "5".}
 
 \item{rowIdField}{The name of the field in the cohort table that is to be used as the
@@ -43,10 +47,6 @@ of the createCovariate functions, or a list of such objects.}
 
 \item{aggregated}{Should aggregate statistics be computed instead of covariates per
 cohort entry?}
-
-\item{cohortId}{For which cohort ID(s) should covariates be constructed? If set to -1,
-covariates will be constructed for all cohorts in the specified cohort
-table.}
 }
 \value{
 Returns an object of type \code{covariateData}, containing information on the covariates.
