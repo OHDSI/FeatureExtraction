@@ -23,7 +23,7 @@ test_that("Test empty covariateData", {
                                                          aggregated = FALSE,
                                                          temporal = FALSE)
   result <- tidyCovariateData(covariateData = cvData)
-  expect_equal(length(result$covariates$covariateId), length(cvData$covariates$covariateId))
+  expect_equal(length(pull(result$covariates, covariateId)), length(pull(cvData$covariates, covariateId)))
 })
 
 test_that("tidyCovariates works", {
@@ -81,5 +81,5 @@ test_that("tidyCovariateData on Temporal Data", {
                                       cohortIds = c(1),
                                       covariateSettings = covariateSettings)
   tidy <- tidyCovariateData(covariateData)
-  expect_equal(length(tidy$analysisRef$analysisId), length(covariateData$analysisRef$analysisId))
+  expect_equal(length(pull(tidy$analysisRef, analysisId)), length(pull(covariateData$analysisRef, analysisId)))
 })
