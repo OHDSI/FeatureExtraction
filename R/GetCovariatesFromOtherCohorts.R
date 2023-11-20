@@ -134,10 +134,10 @@ getDbCohortBasedCovariatesData <- function(connection,
     oracleTempSchema = oracleTempSchema,
     cdmDatabaseSchema = cdmDatabaseSchema,
     cohortTable = cohortTable,
-    cohortId = cohortId,
+    cohortIds = cohortIds,
     cdmVersion = cdmVersion,
     rowIdField = rowIdField,
-    detailledSettings,
+    covariateSettings = detailledSettings,
     aggregated = aggregated
   )
 
