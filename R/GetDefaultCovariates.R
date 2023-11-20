@@ -76,7 +76,8 @@ getDbDefaultCovariateData <- function(connection,
     stop("Writing aggregated results to database is currently not supported")
   }
   if (!missing(cohortId)) { 
-    stop("cohortId argument has been deprecated, please use cohortIds")
+    warning("cohortId argument has been deprecated, please use cohortIds")
+    cohortIds <- cohortId
   }
   settings <- .toJson(covariateSettings)
   rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$init(system.file("", package = "FeatureExtraction"))

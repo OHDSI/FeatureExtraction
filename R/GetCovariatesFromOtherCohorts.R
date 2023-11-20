@@ -48,7 +48,8 @@ getDbCohortBasedCovariatesData <- function(connection,
   checkmate::assertLogical(aggregated, len = 1, add = errorMessages)
   checkmate::reportAssertions(collection = errorMessages)
   if (!missing(cohortId)) { 
-    stop("cohortId argument has been deprecated, please use cohortIds")
+    warning("cohortId argument has been deprecated, please use cohortIds")
+    cohortIds <- cohortId
   }
 
   start <- Sys.time()

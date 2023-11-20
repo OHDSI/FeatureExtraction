@@ -42,8 +42,10 @@ getDbHdpsCovariateData <- function(connection,
                                    rowIdField = "subject_id",
                                    covariateSettings,
                                    aggregated = FALSE) {
-  if (!missing(cohortId))
-    stop("cohortId argument has been deprecated, please use cohortIds")
+  if (!missing(cohortId)) {
+    warning("cohortId argument has been deprecated, please use cohortIds")
+    cohortIds <- cohortId
+  }
   if (cohortIds != -1)
     stop("Haven't implemented restricting to cohort ID yet.")
   if (aggregated)

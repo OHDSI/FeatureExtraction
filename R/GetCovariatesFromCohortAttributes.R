@@ -86,7 +86,8 @@ getDbCohortAttrCovariatesData <- function(connection,
     stop("Common Data Model version 4 is not supported")
   }
   if (!missing(cohortId)) { 
-    stop("cohortId argument has been deprecated, please use cohortIds")
+    warning("cohortId argument has been deprecated, please use cohortIds")
+    cohortIds <- cohortId
   }
   start <- Sys.time()
   writeLines("Constructing covariates from cohort attributes table")

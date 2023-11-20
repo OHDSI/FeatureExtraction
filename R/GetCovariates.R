@@ -112,7 +112,8 @@ getDbCovariateData <- function(connectionDetails = NULL,
     stop("CDM version 4 is not supported any more")
   }
   if (!missing(cohortId)) { 
-    stop("cohortId argument has been deprecated, please use cohortIds")
+    warning("cohortId argument has been deprecated, please use cohortIds")
+    cohortIds <- cohortId
   }
   if (!is.null(connectionDetails)) {
     connection <- DatabaseConnector::connect(connectionDetails)
