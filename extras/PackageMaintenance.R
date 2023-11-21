@@ -33,7 +33,7 @@ devtools::spell_check()
 
 # Create manual and vignettes
 unlink("extras/FeatureExtraction.pdf")
-shell("R CMD Rd2pdf ./ --output=extras/FeatureExtraction.pdf")
+system("R CMD Rd2pdf ./ --output=extras/FeatureExtraction.pdf")
 
 dir.create("inst/doc")
 rmarkdown::render("vignettes/CreatingCustomCovariateBuilders.Rmd",

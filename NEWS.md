@@ -1,3 +1,10 @@
+FeatureExtraction 3.3.2
+=======================
+
+Bug Fixes:
+
+- Fixes R check on GitHub Actions (#211) 
+
 FeatureExtraction 3.3.1
 =======================
 
