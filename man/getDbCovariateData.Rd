@@ -98,7 +98,7 @@ covData <- getDbCovariateData(
   cohortTable = "cohort",
   cohortDatabaseSchema = "main",
   cohortTableIsTemp = FALSE,
-  cohortId = -1,
+  cohortIds = -1,
   rowIdField = "subject_id",
   covariateSettings = covSettings,
   aggregated = FALSE

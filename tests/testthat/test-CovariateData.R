@@ -105,7 +105,18 @@ test_that("Test exit/warning conditions", {
 })
 
 test_that("Test show method", {
-  cvData <- FeatureExtraction:::createEmptyCovariateData(cohortIds = 1, aggregated = FALSE, temporal = FALSE)
+  cvData <- FeatureExtraction:::createEmptyCovariateData(cohortIds = c(1,2), aggregated = FALSE, temporal = FALSE)
   expect_invisible(show(cvData))
   on.exit(rm(cvData))
 })
+test_that("getDbCovariateData cohortId warning", {
+  skip_if_not(runTestsOnEunomia)
+  settings <- createDefaultCovariateSettings()
+  expect_warning(getDbCovariateData(connectionDetails = eunomiaConnectionDetails,
+                     cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
+                     cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
+                     cohortId = c(1),
+                     covariateSettings = settings,
+                     aggregated = FALSE), "cohortId argument has been deprecated, please use cohortIds")
+})
+

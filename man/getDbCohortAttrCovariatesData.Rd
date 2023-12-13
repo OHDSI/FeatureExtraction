@@ -112,7 +112,7 @@ covData <- getDbCohortAttrCovariatesData(
   cdmDatabaseSchema = "main",
   cdmVersion = "5",
   cohortTable = "cohort",
-  cohortId = 1,
+  cohortIds = 1,
   rowIdField = "subject_id",
   covariateSettings = covariateSettings,
   aggregated = FALSE
