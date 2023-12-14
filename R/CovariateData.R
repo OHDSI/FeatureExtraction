@@ -55,7 +55,7 @@ setClass("CovariateData", contains = "Andromeda")
 #' @examples
 #' \dontrun{
 #' covariateData <- FeatureExtraction:::createEmptyCovariateData(
-#'   cohortId = 1,
+#'   cohortIds = 1,
 #'   aggregated = FALSE,
 #'   temporal = FALSE
 #' )
@@ -129,12 +129,14 @@ setMethod("show", "CovariateData", function(object) {
   cli::cat_line(pillar::style_subtle("# CovariateData object"))
   cli::cat_line("")
   cohortIds <- attr(object, "metaData")$cohortIds
-  if (length(cohortIds) > 1) {
-    cli::cat_line(paste("Cohorts of interest IDs:", paste(cohortIds, collapse = ", ")))
-  } else if (cohortIds == -1) {
-    cli::cat_line("All cohorts")
-  } else {
-    cli::cat_line(paste("Cohort of interest ID:", cohortIds))
+  if (!is.null(cohortIds)) {
+    if (length(cohortIds) > 1) {
+      cli::cat_line(paste("Cohorts of interest IDs:", paste(cohortIds, collapse = ", ")))
+    } else if (cohortIds == -1) {
+      cli::cat_line("All cohorts")
+    } else {
+      cli::cat_line(paste("Cohort of interest ID:", cohortIds))
+    }
   }
   cli::cat_line("")
   cli::cat_line(pillar::style_subtle("Inherits from Andromeda:"))
@@ -204,7 +206,7 @@ isCovariateData <- function(x) {
 #' @examples
 #' \dontrun{
 #' covariateData <- FeatureExtraction:::createEmptyCovariateData(
-#'   cohortId = 1,
+#'   cohortIds = 1,
 #'   aggregated = FALSE,
 #'   temporal = FALSE
 #' )
@@ -232,7 +234,7 @@ isAggregatedCovariateData <- function(x) {
 #' @examples
 #' \dontrun{
 #' covariateData <- FeatureExtraction:::createEmptyCovariateData(
-#'   cohortId = 1,
+#'   cohortIds = 1,
 #'   aggregated = FALSE,
 #'   temporal = FALSE
 #' )
@@ -259,7 +261,7 @@ isTemporalCovariateData <- function(x) {
 #' @examples
 #' \dontrun{
 #' covariateData <- FeatureExtraction:::createEmptyCovariateData(
-#'   cohortId = 1,
+#'   cohortIds = 1,
 #'   aggregated = FALSE,
 #'   temporal = FALSE
 #' )

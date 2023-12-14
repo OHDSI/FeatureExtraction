@@ -33,7 +33,7 @@ infrequent covariates. For temporal covariates, redundancy is evaluated per time
 \examples{
 \dontrun{
 covariateData <- FeatureExtraction:::createEmptyCovariateData(
-  cohortId = 1,
+  cohortIds = 1,
   aggregated = FALSE,
   temporal = FALSE
 )
