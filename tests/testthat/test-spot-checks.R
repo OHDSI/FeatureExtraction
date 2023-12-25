@@ -187,41 +187,41 @@ runSpotChecks <- function(connection, cdmDatabaseSchema, ohdsiDatabaseSchema, co
 }
 
 test_that("Run spot-checks at per-person level on PostgreSQL", {
-  skip_if_not(runTestsOnPostgreSQL)
+  skip_if_not(dbms == "postgresql")
   pgConnection <- createUnitTestData(pgConnectionDetails, pgCdmDatabaseSchema, pgOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
   on.exit(dropUnitTestData(pgConnection, pgOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable))
   runSpotChecks(pgConnection, pgCdmDatabaseSchema, pgOhdsiDatabaseSchema, cohortTable)
 })
 
 test_that("Run spot-checks at per-person level on SQL Server", {
-  skip_if_not(runTestsOnSQLServer)
+  skip_if_not(dbms == "sql server")
   sqlServerConnection <- createUnitTestData(sqlServerConnectionDetails, sqlServerCdmDatabaseSchema, sqlServerOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
   on.exit(dropUnitTestData(sqlServerConnection, sqlServerOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable))
   runSpotChecks(sqlServerConnection, sqlServerCdmDatabaseSchema, sqlServerOhdsiDatabaseSchema, cohortTable)
 })
 
 test_that("Run spot-checks at per-person level on Oracle", {
-  skip_if_not(runTestsOnOracle)
+  skip_if_not(dbms == "oracle")
   oracleConnection <- createUnitTestData(oracleConnectionDetails, oracleCdmDatabaseSchema, oracleOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
   on.exit(dropUnitTestData(oracleConnection, oracleOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable))
   runSpotChecks(oracleConnection, oracleCdmDatabaseSchema, oracleOhdsiDatabaseSchema, cohortTable)
 })
 
 test_that("Run spot-checks at per-person level on Impala", {
-  skip_if_not(runTestsOnImpala)
+  skip_if_not(dbms == "impala")
   impalaConnection <- createUnitTestData(impalaConnectionDetails, impalaCdmDatabaseSchema, impalaOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
   on.exit(dropUnitTestData(impalaConnection, impalaOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable))
   runSpotChecks(impalaConnection, impalaCdmDatabaseSchema, impalaOhdsiDatabaseSchema, cohortTable)
 })
 
 test_that("Run spot-checks at per-person level on Redshift", {
-  skip_if_not(runTestsOnRedshift)
+  skip_if_not(dbms == "redshift")
   redshiftConnection <- createUnitTestData(redshiftConnectionDetails, redshiftCdmDatabaseSchema, redshiftOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
   on.exit(dropUnitTestData(redshiftConnection, redshiftOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable))
   runSpotChecks(redshiftConnection, redshiftCdmDatabaseSchema, redshiftOhdsiDatabaseSchema, cohortTable)
 })
 
 test_that("Run spot-checks at per-person level on Eunomia", {
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   runSpotChecks(eunomiaConnection, eunomiaCdmDatabaseSchema, eunomiaOhdsiDatabaseSchema, cohortTable)
 })
