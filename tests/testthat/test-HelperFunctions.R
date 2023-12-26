@@ -3,7 +3,7 @@
 # covr::file_report(covr::file_coverage("R/HelperFunctions.R", "tests/testthat/test-HelperFunctions.R"))
 
 test_that("Test helper functions for non-aggregated covariate data", {
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   expect_error(filterByRowId("blah", 1), "not of class CovariateData")
 
   covariateData <- getDbCovariateData(
@@ -28,7 +28,7 @@ test_that("Test helper functions for non-aggregated covariate data", {
 })
 
 test_that("Test helper functions for aggregated covariate data", {
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   expect_error(filterByCohortDefinitionId("blah", 1), "not of class CovariateData")
 
   aggregatedCovariateData <- getDbCovariateData(

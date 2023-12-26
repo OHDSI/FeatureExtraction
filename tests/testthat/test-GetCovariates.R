@@ -34,7 +34,7 @@ getCovariateSettings <- function() {
 # }
 
 test_that("getDbCovariateData enforces specification of database details", {
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   # No database details specified
   expect_error(getDbCovariateData(
     connectionDetails = NULL,
@@ -60,7 +60,7 @@ test_that("getDbCovariateData enforces specification of database details", {
 })
 
 test_that("getDbCovariateData CDM v4 not supported", {
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   expect_error(getDbCovariateData(
     connectionDetails = eunomiaConnectionDetails,
     connection = NULL,
@@ -71,7 +71,7 @@ test_that("getDbCovariateData CDM v4 not supported", {
 })
 
 test_that("getDbCovariateData cohortTableIsTemp tests when table name lacks # symbol", {
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   result <- getDbCovariateData(
     connection = eunomiaConnection,
     cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
@@ -83,7 +83,7 @@ test_that("getDbCovariateData cohortTableIsTemp tests when table name lacks # sy
 })
 
 test_that("getDbCovariateData cohortTableIsTemp tests when table name contains # symbol", {
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   result <- getDbCovariateData(
     connection = eunomiaConnection,
     cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
@@ -95,7 +95,7 @@ test_that("getDbCovariateData cohortTableIsTemp tests when table name contains #
 })
 
 test_that("getDbCovariateData populationSize == 0 tests", {
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   expect_warning(getDbCovariateData(
     connection = eunomiaConnection,
     cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
@@ -108,7 +108,7 @@ test_that("getDbCovariateData populationSize == 0 tests", {
 
 test_that("Custom covariate builder", {
   # TODO: This test is probably good to run on all DB platforms
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   covariateSettings <- createCovariateSettings(
     useDemographicsGender = TRUE,
     useDemographicsAgeGroup = TRUE,
@@ -130,7 +130,7 @@ test_that("Custom covariate builder", {
 
 test_that("getDbCovariateData care site from person tests", {
   # TODO: This test is probably good to run on all DB platforms
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
 
   # Add care site IDs to person table
   person <- DatabaseConnector::querySql(eunomiaConnection, "SELECT * FROM main.person;", snakeCaseToCamelCase = TRUE)
@@ -172,7 +172,7 @@ test_that("getDbCovariateData care site from person tests", {
 
 test_that("getDbCovariateData care site from visit_occurrence tests", {
   # TODO: This test is probably good to run on all DB platforms
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
 
   # Add care site IDs to visit occurrence table
   visitOccurrence <- DatabaseConnector::querySql(eunomiaConnection, "SELECT * FROM main.visit_occurrence;", snakeCaseToCamelCase = TRUE)

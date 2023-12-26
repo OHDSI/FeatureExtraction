@@ -3,7 +3,7 @@
 # covr::file_report(covr::file_coverage("R/CovariateData.R", "tests/testthat/test-CovariateData.R"))
 
 test_that("test CovariateData Class on Empty", {
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   # create 4 scenarios of Covariate Data
   # 1) error (non class), 2) covariate data, 3) aggregatedCovariate Data,
   # 4) temporalCovariate Data
@@ -52,7 +52,7 @@ test_that("test CovariateData Class on Empty", {
 })
 
 test_that("test saveCovariateData error cases", {
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   saveFileTest <- tempfile("covDatSave")
   settings <- createDefaultCovariateSettings()
   covariateData <- getDbCovariateData(
@@ -78,7 +78,7 @@ test_that("test saveCovariateData error cases", {
 })
 
 test_that("test summary call for covariateData class", {
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   settings <- createDefaultCovariateSettings()
   covariateData <- getDbCovariateData(
     connectionDetails = eunomiaConnectionDetails,

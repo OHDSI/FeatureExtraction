@@ -476,7 +476,7 @@ runCohortBasedCountsAggMultiCohortTest <- function(connection, cdmDatabaseSchema
 
 # Eunomia tests ------------
 test_that("Cohort-based covariates: binary, non-aggregated on Eunomia", {
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   runCohortBasedBinaryNonAggTest(
     connection = eunomiaConnection,
     cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
@@ -486,7 +486,7 @@ test_that("Cohort-based covariates: binary, non-aggregated on Eunomia", {
 })
 
 test_that("Cohort-based covariates: binary, aggregated on Eunomia", {
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   runCohortBasedBinaryAggTest(
     connection = eunomiaConnection,
     cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
@@ -496,7 +496,7 @@ test_that("Cohort-based covariates: binary, aggregated on Eunomia", {
 })
 
 test_that("Cohort-based covariates: binary, non-aggregated, temporal on Eunomia", {
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   runCohortBasedBinaryNonAggTemporalTest(
     connection = eunomiaConnection,
     cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
@@ -506,7 +506,7 @@ test_that("Cohort-based covariates: binary, non-aggregated, temporal on Eunomia"
 })
 
 test_that("Cohort-based covariates: binary, aggregated, temporal on Eunomia", {
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   runCohortBasedBinaryAggTemporalTest(
     connection = eunomiaConnection,
     cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
@@ -516,7 +516,7 @@ test_that("Cohort-based covariates: binary, aggregated, temporal on Eunomia", {
 })
 
 test_that("Cohort-based covariates: counts, non-aggregated on Eunomia", {
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   runCohortBasedCountsNonAggTest(
     connection = eunomiaConnection,
     cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
@@ -526,7 +526,7 @@ test_that("Cohort-based covariates: counts, non-aggregated on Eunomia", {
 })
 
 test_that("Cohort-based covariates: counts, aggregated on Eunomia", {
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   runCohortBasedCountsAggTest(
     connection = eunomiaConnection,
     cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
@@ -536,7 +536,7 @@ test_that("Cohort-based covariates: counts, aggregated on Eunomia", {
 })
 
 test_that("Cohort-based covariates: counts, non-aggregated, temporal on Eunomia", {
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   runCohortBasedCountsNonAggTemporalTest(
     connection = eunomiaConnection,
     cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
@@ -546,7 +546,7 @@ test_that("Cohort-based covariates: counts, non-aggregated, temporal on Eunomia"
 })
 
 test_that("Cohort-based covariates: counts, aggregated, temporal on Eunomia", {
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   runCohortBasedCountsAggTemporalTest(
     connection = eunomiaConnection,
     cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
@@ -556,7 +556,7 @@ test_that("Cohort-based covariates: counts, aggregated, temporal on Eunomia", {
 })
 
 test_that("Cohort-based covariates: counts, aggregated, using multiple cohort IDs on Eunomia", {
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   runCohortBasedCountsAggMultiCohortTest(
     connection = eunomiaConnection,
     cdmDatabaseSchema = eunomiaCdmDatabaseSchema,

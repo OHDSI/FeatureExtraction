@@ -7,7 +7,7 @@
 # covr::file_report(covr::file_coverage("R/GetCovariatesFromCohortAttributes.R", "tests/testthat/test-GetCovariatesFromCohortAttributes.R"))
 
 test_that("getDbCohortAttrCovariatesData aggregation not supported check", {
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   expect_error(getDbCohortAttrCovariatesData(
     connection = eunomiaConnection,
     cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
@@ -17,7 +17,7 @@ test_that("getDbCohortAttrCovariatesData aggregation not supported check", {
 })
 
 test_that("getDbCohortAttrCovariatesData CDM v4 not supported check", {
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   expect_error(getDbCohortAttrCovariatesData(
     connection = eunomiaConnection,
     cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
@@ -28,7 +28,7 @@ test_that("getDbCohortAttrCovariatesData CDM v4 not supported check", {
 
 test_that("getDbCohortAttrCovariatesData hasIncludedAttributes == 0", {
   # TODO: This test is probably good to run on all DB platforms
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   covariateSettings <- createCohortAttrCovariateSettings(
     attrDatabaseSchema = eunomiaOhdsiDatabaseSchema,
     cohortAttrTable = cohortAttributeTable,
@@ -48,7 +48,7 @@ test_that("getDbCohortAttrCovariatesData hasIncludedAttributes == 0", {
 
 test_that("getDbCohortAttrCovariatesData hasIncludedAttributes > 0", {
   # TODO: This test is probably good to run on all DB platforms
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   covariateSettings <- createCohortAttrCovariateSettings(
     attrDatabaseSchema = eunomiaOhdsiDatabaseSchema,
     cohortAttrTable = cohortAttributeTable,
@@ -67,7 +67,7 @@ test_that("getDbCohortAttrCovariatesData hasIncludedAttributes > 0", {
 })
 
 test_that("createCohortAttrCovariateSettings check", {
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   result <- createCohortAttrCovariateSettings(attrDatabaseSchema = "main")
   expect_equal(class(result), "covariateSettings")
 })
