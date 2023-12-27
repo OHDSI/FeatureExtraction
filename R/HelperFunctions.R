@@ -48,7 +48,7 @@ filterByRowId <- function(covariateData, rowIds) {
     stop("Cannot filter aggregated data by rowId")
   }
   covariates <- covariateData$covariates %>%
-    filter(rowId %in% rowIds)
+    filter(.data$rowId %in% rowIds)
 
   result <- Andromeda::andromeda(
     covariates = covariates,
