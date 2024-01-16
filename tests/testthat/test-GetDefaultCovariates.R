@@ -31,6 +31,7 @@ test_that("Test exit conditions", {
   expect_error(getDbDefaultCovariateData(
     connection = eunomiaConnection,
     cdmDatabaseSchema = "main",
+    cohortId = -1,
     covariateSettings = createDefaultCovariateSettings(),
     targetDatabaseSchema = "main",
     targetCovariateTable = "cov",

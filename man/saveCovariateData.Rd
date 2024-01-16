@@ -22,7 +22,7 @@ The data will be written to a set of files in the folder specified by the user.
 \examples{
 \dontrun{
 covariateData <- FeatureExtraction:::createEmptyCovariateData(
-  cohortId = 1,
+  cohortIds = 1,
   aggregated = FALSE,
   temporal = FALSE
 )

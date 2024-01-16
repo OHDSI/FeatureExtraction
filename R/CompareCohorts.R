@@ -64,7 +64,7 @@ computeStandardizedDifference <- function(covariateData1, covariateData2, cohort
     covariates1 <- covariateData1$covariates
     if (!is.null(cohortId1)) {
       covariates1 <- covariates1 %>%
-        filter(cohortDefinitionId == cohortId1)
+        filter(.data$cohortDefinitionId == cohortId1)
     }
     covariates1 <- covariates1 %>%
       select(
@@ -76,7 +76,7 @@ computeStandardizedDifference <- function(covariateData1, covariateData2, cohort
     covariates2 <- covariateData2$covariates
     if (!is.null(cohortId2)) {
       covariates2 <- covariates2 %>%
-        filter(cohortDefinitionId == cohortId2)
+        filter(.data$cohortDefinitionId == cohortId2)
     }
     covariates2 <- covariates2 %>%
       select(
@@ -108,7 +108,7 @@ computeStandardizedDifference <- function(covariateData1, covariateData2, cohort
     covariates1 <- covariateData1$covariatesContinuous
     if (!is.null(cohortId1)) {
       covariates1 <- covariates1 %>%
-        filter(cohortDefinitionId == cohortId1)
+        filter(.data$cohortDefinitionId == cohortId1)
     }
     covariates1 <- covariates1 %>%
       select(
@@ -121,7 +121,7 @@ computeStandardizedDifference <- function(covariateData1, covariateData2, cohort
     covariates2 <- covariateData2$covariatesContinuous
     if (!is.null(cohortId2)) {
       covariates2 <- covariates2 %>%
-        filter(cohortDefinitionId == cohortId2)
+        filter(.data$cohortDefinitionId == cohortId2)
     }
     covariates2 <- covariates2 %>%
       select(

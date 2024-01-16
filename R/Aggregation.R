@@ -26,7 +26,7 @@
 #' @examples
 #' \dontrun{
 #' covariateData <- FeatureExtraction:::createEmptyCovariateData(
-#'   cohortId = 1,
+#'   cohortIds = 1,
 #'   aggregated = FALSE,
 #'   temporal = FALSE
 #' )

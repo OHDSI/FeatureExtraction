@@ -25,7 +25,7 @@
 #' @examples
 #' \dontrun{
 #' covariateData <- FeatureExtraction:::createEmptyCovariateData(
-#'   cohortId = 1,
+#'   cohortIds = 1,
 #'   aggregated = FALSE,
 #'   temporal = FALSE
 #' )
@@ -48,7 +48,7 @@ filterByRowId <- function(covariateData, rowIds) {
     stop("Cannot filter aggregated data by rowId")
   }
   covariates <- covariateData$covariates %>%
-    filter(rowId %in% rowIds)
+    filter(.data$rowId %in% rowIds)
 
   result <- Andromeda::andromeda(
     covariates = covariates,
@@ -62,10 +62,10 @@ filterByRowId <- function(covariateData, rowIds) {
   return(result)
 }
 
-#' Filter covariates by cohort definition ID
+#' Filter covariates by cohort definition IDs
 #'
 #' @param covariateData  An object of type \code{CovariateData}
-#' @param cohortId       The cohort definition ID to keep.
+#' @param cohortIds      The cohort definition IDs to keep.
 #'
 #' @return
 #' An object of type \code{covariateData}.
@@ -73,19 +73,19 @@ filterByRowId <- function(covariateData, rowIds) {
 #' @examples
 #' \dontrun{
 #' covariateData <- FeatureExtraction:::createEmptyCovariateData(
-#'   cohortId = 1,
+#'   cohortIds = 1,
 #'   aggregated = FALSE,
 #'   temporal = FALSE
 #' )
 #'
-#' covData <- filterByCohortDefinitionId(
+#' covData <- filterByCohortDefinitionIds(
 #'   covariateData = covariateData,
-#'   cohortId = 1
+#'   cohortIds = c(1)
 #' )
 #' }
 #'
 #' @export
-filterByCohortDefinitionId <- function(covariateData, cohortId) {
+filterByCohortDefinitionIds <- function(covariateData, cohortIds) {
   if (!isCovariateData(covariateData)) {
     stop("Data not of class CovariateData")
   }
@@ -93,19 +93,19 @@ filterByCohortDefinitionId <- function(covariateData, cohortId) {
     stop("CovariateData object is closed")
   }
   if (!isAggregatedCovariateData(covariateData)) {
-    stop("Can only filter aggregated data by cohortId")
+    stop("Can only filter aggregated data by cohortIds")
   }
   if (is.null(covariateData$covariates)) {
     covariates <- NULL
   } else {
     covariates <- covariateData$covariates %>%
-      filter(.data$cohortDefinitionId %in% cohortId)
+      filter(.data$cohortDefinitionId %in% cohortIds)
   }
   if (is.null(covariateData$covariatesContinuous)) {
     covariatesContinuous <- NULL
   } else {
     covariatesContinuous <- covariateData$covariatesContinuous %>%
-      filter(.data$cohortDefinitionId %in% cohortId)
+      filter(.data$cohortDefinitionId %in% cohortIds)
   }
   result <- Andromeda::andromeda(
     covariates = covariates,
@@ -114,7 +114,7 @@ filterByCohortDefinitionId <- function(covariateData, cohortId) {
     analysisRef = covariateData$analysisRef
   )
   metaData <- attr(covariateData, "metaData")
-  metaData$populationSize <- metaData$populationSize[as.numeric(names(metaData$populationSize)) %in% cohortId]
+  metaData$populationSize <- metaData$populationSize[as.numeric(names(metaData$populationSize)) %in% cohortIds]
   attr(result, "metaData") <- metaData
   class(result) <- "CovariateData"
   attr(class(result), "package") <- "FeatureExtraction"

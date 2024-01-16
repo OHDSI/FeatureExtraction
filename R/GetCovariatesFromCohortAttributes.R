@@ -61,7 +61,7 @@
 #'   cdmDatabaseSchema = "main",
 #'   cdmVersion = "5",
 #'   cohortTable = "cohort",
-#'   cohortId = 1,
+#'   cohortIds = 1,
 #'   rowIdField = "subject_id",
 #'   covariateSettings = covariateSettings,
 #'   aggregated = FALSE
@@ -74,6 +74,7 @@ getDbCohortAttrCovariatesData <- function(connection,
                                           cdmDatabaseSchema,
                                           cohortTable = "#cohort_person",
                                           cohortId = -1,
+                                          cohortIds = c(-1),
                                           cdmVersion = "5",
                                           rowIdField = "subject_id",
                                           covariateSettings,
@@ -83,6 +84,10 @@ getDbCohortAttrCovariatesData <- function(connection,
   }
   if (cdmVersion == "4") {
     stop("Common Data Model version 4 is not supported")
+  }
+  if (!missing(cohortId)) { 
+    warning("cohortId argument has been deprecated, please use cohortIds")
+    cohortIds <- cohortId
   }
   start <- Sys.time()
   writeLines("Constructing covariates from cohort attributes table")
@@ -154,11 +159,11 @@ getDbCohortAttrCovariatesData <- function(connection,
   delta <- Sys.time() - start
   writeLines(paste("Loading took", signif(delta, 3), attr(delta, "units")))
 
-  result <- createEmptyCovariateData(cohortId, aggregated, covariateSettings$temporal)
-  result$covariates <- covariates
-  result$covariateRef <- covariateRef
-  result$analysisRef <- analysisRef
-
+  result <- createEmptyCovariateData(cohortIds, aggregated, covariateSettings$temporal)
+  result$covariates = covariates
+  result$covariateRef = covariateRef
+  result$analysisRef = analysisRef
+  
   return(result)
 }
 

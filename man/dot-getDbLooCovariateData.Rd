@@ -9,7 +9,7 @@
   oracleTempSchema = NULL,
   cdmDatabaseSchema,
   cohortTable = "#cohort_person",
-  cohortId = -1,
+  cohortIds = c(-1),
   cdmVersion = "5",
   rowIdField = "subject_id",
   covariateSettings,
@@ -32,7 +32,7 @@ specify both the database and the schema, so for example
 \item{cohortTable}{Name of the (temp) table holding the cohort for which we want to
 construct covariates}
 
-\item{cohortId}{For which cohort ID(s) should covariates be constructed? If set to -1,
+\item{cohortIds}{For which cohort ID(s) should covariates be constructed? If set to -1,
 covariates will be constructed for all cohorts in the specified cohort
 table.}
 
