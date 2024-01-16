@@ -65,7 +65,7 @@ covariateData <- getDbCovariateData(connectionDetails = connectionDetails,
                                     cdmDatabaseSchema = cdmDatabaseSchema,
                                     cohortDatabaseSchema = cohortDatabaseSchema,
                                     cohortTable = cohortTable,
-                                    cohortId = 1,
+                                    cohortIds = c(1),
                                     rowIdField = "subject_id",
                                     covariateSettings = covariateSettings)
 
@@ -97,7 +97,7 @@ covariateData <- getDbCovariateData(connectionDetails = connectionDetails,
                                     cdmDatabaseSchema = cdmDatabaseSchema,
                                     cohortDatabaseSchema = cohortDatabaseSchema,
                                     cohortTable = cohortTable,
-                                    cohortId = 1,
+                                    cohortIds = c(1),
                                     rowIdField = "subject_id",
                                     covariateSettings = covariateSettingsList,
                                     aggregated = TRUE)

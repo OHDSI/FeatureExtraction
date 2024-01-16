@@ -6,28 +6,22 @@ test_that("Test exit conditions ", {
   # Covariate Data object check
   expect_error(tidyCovariateData(covariateData = list()))
   # CovariateData object closed
-  cvData <- FeatureExtraction:::createEmptyCovariateData(
-    cohortId = 1,
-    aggregated = FALSE,
-    temporal = FALSE
-  )
+  cvData <- FeatureExtraction:::createEmptyCovariateData(cohortIds = 1,
+                                                         aggregated = FALSE, 
+                                                         temporal = FALSE)
   Andromeda::close(cvData)
   expect_error(tidyCovariateData(covariateData = cvData))
   # CovariateData aggregated
-  cvData <- FeatureExtraction:::createEmptyCovariateData(
-    cohortId = 1,
-    aggregated = TRUE,
-    temporal = FALSE
-  )
+  cvData <- FeatureExtraction:::createEmptyCovariateData(cohortIds = 1, 
+                                                         aggregated = TRUE, 
+                                                         temporal = FALSE)
   expect_error(tidyCovariateData(covariateData = cvData))
 })
 
 test_that("Test empty covariateData", {
-  cvData <- FeatureExtraction:::createEmptyCovariateData(
-    cohortId = 1,
-    aggregated = FALSE,
-    temporal = FALSE
-  )
+  cvData <- FeatureExtraction:::createEmptyCovariateData(cohortIds = 1,
+                                                         aggregated = FALSE,
+                                                         temporal = FALSE)
   result <- tidyCovariateData(covariateData = cvData)
   expect_equal(length(pull(result$covariates, covariateId)), length(pull(cvData$covariates, covariateId)))
 })
@@ -79,17 +73,13 @@ test_that("tidyCovariates works", {
 
 test_that("tidyCovariateData on Temporal Data", {
   skip_if_not(runTestsOnEunomia)
-  covariateSettings <- createTemporalCovariateSettings(
-    useDrugExposure = TRUE,
-    temporalStartDays = -2:-1,
-    temporalEndDays = -2:-1
-  )
-  covariateData <- getDbCovariateData(
-    connection = eunomiaConnection,
-    cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
-    cohortId = 1,
-    covariateSettings = covariateSettings
-  )
+  covariateSettings <- createTemporalCovariateSettings(useDrugExposure = TRUE,
+                                                       temporalStartDays = -2:-1,
+                                                       temporalEndDays = -2:-1)
+  covariateData <- getDbCovariateData(connection = eunomiaConnection,
+                                      cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
+                                      cohortIds = c(1),
+                                      covariateSettings = covariateSettings)
   tidy <- tidyCovariateData(covariateData)
   expect_equal(length(pull(tidy$analysisRef, analysisId)), length(pull(covariateData$analysisRef, analysisId)))
 })

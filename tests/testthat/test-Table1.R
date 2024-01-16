@@ -12,21 +12,17 @@ test_that("getDefaultTable1Specifications works", {
 test_that("createTable1 works with categorical covariates", {
   skip_if_not(runTestsOnEunomia)
 
-  settings <- createCovariateSettings(
-    useDemographicsAgeGroup = TRUE,
-    useDemographicsGender = TRUE,
-    useChads2Vasc = F
-  )
-
-  covariateData1 <- getDbCovariateData(
-    connection = eunomiaConnection,
-    cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
-    cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
-    cohortId = 1,
-    covariateSettings = settings,
-    aggregated = TRUE
-  )
-
+  settings <- createCovariateSettings(useDemographicsAgeGroup = TRUE,
+                                      useDemographicsGender = TRUE,
+                                      useChads2Vasc = F)
+                                           
+  covariateData1 <- getDbCovariateData(connection = eunomiaConnection,
+                                       cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
+                                       cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
+                                       cohortIds = c(1),
+                                       covariateSettings = settings,
+                                       aggregated = TRUE)
+  
   expect_error(createTable1("blah"), "not of type 'covariateData'")
   expect_error(createTable1(covariateData1, output = "blah"), "The `output` argument  must be")
   expect_error(createTable1(covariateData1, showCounts = F, showPercent = F), "counts or percent")
@@ -40,17 +36,13 @@ test_that("createTable1 works with categorical covariates", {
   expect_s3_class(table1, "data.frame")
   expect_equal(ncol(table1), 2)
 
-
-
-  covariateData2 <- getDbCovariateData(
-    connection = eunomiaConnection,
-    cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
-    cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
-    cohortId = 2,
-    covariateSettings = settings,
-    aggregated = TRUE
-  )
-
+  covariateData2 <- getDbCovariateData(connection = eunomiaConnection,
+                                       cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
+                                       cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
+                                       cohortIds = c(2),
+                                       covariateSettings = settings,
+                                       aggregated = TRUE)
+  
   expect_error(createTable1(covariateData1, "blah"), "not of type 'covariateData'")
   table1 <- createTable1(covariateData1, covariateData2)
   expect_s3_class(table1, "data.frame")
@@ -60,16 +52,13 @@ test_that("createTable1 works with categorical covariates", {
   expect_s3_class(table1, "data.frame")
   expect_equal(ncol(table1), 4)
 
-
-  rawCovariateData <- getDbCovariateData(
-    connection = eunomiaConnection,
-    cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
-    cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
-    cohortId = 1,
-    covariateSettings = settings,
-    aggregated = FALSE
-  )
-
+  rawCovariateData <- getDbCovariateData(connection = eunomiaConnection,
+                                         cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
+                                         cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
+                                         cohortIds = c(1),
+                                         covariateSettings = settings,
+                                         aggregated = FALSE)
+  
   expect_error(createTable1(rawCovariateData), "data is not aggregated")
   expect_error(createTable1(covariateData1, rawCovariateData), "data is not aggregated")
 })
@@ -79,21 +68,17 @@ test_that("createTable1 works with categorical covariates", {
 test_that("createTable1 works with continuous covariates", {
   skip_if_not(runTestsOnEunomia)
 
-  settings <- createCovariateSettings(
-    useDemographicsAgeGroup = TRUE,
-    useDemographicsGender = TRUE,
-    useChads2Vasc = TRUE
-  )
-
-  covariateData1 <- getDbCovariateData(
-    connection = eunomiaConnection,
-    cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
-    cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
-    cohortId = 1,
-    covariateSettings = settings,
-    aggregated = TRUE
-  )
-
+  settings <- createCovariateSettings(useDemographicsAgeGroup = TRUE,
+                                      useDemographicsGender = TRUE,
+                                      useChads2Vasc = TRUE)
+  
+  covariateData1 <- getDbCovariateData(connection = eunomiaConnection,
+                                       cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
+                                       cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
+                                       cohortIds = c(1),
+                                       covariateSettings = settings,
+                                       aggregated = TRUE)
+  
   # Does not fail?
   # expect_error(createTable1(covariateData1))
 
@@ -104,34 +89,27 @@ test_that("createTable1 works with continuous covariates", {
   table1 <- createTable1(covariateData1, output = "one column")
   expect_s3_class(table1, "data.frame")
 
-
-  covariateData2 <- getDbCovariateData(
-    connection = eunomiaConnection,
-    cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
-    cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
-    cohortId = 2,
-    covariateSettings = settings,
-    aggregated = TRUE
-  )
-
-  table1 <- createTable1(covariateData1, covariateData2,
-    output = "one column",
-    cohortId1 = 1, cohortId2 = 2,
-    showCounts = TRUE, showPercent = TRUE
-  )
+  covariateData2 <- getDbCovariateData(connection = eunomiaConnection,
+                                       cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
+                                       cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
+                                       cohortIds = c(2),
+                                       covariateSettings = settings,
+                                       aggregated = TRUE)
+  
+  table1 <- createTable1(covariateData1, covariateData2, output = "one column", 
+                         cohortId1 = 1, cohortId2 = 2,
+                         showCounts = TRUE, showPercent = TRUE)
   expect_s3_class(table1, "data.frame")
 
 
   settings <- createCovariateSettings(useChads2Vasc = TRUE)
 
-  covariateData3 <- getDbCovariateData(
-    connection = eunomiaConnection,
-    cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
-    cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
-    cohortId = 1,
-    covariateSettings = settings,
-    aggregated = TRUE
-  )
+  covariateData3 <- getDbCovariateData(connection = eunomiaConnection,
+                                       cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
+                                       cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
+                                       cohortIds = c(1),
+                                       covariateSettings = settings,
+                                       aggregated = TRUE)
   table1 <- createTable1(covariateData3, output = "one column", showCounts = T, showPercent = T)
   expect_s3_class(table1, "data.frame")
 })
@@ -148,15 +126,13 @@ test_that("createTable1 works with other covariates", {
   spec[1, "analysisId"] <- NA_integer_
   spec[2, "covariateIds"] <- NA_character_
 
-  covariateData1 <- getDbCovariateData(
-    connection = eunomiaConnection,
-    cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
-    cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
-    cohortId = 1,
-    covariateSettings = settings,
-    aggregated = TRUE
-  )
-
+  covariateData1 <- getDbCovariateData(connection = eunomiaConnection,
+                                       cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
+                                       cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
+                                       cohortIds = c(1),
+                                       covariateSettings = settings,
+                                       aggregated = TRUE)
+  
   table1 <- createTable1(covariateData1, specifications = spec, output = "list")
   expect_type(table1, "list")
 })

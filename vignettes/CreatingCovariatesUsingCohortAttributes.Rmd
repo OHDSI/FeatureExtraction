@@ -129,14 +129,12 @@ looCovSet <- createCohortAttrCovariateSettings(
 Setting `isBinary` and `missingMeansZero` is only necessary if we want to aggregate the covariates. We can then use these settings to fetch the `covariates` object:
 
 ```{r eval=FALSE}
-covariates <- getDbCovariateData(
-  connectionDetails = connectionDetails,
-  cdmDatabaseSchema = cdmDatabaseSchema,
-  cohortDatabaseSchema = cohortDatabaseSchema,
-  cohortTable = "rehospitalization",
-  cohortId = 1,
-  covariateSettings = looCovSet
-)
+covariates <- getDbCovariateData(connectionDetails = connectionDetails,
+                                 cdmDatabaseSchema = cdmDatabaseSchema,
+                                 cohortDatabaseSchema = cohortDatabaseSchema,
+                                 cohortTable = "rehospitalization",
+                                 cohortIds = c(1),
+                                 covariateSettings = looCovSet)
 ```
 
 In this case we will have only one covariate for our predictive model, the length of observation. In most cases, we will want our custom covariates in addition to the default covariates. We can do this by creating a list of covariate settings:
@@ -160,14 +158,12 @@ looCovSet <- createCohortAttrCovariateSettings(
 
 covariateSettingsList <- list(covariateSettings, looCovSet)
 
-covariates <- getDbCovariateData(
-  connectionDetails = connectionDetails,
-  cdmDatabaseSchema = cdmDatabaseSchema,
-  cohortDatabaseSchema = resultsDatabaseSchema,
-  cohortTable = "rehospitalization",
-  cohortId = 1,
-  covariateSettings = covariateSettingsList
-)
+covariates <- getDbCovariateData(connectionDetails = connectionDetails,
+                                 cdmDatabaseSchema = cdmDatabaseSchema,
+                                 cohortDatabaseSchema = resultsDatabaseSchema,
+                                 cohortTable = "rehospitalization",
+                                 cohortIds = c(1),
+                                 covariateSettings = covariateSettingsList)
 ```
 
 In this example both demographic covariates and our length of observation covariate will be generated and can be used in our predictive model.

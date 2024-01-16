@@ -47,28 +47,25 @@ test_that("createTemporalSequenceCovariateSettings correctly sets function", {
 # check extraction
 test_that("getDbCovariateData works with createTemporalSequenceCovariateSettings", {
   skip_if_not(runTestsOnEunomia)
-  covSet <- createTemporalSequenceCovariateSettings(
-    useDemographicsGender = T,
-    useDemographicsAge = T,
-    useDemographicsRace = T,
-    useDemographicsEthnicity = T,
-    useDemographicsAgeGroup = T,
-    useConditionEraGroupStart = T,
-    useDrugEraStart = T,
-    timePart = "month",
-    timeInterval = 1,
-    sequenceEndDay = -1,
-    sequenceStartDay = -365 * 5
-  )
+  covSet <- createTemporalSequenceCovariateSettings(useDemographicsGender = T, 
+                                                    useDemographicsAge = T, 
+                                                    useDemographicsRace = T,
+                                                    useDemographicsEthnicity = T, 
+                                                    useDemographicsAgeGroup = T,
+                                                    useConditionEraGroupStart = T, 
+                                                    useDrugEraStart = T, 
+                                                    timePart = 'month', 
+                                                    timeInterval = 1, 
+                                                    sequenceEndDay = -1, 
+                                                    sequenceStartDay = -365*5)
+  
+  
+  result <- getDbCovariateData(connection = eunomiaConnection,
+                               cdmDatabaseSchema = "main",
+                               cohortTable = "cohort", 
+                               cohortIds = c(1),
+                               covariateSettings = covSet)
 
-
-  result <- getDbCovariateData(
-    connection = eunomiaConnection,
-    cdmDatabaseSchema = "main",
-    cohortTable = "cohort",
-    cohortId = 1,
-    covariateSettings = covSet
-  )
   expect_true(is(result, "CovariateData"))
 
   # check timeId is 59 or less
@@ -82,14 +79,12 @@ test_that("Temporal Covariate Settings are backwards compatible", {
   # Temporal covariate settings created previously will not have
   # the temporalSequence property
   covSet <- FeatureExtraction::createDefaultTemporalCovariateSettings()
-  covSet$temporalSequence <- NULL
-
-  result <- getDbCovariateData(
-    connection = eunomiaConnection,
-    cdmDatabaseSchema = "main",
-    cohortTable = "cohort",
-    cohortId = 1,
-    covariateSettings = covSet
-  )
+  covSet$temporalSequence <- NULL 
+  
+  result <- getDbCovariateData(connection = eunomiaConnection,
+                               cdmDatabaseSchema = "main",
+                               cohortTable = "cohort", 
+                               cohortIds = c(1),
+                               covariateSettings = covSet)
   expect_true(is(result, "CovariateData"))
 })

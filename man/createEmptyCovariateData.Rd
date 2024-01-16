@@ -4,14 +4,17 @@
 \alias{createEmptyCovariateData}
 \title{Creates an empty covariate data object}
 \usage{
-createEmptyCovariateData(cohortId, aggregated, temporal)
+createEmptyCovariateData(cohortIds, aggregated, temporal)
 }
 \arguments{
-\item{cohortId}{cohort number}
+\item{cohortIds}{For which cohort IDs should the covariate data be created?}
 
 \item{aggregated}{if the data should be aggregated}
 
 \item{temporal}{if the data is temporary}
+}
+\value{
+the empty CovariateData object
 }
 \description{
 Creates an empty covariate data object
@@ -19,10 +22,9 @@ Creates an empty covariate data object
 \examples{
 \dontrun{
 covariateData <- FeatureExtraction:::createEmptyCovariateData(
-  cohortId = 1,
+  cohortIds = 1,
   aggregated = FALSE,
   temporal = FALSE
 )
 }
-
 }
