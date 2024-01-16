@@ -110,7 +110,7 @@ test_that("Test show method", {
   on.exit(rm(cvData))
 })
 test_that("getDbCovariateData cohortId warning", {
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   settings <- createDefaultCovariateSettings()
   expect_warning(getDbCovariateData(connectionDetails = eunomiaConnectionDetails,
                      cdmDatabaseSchema = eunomiaCdmDatabaseSchema,

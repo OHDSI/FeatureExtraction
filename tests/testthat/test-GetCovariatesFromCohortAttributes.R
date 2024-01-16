@@ -74,7 +74,7 @@ test_that("createCohortAttrCovariateSettings check", {
 })
 
 test_that("getDbCohortAttrCovariatesData cohortId warning", {
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   covariateSettings <- createCohortAttrCovariateSettings(
     attrDatabaseSchema = eunomiaOhdsiDatabaseSchema,
     cohortAttrTable = cohortAttributeTable,

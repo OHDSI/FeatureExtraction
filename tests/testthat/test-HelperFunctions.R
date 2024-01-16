@@ -27,7 +27,7 @@ test_that("Test helper functions for non-aggregated covariate data", {
 
 test_that("Test helper functions for aggregated covariate data", {
   skip_if_not(dbms == "sqlite")
-  expect_error(filterByCohortDefinitionId("blah", 1), "not of class CovariateData")
+  expect_error(filterByCohortDefinitionIds("blah", 1), "not of class CovariateData")
 
   aggregatedCovariateData <- getDbCovariateData(connection = eunomiaConnection,
                                                 cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
