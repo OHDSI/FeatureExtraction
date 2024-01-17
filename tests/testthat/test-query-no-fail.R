@@ -156,14 +156,6 @@ test_that("Run all analysis at per-person level on Oracle", {
   expect_true(is(covariateData, "CovariateData"))
 })
 
-test_that("Run all analysis at per-person level on Impala", {
-  skip_if_not(dbms == "impala")
-  impalaConnection <- createUnitTestData(impalaConnectionDetails, impalaCdmDatabaseSchema, impalaOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
-  on.exit(dropUnitTestData(impalaConnection, impalaOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable))
-  covariateData <- runExtractionPerPerson(impalaConnection, impalaCdmDatabaseSchema, impalaOhdsiDatabaseSchema, cohortTable)
-  expect_true(is(covariateData, "CovariateData"))
-})
-
 test_that("Run all analysis at per-person level on Redshift", {
   skip_if_not(dbms == "redshift")
   redshiftConnection <- createUnitTestData(redshiftConnectionDetails, redshiftCdmDatabaseSchema, redshiftOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
@@ -335,14 +327,6 @@ test_that("Run all analysis at aggregated level on Oracle", {
   expect_true(is(covariateData, "CovariateData"))
 })
 
-test_that("Run all analysis at aggregated level on Impala", {
-  skip_if_not(dbms == "impala")
-  impalaConnection <- createUnitTestData(impalaConnectionDetails, impalaCdmDatabaseSchema, impalaOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
-  on.exit(dropUnitTestData(impalaConnection, impalaOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable))
-  covariateData <- runExtractionAggregated(impalaConnection, impalaCdmDatabaseSchema, impalaOhdsiDatabaseSchema, cohortTable)
-  expect_true(is(covariateData, "CovariateData"))
-})
-
 test_that("Run all analysis at aggregated level on Redshift", {
   skip_if_not(dbms == "redshift")
   redshiftConnection <- createUnitTestData(redshiftConnectionDetails, redshiftCdmDatabaseSchema, redshiftOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
@@ -440,14 +424,6 @@ test_that("Run all temporalanalysis at per-person level on Oracle", {
   oracleConnection <- createUnitTestData(oracleConnectionDetails, oracleCdmDatabaseSchema, oracleOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
   on.exit(dropUnitTestData(oracleConnection, oracleOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable))
   covariateData <- runExtractionTemporalPerPerson(oracleConnection, oracleCdmDatabaseSchema, oracleOhdsiDatabaseSchema, cohortTable)
-  expect_true(is(covariateData, "CovariateData"))
-})
-
-test_that("Run all temporalanalysis at per-person level on Impala", {
-  skip_if_not(dbms == "impala")
-  impalaConnection <- createUnitTestData(impalaConnectionDetails, impalaCdmDatabaseSchema, impalaOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
-  on.exit(dropUnitTestData(impalaConnection, impalaOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable))
-  covariateData <- runExtractionTemporalPerPerson(impalaConnection, impalaCdmDatabaseSchema, impalaOhdsiDatabaseSchema, cohortTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 
@@ -549,14 +525,6 @@ test_that("Run all temporalanalysis at aggregated level on Oracle", {
   oracleConnection <- createUnitTestData(oracleConnectionDetails, oracleCdmDatabaseSchema, oracleOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
   on.exit(dropUnitTestData(oracleConnection, oracleOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable))
   covariateData <- runExtractionTemporalAggregated(oracleConnection, oracleCdmDatabaseSchema, oracleOhdsiDatabaseSchema, cohortTable)
-  expect_true(is(covariateData, "CovariateData"))
-})
-
-test_that("Run all temporalanalysis at aggregated level on Impala", {
-  skip_if_not(dbms == "impala")
-  impalaConnection <- createUnitTestData(impalaConnectionDetails, impalaCdmDatabaseSchema, impalaOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
-  on.exit(dropUnitTestData(impalaConnection, impalaOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable))
-  covariateData <- runExtractionTemporalAggregated(impalaConnection, impalaCdmDatabaseSchema, impalaOhdsiDatabaseSchema, cohortTable)
   expect_true(is(covariateData, "CovariateData"))
 })
 

@@ -201,13 +201,6 @@ test_that("Run spot-checks at per-person level on Oracle", {
   runSpotChecks(oracleConnection, oracleCdmDatabaseSchema, oracleOhdsiDatabaseSchema, cohortTable)
 })
 
-test_that("Run spot-checks at per-person level on Impala", {
-  skip_if_not(dbms == "impala")
-  impalaConnection <- createUnitTestData(impalaConnectionDetails, impalaCdmDatabaseSchema, impalaOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
-  on.exit(dropUnitTestData(impalaConnection, impalaOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable))
-  runSpotChecks(impalaConnection, impalaCdmDatabaseSchema, impalaOhdsiDatabaseSchema, cohortTable)
-})
-
 test_that("Run spot-checks at per-person level on Redshift", {
   skip_if_not(dbms == "redshift")
   redshiftConnection <- createUnitTestData(redshiftConnectionDetails, redshiftCdmDatabaseSchema, redshiftOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)

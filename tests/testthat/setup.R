@@ -115,20 +115,6 @@ if (dbms == "oracle") {
   options(sqlRenderTempEmulationSchema = oracleOhdsiDatabaseSchema)
 }
 
-# impala
-if (dbms == "impala") {
-  # NOTE: Driver for IMPALA requires manual installation
-  impalaConnectionDetails <- createConnectionDetails(
-    dbms = "impala",
-    user = Sys.getenv("CDM5_IMPALA_USER"),
-    password = URLdecode(Sys.getenv("CDM5_IMPALA_PASSWORD")),
-    server = Sys.getenv("CDM5_IMPALA_SERVER"),
-    pathToDriver = Sys.getenv("CDM5_IMPALA_PATH_TO_DRIVER")
-  )
-  impalaCdmDatabaseSchema <- Sys.getenv("CDM5_IMPALA_CDM_SCHEMA")
-  impalaOhdsiDatabaseSchema <- Sys.getenv("CDM5_IMPALA_OHDSI_SCHEMA")
-}
-
 # redshift
 if (dbms == "redshift") {
   DatabaseConnector::downloadJdbcDrivers("redshift")
