@@ -136,7 +136,7 @@ computeStandardizedDifference <- function(covariateData1, covariateData2, cohort
     m$sd1[is.na(m$sd1)] <- 0
     m$mean2[is.na(m$mean2)] <- 0
     m$sd2[is.na(m$sd2)] <- 0
-    m$sd <- sqrt(m$sd1^2 + m$sd2^2)
+    m$sd <- sqrt((m$sd1^2 + m$sd2^2) / 2)
     m$stdDiff <- (m$mean2 - m$mean1) / m$sd
     result <- bind_rows(result, m[, c("covariateId", "mean1", "sd1", "mean2", "sd2", "sd", "stdDiff")])
   }
