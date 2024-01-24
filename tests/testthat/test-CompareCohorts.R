@@ -31,7 +31,7 @@ test_that("Test stdDiff continuous variable computation", {
     mean2 = 0.4035294,
     sd2 = 0.3446752
   )
-  testData$sd <- sqrt(testData$sd1^2 + testData$sd2^2)
+  testData$sd <- sqrt((testData$sd1^2 + testData$sd2^2) /2)
   testData$stdDiff <- (testData$mean2 - testData$mean1) / testData$sd
 
   # Compute the standardized difference of mean using the source data
