@@ -1,4 +1,4 @@
-# Copyright 2023 Observational Health Data Sciences and Informatics
+# Copyright 2024 Observational Health Data Sciences and Informatics
 #
 # This file is part of FeatureExtraction
 #
@@ -55,7 +55,7 @@ setClass("CovariateData", contains = "Andromeda")
 #' @examples
 #' \dontrun{
 #' covariateData <- FeatureExtraction:::createEmptyCovariateData(
-#'   cohortId = 1,
+#'   cohortIds = 1,
 #'   aggregated = FALSE,
 #'   temporal = FALSE
 #' )
@@ -128,13 +128,15 @@ loadCovariateData <- function(file, readOnly) {
 setMethod("show", "CovariateData", function(object) {
   cli::cat_line(pillar::style_subtle("# CovariateData object"))
   cli::cat_line("")
-  cohortId <- attr(object, "metaData")$cohortId
-  if (length(cohortId) > 1) {
-    cli::cat_line(paste("Cohorts of interest IDs:", paste(cohortId, collapse = ", ")))
-  } else if (cohortId == -1) {
-    cli::cat_line("All cohorts")
-  } else {
-    cli::cat_line(paste("Cohort of interest ID:", cohortId))
+  cohortIds <- attr(object, "metaData")$cohortIds
+  if (!is.null(cohortIds)) {
+    if (length(cohortIds) > 1) {
+      cli::cat_line(paste("Cohorts of interest IDs:", paste(cohortIds, collapse = ", ")))
+    } else if (cohortIds == -1) {
+      cli::cat_line("All cohorts")
+    } else {
+      cli::cat_line(paste("Cohort of interest ID:", cohortIds))
+    }
   }
   cli::cat_line("")
   cli::cat_line(pillar::style_subtle("Inherits from Andromeda:"))
@@ -204,7 +206,7 @@ isCovariateData <- function(x) {
 #' @examples
 #' \dontrun{
 #' covariateData <- FeatureExtraction:::createEmptyCovariateData(
-#'   cohortId = 1,
+#'   cohortIds = 1,
 #'   aggregated = FALSE,
 #'   temporal = FALSE
 #' )
@@ -232,7 +234,7 @@ isAggregatedCovariateData <- function(x) {
 #' @examples
 #' \dontrun{
 #' covariateData <- FeatureExtraction:::createEmptyCovariateData(
-#'   cohortId = 1,
+#'   cohortIds = 1,
 #'   aggregated = FALSE,
 #'   temporal = FALSE
 #' )
@@ -252,20 +254,21 @@ isTemporalCovariateData <- function(x) {
 
 #' Creates an empty covariate data object
 #'
-#' @param cohortId cohort number
+#' @param cohortIds For which cohort IDs should the covariate data be created?
 #' @param aggregated if the data should be aggregated
 #' @param temporal if the data is temporary
 #'
 #' @examples
 #' \dontrun{
 #' covariateData <- FeatureExtraction:::createEmptyCovariateData(
-#'   cohortId = 1,
+#'   cohortIds = 1,
 #'   aggregated = FALSE,
 #'   temporal = FALSE
 #' )
 #' }
+#' @return the empty CovariateData object
 #'
-createEmptyCovariateData <- function(cohortId, aggregated, temporal) {
+createEmptyCovariateData <- function(cohortIds, aggregated, temporal) {
   dummy <- tibble(
     covariateId = 1,
     covariateValue = 1
@@ -276,28 +279,20 @@ createEmptyCovariateData <- function(cohortId, aggregated, temporal) {
   if (!is.null(temporal) && temporal) {
     dummy$timeId <- 1
   }
-  covariateData <- Andromeda::andromeda(
-    covariates = dummy[!1, ],
-    covariateRef = tibble(
-      covariateId = 1,
-      covariateName = "",
-      analysisId = 1,
-      conceptId = 1
-    )[!1, ],
-    analysisRef = tibble(
-      analysisId = 1,
-      analysisName = "",
-      domainId = "",
-      startDay = 1,
-      endDay = 1,
-      isBinary = "",
-      missingMeansZero = ""
-    )[!1, ]
-  )
-  attr(covariateData, "metaData") <- list(
-    populationSize = 0,
-    cohortId = cohortId
-  )
+  covariateData <- Andromeda::andromeda(covariates = dummy[!1, ],
+                                        covariateRef = tibble(covariateId = 1, 
+                                                              covariateName = "", 
+                                                              analysisId = 1,
+                                                              conceptId = 1)[!1, ],
+                                        analysisRef = tibble(analysisId = 1, 
+                                                             analysisName = "",
+                                                             domainId = "",
+                                                             startDay = 1, 
+                                                             endDay = 1, 
+                                                             isBinary = "", 
+                                                             missingMeansZero = "")[!1, ])
+  attr(covariateData, "metaData") <- list(populationSize = 0,
+                                          cohortIds = cohortIds)
   class(covariateData) <- "CovariateData"
   return(covariateData)
 }

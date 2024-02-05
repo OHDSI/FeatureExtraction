@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">FeatureExtraction</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.3.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.4.0</span>
       </span>
     </div>
 
@@ -100,7 +100,7 @@
                         <h4 data-toc-skip class="author">Martijn J.
 Schuemie</h4>
             
-            <h4 data-toc-skip class="date">2023-11-20</h4>
+            <h4 data-toc-skip class="date">2024-02-02</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/FeatureExtraction/blob/HEAD/vignettes/CreatingCovariatesUsingCohortAttributes.Rmd" class="external-link"><code>vignettes/CreatingCovariatesUsingCohortAttributes.Rmd</code></a></small>
       <div class="hidden name"><code>CreatingCovariatesUsingCohortAttributes.Rmd</code></div>
@@ -248,14 +248,12 @@ model, we need to create a <code>covariateSettings</code> object:</p>
 only necessary if we want to aggregate the covariates. We can then use
 these settings to fetch the <code>covariates</code> object:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">covariates</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span><span class="op">(</span></span>
-<span>  connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>,</span>
-<span>  cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>,</span>
-<span>  cohortDatabaseSchema <span class="op">=</span> <span class="va">cohortDatabaseSchema</span>,</span>
-<span>  cohortTable <span class="op">=</span> <span class="st">"rehospitalization"</span>,</span>
-<span>  cohortId <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  covariateSettings <span class="op">=</span> <span class="va">looCovSet</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">covariates</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span><span class="op">(</span>connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>,</span>
+<span>                                 cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>,</span>
+<span>                                 cohortDatabaseSchema <span class="op">=</span> <span class="va">cohortDatabaseSchema</span>,</span>
+<span>                                 cohortTable <span class="op">=</span> <span class="st">"rehospitalization"</span>,</span>
+<span>                                 cohortIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>,</span>
+<span>                                 covariateSettings <span class="op">=</span> <span class="va">looCovSet</span><span class="op">)</span></span></code></pre></div>
 <p>In this case we will have only one covariate for our predictive
 model, the length of observation. In most cases, we will want our custom
 covariates in addition to the default covariates. We can do this by
@@ -279,14 +277,12 @@ creating a list of covariate settings:</p>
 <span></span>
 <span><span class="va">covariateSettingsList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">covariateSettings</span>, <span class="va">looCovSet</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">covariates</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span><span class="op">(</span></span>
-<span>  connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>,</span>
-<span>  cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>,</span>
-<span>  cohortDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span>,</span>
-<span>  cohortTable <span class="op">=</span> <span class="st">"rehospitalization"</span>,</span>
-<span>  cohortId <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  covariateSettings <span class="op">=</span> <span class="va">covariateSettingsList</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">covariates</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDbCovariateData.html">getDbCovariateData</a></span><span class="op">(</span>connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>,</span>
+<span>                                 cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>,</span>
+<span>                                 cohortDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span>,</span>
+<span>                                 cohortTable <span class="op">=</span> <span class="st">"rehospitalization"</span>,</span>
+<span>                                 cohortIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>,</span>
+<span>                                 covariateSettings <span class="op">=</span> <span class="va">covariateSettingsList</span><span class="op">)</span></span></code></pre></div>
 <p>In this example both demographic covariates and our length of
 observation covariate will be generated and can be used in our
 predictive model.</p>

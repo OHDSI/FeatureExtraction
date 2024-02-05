@@ -1,4 +1,4 @@
-# Copyright 2023 Observational Health Data Sciences and Informatics
+# Copyright 2024 Observational Health Data Sciences and Informatics
 #
 # This file is part of FeatureExtraction
 #
@@ -31,6 +31,7 @@ getDbCohortBasedCovariatesData <- function(connection,
                                            cdmDatabaseSchema,
                                            cohortTable = "#cohort_person",
                                            cohortId = -1,
+                                           cohortIds = c(-1),
                                            cdmVersion = "5",
                                            rowIdField = "subject_id",
                                            covariateSettings,
@@ -46,6 +47,10 @@ getDbCohortBasedCovariatesData <- function(connection,
   checkmate::assertClass(covariateSettings, "covariateSettings", add = errorMessages)
   checkmate::assertLogical(aggregated, len = 1, add = errorMessages)
   checkmate::reportAssertions(collection = errorMessages)
+  if (!missing(cohortId)) { 
+    warning("cohortId argument has been deprecated, please use cohortIds")
+    cohortIds <- cohortId
+  }
 
   start <- Sys.time()
   message("Constructing covariates from other cohorts")
@@ -130,10 +135,10 @@ getDbCohortBasedCovariatesData <- function(connection,
     oracleTempSchema = oracleTempSchema,
     cdmDatabaseSchema = cdmDatabaseSchema,
     cohortTable = cohortTable,
-    cohortId = cohortId,
+    cohortIds = cohortIds,
     cdmVersion = cdmVersion,
     rowIdField = rowIdField,
-    detailledSettings,
+    covariateSettings = detailledSettings,
     aggregated = aggregated
   )
 

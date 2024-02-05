@@ -1,4 +1,4 @@
-# Copyright 2023 Observational Health Data Sciences and Informatics
+# Copyright 2024 Observational Health Data Sciences and Informatics
 #
 # This file is part of FeatureExtraction
 #
@@ -46,7 +46,10 @@
 #'                               specify both the database and the schema, so for example
 #'                               'cdm_instance.dbo'.
 #' @param cohortTableIsTemp      Is the cohort table a temp table?
-#' @param cohortId               For which cohort ID(s) should covariates be constructed? If set to -1,
+#' @param cohortId               DEPRECATED:For which cohort ID(s) should covariates be constructed? If set to -1,
+#'                               covariates will be constructed for all cohorts in the specified cohort
+#'                               table.
+#' @param cohortIds              For which cohort ID(s) should covariates be constructed? If set to c(-1),
 #'                               covariates will be constructed for all cohorts in the specified cohort
 #'                               table.
 #' @param rowIdField             The name of the field in the cohort table that is to be used as the
@@ -78,7 +81,7 @@
 #'   cohortTable = "cohort",
 #'   cohortDatabaseSchema = "main",
 #'   cohortTableIsTemp = FALSE,
-#'   cohortId = -1,
+#'   cohortIds = -1,
 #'   rowIdField = "subject_id",
 #'   covariateSettings = covSettings,
 #'   aggregated = FALSE
@@ -95,6 +98,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
                                cohortDatabaseSchema = cdmDatabaseSchema,
                                cohortTableIsTemp = FALSE,
                                cohortId = -1,
+                               cohortIds = c(-1),
                                rowIdField = "subject_id",
                                covariateSettings,
                                aggregated = FALSE) {
@@ -106,6 +110,10 @@ getDbCovariateData <- function(connectionDetails = NULL,
   }
   if (cdmVersion == "4") {
     stop("CDM version 4 is not supported any more")
+  }
+  if (!missing(cohortId)) { 
+    warning("cohortId argument has been deprecated, please use cohortIds")
+    cohortIds <- cohortId
   }
   if (!is.null(connectionDetails)) {
     connection <- DatabaseConnector::connect(connectionDetails)
@@ -120,17 +128,13 @@ getDbCovariateData <- function(connectionDetails = NULL,
   } else {
     cohortDatabaseSchemaTable <- paste(cohortDatabaseSchema, cohortTable, sep = ".")
   }
-  sql <- "SELECT cohort_definition_id, COUNT_BIG(*) AS population_size FROM @cohort_database_schema_table {@cohort_id != -1} ? {WHERE cohort_definition_id IN (@cohort_id)} GROUP BY cohort_definition_id;"
-  sql <- SqlRender::render(
-    sql = sql,
-    cohort_database_schema_table = cohortDatabaseSchemaTable,
-    cohort_id = cohortId
-  )
-  sql <- SqlRender::translate(
-    sql = sql,
-    targetDialect = attr(connection, "dbms"),
-    oracleTempSchema = oracleTempSchema
-  )
+  sql <- "SELECT cohort_definition_id, COUNT_BIG(*) AS population_size FROM @cohort_database_schema_table {@cohort_ids != -1} ? {WHERE cohort_definition_id IN (@cohort_ids)} GROUP BY cohort_definition_id;"
+  sql <- SqlRender::render(sql = sql,
+                           cohort_database_schema_table = cohortDatabaseSchemaTable,
+                           cohort_ids = cohortIds)
+  sql <- SqlRender::translate(sql = sql,
+                              targetDialect = attr(connection, "dbms"),
+                              oracleTempSchema = oracleTempSchema)
   temp <- DatabaseConnector::querySql(connection, sql, snakeCaseToCamelCase = TRUE)
   if (aggregated) {
     populationSize <- temp$populationSize
@@ -139,7 +143,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
     populationSize <- sum(temp$populationSize)
   }
   if (sum(populationSize) == 0) {
-    covariateData <- createEmptyCovariateData(cohortId, aggregated, covariateSettings$temporal)
+    covariateData <- createEmptyCovariateData(cohortIds, aggregated, covariateSettings$temporal)
     warning("Population is empty. No covariates were constructed")
   } else {
     if (inherits(covariateSettings, "covariateSettings")) {
@@ -152,17 +156,15 @@ getDbCovariateData <- function(connectionDetails = NULL,
       }
       for (i in 1:length(covariateSettings)) {
         fun <- attr(covariateSettings[[i]], "fun")
-        args <- list(
-          connection = connection,
-          oracleTempSchema = oracleTempSchema,
-          cdmDatabaseSchema = cdmDatabaseSchema,
-          cohortTable = cohortDatabaseSchemaTable,
-          cohortId = cohortId,
-          cdmVersion = cdmVersion,
-          rowIdField = rowIdField,
-          covariateSettings = covariateSettings[[i]],
-          aggregated = aggregated
-        )
+        args <- list(connection = connection,
+                     oracleTempSchema = oracleTempSchema,
+                     cdmDatabaseSchema = cdmDatabaseSchema,
+                     cohortTable = cohortDatabaseSchemaTable,
+                     cohortIds = cohortIds,
+                     cdmVersion = cdmVersion,
+                     rowIdField = rowIdField,
+                     covariateSettings = covariateSettings[[i]],
+                     aggregated = aggregated)
         tempCovariateData <- do.call(eval(parse(text = fun)), args)
         if (is.null(covariateData)) {
           covariateData <- tempCovariateData
@@ -197,7 +199,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
       }
     }
     attr(covariateData, "metaData")$populationSize <- populationSize
-    attr(covariateData, "metaData")$cohortId <- cohortId
+    attr(covariateData, "metaData")$cohortIds <- cohortIds
   }
   return(covariateData)
 }

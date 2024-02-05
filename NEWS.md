@@ -1,3 +1,16 @@
+FeatureExtraction 3.4.0
+=======================
+
+Bug Fixes:
+
+- SDM calculation fix (#223)
+- Each covariate has a unique covariate name (#219)
+- R check (notes) (#211, #215)
+
+Other:
+
+- Deprecate cohortId and use cohortIds (#188)
+
 FeatureExtraction 3.3.2
 =======================
 

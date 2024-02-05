@@ -1,6 +1,6 @@
 # @file VignetteDataFetch.R
 #
-# Copyright 2023 Observational Health Data Sciences and Informatics
+# Copyright 2024 Observational Health Data Sciences and Informatics
 #
 # This file is part of FeatureExtraction
 # 
@@ -72,7 +72,7 @@ covariateData <- getDbCovariateData(connection = connection,
                                     cohortDatabaseSchema = resultsDatabaseSchema,
                                     cohortTable = cohortsTable,
                                     cohortTableIsTemp = TRUE,
-                                    cohortId = 1118084,
+                                    cohortIds = c(1118084),
                                     rowIdField = "subject_id",
                                     covariateSettings = covariateSettings)
 
@@ -98,7 +98,7 @@ covariateData2 <- getDbCovariateData(connection = connection,
                                      cohortDatabaseSchema = resultsDatabaseSchema,
                                      cohortTable = cohortsTable,
                                      cohortTableIsTemp = TRUE,
-                                     cohortId = 1118084,
+                                     cohortIds = c(1118084),
                                      covariateSettings = covariateSettings,
                                      aggregated = TRUE)
 
@@ -115,7 +115,7 @@ covariateData2b <- getDbCovariateData(connection = connection,
                                       cohortDatabaseSchema = resultsDatabaseSchema,
                                       cohortTable = cohortsTable,
                                       cohortTableIsTemp = TRUE,
-                                      cohortId = 1118084,
+                                      cohortIds = c(1118084),
                                       covariateSettings = covariateSettings,
                                       aggregated = TRUE)
 
@@ -132,7 +132,7 @@ covDiclofenac <- getDbCovariateData(connection = connection,
                                     cohortDatabaseSchema = resultsDatabaseSchema,
                                     cohortTable = cohortsTable,
                                     cohortTableIsTemp = TRUE,
-                                    cohortId = 1124300,
+                                    cohortIds = c(1124300),
                                     covariateSettings = covariateSettings,
                                     aggregated = TRUE)
 
@@ -143,7 +143,7 @@ covCelecoxib <- getDbCovariateData(connection = connection,
                                    cohortDatabaseSchema = resultsDatabaseSchema,
                                    cohortTable = cohortsTable,
                                    cohortTableIsTemp = TRUE,
-                                   cohortId = 1118084,
+                                   cohortIds = c(1118084),
                                    covariateSettings = covariateSettings,
                                    aggregated = TRUE)
 

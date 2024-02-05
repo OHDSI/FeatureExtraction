@@ -2,6 +2,9 @@ library(testthat)
 library(FeatureExtraction)
 library(dplyr)
 
+dbms <- getOption("dbms", default = "sqlite")
+message("************* Testing on ", dbms, " *************\n")
+
 # Unit Test Settings ------
 # Set a directory for the JDBC drivers used in the tests
 oldJarFolder <- Sys.getenv("DATABASECONNECTOR_JAR_FOLDER")
@@ -16,15 +19,6 @@ withr::defer(
   },
   testthat::teardown_env()
 )
-
-
-# Get all environment variables to determine which DBMS to use for testing
-runTestsOnPostgreSQL <- !(Sys.getenv("CDM5_POSTGRESQL_USER") == "" & Sys.getenv("CDM5_POSTGRESQL_PASSWORD") == "" & Sys.getenv("CDM5_POSTGRESQL_SERVER") == "" & Sys.getenv("CDM5_POSTGRESQL_CDM_SCHEMA") == "" & Sys.getenv("CDM5_POSTGRESQL_OHDSI_SCHEMA") == "")
-runTestsOnSQLServer <- !(Sys.getenv("CDM5_SQL_SERVER_USER") == "" & Sys.getenv("CDM5_SQL_SERVER_PASSWORD") == "" & Sys.getenv("CDM5_SQL_SERVER_SERVER") == "" & Sys.getenv("CDM5_SQL_SERVER_CDM_SCHEMA") == "" & Sys.getenv("CDM5_SQL_SERVER_OHDSI_SCHEMA") == "")
-runTestsOnOracle <- !(Sys.getenv("CDM5_ORACLE_USER") == "" & Sys.getenv("CDM5_ORACLE_PASSWORD") == "" & Sys.getenv("CDM5_ORACLE_SERVER") == "" & Sys.getenv("CDM5_ORACLE_CDM_SCHEMA") == "" & Sys.getenv("CDM5_ORACLE_OHDSI_SCHEMA") == "")
-runTestsOnImpala <- !(Sys.getenv("CDM5_IMPALA_USER") == "" & Sys.getenv("CDM5_IMPALA_PASSWORD") == "" & Sys.getenv("CDM5_IMPALA_SERVER") == "" & Sys.getenv("CDM5_IMPALA_CDM_SCHEMA") == "" & Sys.getenv("CDM5_IMPALA_OHDSI_SCHEMA") == "")
-runTestsOnRedshift <- !(Sys.getenv("CDM5_REDSHIFT_USER") == "" & Sys.getenv("CDM5_REDSHIFT_PASSWORD") == "" & Sys.getenv("CDM5_REDSHIFT_SERVER") == "" & Sys.getenv("CDM5_REDSHIFT_CDM_SCHEMA") == "" & Sys.getenv("CDM5_REDSHIFT_OHDSI_SCHEMA") == "")
-runTestsOnEunomia <- TRUE
 
 # The cohort table is a temp table but uses the same platform/datetime suffix to avoid collisions when running
 # tests in parallel
@@ -81,7 +75,7 @@ dropUnitTestData <- function(connection, ohdsiDatabaseSchema, cohortTable, cohor
 
 # Database Test Settings -----------
 # postgres
-if (runTestsOnPostgreSQL) {
+if (dbms == "postgresql") {
   DatabaseConnector::downloadJdbcDrivers("postgresql")
   pgConnectionDetails <- createConnectionDetails(
     dbms = "postgresql",
@@ -94,7 +88,7 @@ if (runTestsOnPostgreSQL) {
 }
 
 # sql server
-if (runTestsOnSQLServer) {
+if (dbms == "sql server") {
   DatabaseConnector::downloadJdbcDrivers("sql server")
   sqlServerConnectionDetails <- createConnectionDetails(
     dbms = "sql server",
@@ -107,7 +101,7 @@ if (runTestsOnSQLServer) {
 }
 
 # oracle
-if (runTestsOnOracle) {
+if (dbms == "oracle") {
   DatabaseConnector::downloadJdbcDrivers("oracle")
   oracleConnectionDetails <- createConnectionDetails(
     dbms = "oracle",
@@ -121,22 +115,8 @@ if (runTestsOnOracle) {
   options(sqlRenderTempEmulationSchema = oracleOhdsiDatabaseSchema)
 }
 
-# impala
-if (runTestsOnImpala) {
-  # NOTE: Driver for IMPALA requires manual installation
-  impalaConnectionDetails <- createConnectionDetails(
-    dbms = "impala",
-    user = Sys.getenv("CDM5_IMPALA_USER"),
-    password = URLdecode(Sys.getenv("CDM5_IMPALA_PASSWORD")),
-    server = Sys.getenv("CDM5_IMPALA_SERVER"),
-    pathToDriver = Sys.getenv("CDM5_IMPALA_PATH_TO_DRIVER")
-  )
-  impalaCdmDatabaseSchema <- Sys.getenv("CDM5_IMPALA_CDM_SCHEMA")
-  impalaOhdsiDatabaseSchema <- Sys.getenv("CDM5_IMPALA_OHDSI_SCHEMA")
-}
-
 # redshift
-if (runTestsOnRedshift) {
+if (dbms == "redshift") {
   DatabaseConnector::downloadJdbcDrivers("redshift")
   redshiftConnectionDetails <- createConnectionDetails(
     dbms = "redshift",
@@ -149,7 +129,7 @@ if (runTestsOnRedshift) {
 }
 
 # eunomia
-if (runTestsOnEunomia) {
+if (dbms == "sqlite") {
   eunomiaConnectionDetails <- Eunomia::getEunomiaConnectionDetails(databaseFile = "testEunomia.sqlite")
   eunomiaCdmDatabaseSchema <- "main"
   eunomiaOhdsiDatabaseSchema <- "main"
