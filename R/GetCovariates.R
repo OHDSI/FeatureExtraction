@@ -186,7 +186,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
           Andromeda::appendToTable(covariateData$covariateRef, tempCovariateData$covariateRef)
           Andromeda::appendToTable(covariateData$analysisRef, tempCovariateData$analysisRef)
           for (name in names(attr(tempCovariateData, "metaData"))) {
-            if (is.null(attr(covariateData, "metaData")[name])) {
+            if (is.null(attr(covariateData, "metaData")[[name]])) {
               attr(covariateData, "metaData")[[name]] <- attr(tempCovariateData, "metaData")[[name]]
             } else {
               attr(covariateData, "metaData")[[name]] <- list(
