@@ -190,8 +190,8 @@ getDbCovariateData <- function(connectionDetails = NULL,
               attr(covariateData, "metaData")[[name]] <- attr(tempCovariateData, "metaData")[[name]]
             } else {
               attr(covariateData, "metaData")[[name]] <- list(
-                attr(covariateData, "metaData")[[name]],
-                attr(tempCovariateData, "metaData")[[name]]
+                c(unlist(attr(covariateData, "metaData")[[name]]),
+                  attr(tempCovariateData, "metaData")[[name]])
               )
             }
           }
