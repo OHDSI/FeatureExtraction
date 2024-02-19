@@ -1,4 +1,4 @@
-# Copyright 2023 Observational Health Data Sciences and Informatics
+# Copyright 2024 Observational Health Data Sciences and Informatics
 #
 # This file is part of FeatureExtraction
 #
@@ -26,7 +26,7 @@
 #' @examples
 #' \dontrun{
 #' covariateData <- FeatureExtraction:::createEmptyCovariateData(
-#'   cohortId = 1,
+#'   cohortIds = 1,
 #'   aggregated = FALSE,
 #'   temporal = FALSE
 #' )

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">FeatureExtraction</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.3.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.4.0</span>
       </span>
     </div>
 
@@ -81,13 +81,13 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">createEmptyCovariateData</span><span class="op">(</span><span class="va">cohortId</span>, <span class="va">aggregated</span>, <span class="va">temporal</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">createEmptyCovariateData</span><span class="op">(</span><span class="va">cohortIds</span>, <span class="va">aggregated</span>, <span class="va">temporal</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>cohortId</dt>
-<dd><p>cohort number</p></dd>
+    <dl><dt>cohortIds</dt>
+<dd><p>For which cohort IDs should the covariate data be created?</p></dd>
 
 
 <dt>aggregated</dt>
@@ -98,17 +98,22 @@
 <dd><p>if the data is temporary</p></dd>
 
 </dl></div>
+    <div id="value">
+    <h2>Value</h2>
+    
+
+<p>the empty CovariateData object</p>
+    </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span><span class="va">covariateData</span> <span class="op">&lt;-</span> <span class="fu">FeatureExtraction</span><span class="fu">:::</span><span class="fu">createEmptyCovariateData</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  cohortId <span class="op">=</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>  cohortIds <span class="op">=</span> <span class="fl">1</span>,</span></span>
 <span class="r-in"><span>  aggregated <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  temporal <span class="op">=</span> <span class="cn">FALSE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>

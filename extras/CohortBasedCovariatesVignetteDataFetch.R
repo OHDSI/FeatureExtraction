@@ -1,4 +1,4 @@
-# Copyright 2023 Observational Health Data Sciences and Informatics
+# Copyright 2024 Observational Health Data Sciences and Informatics
 #
 # This file is part of FeatureExtraction
 # 
@@ -65,7 +65,7 @@ covariateData <- getDbCovariateData(connectionDetails = connectionDetails,
                                     cdmDatabaseSchema = cdmDatabaseSchema,
                                     cohortDatabaseSchema = cohortDatabaseSchema,
                                     cohortTable = cohortTable,
-                                    cohortId = 1,
+                                    cohortIds = c(1),
                                     rowIdField = "subject_id",
                                     covariateSettings = covariateSettings)
 
@@ -97,7 +97,7 @@ covariateData <- getDbCovariateData(connectionDetails = connectionDetails,
                                     cdmDatabaseSchema = cdmDatabaseSchema,
                                     cohortDatabaseSchema = cohortDatabaseSchema,
                                     cohortTable = cohortTable,
-                                    cohortId = 1,
+                                    cohortIds = c(1),
                                     rowIdField = "subject_id",
                                     covariateSettings = covariateSettingsList,
                                     aggregated = TRUE)

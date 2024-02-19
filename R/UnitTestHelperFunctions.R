@@ -1,4 +1,4 @@
-# Copyright 2023 Observational Health Data Sciences and Informatics
+# Copyright 2024 Observational Health Data Sciences and Informatics
 #
 # This file is part of FeatureExtraction
 #
@@ -48,7 +48,7 @@
 #'                               'cdm_instance.dbo'.
 #' @param cohortTable            Name of the (temp) table holding the cohort for which we want to
 #'                               construct covariates
-#' @param cohortId               For which cohort ID(s) should covariates be constructed? If set to -1,
+#' @param cohortIds              For which cohort ID(s) should covariates be constructed? If set to -1,
 #'                               covariates will be constructed for all cohorts in the specified cohort
 #'                               table.
 #' @param cdmVersion             Define the OMOP CDM version used: currently supported is "5".
@@ -90,7 +90,7 @@
                                    oracleTempSchema = NULL,
                                    cdmDatabaseSchema,
                                    cohortTable = "#cohort_person",
-                                   cohortId = -1,
+                                   cohortIds = c(-1),
                                    cdmVersion = "5",
                                    rowIdField = "subject_id",
                                    covariateSettings,
@@ -104,23 +104,20 @@
   }
 
   # Some SQL to construct the covariate:
-  sql <- paste(
-    "SELECT @row_id_field AS row_id, 1 AS covariate_id,",
-    "DATEDIFF(DAY, observation_period_start_date, cohort_start_date)",
-    "AS covariate_value",
-    "FROM @cohort_table c",
-    "INNER JOIN @cdm_database_schema.observation_period op",
-    "ON op.person_id = c.subject_id",
-    "WHERE cohort_start_date >= observation_period_start_date",
-    "AND cohort_start_date <= observation_period_end_date",
-    "{@cohort_id != -1} ? {AND cohort_definition_id = @cohort_id}"
-  )
+  sql <- paste("SELECT @row_id_field AS row_id, 1 AS covariate_id,",
+               "DATEDIFF(DAY, observation_period_start_date, cohort_start_date)",
+               "AS covariate_value",
+               "FROM @cohort_table c",
+               "INNER JOIN @cdm_database_schema.observation_period op",
+               "ON op.person_id = c.subject_id",
+               "WHERE cohort_start_date >= observation_period_start_date",
+               "AND cohort_start_date <= observation_period_end_date",
+               "{@cohort_ids != -1} ? {AND cohort_definition_id IN @cohort_ids}")
   sql <- SqlRender::render(sql,
-    cohort_table = cohortTable,
-    cohort_id = cohortId,
-    row_id_field = rowIdField,
-    cdm_database_schema = cdmDatabaseSchema
-  )
+                           cohort_table = cohortTable,
+                           cohort_ids = cohortIds,
+                           row_id_field = rowIdField,
+                           cdm_database_schema = cdmDatabaseSchema)
   sql <- SqlRender::translate(sql, targetDialect = attr(connection, "dbms"))
   # Retrieve the covariate:
   covariates <- DatabaseConnector::querySql(connection, sql, snakeCaseToCamelCase = TRUE)

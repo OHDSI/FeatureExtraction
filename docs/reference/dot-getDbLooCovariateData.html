@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">FeatureExtraction</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.3.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.4.0</span>
       </span>
     </div>
 
@@ -86,7 +86,7 @@
 <span>  oracleTempSchema <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">cdmDatabaseSchema</span>,</span>
 <span>  cohortTable <span class="op">=</span> <span class="st">"#cohort_person"</span>,</span>
-<span>  cohortId <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>,</span>
+<span>  cohortIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span>,</span>
 <span>  cdmVersion <span class="op">=</span> <span class="st">"5"</span>,</span>
 <span>  rowIdField <span class="op">=</span> <span class="st">"subject_id"</span>,</span>
 <span>  <span class="va">covariateSettings</span>,</span>
@@ -119,7 +119,7 @@ specify both the database and the schema, so for example
 construct covariates</p></dd>
 
 
-<dt>cohortId</dt>
+<dt>cohortIds</dt>
 <dd><p>For which cohort ID(s) should covariates be constructed? If set to -1,
 covariates will be constructed for all cohorts in the specified cohort
 table.</p></dd>

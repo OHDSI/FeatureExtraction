@@ -3,7 +3,7 @@
 # covr::file_report(covr::file_coverage("R/GetDefaultCovariates.R", "tests/testthat/test-GetDefaultCovariates.R"))
 
 test_that("Test exit conditions", {
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
 
   # covariateSettings object type
   expect_error(getDbDefaultCovariateData(
@@ -31,6 +31,7 @@ test_that("Test exit conditions", {
   expect_error(getDbDefaultCovariateData(
     connection = eunomiaConnection,
     cdmDatabaseSchema = "main",
+    cohortId = -1,
     covariateSettings = createDefaultCovariateSettings(),
     targetDatabaseSchema = "main",
     targetCovariateTable = "cov",

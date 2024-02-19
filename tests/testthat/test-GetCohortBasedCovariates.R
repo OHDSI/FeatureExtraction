@@ -95,7 +95,7 @@ runCohortBasedBinaryNonAggTest <- function(connection, cdmDatabaseSchema, ohdsiD
     cohortDatabaseSchema = ohdsiDatabaseSchema,
     cohortTableIsTemp = tempTable,
     cohortTable = cohortTable,
-    cohortId = 1,
+    cohortIds = c(1),
     cdmVersion = "5",
     rowIdField = "subject_id",
     covariateSettings = settings,
@@ -137,7 +137,7 @@ runCohortBasedBinaryAggTest <- function(connection, cdmDatabaseSchema, ohdsiData
     cohortDatabaseSchema = ohdsiDatabaseSchema,
     cohortTableIsTemp = tempTable,
     cohortTable = cohortTable,
-    cohortId = 1,
+    cohortIds = c(1),
     cdmVersion = "5",
     rowIdField = "subject_id",
     covariateSettings = settings,
@@ -180,7 +180,7 @@ runCohortBasedBinaryNonAggTemporalTest <- function(connection, cdmDatabaseSchema
     cohortDatabaseSchema = ohdsiDatabaseSchema,
     cohortTableIsTemp = tempTable,
     cohortTable = cohortTable,
-    cohortId = 1,
+    cohortIds = c(1),
     cdmVersion = "5",
     rowIdField = "subject_id",
     covariateSettings = settings,
@@ -224,7 +224,7 @@ runCohortBasedBinaryAggTemporalTest <- function(connection, cdmDatabaseSchema, o
     cohortDatabaseSchema = ohdsiDatabaseSchema,
     cohortTableIsTemp = tempTable,
     cohortTable = cohortTable,
-    cohortId = 1,
+    cohortIds = c(1),
     cdmVersion = "5",
     rowIdField = "subject_id",
     covariateSettings = settings,
@@ -271,7 +271,7 @@ runCohortBasedCountsNonAggTest <- function(connection, cdmDatabaseSchema, ohdsiD
     cohortDatabaseSchema = ohdsiDatabaseSchema,
     cohortTable = cohortTable,
     cohortTableIsTemp = tempTable,
-    cohortId = 1,
+    cohortIds = c(1),
     cdmVersion = "5",
     rowIdField = "subject_id",
     covariateSettings = settings,
@@ -315,7 +315,7 @@ runCohortBasedCountsAggTest <- function(connection, cdmDatabaseSchema, ohdsiData
     cohortDatabaseSchema = ohdsiDatabaseSchema,
     cohortTableIsTemp = tempTable,
     cohortTable = cohortTable,
-    cohortId = 1,
+    cohortIds = c(1),
     cdmVersion = "5",
     rowIdField = "subject_id",
     covariateSettings = settings,
@@ -361,7 +361,7 @@ runCohortBasedCountsNonAggTemporalTest <- function(connection, cdmDatabaseSchema
     cohortDatabaseSchema = ohdsiDatabaseSchema,
     cohortTableIsTemp = tempTable,
     cohortTable = cohortTable,
-    cohortId = 1,
+    cohortIds = c(1),
     cdmVersion = "5",
     rowIdField = "subject_id",
     covariateSettings = settings,
@@ -406,7 +406,7 @@ runCohortBasedCountsAggTemporalTest <- function(connection, cdmDatabaseSchema, o
     cohortDatabaseSchema = ohdsiDatabaseSchema,
     cohortTable = cohortTable,
     cohortTableIsTemp = tempTable,
-    cohortId = 1,
+    cohortIds = c(1),
     cdmVersion = "5",
     rowIdField = "subject_id",
     covariateSettings = settings,
@@ -455,7 +455,7 @@ runCohortBasedCountsAggMultiCohortTest <- function(connection, cdmDatabaseSchema
     cohortDatabaseSchema = ohdsiDatabaseSchema,
     cohortTableIsTemp = tempTable,
     cohortTable = cohortTable,
-    cohortId = c(1, 101),
+    cohortIds = c(1, 101),
     cdmVersion = "5",
     rowIdField = "subject_id",
     covariateSettings = settings,
@@ -476,7 +476,7 @@ runCohortBasedCountsAggMultiCohortTest <- function(connection, cdmDatabaseSchema
 
 # Eunomia tests ------------
 test_that("Cohort-based covariates: binary, non-aggregated on Eunomia", {
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   runCohortBasedBinaryNonAggTest(
     connection = eunomiaConnection,
     cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
@@ -486,7 +486,7 @@ test_that("Cohort-based covariates: binary, non-aggregated on Eunomia", {
 })
 
 test_that("Cohort-based covariates: binary, aggregated on Eunomia", {
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   runCohortBasedBinaryAggTest(
     connection = eunomiaConnection,
     cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
@@ -496,7 +496,7 @@ test_that("Cohort-based covariates: binary, aggregated on Eunomia", {
 })
 
 test_that("Cohort-based covariates: binary, non-aggregated, temporal on Eunomia", {
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   runCohortBasedBinaryNonAggTemporalTest(
     connection = eunomiaConnection,
     cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
@@ -506,7 +506,7 @@ test_that("Cohort-based covariates: binary, non-aggregated, temporal on Eunomia"
 })
 
 test_that("Cohort-based covariates: binary, aggregated, temporal on Eunomia", {
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   runCohortBasedBinaryAggTemporalTest(
     connection = eunomiaConnection,
     cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
@@ -516,7 +516,7 @@ test_that("Cohort-based covariates: binary, aggregated, temporal on Eunomia", {
 })
 
 test_that("Cohort-based covariates: counts, non-aggregated on Eunomia", {
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   runCohortBasedCountsNonAggTest(
     connection = eunomiaConnection,
     cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
@@ -526,7 +526,7 @@ test_that("Cohort-based covariates: counts, non-aggregated on Eunomia", {
 })
 
 test_that("Cohort-based covariates: counts, aggregated on Eunomia", {
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   runCohortBasedCountsAggTest(
     connection = eunomiaConnection,
     cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
@@ -536,7 +536,7 @@ test_that("Cohort-based covariates: counts, aggregated on Eunomia", {
 })
 
 test_that("Cohort-based covariates: counts, non-aggregated, temporal on Eunomia", {
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   runCohortBasedCountsNonAggTemporalTest(
     connection = eunomiaConnection,
     cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
@@ -546,7 +546,7 @@ test_that("Cohort-based covariates: counts, non-aggregated, temporal on Eunomia"
 })
 
 test_that("Cohort-based covariates: counts, aggregated, temporal on Eunomia", {
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   runCohortBasedCountsAggTemporalTest(
     connection = eunomiaConnection,
     cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
@@ -556,7 +556,7 @@ test_that("Cohort-based covariates: counts, aggregated, temporal on Eunomia", {
 })
 
 test_that("Cohort-based covariates: counts, aggregated, using multiple cohort IDs on Eunomia", {
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   runCohortBasedCountsAggMultiCohortTest(
     connection = eunomiaConnection,
     cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
@@ -567,7 +567,7 @@ test_that("Cohort-based covariates: counts, aggregated, using multiple cohort ID
 
 # Postgres tests ------------
 test_that("Cohort-based covariates: binary, non-aggregated on Postgres", {
-  skip_if_not(runTestsOnPostgreSQL)
+  skip_if_not(dbms == "postgresql")
   connection <- DatabaseConnector::connect(pgConnectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
   runCohortBasedBinaryNonAggTest(
@@ -579,7 +579,7 @@ test_that("Cohort-based covariates: binary, non-aggregated on Postgres", {
 })
 
 test_that("Cohort-based covariates: binary, aggregated on Postgres", {
-  skip_if_not(runTestsOnPostgreSQL)
+  skip_if_not(dbms == "postgresql")
   connection <- DatabaseConnector::connect(pgConnectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
   runCohortBasedBinaryAggTest(
@@ -591,7 +591,7 @@ test_that("Cohort-based covariates: binary, aggregated on Postgres", {
 })
 
 test_that("Cohort-based covariates: binary, non-aggregated, temporal on Postgres", {
-  skip_if_not(runTestsOnPostgreSQL)
+  skip_if_not(dbms == "postgresql")
   connection <- DatabaseConnector::connect(pgConnectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
   runCohortBasedBinaryNonAggTemporalTest(
@@ -603,7 +603,7 @@ test_that("Cohort-based covariates: binary, non-aggregated, temporal on Postgres
 })
 
 test_that("Cohort-based covariates: binary, aggregated, temporal on Postgres", {
-  skip_if_not(runTestsOnPostgreSQL)
+  skip_if_not(dbms == "postgresql")
   connection <- DatabaseConnector::connect(pgConnectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
   runCohortBasedBinaryAggTemporalTest(
@@ -615,7 +615,7 @@ test_that("Cohort-based covariates: binary, aggregated, temporal on Postgres", {
 })
 
 test_that("Cohort-based covariates: counts, non-aggregated on Postgres", {
-  skip_if_not(runTestsOnPostgreSQL)
+  skip_if_not(dbms == "postgresql")
   connection <- DatabaseConnector::connect(pgConnectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
   runCohortBasedCountsNonAggTest(
@@ -627,7 +627,7 @@ test_that("Cohort-based covariates: counts, non-aggregated on Postgres", {
 })
 
 test_that("Cohort-based covariates: counts, aggregated on Postgres", {
-  skip_if_not(runTestsOnPostgreSQL)
+  skip_if_not(dbms == "postgresql")
   connection <- DatabaseConnector::connect(pgConnectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
   runCohortBasedCountsAggTest(
@@ -639,7 +639,7 @@ test_that("Cohort-based covariates: counts, aggregated on Postgres", {
 })
 
 test_that("Cohort-based covariates: counts, non-aggregated, temporal on Postgres", {
-  skip_if_not(runTestsOnPostgreSQL)
+  skip_if_not(dbms == "postgresql")
   connection <- DatabaseConnector::connect(pgConnectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
   runCohortBasedCountsNonAggTemporalTest(
@@ -651,7 +651,7 @@ test_that("Cohort-based covariates: counts, non-aggregated, temporal on Postgres
 })
 
 test_that("Cohort-based covariates: counts, aggregated, temporal on Postgres", {
-  skip_if_not(runTestsOnPostgreSQL)
+  skip_if_not(dbms == "postgresql")
   connection <- DatabaseConnector::connect(pgConnectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
   runCohortBasedCountsAggTemporalTest(
@@ -663,7 +663,7 @@ test_that("Cohort-based covariates: counts, aggregated, temporal on Postgres", {
 })
 
 test_that("Cohort-based covariates: counts, aggregated, using multiple cohort IDs on Postgres", {
-  skip_if_not(runTestsOnPostgreSQL)
+  skip_if_not(dbms == "postgresql")
   connection <- DatabaseConnector::connect(pgConnectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
   runCohortBasedCountsAggMultiCohortTest(
@@ -676,7 +676,7 @@ test_that("Cohort-based covariates: counts, aggregated, using multiple cohort ID
 
 # SQL Server tests ------------
 test_that("Cohort-based covariates: binary, non-aggregated on SQL Server", {
-  skip_if_not(runTestsOnSQLServer)
+  skip_if_not(dbms == "sql server")
   connection <- DatabaseConnector::connect(sqlServerConnectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
   runCohortBasedBinaryNonAggTest(
@@ -688,7 +688,7 @@ test_that("Cohort-based covariates: binary, non-aggregated on SQL Server", {
 })
 
 test_that("Cohort-based covariates: binary, aggregated on SQL Server", {
-  skip_if_not(runTestsOnSQLServer)
+  skip_if_not(dbms == "sql server")
   connection <- DatabaseConnector::connect(sqlServerConnectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
   runCohortBasedBinaryAggTest(
@@ -700,7 +700,7 @@ test_that("Cohort-based covariates: binary, aggregated on SQL Server", {
 })
 
 test_that("Cohort-based covariates: binary, non-aggregated, temporal on SQL Server", {
-  skip_if_not(runTestsOnSQLServer)
+  skip_if_not(dbms == "sql server")
   connection <- DatabaseConnector::connect(sqlServerConnectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
   runCohortBasedBinaryNonAggTemporalTest(
@@ -712,7 +712,7 @@ test_that("Cohort-based covariates: binary, non-aggregated, temporal on SQL Serv
 })
 
 test_that("Cohort-based covariates: binary, aggregated, temporal on SQL Server", {
-  skip_if_not(runTestsOnSQLServer)
+  skip_if_not(dbms == "sql server")
   connection <- DatabaseConnector::connect(sqlServerConnectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
   runCohortBasedBinaryAggTemporalTest(
@@ -724,7 +724,7 @@ test_that("Cohort-based covariates: binary, aggregated, temporal on SQL Server",
 })
 
 test_that("Cohort-based covariates: counts, non-aggregated on SQL Server", {
-  skip_if_not(runTestsOnSQLServer)
+  skip_if_not(dbms == "sql server")
   connection <- DatabaseConnector::connect(sqlServerConnectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
   runCohortBasedCountsNonAggTest(
@@ -736,7 +736,7 @@ test_that("Cohort-based covariates: counts, non-aggregated on SQL Server", {
 })
 
 test_that("Cohort-based covariates: counts, aggregated on SQL Server", {
-  skip_if_not(runTestsOnSQLServer)
+  skip_if_not(dbms == "sql server")
   connection <- DatabaseConnector::connect(sqlServerConnectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
   runCohortBasedCountsAggTest(
@@ -748,7 +748,7 @@ test_that("Cohort-based covariates: counts, aggregated on SQL Server", {
 })
 
 test_that("Cohort-based covariates: counts, non-aggregated, temporal on SQL Server", {
-  skip_if_not(runTestsOnSQLServer)
+  skip_if_not(dbms == "sql server")
   connection <- DatabaseConnector::connect(sqlServerConnectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
   runCohortBasedCountsNonAggTemporalTest(
@@ -760,7 +760,7 @@ test_that("Cohort-based covariates: counts, non-aggregated, temporal on SQL Serv
 })
 
 test_that("Cohort-based covariates: counts, aggregated, temporal on SQL Server", {
-  skip_if_not(runTestsOnSQLServer)
+  skip_if_not(dbms == "sql server")
   connection <- DatabaseConnector::connect(sqlServerConnectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
   runCohortBasedCountsAggTemporalTest(
@@ -772,7 +772,7 @@ test_that("Cohort-based covariates: counts, aggregated, temporal on SQL Server",
 })
 
 test_that("Cohort-based covariates: counts, aggregated, using multiple cohort IDs on SQL Server", {
-  skip_if_not(runTestsOnSQLServer)
+  skip_if_not(dbms == "sql server")
   connection <- DatabaseConnector::connect(sqlServerConnectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
   runCohortBasedCountsAggMultiCohortTest(
@@ -785,7 +785,7 @@ test_that("Cohort-based covariates: counts, aggregated, using multiple cohort ID
 
 # Oracle tests ------------
 test_that("Cohort-based covariates: binary, non-aggregated on Oracle", {
-  skip_if_not(runTestsOnOracle)
+  skip_if_not(dbms == "oracle")
   connection <- DatabaseConnector::connect(oracleConnectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
   runCohortBasedBinaryNonAggTest(
@@ -797,7 +797,7 @@ test_that("Cohort-based covariates: binary, non-aggregated on Oracle", {
 })
 
 test_that("Cohort-based covariates: binary, aggregated on Oracle", {
-  skip_if_not(runTestsOnOracle)
+  skip_if_not(dbms == "oracle")
   connection <- DatabaseConnector::connect(oracleConnectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
   runCohortBasedBinaryAggTest(
@@ -809,7 +809,7 @@ test_that("Cohort-based covariates: binary, aggregated on Oracle", {
 })
 
 test_that("Cohort-based covariates: binary, non-aggregated, temporal on Oracle", {
-  skip_if_not(runTestsOnOracle)
+  skip_if_not(dbms == "oracle")
   connection <- DatabaseConnector::connect(oracleConnectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
   runCohortBasedBinaryNonAggTemporalTest(
@@ -821,7 +821,7 @@ test_that("Cohort-based covariates: binary, non-aggregated, temporal on Oracle",
 })
 
 test_that("Cohort-based covariates: binary, aggregated, temporal on Oracle", {
-  skip_if_not(runTestsOnOracle)
+  skip_if_not(dbms == "oracle")
   connection <- DatabaseConnector::connect(oracleConnectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
   runCohortBasedBinaryAggTemporalTest(
@@ -833,7 +833,7 @@ test_that("Cohort-based covariates: binary, aggregated, temporal on Oracle", {
 })
 
 test_that("Cohort-based covariates: counts, non-aggregated on Oracle", {
-  skip_if_not(runTestsOnOracle)
+  skip_if_not(dbms == "oracle")
   connection <- DatabaseConnector::connect(oracleConnectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
   runCohortBasedCountsNonAggTest(
@@ -845,7 +845,7 @@ test_that("Cohort-based covariates: counts, non-aggregated on Oracle", {
 })
 
 test_that("Cohort-based covariates: counts, aggregated on Oracle", {
-  skip_if_not(runTestsOnOracle)
+  skip_if_not(dbms == "oracle")
   connection <- DatabaseConnector::connect(oracleConnectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
   runCohortBasedCountsAggTest(
@@ -857,7 +857,7 @@ test_that("Cohort-based covariates: counts, aggregated on Oracle", {
 })
 
 test_that("Cohort-based covariates: counts, non-aggregated, temporal on Oracle", {
-  skip_if_not(runTestsOnOracle)
+  skip_if_not(dbms == "oracle")
   connection <- DatabaseConnector::connect(oracleConnectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
   runCohortBasedCountsNonAggTemporalTest(
@@ -869,7 +869,7 @@ test_that("Cohort-based covariates: counts, non-aggregated, temporal on Oracle",
 })
 
 test_that("Cohort-based covariates: counts, aggregated, temporal on Oracle", {
-  skip_if_not(runTestsOnOracle)
+  skip_if_not(dbms == "oracle")
   connection <- DatabaseConnector::connect(oracleConnectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
   runCohortBasedCountsAggTemporalTest(
@@ -881,7 +881,7 @@ test_that("Cohort-based covariates: counts, aggregated, temporal on Oracle", {
 })
 
 test_that("Cohort-based covariates: counts, aggregated, using multiple cohort IDs on Oracle", {
-  skip_if_not(runTestsOnOracle)
+  skip_if_not(dbms == "oracle")
   connection <- DatabaseConnector::connect(oracleConnectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
   runCohortBasedCountsAggMultiCohortTest(
@@ -894,7 +894,7 @@ test_that("Cohort-based covariates: counts, aggregated, using multiple cohort ID
 
 # RedShift tests ------------
 test_that("Cohort-based covariates: binary, non-aggregated on RedShift", {
-  skip_if_not(runTestsOnRedshift)
+  skip_if_not(dbms == "redshift")
   connection <- DatabaseConnector::connect(redshiftConnectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
   runCohortBasedBinaryNonAggTest(
@@ -906,7 +906,7 @@ test_that("Cohort-based covariates: binary, non-aggregated on RedShift", {
 })
 
 test_that("Cohort-based covariates: binary, aggregated on RedShift", {
-  skip_if_not(runTestsOnRedshift)
+  skip_if_not(dbms == "redshift")
   connection <- DatabaseConnector::connect(redshiftConnectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
   runCohortBasedBinaryAggTest(
@@ -918,7 +918,7 @@ test_that("Cohort-based covariates: binary, aggregated on RedShift", {
 })
 
 test_that("Cohort-based covariates: binary, non-aggregated, temporal on RedShift", {
-  skip_if_not(runTestsOnRedshift)
+  skip_if_not(dbms == "redshift")
   connection <- DatabaseConnector::connect(redshiftConnectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
   runCohortBasedBinaryNonAggTemporalTest(
@@ -930,7 +930,7 @@ test_that("Cohort-based covariates: binary, non-aggregated, temporal on RedShift
 })
 
 test_that("Cohort-based covariates: binary, aggregated, temporal on RedShift", {
-  skip_if_not(runTestsOnRedshift)
+  skip_if_not(dbms == "redshift")
   connection <- DatabaseConnector::connect(redshiftConnectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
   runCohortBasedBinaryAggTemporalTest(
@@ -942,7 +942,7 @@ test_that("Cohort-based covariates: binary, aggregated, temporal on RedShift", {
 })
 
 test_that("Cohort-based covariates: counts, non-aggregated on RedShift", {
-  skip_if_not(runTestsOnRedshift)
+  skip_if_not(dbms == "redshift")
   connection <- DatabaseConnector::connect(redshiftConnectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
   runCohortBasedCountsNonAggTest(
@@ -954,7 +954,7 @@ test_that("Cohort-based covariates: counts, non-aggregated on RedShift", {
 })
 
 test_that("Cohort-based covariates: counts, aggregated on RedShift", {
-  skip_if_not(runTestsOnRedshift)
+  skip_if_not(dbms == "redshift")
   connection <- DatabaseConnector::connect(redshiftConnectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
   runCohortBasedCountsAggTest(
@@ -966,7 +966,7 @@ test_that("Cohort-based covariates: counts, aggregated on RedShift", {
 })
 
 test_that("Cohort-based covariates: counts, non-aggregated, temporal on RedShift", {
-  skip_if_not(runTestsOnRedshift)
+  skip_if_not(dbms == "redshift")
   connection <- DatabaseConnector::connect(redshiftConnectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
   runCohortBasedCountsNonAggTemporalTest(
@@ -978,7 +978,7 @@ test_that("Cohort-based covariates: counts, non-aggregated, temporal on RedShift
 })
 
 test_that("Cohort-based covariates: counts, aggregated, temporal on RedShift", {
-  skip_if_not(runTestsOnRedshift)
+  skip_if_not(dbms == "redshift")
   connection <- DatabaseConnector::connect(redshiftConnectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
   runCohortBasedCountsAggTemporalTest(
@@ -990,7 +990,7 @@ test_that("Cohort-based covariates: counts, aggregated, temporal on RedShift", {
 })
 
 test_that("Cohort-based covariates: counts, aggregated, using multiple cohort IDs on RedShift", {
-  skip_if_not(runTestsOnRedshift)
+  skip_if_not(dbms == "redshift")
   connection <- DatabaseConnector::connect(redshiftConnectionDetails)
   on.exit(DatabaseConnector::disconnect(connection))
   runCohortBasedCountsAggMultiCohortTest(

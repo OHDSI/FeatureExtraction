@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">FeatureExtraction</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.3.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.4.0</span>
       </span>
     </div>
 
@@ -87,6 +87,7 @@
 <span>  <span class="va">cdmDatabaseSchema</span>,</span>
 <span>  cohortTable <span class="op">=</span> <span class="st">"#cohort_person"</span>,</span>
 <span>  cohortId <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>,</span>
+<span>  cohortIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span>,</span>
 <span>  cdmVersion <span class="op">=</span> <span class="st">"5"</span>,</span>
 <span>  rowIdField <span class="op">=</span> <span class="st">"subject_id"</span>,</span>
 <span>  <span class="va">covariateSettings</span>,</span>
@@ -120,7 +121,13 @@ database schema, e.g. 'cdm_database.cohort'.</p></dd>
 
 
 <dt>cohortId</dt>
-<dd><p>For which cohort ID should covariates be constructed? If set to -1,
+<dd><p>DEPRECATED:For which cohort ID should covariates be constructed? If set to -1,
+covariates will be constructed for all cohorts in the specified cohort
+table.</p></dd>
+
+
+<dt>cohortIds</dt>
+<dd><p>For which cohort ID(s) should covariates be constructed? If set to c(-1),
 covariates will be constructed for all cohorts in the specified cohort
 table.</p></dd>
 
@@ -212,7 +219,7 @@ function directly but rather use the <code><a href="getDbCovariateData.html">get
 <span class="r-in"><span>  cdmDatabaseSchema <span class="op">=</span> <span class="st">"main"</span>,</span></span>
 <span class="r-in"><span>  cdmVersion <span class="op">=</span> <span class="st">"5"</span>,</span></span>
 <span class="r-in"><span>  cohortTable <span class="op">=</span> <span class="st">"cohort"</span>,</span></span>
-<span class="r-in"><span>  cohortId <span class="op">=</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>  cohortIds <span class="op">=</span> <span class="fl">1</span>,</span></span>
 <span class="r-in"><span>  rowIdField <span class="op">=</span> <span class="st">"subject_id"</span>,</span></span>
 <span class="r-in"><span>  covariateSettings <span class="op">=</span> <span class="va">covariateSettings</span>,</span></span>
 <span class="r-in"><span>  aggregated <span class="op">=</span> <span class="cn">FALSE</span></span></span>

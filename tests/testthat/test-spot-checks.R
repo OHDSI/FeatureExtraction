@@ -2,45 +2,39 @@ library(testthat)
 library(Andromeda)
 
 runSpotChecks <- function(connection, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortTable) {
-  settings <- createCovariateSettings(
-    useDemographicsGender = TRUE,
-    useDemographicsAge = TRUE,
-    useConditionOccurrenceLongTerm = TRUE,
-    useDrugEraShortTerm = TRUE,
-    useVisitConceptCountLongTerm = TRUE,
-    longTermStartDays = -365,
-    mediumTermStartDays = -180,
-    shortTermStartDays = -30,
-    endDays = 0,
-    includedCovariateConceptIds = c(),
-    addDescendantsToInclude = FALSE,
-    excludedCovariateConceptIds = c(21603933),
-    addDescendantsToExclude = TRUE,
-    includedCovariateIds = c()
-  )
-  suppressWarnings(covariateData <- getDbCovariateData(
-    connection = connection,
-    cdmDatabaseSchema = cdmDatabaseSchema,
-    oracleTempSchema = ohdsiDatabaseSchema,
-    cohortDatabaseSchema = ohdsiDatabaseSchema,
-    cohortTable = cohortTable,
-    cohortTableIsTemp = TRUE,
-    cohortId = 1124300,
-    rowIdField = "subject_id",
-    covariateSettings = settings
-  ))
-  suppressWarnings(covariateDataAgg <- getDbCovariateData(
-    connection = connection,
-    cdmDatabaseSchema = cdmDatabaseSchema,
-    oracleTempSchema = ohdsiDatabaseSchema,
-    cohortDatabaseSchema = ohdsiDatabaseSchema,
-    cohortTable = cohortTable,
-    cohortTableIsTemp = TRUE,
-    cohortId = 1124300,
-    rowIdField = "subject_id",
-    covariateSettings = settings,
-    aggregated = TRUE
-  ))
+  settings <- createCovariateSettings(useDemographicsGender = TRUE,
+                                      useDemographicsAge = TRUE,
+                                      useConditionOccurrenceLongTerm = TRUE,
+                                      useDrugEraShortTerm = TRUE,
+                                      useVisitConceptCountLongTerm = TRUE,
+                                      longTermStartDays = -365,
+                                      mediumTermStartDays = -180,
+                                      shortTermStartDays = -30,
+                                      endDays = 0,
+                                      includedCovariateConceptIds = c(),
+                                      addDescendantsToInclude = FALSE,
+                                      excludedCovariateConceptIds = c(21603933),
+                                      addDescendantsToExclude = TRUE,
+                                      includedCovariateIds = c())
+  suppressWarnings(covariateData <- getDbCovariateData(connection = connection,
+                                                       cdmDatabaseSchema = cdmDatabaseSchema,
+                                                       oracleTempSchema = ohdsiDatabaseSchema,
+                                                       cohortDatabaseSchema = ohdsiDatabaseSchema,
+                                                       cohortTable = cohortTable,
+                                                       cohortTableIsTemp = TRUE,
+                                                       cohortIds = c(1124300),
+                                                       rowIdField = "subject_id",
+                                                       covariateSettings = settings))
+  suppressWarnings(covariateDataAgg <- getDbCovariateData(connection = connection,
+                                                          cdmDatabaseSchema = cdmDatabaseSchema,
+                                                          oracleTempSchema = ohdsiDatabaseSchema,
+                                                          cohortDatabaseSchema = ohdsiDatabaseSchema,
+                                                          cohortTable = cohortTable,
+                                                          cohortTableIsTemp = TRUE,
+                                                          cohortIds = c(1124300),
+                                                          rowIdField = "subject_id",
+                                                          covariateSettings = settings,
+                                                          aggregated = TRUE))
   if (covariateData$covariates %>% count() %>% pull() == 0) {
     return(TRUE)
   }
@@ -187,41 +181,34 @@ runSpotChecks <- function(connection, cdmDatabaseSchema, ohdsiDatabaseSchema, co
 }
 
 test_that("Run spot-checks at per-person level on PostgreSQL", {
-  skip_if_not(runTestsOnPostgreSQL)
+  skip_if_not(dbms == "postgresql")
   pgConnection <- createUnitTestData(pgConnectionDetails, pgCdmDatabaseSchema, pgOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
   on.exit(dropUnitTestData(pgConnection, pgOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable))
   runSpotChecks(pgConnection, pgCdmDatabaseSchema, pgOhdsiDatabaseSchema, cohortTable)
 })
 
 test_that("Run spot-checks at per-person level on SQL Server", {
-  skip_if_not(runTestsOnSQLServer)
+  skip_if_not(dbms == "sql server")
   sqlServerConnection <- createUnitTestData(sqlServerConnectionDetails, sqlServerCdmDatabaseSchema, sqlServerOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
   on.exit(dropUnitTestData(sqlServerConnection, sqlServerOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable))
   runSpotChecks(sqlServerConnection, sqlServerCdmDatabaseSchema, sqlServerOhdsiDatabaseSchema, cohortTable)
 })
 
 test_that("Run spot-checks at per-person level on Oracle", {
-  skip_if_not(runTestsOnOracle)
+  skip_if_not(dbms == "oracle")
   oracleConnection <- createUnitTestData(oracleConnectionDetails, oracleCdmDatabaseSchema, oracleOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
   on.exit(dropUnitTestData(oracleConnection, oracleOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable))
   runSpotChecks(oracleConnection, oracleCdmDatabaseSchema, oracleOhdsiDatabaseSchema, cohortTable)
 })
 
-test_that("Run spot-checks at per-person level on Impala", {
-  skip_if_not(runTestsOnImpala)
-  impalaConnection <- createUnitTestData(impalaConnectionDetails, impalaCdmDatabaseSchema, impalaOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
-  on.exit(dropUnitTestData(impalaConnection, impalaOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable))
-  runSpotChecks(impalaConnection, impalaCdmDatabaseSchema, impalaOhdsiDatabaseSchema, cohortTable)
-})
-
 test_that("Run spot-checks at per-person level on Redshift", {
-  skip_if_not(runTestsOnRedshift)
+  skip_if_not(dbms == "redshift")
   redshiftConnection <- createUnitTestData(redshiftConnectionDetails, redshiftCdmDatabaseSchema, redshiftOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
   on.exit(dropUnitTestData(redshiftConnection, redshiftOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable))
   runSpotChecks(redshiftConnection, redshiftCdmDatabaseSchema, redshiftOhdsiDatabaseSchema, cohortTable)
 })
 
 test_that("Run spot-checks at per-person level on Eunomia", {
-  skip_if_not(runTestsOnEunomia)
+  skip_if_not(dbms == "sqlite")
   runSpotChecks(eunomiaConnection, eunomiaCdmDatabaseSchema, eunomiaOhdsiDatabaseSchema, cohortTable)
 })
