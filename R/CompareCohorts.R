@@ -82,20 +82,36 @@ computeStandardizedDifference <-
       n1 <- getPopulationSize(covariateData1, cohortId1)
       n2 <- getPopulationSize(covariateData2, cohortId2)
       
-      m <-
-        dplyr::bind_rows(
-          covariates1 %>% dplyr::select(timeId, covariateId),
-          covariates2 %>% dplyr::select(timeId, covariateId)
-        ) %>%
-        dplyr::distinct() %>%
-        dplyr::left_join(covariates1 %>%
-                           dplyr::rename(count1 = count),
-                         by = c("timeId",
-                                "covariateId")) %>%
-        dplyr::left_join(covariates2 %>%
-                           dplyr::rename(count2 = count),
-                         by = c("timeId",
-                                "covariateId")) %>%
+      if (covariateDataHasTimeId) {
+        m <-
+          dplyr::bind_rows(
+            covariates1 %>% dplyr::select(timeId, covariateId),
+            covariates2 %>% dplyr::select(timeId, covariateId)
+          ) %>%
+          dplyr::distinct() %>%
+          dplyr::left_join(covariates1 %>%
+                             dplyr::rename(count1 = count),
+                           by = c("timeId",
+                                  "covariateId")) %>%
+          dplyr::left_join(covariates2 %>%
+                             dplyr::rename(count2 = count),
+                           by = c("timeId",
+                                  "covariateId"))
+      } else {
+        m <-
+          dplyr::bind_rows(
+            covariates1 %>% dplyr::select(covariateId),
+            covariates2 %>% dplyr::select(covariateId)
+          ) %>%
+          dplyr::distinct() %>%
+          dplyr::left_join(covariates1 %>%
+                             dplyr::rename(count1 = count),
+                           by = c("covariateId")) %>%
+          dplyr::left_join(covariates2 %>%
+                             dplyr::rename(count2 = count),
+                           by = c("covariateId"))
+      }
+      m <- m %>%
         dplyr::distinct() %>%
         tidyr::replace_na(replace = list(count1 = 0,
                                          count2 = 0)) %>%
@@ -107,7 +123,6 @@ computeStandardizedDifference <-
         ) %>%
         dplyr::mutate(sd = sqrt((sd1 ^ 2 + sd2 ^ 2) / 2),
                       stdDiff = (mean2 - mean1) / sd)
-      
       result <-
         bindStandardizedDiff(result, m, covariateDataHasTimeId)
     }
