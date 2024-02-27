@@ -31,7 +31,7 @@ FROM (
 	INNER JOIN @covariate_cohort_table covariate_cohort
 		ON cohort.subject_id = covariate_cohort.subject_id
 	INNER JOIN #covariate_cohort_ref covariate_cohort_ref
-		ON covariate_cohort.cohort_definition_id = covariate_cohort_ref.cohort_id
+		ON covariate_cohort.cohort_definition_id = CAST(covariate_cohort_ref.cohort_id AS INT)
 {@temporal} ? {
 	INNER JOIN #time_period time_period
 		ON covariate_cohort.cohort_start_date <= DATEADD(DAY, time_period.end_day, cohort.cohort_start_date)
