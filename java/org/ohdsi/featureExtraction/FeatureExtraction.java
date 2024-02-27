@@ -87,8 +87,10 @@ public class FeatureExtraction {
 //		String settings = getDefaultPrespecTemporalSequenceAnalyses();
 		// String settings = convertSettingsPrespecToDetails(getDefaultPrespecTemporalAnalyses());
 		// System.out.println(convertSettingsPrespecToDetails(getDefaultPrespecAnalyses()));
-		 String settings =
-		 "{\"temporal\":false,\"temporalSequence\":false,\"analyses\":[{\"analysisId\":999,\"sqlFileName\":\"CohortBasedBinaryCovariates.sql\",\"parameters\":{\"covariateCohortTable\":\"cohort\",\"analysisId\":999,\"analysisName\":\"Cohort\",\"startDay\":-365,\"endDay\":0},\"includedCovariateConceptIds\":[],\"addDescendantsToInclude\":false,\"excludedCovariateConceptIds\":[],\"addDescendantsToExclude\":false,\"includedCovariateIds\":[]}]}";
+		String settings =
+				 "{\"temporal\":true,\"temporalSequence\":false,\"ConditionEraGroupOverlap\":true,\"temporalStartDays\":0,\"temporalEndDays\":0,\"includedCovariateConceptIds\":[],\"addDescendantsToInclude\":false,\"excludedCovariateConceptIds\":[],\"addDescendantsToExclude\":false,\"includedCovariateIds\":[]}";
+		//String settings =
+		//"{\"temporal\":false,\"temporalSequence\":false,\"analyses\":[{\"analysisId\":999,\"sqlFileName\":\"CohortBasedBinaryCovariates.sql\",\"parameters\":{\"covariateCohortTable\":\"cohort\",\"analysisId\":999,\"analysisName\":\"Cohort\",\"startDay\":-365,\"endDay\":0},\"includedCovariateConceptIds\":[],\"addDescendantsToInclude\":false,\"excludedCovariateConceptIds\":[],\"addDescendantsToExclude\":false,\"includedCovariateIds\":[]}]}";
 		// String settings = convertSettingsPrespecToDetails(getDefaultPrespecAnalyses());
 		System.out.println(createSql(settings, true, "#temp_cohort", "row_id", -1, "cdm_synpuf"));
 		// System.out.println(createSql(getDefaultPrespecAnalyses(), true, "#temp_cohort", "row_id", -1, "cdm_synpuf"));
@@ -597,9 +599,16 @@ public class FeatureExtraction {
 			jsonWriter.key("start_day");
 			jsonWriter.value(jsonObject.get("temporalStartDays"));
 			jsonWriter.key("end_day");
-			jsonWriter.value(jsonObject.get("temporalEndDays"));
+			Object tempEndDays = jsonObject.get("temporalEndDays");
+			jsonWriter.value(tempEndDays);
 			jsonWriter.key("time_id");
-			jsonWriter.value(createIndexArray(jsonObject.getJSONArray("temporalEndDays").length()));
+			int[] timeIdIndexArray;
+			if (tempEndDays instanceof JSONArray) {
+				timeIdIndexArray = createIndexArray(((JSONArray) tempEndDays).length());
+			} else {
+				timeIdIndexArray = createIndexArray(1);
+			}
+			jsonWriter.value(timeIdIndexArray);
 			jsonWriter.endObject();
 		}
 		if (temporalSequence) {
