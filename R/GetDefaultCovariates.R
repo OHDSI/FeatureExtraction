@@ -31,6 +31,9 @@
 #'                               it is a temp table, do not specify \code{targetDatabaseSchema}.
 #' @param targetCovariateRefTable (Optional) The name of the table where the covariate reference will be stored.
 #' @param targetAnalysisRefTable (Optional) The name of the table where the analysis reference will be stored.
+#' @param minCharacterizationMean The minimum mean value for characterization output. Values below this will be cut off from output. This 
+#'                                will help reduce the file size of the characterization output, but will remove information
+#'                                on covariates that have very low values. The default is 0.001 (i.e. 0.1 percent)
 #'
 #' @template GetCovarParams
 #'
@@ -65,7 +68,8 @@ getDbDefaultCovariateData <- function(connection,
                                       targetCovariateTable,
                                       targetCovariateRefTable,
                                       targetAnalysisRefTable,
-                                      aggregated = FALSE) {
+                                      aggregated = FALSE,
+                                      minCharacterizationMean = 0.001) {
   if (!is(covariateSettings, "covariateSettings")) {
     stop("Covariate settings object not of type covariateSettings")
   }
@@ -126,6 +130,8 @@ getDbDefaultCovariateData <- function(connection,
         andromedaTableName = "covariates",
         snakeCaseToCamelCase = TRUE
       )
+      covariateData$covariates <- covariateData$covariates %>% 
+        dplyr::filter(averageValue > minCharacterizationMean)
     }
 
     # Continuous aggregated features
@@ -142,6 +148,8 @@ getDbDefaultCovariateData <- function(connection,
         andromedaTableName = "covariatesContinuous",
         snakeCaseToCamelCase = TRUE
       )
+      covariateData$covariatesContinuous <- covariateData$covariatesContinuous %>% 
+        dplyr::filter(averageValue > minCharacterizationMean)
     }
 
     # Covariate reference
