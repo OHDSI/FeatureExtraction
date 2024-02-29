@@ -130,8 +130,10 @@ getDbDefaultCovariateData <- function(connection,
         andromedaTableName = "covariates",
         snakeCaseToCamelCase = TRUE
       )
-      covariateData$covariates <- covariateData$covariates %>% 
-        dplyr::filter(averageValue > minCharacterizationMean)
+      if ("averageValue" %in% colnames(covariateData$covariates)) {
+        covariateData$covariates <- covariateData$covariates %>% 
+          dplyr::filter(averageValue > minCharacterizationMean)
+      }
     }
 
     # Continuous aggregated features
@@ -148,8 +150,10 @@ getDbDefaultCovariateData <- function(connection,
         andromedaTableName = "covariatesContinuous",
         snakeCaseToCamelCase = TRUE
       )
-      covariateData$covariatesContinuous <- covariateData$covariatesContinuous %>% 
-        dplyr::filter(averageValue > minCharacterizationMean)
+      if ("averageValue" %in% colnames(covariateData$covariatesContinuous)) {
+        covariateData$covariatesContinuous <- covariateData$covariatesContinuous %>% 
+          dplyr::filter(averageValue > minCharacterizationMean)
+      }
     }
 
     # Covariate reference
