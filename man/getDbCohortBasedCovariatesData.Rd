@@ -14,7 +14,8 @@ getDbCohortBasedCovariatesData(
   cdmVersion = "5",
   rowIdField = "subject_id",
   covariateSettings,
-  aggregated = FALSE
+  aggregated = FALSE,
+  minCharacterizationMean = 0.001
 )
 }
 \arguments{
