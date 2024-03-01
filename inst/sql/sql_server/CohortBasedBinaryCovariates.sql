@@ -78,7 +78,7 @@ FROM (
 	FROM @covariate_table
 	) t1
 LEFT JOIN #covariate_cohort_ref
-	ON cohort_id = CAST((covariate_id - @analysis_id) / 1000 AS INT);
+	ON CAST(cohort_id AS INT) = CAST((covariate_id - @analysis_id) / 1000 AS INT);
 	
 INSERT INTO #analysis_ref (
 	analysis_id,
