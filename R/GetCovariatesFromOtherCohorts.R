@@ -24,7 +24,7 @@
 #'                            \code{\link{createCohortBasedTemporalCovariateSettings}} functions.
 #' @param minCharacterizationMean The minimum mean value for characterization output. Values below this will be cut off from output. This 
 #'                                will help reduce the file size of the characterization output, but will remove information
-#'                                on covariates that have very low values. The default is 0.001 (i.e. 0.1 percent)
+#'                                on covariates that have very low values. The default is 0.
 #' @template GetCovarParams
 #'
 #' @export
@@ -38,7 +38,7 @@ getDbCohortBasedCovariatesData <- function(connection,
                                            rowIdField = "subject_id",
                                            covariateSettings,
                                            aggregated = FALSE,
-                                           minCharacterizationMean = 0.001) {
+                                           minCharacterizationMean = 0) {
   errorMessages <- checkmate::makeAssertCollection()
   checkmate::assertClass(connection, "DatabaseConnectorConnection", add = errorMessages)
   checkmate::assertCharacter(oracleTempSchema, len = 1, null.ok = TRUE, add = errorMessages)
