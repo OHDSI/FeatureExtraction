@@ -135,10 +135,7 @@ getDbDefaultCovariateData <- function(connection,
         andromedaTableName = "covariates",
         snakeCaseToCamelCase = TRUE
       )
-      if ("averageValue" %in% colnames(covariateData$covariates)) {
-        covariateData$covariates <- covariateData$covariates %>% 
-          dplyr::filter(.data$averageValue > minCharacterizationMean)
-      }
+      filterCovariateDataCovariates(covariateData, "covariates", minCharacterizationMean)
     }
 
     # Continuous aggregated features
@@ -155,10 +152,7 @@ getDbDefaultCovariateData <- function(connection,
         andromedaTableName = "covariatesContinuous",
         snakeCaseToCamelCase = TRUE
       )
-      if ("averageValue" %in% colnames(covariateData$covariatesContinuous)) {
-        covariateData$covariatesContinuous <- covariateData$covariatesContinuous %>% 
-          dplyr::filter(.data$averageValue > minCharacterizationMean)
-      }
+      filterCovariateDataCovariates(covariateData, "covariatesContinuous", minCharacterizationMean)
     }
 
     # Covariate reference
@@ -288,5 +282,19 @@ getDbDefaultCovariateData <- function(connection,
     class(covariateData) <- "CovariateData"
     attr(class(covariateData), "package") <- "FeatureExtraction"
     return(covariateData)
+  }
+}
+
+#' Filters the covariateData covariates based on the given characterization mean value.
+#'
+#' @param covariateData The covariate data
+#' @param covariatesName The name of the covariates object inside the covariateData
+#' @param minCharacterizationMean The minimum mean value for characterization output. Values below this will be cut off from output. This 
+#'                                will help reduce the file size of the characterization output, but will remove information
+#'                                on covariates that have very low values. The default is 0.
+filterCovariateDataCovariates <- function(covariateData, covariatesName, minCharacterizationMean = 0) {
+  if ("averageValue" %in% colnames(covariateData[[covariatesName]])) {
+    covariateData[[covariatesName]] <- covariateData[[covariatesName]] %>%
+      dplyr::filter(.data$averageValue > minCharacterizationMean)
   }
 }
