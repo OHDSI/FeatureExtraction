@@ -152,7 +152,7 @@ computeStandardizedDifference <- function(covariateData1, covariateData2, cohort
       is.na(covariateName1) ~ covariateName2,
       TRUE ~ covariateName1
     )) %>%
-    select(-rlang::sym("covariateName1"), -rlang::sym("covariateName2")) %>%
+    select(-local(rlang::sym("covariateName1")), -local(rlang::sym("covariateName2"))) %>%
     arrange(desc(abs(!!rlang::sym("stdDiff"))))
   return(result)
 }

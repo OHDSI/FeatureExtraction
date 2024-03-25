@@ -153,7 +153,8 @@ getDbCohortBasedCovariatesData <- function(connection,
     connection = connection,
     sql = sql,
     progressBar = FALSE,
-    reportOverallTime = FALSE
+    reportOverallTime = FALSE,
+    oracleTempSchema = oracleTempSchema
   )
   return(result)
 }
