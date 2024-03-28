@@ -109,6 +109,7 @@ test_that("Test show method", {
   expect_invisible(show(cvData))
   on.exit(rm(cvData))
 })
+
 test_that("getDbCovariateData cohortId warning", {
   skip_if_not(dbms == "sqlite")
   settings <- createDefaultCovariateSettings()
@@ -120,3 +121,18 @@ test_that("getDbCovariateData cohortId warning", {
                      aggregated = FALSE), "cohortId argument has been deprecated, please use cohortIds")
 })
 
+test_that("getDbCovariateData settings list - check metaData", {
+  skip_if_not(dbms == "sqlite")
+  looCovSet <- FeatureExtraction:::.createLooCovariateSettings(useLengthOfObs = TRUE)
+  covariateSettingsList <- list(looCovSet, looCovSet)
+  covariateData <- getDbCovariateData(connection = eunomiaConnection,
+                                      cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
+                                      cohortTable = "cohort",
+                                      cohortIds = c(-1),
+                                      covariateSettings = covariateSettingsList)
+  metaData <- attr(covariateData, "metaData")
+  expect_true("sql" %in% names(metaData))
+  expect_equal(class(metaData$sql), "list") 
+  expect_equal(length(metaData$sql), 1)
+  expect_equal(length(metaData$sql[[1]]), 2)
+})

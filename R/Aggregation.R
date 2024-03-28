@@ -59,13 +59,13 @@ aggregateCovariates <- function(covariateData) {
 
   # Aggregate binary variables
   result$covariates <- covariateData$analysisRef %>%
-    filter(rlang::sym("isBinary") == "Y") %>%
+    filter(local(rlang::sym("isBinary")) == "Y") %>%
     inner_join(covariateData$covariateRef, by = "analysisId") %>%
     inner_join(covariateData$covariates, by = "covariateId") %>%
-    group_by(rlang::sym("covariateId")) %>%
+    group_by(local(rlang::sym("covariateId"))) %>%
     summarize(
-      sumValue = sum(rlang::sym("covariateValue"), na.rm = TRUE),
-      averageValue = sum(rlang::sym("covariateValue") / populationSize, na.rm = TRUE)
+      sumValue = sum(local(rlang::sym("covariateValue")), na.rm = TRUE),
+      averageValue = sum(local(rlang::sym("covariateValue")) / populationSize, na.rm = TRUE)
     )
 
   # Aggregate continuous variables where missing means zero
@@ -92,7 +92,7 @@ aggregateCovariates <- function(covariateData) {
   }
 
   covariatesContinuous1 <- covariateData$analysisRef %>%
-    filter(rlang::sym("isBinary") == "N" & rlang::sym("missingMeansZero") == "Y") %>%
+    filter(local(rlang::sym("isBinary")) == "N" & local(rlang::sym("missingMeansZero")) == "Y") %>%
     inner_join(covariateData$covariateRef, by = "analysisId") %>%
     inner_join(covariateData$covariates, by = "covariateId") %>%
     Andromeda::groupApply("covariateId", computeStats) %>%
@@ -118,7 +118,7 @@ aggregateCovariates <- function(covariateData) {
   }
 
   covariatesContinuous2 <- covariateData$analysisRef %>%
-    filter(rlang::sym("isBinary") == "N" & rlang::sym("missingMeansZero") == "N") %>%
+    filter(local(rlang::sym("isBinary")) == "N" & local(rlang::sym("missingMeansZero")) == "N") %>%
     inner_join(covariateData$covariateRef, by = "analysisId") %>%
     inner_join(covariateData$covariates, by = "covariateId") %>%
     Andromeda::groupApply("covariateId", computeStats) %>%
