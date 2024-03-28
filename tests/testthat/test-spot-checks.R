@@ -53,8 +53,8 @@ runSpotChecks <- function(connection, cdmDatabaseSchema, ohdsiDatabaseSchema, co
   results <- results[order(results$rowId), ]
 
   covariateIds <- covariateData$covariateRef %>%
-    filter(local(rlang::sym("analysisId")) == 1) %>%
-    select(local(rlang::sym("covariateId")))
+    filter(.data$analysisId == 1) %>%
+    select("covariateId")
   results2 <- covariateData$covariates %>%
     inner_join(covariateIds, by = "covariateId") %>%
     arrange(local(rlang::sym("rowId"))) %>%
@@ -76,8 +76,8 @@ runSpotChecks <- function(connection, cdmDatabaseSchema, ohdsiDatabaseSchema, co
   results <- results[order(results$rowId), ]
 
   covariateIds <- covariateData$covariateRef %>%
-    filter(local(rlang::sym("analysisId")) == 2) %>%
-    select(local(rlang::sym("covariateId")))
+    filter(.data$analysisId == 2) %>%
+    select("covariateId")
   results2 <- covariateData$covariates %>%
     inner_join(covariateIds, by = "covariateId") %>%
     arrange(local(rlang::sym("rowId"))) %>%
@@ -101,8 +101,8 @@ runSpotChecks <- function(connection, cdmDatabaseSchema, ohdsiDatabaseSchema, co
   row.names(results) <- NULL
 
   covariateIds <- covariateData$covariateRef %>%
-    filter(local(rlang::sym("analysisId")) == 102) %>%
-    select(local(rlang::sym("covariateId")))
+    filter(.data$analysisId == 102) %>%
+    select("covariateId")
   results2 <- covariateData$covariates %>%
     inner_join(covariateIds, by = "covariateId") %>%
     arrange(local(rlang::sym("rowId")), local(rlang::sym("covariateId"))) %>%
@@ -126,8 +126,8 @@ runSpotChecks <- function(connection, cdmDatabaseSchema, ohdsiDatabaseSchema, co
   row.names(results) <- NULL
 
   covariateIds <- covariateData$covariateRef %>%
-    filter(local(rlang::sym("analysisId")) == 404) %>%
-    select(local(rlang::sym("covariateId")))
+    filter(.data$analysisId == 404) %>%
+    select("covariateId")
   results2 <- covariateData$covariates %>%
     inner_join(covariateIds, by = "covariateId") %>%
     arrange(local(rlang::sym("rowId")), local(rlang::sym("covariateId"))) %>%
@@ -149,8 +149,8 @@ runSpotChecks <- function(connection, cdmDatabaseSchema, ohdsiDatabaseSchema, co
   row.names(results) <- NULL
 
   covariateIds <- covariateData$covariateRef %>%
-    filter(local(rlang::sym("analysisId")) == 923) %>%
-    select(local(rlang::sym("covariateId")))
+    filter(.data$analysisId == 923) %>%
+    select("covariateId")
   results2 <- covariateData$covariates %>%
     inner_join(covariateIds, by = "covariateId") %>%
     arrange(local(rlang::sym("rowId")), local(rlang::sym("covariateId"))) %>%
@@ -166,8 +166,8 @@ runSpotChecks <- function(connection, cdmDatabaseSchema, ohdsiDatabaseSchema, co
   aggMax <- aggMax[order(aggMax$covariateId), ]
 
   covariateIds <- covariateDataAgg$covariateRef %>%
-    filter(local(rlang::sym("analysisId")) == 923) %>%
-    select(local(rlang::sym("covariateId")))
+    filter(.data$analysisId == 923) %>%
+    select("covariateId")
   results3 <- covariateDataAgg$covariatesContinuous %>%
     inner_join(covariateIds, by = "covariateId") %>%
     arrange(local(rlang::sym("covariateId"))) %>%
