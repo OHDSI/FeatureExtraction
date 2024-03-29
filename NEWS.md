@@ -3,7 +3,7 @@ FeatureExtraction 3.4.1
 
 Bug Fixes:
 
-- Weely R-check fails (#239)
+- Weekly R-check fails (#239)
 - BigQuery error (#208)
 - Error when specifying 1 temporal window in temportalCovariateSettings (#200)
 - metaData aggregation issue (#195)
