@@ -293,7 +293,7 @@ getDbDefaultCovariateData <- function(connection,
 #'                                will help reduce the file size of the characterization output, but will remove information
 #'                                on covariates that have very low values. The default is 0.
 filterCovariateDataCovariates <- function(covariateData, covariatesName, minCharacterizationMean = 0) {
-  if ("averageValue" %in% colnames(covariateData[[covariatesName]])) {
+  if ("averageValue" %in% colnames(covariateData[[covariatesName]]) && minCharacterizationMean != 0) {
     covariateData[[covariatesName]] <- covariateData[[covariatesName]] %>%
       dplyr::filter(.data$averageValue > minCharacterizationMean)
   }
