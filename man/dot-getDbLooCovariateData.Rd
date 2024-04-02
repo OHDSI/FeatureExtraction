@@ -13,7 +13,8 @@
   cdmVersion = "5",
   rowIdField = "subject_id",
   covariateSettings,
-  aggregated = FALSE
+  aggregated = FALSE,
+  minCharacterizationMean = 0
 )
 }
 \arguments{
@@ -47,6 +48,10 @@ of the createCovariate functions, or a list of such objects.}
 
 \item{aggregated}{Should aggregate statistics be computed instead of covariates per
 cohort entry?}
+
+\item{minCharacterizationMean}{The minimum mean value for characterization output. Values below this will be cut off from output. This 
+will help reduce the file size of the characterization output, but will remove information
+on covariates that have very low values. The default is 0.}
 }
 \value{
 Returns an object of type \code{covariateData}, containing information on the covariates.

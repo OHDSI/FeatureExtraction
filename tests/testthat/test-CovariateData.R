@@ -84,6 +84,40 @@ test_that("test summary call for covariateData class", {
   expect_equal(sumOut$metaData$cohortIds, 1L)
 })
 
+test_that("test filtering of covariates based on minCharacterizationMean", {
+  skip_if_not(dbms == "sqlite")
+  settings <- createDefaultCovariateSettings()
+  covariateData <- getDbCovariateData(connectionDetails = eunomiaConnectionDetails,
+                                      cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
+                                      cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
+                                      cohortIds = c(1),
+                                      covariateSettings = settings,
+                                      aggregated = TRUE,
+                                      minCharacterizationMean = 0)
+  nCovariates <- covariateData$covariates %>% 
+    collect() %>%
+    nrow()
+  nCovariatesCont <- covariateData$covariatesContinuous %>% 
+    collect() %>%
+    nrow()
+  
+  covariateData <- getDbCovariateData(connectionDetails = eunomiaConnectionDetails,
+                                      cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
+                                      cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
+                                      cohortIds = c(1),
+                                      covariateSettings = settings,
+                                      aggregated = TRUE,
+                                      minCharacterizationMean = 0.02)
+  nCovariatesFiltered <- covariateData$covariates %>% 
+    collect() %>%
+    nrow()
+  nCovariatesContFiltered <- covariateData$covariatesContinuous %>% 
+    collect() %>%
+    nrow()
+  expect_true(nCovariatesFiltered < nCovariates)
+  expect_true(nCovariatesContFiltered < nCovariatesCont)
+})
+
 test_that("test loadCovariateData", {
   expect_error(loadCovariateData("errorPath"))
 })
