@@ -31,10 +31,13 @@ test_that("createTable1 works with categorical covariates", {
   expect_equal(ncol(table1), 4)
   expect_equal(names(table1)[1], names(table1)[3])
   expect_equal(names(table1)[2], names(table1)[4])
+  expect_equal(names(table1)[1], "Characteristic")
+  expect_equal(names(table1)[2], "% (n = 638)")
 
   table1 <- createTable1(covariateData1, output = "one column")
   expect_s3_class(table1, "data.frame")
   expect_equal(ncol(table1), 2)
+  expect_equal(names(table1), c("Characteristic", "% (n = 638)"))
 
   covariateData2 <- getDbCovariateData(connection = eunomiaConnection,
                                        cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
@@ -47,10 +50,13 @@ test_that("createTable1 works with categorical covariates", {
   table1 <- createTable1(covariateData1, covariateData2)
   expect_s3_class(table1, "data.frame")
   expect_equal(ncol(table1), 8)
-
+  expect_equal(names(table1), c("Characteristic", "% (n = 638)", "% (n = 252)", "Std.Diff",
+                                "Characteristic", "% (n = 638)", "% (n = 252)", "Std.Diff"))
+  
   table1 <- createTable1(covariateData1, covariateData2, output = "one column")
   expect_s3_class(table1, "data.frame")
   expect_equal(ncol(table1), 4)
+  expect_equal(names(table1), c("Characteristic", "% (n = 638)", "% (n = 252)", "Std.Diff"))
 
   rawCovariateData <- getDbCovariateData(connection = eunomiaConnection,
                                          cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
