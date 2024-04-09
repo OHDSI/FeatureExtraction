@@ -562,26 +562,20 @@ createTable1 <- function(covariateData1,
 
   if (nrow(binaryTable) != 0) {
     if (comparison) {
-      populationSizeCohort1 <- attr(covariateData1, "metaData")$populationSize
-      if (!is.null(cohortId1)) {
-        populationSizeCohort1 <- populationSizeCohort1[cohortId1]
-      }
-      populationSizeCohort2 <- attr(covariateData2, "metaData")$populationSize
-      if (!is.null(cohortId2)) {
-        populationSizeCohort2 <- populationSizeCohort2[cohortId2]
-      }
+      populationSize1 <- getPopulationSize(covariateData1, cohortId1)
+      populationSize2 <- getPopulationSize(covariateData2, cohortId2)
       colnames(binaryTable) <- c(
         "Characteristic",
         "Count",
         paste0(
           "% (n = ",
-          formatCount(populationSizeCohort1),
+          formatCount(populationSize1),
           ")"
         ),
         "Count",
         paste0(
           "% (n = ",
-          formatCount(populationSizeCohort2),
+          formatCount(populationSize2),
           ")"
         ),
         "Std.Diff"
@@ -598,16 +592,13 @@ createTable1 <- function(covariateData1,
       binaryTable$count2 <- NULL
       binaryTable$percent2 <- NULL
       binaryTable$stdDiff <- NULL
-      populationSizeCohort1 <- attr(covariateData1, "metaData")$populationSize
-      if (!is.null(cohortId1)) {
-        populationSizeCohort1 <- populationSizeCohort1[cohortId1]
-      }
+      populationSize1 <- getPopulationSize(covariateData1, cohortId1)
       colnames(binaryTable) <- c(
         "Characteristic",
         "Count",
         paste0(
           "% (n = ",
-          formatCount(populationSizeCohort1),
+          formatCount(populationSize1),
           ")"
         )
       )
@@ -733,4 +724,12 @@ createTable1CovariateSettings <- function(specifications = getDefaultTable1Speci
   analyses <- analyses[which(!sapply(analyses, is.null))]
   covariateSettings$analyses <- analyses
   return(covariateSettings)
+}
+
+getPopulationSize <- function(covariateData, cohortId) {
+  result <- attr(covariateData, "metaData")$populationSize
+  if (!is.null(cohortId)) {
+    result <- result[cohortId]
+  }
+  return(result)
 }
