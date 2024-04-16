@@ -16,9 +16,6 @@
 #'                            covariates. If it is a temp table, the name should have a hash prefix,
 #'                            e.g. '#temp_table'. If it is a non-temp table, it should include the
 #'                            database schema, e.g. 'cdm_database.cohort'.
-#' @param cohortId            DEPRECATED:For which cohort ID should covariates be constructed? If set to -1,
-#'                            covariates will be constructed for all cohorts in the specified cohort
-#'                            table.
 #' @param cohortIds           For which cohort ID(s) should covariates be constructed? If set to c(-1),
 #'                            covariates will be constructed for all cohorts in the specified cohort
 #'                            table.

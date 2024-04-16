@@ -4,12 +4,10 @@
 \alias{filterByCohortDefinitionId}
 \title{Filter covariates by cohort definition IDs}
 \usage{
-filterByCohortDefinitionId(covariateData, cohortId = 1, cohortIds = c(1))
+filterByCohortDefinitionId(covariateData, cohortIds = c(1))
 }
 \arguments{
 \item{covariateData}{An object of type \code{CovariateData}}
-
-\item{cohortId}{DEPRECATED The cohort definition IDs to keep.}
 
 \item{cohortIds}{The cohort definition IDs to keep.}
 }

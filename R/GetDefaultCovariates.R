@@ -59,7 +59,6 @@ getDbDefaultCovariateData <- function(connection,
                                       oracleTempSchema = NULL,
                                       cdmDatabaseSchema,
                                       cohortTable = "#cohort_person",
-                                      cohortId = -1,
                                       cohortIds = c(-1),
                                       cdmVersion = "5",
                                       rowIdField = "subject_id",
@@ -78,10 +77,6 @@ getDbDefaultCovariateData <- function(connection,
   }
   if (!missing(targetCovariateTable) && !is.null(targetCovariateTable) && aggregated) {
     stop("Writing aggregated results to database is currently not supported")
-  }
-  if (!missing(cohortId)) { 
-    warning("cohortId argument has been deprecated, please use cohortIds")
-    cohortIds <- cohortId
   }
   errorMessages <- checkmate::makeAssertCollection()
   minCharacterizationMean <- utils::type.convert(minCharacterizationMean, as.is = TRUE)

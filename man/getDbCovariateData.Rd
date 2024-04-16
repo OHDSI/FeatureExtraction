@@ -13,7 +13,6 @@ getDbCovariateData(
   cohortTable = "cohort",
   cohortDatabaseSchema = cdmDatabaseSchema,
   cohortTableIsTemp = FALSE,
-  cohortId = -1,
   cohortIds = c(-1),
   rowIdField = "subject_id",
   covariateSettings,
@@ -50,10 +49,6 @@ specify both the database and the schema, so for example
 'cdm_instance.dbo'.}
 
 \item{cohortTableIsTemp}{Is the cohort table a temp table?}
-
-\item{cohortId}{DEPRECATED:For which cohort ID(s) should covariates be constructed? If set to -1,
-covariates will be constructed for all cohorts in the specified cohort
-table.}
 
 \item{cohortIds}{For which cohort ID(s) should covariates be constructed? If set to c(-1),
 covariates will be constructed for all cohorts in the specified cohort

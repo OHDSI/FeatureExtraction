@@ -46,9 +46,6 @@
 #'                               specify both the database and the schema, so for example
 #'                               'cdm_instance.dbo'.
 #' @param cohortTableIsTemp      Is the cohort table a temp table?
-#' @param cohortId               DEPRECATED:For which cohort ID(s) should covariates be constructed? If set to -1,
-#'                               covariates will be constructed for all cohorts in the specified cohort
-#'                               table.
 #' @param cohortIds              For which cohort ID(s) should covariates be constructed? If set to c(-1),
 #'                               covariates will be constructed for all cohorts in the specified cohort
 #'                               table.
@@ -100,7 +97,6 @@ getDbCovariateData <- function(connectionDetails = NULL,
                                cohortTable = "cohort",
                                cohortDatabaseSchema = cdmDatabaseSchema,
                                cohortTableIsTemp = FALSE,
-                               cohortId = -1,
                                cohortIds = c(-1),
                                rowIdField = "subject_id",
                                covariateSettings,
@@ -114,10 +110,6 @@ getDbCovariateData <- function(connectionDetails = NULL,
   }
   if (cdmVersion == "4") {
     stop("CDM version 4 is not supported any more")
-  }
-  if (!missing(cohortId)) { 
-    warning("cohortId argument has been deprecated, please use cohortIds")
-    cohortIds <- cohortId
   }
   errorMessages <- checkmate::makeAssertCollection()
   minCharacterizationMean <- utils::type.convert(minCharacterizationMean, as.is = TRUE)
