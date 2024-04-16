@@ -58,7 +58,8 @@
 #' @param covariateSettings      Either an object of type \code{covariateSettings} as created using one
 #'                               of the createCovariate functions, or a list of such objects.
 #' @param aggregated             Should aggregate statistics be computed instead of covariates per
-#'                               cohort entry?
+#'                               cohort entry? If aggregated is set to FALSE, the cohort table should contain unique records
+#'                               per patient and per cohort. Otherwise there will be collisions and the output is ambiguous.
 #' @param minCharacterizationMean The minimum mean value for characterization output. Values below this will be cut off from output. This 
 #'                                will help reduce the file size of the characterization output, but will remove information
 #'                                on covariates that have very low values. The default is 0.
