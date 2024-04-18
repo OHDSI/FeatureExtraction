@@ -1,3 +1,14 @@
+FeatureExtraction 3.5.0
+=======================
+
+New Features:
+
+- Adds the ability to filter covariates by setting a minimum threshold for covariate mean (#174)
+
+Bug Fixes:
+
+- Table 1 - does not report correct subject count (#237) 
+
 FeatureExtraction 3.4.1
 =======================
 
