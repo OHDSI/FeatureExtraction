@@ -1,4 +1,4 @@
-FeatureExtraction 3.2.1
+FeatureExtraction 3.5.0
 =======================
 
 New Features:
@@ -10,6 +10,66 @@ Bugfixes:
 
 - Fixed tests and made sure storage of covariates with `getDbDefaultCovariateData` works and is consistent
 
+FeatureExtraction 3.4.1
+=======================
+
+Bug Fixes:
+
+- Weekly R-check fails (#239)
+- BigQuery error (#208)
+- Error when specifying 1 temporal window in temportalCovariateSettings (#200)
+- metaData aggregation issue (#195)
+
+FeatureExtraction 3.4.0
+=======================
+
+Bug Fixes:
+
+- SDM calculation fix (#223)
+- Each covariate has a unique covariate name (#219)
+- R check (notes) (#211, #215)
+
+Other:
+
+- Deprecate cohortId and use cohortIds (#188)
+
+FeatureExtraction 3.3.2
+=======================
+
+Bug Fixes:
+
+- Fixes R check on GitHub Actions (#211) 
+
+FeatureExtraction 3.3.1
+=======================
+
+Bug Fixes:
+
+- Fixes unit tests running on GitHub Actions (#211) 
+
+FeatureExtraction 3.3.0
+=======================
+
+New Features:
+
+- Adds the ability to create cohort-based covariates (#96)
+- Add covariates based on care_site_id (#164)
+
+Bug Fixes:
+
+- Cast demographic index year and month-year to properly format the covariate name (#158) 
+- Fix vignette output to include code blocks (#163)
+- Fix failing unit tests (#178)
+- Switch unit tests to use temp cohorts tables (#166)
+- Fix typo in UsingFeatureExtraction vignette (#186)
+- Fix duplicate analysis IDs in PrespecTemporalAnalysis (#144)
+- Fix duplicate cdmVersion arguments in vignette (#176)
+
+Other:
+
+- Add examples to all function documentation (#201)
+- Standardize Maven libraries (#197)
+
 FeatureExtraction 3.2.0
 =======================
 
@@ -19,7 +79,7 @@ New Features:
 
 - Identify inpatient events using visit_occurrence to support CDM 5.4 (#141)
 
-Bugfixes:
+Bug Fixes:
 
 - Fixes MeasurementRangeGroup analysis bug (#133) to use proper look back days
 
@@ -30,7 +90,7 @@ Other:
 FeatureExtraction 3.1.1
 =======================
 
-Bugfixes:
+Bug Fixes:
 
 1. Removes 'size' column name since this is a reserved keyword for Oracle.
 
@@ -58,7 +118,7 @@ Changes:
 
 3. The `cohortId` argument now also supports integers greater than 32-bits.
 
-Bugfixes:
+Bug Fixes:
 
 1. If a person has multiple measurements with the same `measurement_concept_id`, the selection of which measurement value to include is now deterministic.
 
@@ -74,7 +134,7 @@ Changes:
 
 3. `getDbCovariateData()` returns empty covariates instead of NULL covariates when no covariates are specified. 
 
-Bugfixes: 
+Bug Fixes: 
 
 1. Time ID is now retrieved when aggregating binary temporal covariates.
 
@@ -90,7 +150,7 @@ Changes:
 
 3. For analyses that restrict to inpatient diagnoses, the string '(inpatient)' is now appended to the covariate name.
 
-Bugfixes: 
+Bug Fixes: 
 
 1. Dropping spurious 'analysis_name' field in temporary covariate reference table.
 
@@ -104,7 +164,7 @@ Changes:
 
 1. Added Korean translation of vignettes.
 
-Bugfixes:
+Bug Fixes:
 
 1. Fixing aggregation of covariates generated using the cohort_attribute table.
 
@@ -117,7 +177,7 @@ Bugfixes:
 FeatureExtraction 2.2.4
 =======================
 
-Bugfixes:
+Bug Fixes:
 
 1. Removing redundant covariates now precedes removing infrequent covariates when calling tidyCovariates. Analyses where the most prevalent (redundant) covariate was removed are now exempt from removal of infrequent covariates.
 
@@ -131,7 +191,7 @@ Changes:
 
 1. Also removing descendants when excluding condition concepts from condition groups. Condition groups therefore now work similar to drug groups.
 
-Bugfixes:
+Bug Fixes:
 
 1. Updated workaround for ff bug causing chunk.default error on R v3.6.0 on machines with lots of memory.
 
@@ -151,7 +211,7 @@ Changes:
 
 1. Added option to specify number of digits for continuous variables in createTable1 function.
 
-Bugfixes:
+Bug Fixes:
 
 1. Added missing space cause SQL error when both include and exclude concept are specified.
 

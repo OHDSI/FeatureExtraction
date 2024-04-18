@@ -3,7 +3,6 @@
 pom.xml
 extras
 docs
-bin
 man-roxygen
 ^.*\.Rproj$
 ^\.Rproj\.user$

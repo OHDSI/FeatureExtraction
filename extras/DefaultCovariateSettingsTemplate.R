@@ -1,4 +1,4 @@
-# Copyright 2021 Observational Health Data Sciences and Informatics
+# Copyright 2024 Observational Health Data Sciences and Informatics
 #
 # This file is part of FeatureExtraction
 #
@@ -19,7 +19,7 @@
 #' Create covariate settings
 #'
 #' @details
-#' creates an object specifying how covariates should be contructed from data in the CDM model.
+#' creates an object specifying how covariates should be constructed from data in the CDM model.
 #'
 %roxygen%
 #'
@@ -31,7 +31,7 @@
 #' 
 #' @export
 %functionName% <- function(%arguments%) {
-  covariateSettings <- list(temporal = %temporal%)
+  covariateSettings <- list(temporal = %temporal%, temporalSequence = FALSE)
   formalNames <- names(formals(%functionName%))
   anyUseTrue <- FALSE
   for (name in formalNames) {

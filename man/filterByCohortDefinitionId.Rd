@@ -2,18 +2,35 @@
 % Please edit documentation in R/HelperFunctions.R
 \name{filterByCohortDefinitionId}
 \alias{filterByCohortDefinitionId}
-\title{Filter covariates by cohort definition ID}
+\title{Filter covariates by cohort definition IDs}
 \usage{
-filterByCohortDefinitionId(covariateData, cohortId)
+filterByCohortDefinitionId(covariateData, cohortId = 1, cohortIds = c(1))
 }
 \arguments{
 \item{covariateData}{An object of type \code{CovariateData}}
 
-\item{cohortId}{The cohort definition ID to keep.}
+\item{cohortId}{DEPRECATED The cohort definition IDs to keep.}
+
+\item{cohortIds}{The cohort definition IDs to keep.}
 }
 \value{
 An object of type \code{covariateData}.
 }
 \description{
-Filter covariates by cohort definition ID
+Filter covariates by cohort definition IDs
+}
+\examples{
+\dontrun{
+covariateData <- FeatureExtraction:::createEmptyCovariateData(
+  cohortIds = 1,
+  aggregated = FALSE,
+  temporal = FALSE
+)
+
+covData <- filterByCohortDefinitionId(
+  covariateData = covariateData,
+  cohortIds = c(1)
+)
+}
+
 }

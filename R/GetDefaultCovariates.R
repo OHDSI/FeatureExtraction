@@ -1,4 +1,4 @@
-# Copyright 2021 Observational Health Data Sciences and Informatics
+# Copyright 2024 Observational Health Data Sciences and Informatics
 #
 # This file is part of FeatureExtraction
 #
@@ -43,7 +43,28 @@
 #' @param dropTableIfExists      If targetDatabaseSchema, drop any existing tables. Otherwise, results are merged
 #'                               into existing table data. Overides createTable.
 #' @param createTable            Run sql to create table? Code does not check if table exists.
+#' @param minCharacterizationMean The minimum mean value for characterization output. Values below this will be cut off from output. This 
+#'                                will help reduce the file size of the characterization output, but will remove information
+#'                                on covariates that have very low values. The default is 0.
+#'
 #' @template GetCovarParams
+#'
+#' @examples
+#' \dontrun{
+#' connection <- DatabaseConnector::connect(connectionDetails)
+#' Eunomia::createCohorts(connectionDetails)
+#'
+#' results <- getDbDefaultCovariateData(
+#'   connection = connection,
+#'   cdmDatabaseSchema = "main",
+#'   cohortTable = "cohort",
+#'   covariateSettings = createDefaultCovariateSettings(),
+#'   targetDatabaseSchema = "main",
+#'   targetCovariateTable = "ut_cov",
+#'   targetCovariateRefTable = "ut_cov_ref",
+#'   targetAnalysisRefTable = "ut_cov_analysis_ref"
+#' )
+#' }
 #'
 #' @export
 getDbDefaultCovariateData <- function(connection,
@@ -51,6 +72,7 @@ getDbDefaultCovariateData <- function(connection,
                                       cdmDatabaseSchema,
                                       cohortTable = "#cohort_person",
                                       cohortId = -1,
+                                      cohortIds = c(-1),
                                       cdmVersion = "5",
                                       rowIdField = "subject_id",
                                       covariateSettings,
@@ -65,14 +87,23 @@ getDbDefaultCovariateData <- function(connection,
                                       ),
                                       dropTableIfExists = FALSE,
                                       createTable = TRUE,
-                                      aggregated = FALSE) {
+                                      aggregated = FALSE,
+                                      minCharacterizationMean = 0) {
   if (!is(covariateSettings, "covariateSettings")) {
     stop("Covariate settings object not of type covariateSettings")
   }
   if (cdmVersion == "4") {
     stop("Common Data Model version 4 is not supported")
   }
-
+  if (!missing(cohortId)) { 
+    warning("cohortId argument has been deprecated, please use cohortIds")
+    cohortIds <- cohortId
+  }
+  errorMessages <- checkmate::makeAssertCollection()
+  minCharacterizationMean <- utils::type.convert(minCharacterizationMean, as.is = TRUE)
+  checkmate::assertNumeric(x = minCharacterizationMean, lower = 0, add = errorMessages)
+  checkmate::reportAssertions(collection = errorMessages)
+  
   settings <- .toJson(covariateSettings)
   rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$init(system.file("", package = "FeatureExtraction"))
   json <- rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$createSql(settings, aggregated, cohortTable, rowIdField, rJava::.jarray(as.character(cohortId)), cdmDatabaseSchema)
@@ -89,9 +120,9 @@ getDbDefaultCovariateData <- function(connection,
                                      oracleTempSchema = oracleTempSchema)
     }
   }
-
+  
   ParallelLogger::logInfo("Constructing features on server")
-
+  
   sql <- SqlRender::translate(sql = todo$sqlConstruction,
                               targetDialect = attr(connection, "dbms"),
                               oracleTempSchema = oracleTempSchema)
@@ -102,17 +133,18 @@ getDbDefaultCovariateData <- function(connection,
   if ((missing(targetDatabaseSchema) | is.null(targetDatabaseSchema)) & !allTempTables) {
     # Save to Andromeda
     covariateData <- Andromeda::andromeda()
-
-    queryFunction <- function(sql, tableName) {
+    
+    queryFunction <- function(sql, tableName, minCharacterizationMean) {
       DatabaseConnector::querySqlToAndromeda(connection = connection,
                                              sql = sql,
                                              andromeda = covariateData,
                                              andromedaTableName = tableName,
                                              snakeCaseToCamelCase = TRUE)
+      filterCovariateDataCovariates(covariateData, "covariates", minCharacterizationMean)
     }
     ParallelLogger::logInfo("Fetching data from server")
   } else {
-
+    
     if (dropTableIfExists) {
       createTable <- TRUE
     }
@@ -136,8 +168,8 @@ getDbDefaultCovariateData <- function(connection,
                         drop = dropTableIfExists,
                         table = table)
     }
-
-    queryFunction <- function(sql, table) {
+    
+    queryFunction <- function(sql, table, minCharacterizationMean) {
       mappedTable <- targetTables[[table]]
       if (is.null(mappedTable)) {
         if (allTempTables) {
@@ -147,17 +179,17 @@ getDbDefaultCovariateData <- function(connection,
         }
         mappedTable <- SqlRender::camelCaseToSnakeCase(table)
       }
-
+      
       if (substr(mappedTable, 1, 1) != "#") {
         mappedTable <- paste0(targetDatabaseSchema, ".", mappedTable)
       }
-
+      
       if (createTable) {
         ParallelLogger::logInfo("Creating table ", mappedTable, " for ", table)
       } else {
         ParallelLogger::logInfo("Appending ", table, " results to table ", mappedTable)
       }
-
+      
       sql <- convertQuery(sql, mappedTable)
       DatabaseConnector::renderTranslateExecuteSql(connection,
                                                    sql,
@@ -165,50 +197,50 @@ getDbDefaultCovariateData <- function(connection,
                                                    progressBar = FALSE,
                                                    reportOverallTime = FALSE)
     }
-
+    
   }
-
+  
   start <- Sys.time()
   # Binary or non-aggregated features
   if (!is.null(todo$sqlQueryFeatures)) {
     sql <- SqlRender::translate(sql = todo$sqlQueryFeatures,
                                 targetDialect = attr(connection, "dbms"),
                                 oracleTempSchema = oracleTempSchema)
-    queryFunction(sql, "covariates")
+    queryFunction(sql, "covariates", minCharacterizationMean)
   }
-
+  
   # Continuous aggregated features
   if (!is.null(todo$sqlQueryContinuousFeatures)) {
     sql <- SqlRender::translate(sql = todo$sqlQueryContinuousFeatures,
                                 targetDialect = attr(connection, "dbms"),
                                 oracleTempSchema = oracleTempSchema)
-    queryFunction(sql, "covariatesContinuous")
+    queryFunction(sql, "covariatesContinuous", minCharacterizationMean)
   }
-
+  
   # Covariate reference
   sql <- SqlRender::translate(sql = todo$sqlQueryFeatureRef,
                               targetDialect = attr(connection, "dbms"),
                               oracleTempSchema = oracleTempSchema)
-
-  queryFunction(sql, "covariateRef")
-
+  
+  queryFunction(sql, "covariateRef", minCharacterizationMean)
+  
   # Analysis reference
   sql <- SqlRender::translate(sql = todo$sqlQueryAnalysisRef,
                               targetDialect = attr(connection, "dbms"),
                               oracleTempSchema = oracleTempSchema)
-  queryFunction(sql, "analysisRef")
-
+  queryFunction(sql, "analysisRef", minCharacterizationMean)
+  
   # Time reference
   if (!is.null(todo$sqlQueryTimeRef)) {
     sql <- SqlRender::translate(sql = todo$sqlQueryTimeRef,
                                 targetDialect = attr(connection, "dbms"),
                                 oracleTempSchema = oracleTempSchema)
-    queryFunction(sql, "timeRef")
+    queryFunction(sql, "timeRef", minCharacterizationMean)
   }
-
+  
   delta <- Sys.time() - start
   ParallelLogger::logInfo("Fetching data took ", signif(delta, 3), " ", attr(delta, "units"))
-
+  
   # Drop temp tables
   sql <- SqlRender::translate(sql = todo$sqlCleanup,
                               targetDialect = attr(connection, "dbms"),
@@ -224,17 +256,31 @@ getDbDefaultCovariateData <- function(connection,
       DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
     }
   }
-
+  
   if ((missing(targetDatabaseSchema) | is.null(targetDatabaseSchema)) & !allTempTables) {
     attr(covariateData, "metaData") <- list()
     if (is.null(covariateData$covariates) && is.null(covariateData$covariatesContinuous)) {
       warning("No data found, probably because no covariates were specified.")
-      covariateData <- createEmptyCovariateData(cohortId = cohortId,
+      covariateData <- createEmptyCovariateData(cohortIds = cohortIds,
                                                 aggregated = aggregated,
                                                 temporal = covariateSettings$temporal)
     }
     class(covariateData) <- "CovariateData"
     attr(class(covariateData), "package") <- "FeatureExtraction"
     return(covariateData)
+  }
+}
+
+#' Filters the covariateData covariates based on the given characterization mean value.
+#'
+#' @param covariateData The covariate data
+#' @param covariatesName The name of the covariates object inside the covariateData
+#' @param minCharacterizationMean The minimum mean value for characterization output. Values below this will be cut off from output. This 
+#'                                will help reduce the file size of the characterization output, but will remove information
+#'                                on covariates that have very low values. The default is 0.
+filterCovariateDataCovariates <- function(covariateData, covariatesName, minCharacterizationMean = 0) {
+  if ("averageValue" %in% colnames(covariateData[[covariatesName]]) && minCharacterizationMean != 0) {
+    covariateData[[covariatesName]] <- covariateData[[covariatesName]] %>%
+      dplyr::filter(.data$averageValue > minCharacterizationMean)
   }
 }

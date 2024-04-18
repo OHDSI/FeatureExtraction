@@ -1,4 +1,4 @@
-# Copyright 2021 Observational Health Data Sciences and Informatics
+# Copyright 2024 Observational Health Data Sciences and Informatics
 #
 # This file is part of FeatureExtraction
 #
@@ -36,17 +36,20 @@
 #' @param oracleTempSchema       A schema where temp tables can be created in Oracle.
 #' @param cdmDatabaseSchema      The name of the database schema that contains the OMOP CDM instance.
 #'                               Requires read permissions to this database. On SQL Server, this should
-#'                               specifiy both the database and the schema, so for example
+#'                               specify both the database and the schema, so for example
 #'                               'cdm_instance.dbo'.
 #' @param cdmVersion             Define the OMOP CDM version used: currently supported is "5".
 #' @param cohortTable            Name of the (temp) table holding the cohort for which we want to
 #'                               construct covariates
 #' @param cohortDatabaseSchema   If the cohort table is not a temp table, specify the database schema
 #'                               where the cohort table can be found. On SQL Server, this should
-#'                               specifiy both the database and the schema, so for example
+#'                               specify both the database and the schema, so for example
 #'                               'cdm_instance.dbo'.
 #' @param cohortTableIsTemp      Is the cohort table a temp table?
-#' @param cohortId               For which cohort ID(s) should covariates be constructed? If set to -1,
+#' @param cohortId               DEPRECATED:For which cohort ID(s) should covariates be constructed? If set to -1,
+#'                               covariates will be constructed for all cohorts in the specified cohort
+#'                               table.
+#' @param cohortIds              For which cohort ID(s) should covariates be constructed? If set to c(-1),
 #'                               covariates will be constructed for all cohorts in the specified cohort
 #'                               table.
 #' @param rowIdField             The name of the field in the cohort table that is to be used as the
@@ -56,9 +59,37 @@
 #'                               of the createCovariate functions, or a list of such objects.
 #' @param aggregated             Should aggregate statistics be computed instead of covariates per
 #'                               cohort entry?
+#' @param minCharacterizationMean The minimum mean value for characterization output. Values below this will be cut off from output. This 
+#'                                will help reduce the file size of the characterization output, but will remove information
+#'                                on covariates that have very low values. The default is 0.
 #'
 #' @return
 #' Returns an object of type \code{covariateData}, containing information on the covariates.
+#'
+#' @examples
+#' \dontrun{
+#' eunomiaConnectionDetails <- Eunomia::getEunomiaConnectionDetails()
+#' covSettings <- createDefaultCovariateSettings()
+#' Eunomia::createCohorts(
+#'   connectionDetails = eunomiaConnectionDetails,
+#'   cdmDatabaseSchema = "main",
+#'   cohortDatabaseSchema = "main",
+#'   cohortTable = "cohort"
+#' )
+#' covData <- getDbCovariateData(
+#'   connectionDetails = eunomiaConnectionDetails,
+#'   oracleTempSchema = NULL,
+#'   cdmDatabaseSchema = "main",
+#'   cdmVersion = "5",
+#'   cohortTable = "cohort",
+#'   cohortDatabaseSchema = "main",
+#'   cohortTableIsTemp = FALSE,
+#'   cohortIds = -1,
+#'   rowIdField = "subject_id",
+#'   covariateSettings = covSettings,
+#'   aggregated = FALSE
+#' )
+#' }
 #'
 #' @export
 getDbCovariateData <- function(connectionDetails = NULL,
@@ -70,9 +101,11 @@ getDbCovariateData <- function(connectionDetails = NULL,
                                cohortDatabaseSchema = cdmDatabaseSchema,
                                cohortTableIsTemp = FALSE,
                                cohortId = -1,
+                               cohortIds = c(-1),
                                rowIdField = "subject_id",
                                covariateSettings,
-                               aggregated = FALSE) {
+                               aggregated = FALSE,
+                               minCharacterizationMean = 0) {
   if (is.null(connectionDetails) && is.null(connection)) {
     stop("Need to provide either connectionDetails or connection")
   }
@@ -82,6 +115,14 @@ getDbCovariateData <- function(connectionDetails = NULL,
   if (cdmVersion == "4") {
     stop("CDM version 4 is not supported any more")
   }
+  if (!missing(cohortId)) { 
+    warning("cohortId argument has been deprecated, please use cohortIds")
+    cohortIds <- cohortId
+  }
+  errorMessages <- checkmate::makeAssertCollection()
+  minCharacterizationMean <- utils::type.convert(minCharacterizationMean, as.is = TRUE)
+  checkmate::assertNumeric(x = minCharacterizationMean, lower = 0, add = errorMessages)
+  checkmate::reportAssertions(collection = errorMessages)
   if (!is.null(connectionDetails)) {
     connection <- DatabaseConnector::connect(connectionDetails)
     on.exit(DatabaseConnector::disconnect(connection))
@@ -95,10 +136,10 @@ getDbCovariateData <- function(connectionDetails = NULL,
   } else {
     cohortDatabaseSchemaTable <- paste(cohortDatabaseSchema, cohortTable, sep = ".")
   }
-  sql <- "SELECT cohort_definition_id, COUNT_BIG(*) AS population_size FROM @cohort_database_schema_table {@cohort_id != -1} ? {WHERE cohort_definition_id IN (@cohort_id)} GROUP BY cohort_definition_id;"
+  sql <- "SELECT cohort_definition_id, COUNT_BIG(*) AS population_size FROM @cohort_database_schema_table {@cohort_ids != -1} ? {WHERE cohort_definition_id IN (@cohort_ids)} GROUP BY cohort_definition_id;"
   sql <- SqlRender::render(sql = sql,
                            cohort_database_schema_table = cohortDatabaseSchemaTable,
-                           cohort_id = cohortId)
+                           cohort_ids = cohortIds)
   sql <- SqlRender::translate(sql = sql,
                               targetDialect = attr(connection, "dbms"),
                               oracleTempSchema = oracleTempSchema)
@@ -110,10 +151,10 @@ getDbCovariateData <- function(connectionDetails = NULL,
     populationSize <- sum(temp$populationSize)
   }
   if (sum(populationSize) == 0) {
-    covariateData <- createEmptyCovariateData(cohortId, aggregated, covariateSettings$temporal)
+    covariateData <- createEmptyCovariateData(cohortIds, aggregated, covariateSettings$temporal)
     warning("Population is empty. No covariates were constructed")
   } else {
-    if (class(covariateSettings) == "covariateSettings") {
+    if (inherits(covariateSettings, "covariateSettings")) {
       covariateSettings <- list(covariateSettings)
     }
     if (is.list(covariateSettings)) {
@@ -127,11 +168,12 @@ getDbCovariateData <- function(connectionDetails = NULL,
                      oracleTempSchema = oracleTempSchema,
                      cdmDatabaseSchema = cdmDatabaseSchema,
                      cohortTable = cohortDatabaseSchemaTable,
-                     cohortId = cohortId,
+                     cohortIds = cohortIds,
                      cdmVersion = cdmVersion,
                      rowIdField = rowIdField,
                      covariateSettings = covariateSettings[[i]],
-                     aggregated = aggregated)
+                     aggregated = aggregated,
+                     minCharacterizationMean = minCharacterizationMean)
         tempCovariateData <- do.call(eval(parse(text = fun)), args)
         if (is.null(covariateData)) {
           covariateData <- tempCovariateData
@@ -139,7 +181,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
           if (hasData(covariateData$covariates)) {
             if (hasData(tempCovariateData$covariates)) {
               Andromeda::appendToTable(covariateData$covariates, tempCovariateData$covariates)
-            } 
+            }
           } else if (hasData(tempCovariateData$covariates)) {
             covariateData$covariates <- tempCovariateData$covariates
           }
@@ -149,22 +191,24 @@ getDbCovariateData <- function(connectionDetails = NULL,
             } else if (hasData(tempCovariateData$covariatesContinuous)) {
               covariateData$covariatesContinuous <- tempCovariateData$covariatesContinuous
             }
-          } 
+          }
           Andromeda::appendToTable(covariateData$covariateRef, tempCovariateData$covariateRef)
           Andromeda::appendToTable(covariateData$analysisRef, tempCovariateData$analysisRef)
           for (name in names(attr(tempCovariateData, "metaData"))) {
-            if (is.null(attr(covariateData, "metaData")[name])) {
+            if (is.null(attr(covariateData, "metaData")[[name]])) {
               attr(covariateData, "metaData")[[name]] <- attr(tempCovariateData, "metaData")[[name]]
             } else {
-              attr(covariateData, "metaData")[[name]] <- list(attr(covariateData, "metaData")[[name]],
-                                                              attr(tempCovariateData, "metaData")[[name]])
+              attr(covariateData, "metaData")[[name]] <- list(
+                c(unlist(attr(covariateData, "metaData")[[name]]),
+                  attr(tempCovariateData, "metaData")[[name]])
+              )
             }
           }
         }
       }
     }
     attr(covariateData, "metaData")$populationSize <- populationSize
-    attr(covariateData, "metaData")$cohortId <- cohortId
+    attr(covariateData, "metaData")$cohortIds <- cohortIds
   }
   return(covariateData)
 }

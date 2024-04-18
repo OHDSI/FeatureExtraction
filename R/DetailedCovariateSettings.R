@@ -1,4 +1,4 @@
-# Copyright 2021 Observational Health Data Sciences and Informatics
+# Copyright 2024 Observational Health Data Sciences and Informatics
 #
 # This file is part of FeatureExtraction
 #
@@ -19,7 +19,7 @@
 #' Create detailed covariate settings
 #'
 #' @details
-#' creates an object specifying in detail how covariates should be contructed from data in the CDM
+#' creates an object specifying in detail how covariates should be constructed from data in the CDM
 #' model. Warning: this function is for advanced users only.
 #'
 #' @param analyses   A list of \code{analysisDetail} objects as created using
@@ -28,21 +28,41 @@
 #' @return
 #' An object of type \code{covariateSettings}, to be used in other functions.
 #'
+#' @examples
+#' \dontrun{
+#' analysisDetails <- createAnalysisDetails(
+#'   analysisId = 1,
+#'   sqlFileName = "DemographicsGender.sql",
+#'   parameters = list(
+#'     analysisId = 1,
+#'     analysisName = "Gender",
+#'     domainId = "Demographics"
+#'   ),
+#'   includedCovariateConceptIds = c(),
+#'   addDescendantsToInclude = FALSE,
+#'   excludedCovariateConceptIds = c(),
+#'   addDescendantsToExclude = FALSE,
+#'   includedCovariateIds = c()
+#' )
+#' covSettings <- createDetailedCovariateSettings(analyses = analysisDetails)
+#' }
+#'
 #' @export
 createDetailedCovariateSettings <- function(analyses = list()) {
-  covariateSettings <- list(temporal = FALSE, 
-                            temporalSequence = FALSE, 
-                            analyses = analyses)
+  covariateSettings <- list(
+    temporal = FALSE,
+    temporalSequence = FALSE,
+    analyses = analyses
+  )
   attr(covariateSettings, "fun") <- "getDbDefaultCovariateData"
   class(covariateSettings) <- "covariateSettings"
   return(covariateSettings)
-
 }
 
 #' Create detailed temporal covariate settings
 #'
 #' @details
-#' creates an object specifying in detail how temporal covariates should be contructed from data in
+#' creates an object specifying in detail how temporal covariates should be constructed from data in
 #' the CDM model. Warning: this function is for advanced users only.
 #'
 #' @param analyses            A list of analysis detail objects as created using
@@ -57,12 +77,37 @@ createDetailedCovariateSettings <- function(analyses = list()) {
 #' @return
 #' An object of type \code{covariateSettings}, to be used in other functions.
 #'
+#' @examples
+#' \dontrun{
+#' analysisDetails <- createAnalysisDetails(
+#'   analysisId = 1,
+#'   sqlFileName = "DemographicsGender.sql",
+#'   parameters = list(
+#'     analysisId = 1,
+#'     analysisName = "Gender",
+#'     domainId = "Demographics"
+#'   ),
+#'   includedCovariateConceptIds = c(),
+#'   addDescendantsToInclude = FALSE,
+#'   excludedCovariateConceptIds = c(),
+#'   addDescendantsToExclude = FALSE,
+#'   includedCovariateIds = c()
+#' )
+#' covSettings <- createDetailedTemporalCovariateSettings(
+#'   analyses = analysisDetails,
+#'   temporalStartDays = -365:-1,
+#'   temporalEndDays = -365:-1
+#' )
+#' }
+#'
 #' @export
 createDetailedTemporalCovariateSettings <- function(analyses = list(),
                                                     temporalStartDays = -365:-1,
                                                     temporalEndDays = -365:-1) {
-  covariateSettings <- list(temporal = TRUE,
-                            temporalSequence = FALSE)
+  covariateSettings <- list(
+    temporal = TRUE,
+    temporalSequence = FALSE
+  )
   formalNames <- names(formals(createDetailedTemporalCovariateSettings))
   for (name in formalNames) {
     covariateSettings[[name]] <- get(name)
@@ -75,7 +120,7 @@ createDetailedTemporalCovariateSettings <- function(analyses = list(),
 #' Create detailed covariate settings
 #'
 #' @details
-#' creates an object specifying in detail how covariates should be contructed from data in the CDM
+#' creates an object specifying in detail how covariates should be constructed from data in the CDM
 #' model. Warning: this function is for advanced users only.
 #'
 #' @param analysisId                    An integer between 0 and 999 that uniquely identifies this
@@ -99,17 +144,20 @@ createDetailedTemporalCovariateSettings <- function(analyses = list(),
 #' \code{\link{createDetailedTemporalCovariateSettings}}.
 #'
 #' @examples
-#' analysisDetails <- createAnalysisDetails(analysisId = 1,
-#'                                          sqlFileName = "DemographicsGender.sql",
-#'                                          parameters = list(analysisId = 1,
-#'                                                            analysisName = "Gender",
-#'                                                            domainId = "Demographics"),
-#'                                          includedCovariateConceptIds = c(),
-#'                                          addDescendantsToInclude = FALSE,
-#'                                          excludedCovariateConceptIds = c(),
-#'                                          addDescendantsToExclude = FALSE,
-#'                                          includedCovariateIds = c())
-#'
+#' analysisDetails <- createAnalysisDetails(
+#'   analysisId = 1,
+#'   sqlFileName = "DemographicsGender.sql",
+#'   parameters = list(
+#'     analysisId = 1,
+#'     analysisName = "Gender",
+#'     domainId = "Demographics"
+#'   ),
+#'   includedCovariateConceptIds = c(),
+#'   addDescendantsToInclude = FALSE,
+#'   excludedCovariateConceptIds = c(),
+#'   addDescendantsToExclude = FALSE,
+#'   includedCovariateIds = c()
+#' )
 #'
 #' @export
 createAnalysisDetails <- function(analysisId,
@@ -144,6 +192,12 @@ createAnalysisDetails <- function(analysisId,
 #' @return
 #' An object of type \code{covariateSettings}, to be used in other functions.
 #'
+#' @examples
+#' \dontrun{
+#' covSettings <- createDefaultCovariateSettings()
+#' detailedSettings <- convertPrespecSettingsToDetailedSettings(covariateSettings = covSettings)
+#' }
+#'
 #' @export
 convertPrespecSettingsToDetailedSettings <- function(covariateSettings) {
   json <- .toJson(covariateSettings)
@@ -169,6 +223,17 @@ convertPrespecSettingsToDetailedSettings <- function(covariateSettings) {
 #'
 #' @return
 #' An object of type \code{covariateSettings}, to be used in other functions.
+#'
+#' @examples
+#' \dontrun{
+#' covSettings <- createDefaultCovariateSettings(
+#'   includedCovariateConceptIds = c(1),
+#'   addDescendantsToInclude = FALSE,
+#'   excludedCovariateConceptIds = c(2),
+#'   addDescendantsToExclude = FALSE,
+#'   includedCovariateIds = c(1)
+#' )
+#' }
 #'
 #' @export
 createDefaultCovariateSettings <- function(includedCovariateConceptIds = c(),
@@ -206,6 +271,17 @@ createDefaultCovariateSettings <- function(includedCovariateConceptIds = c(),
 #'
 #' @return
 #' An object of type \code{covariateSettings}, to be used in other functions.
+#'
+#' @examples
+#' \dontrun{
+#' covSettings <- createDefaultTemporalCovariateSettings(
+#'   includedCovariateConceptIds = c(1),
+#'   addDescendantsToInclude = FALSE,
+#'   excludedCovariateConceptIds = c(2),
+#'   addDescendantsToExclude = FALSE,
+#'   includedCovariateIds = c(1)
+#' )
+#' }
 #'
 #' @export
 createDefaultTemporalCovariateSettings <- function(includedCovariateConceptIds = c(),

@@ -29,7 +29,7 @@ library(FeatureExtraction)
 
 특징추출 패키지에는 사용자 정의 공변량 빌더가 있어서 패키지에 포함된 공변량 빌더를 대체하거나 보완하는 메커니즘이 있다. 이 설명서는 그 메커니즘을 설명한다
 
-참고: 사용자 정의 공변량을 추가하는 또 다른 방법은 공통 데이터 모델의 cohort_atrribute 테이블을 사용하는 것이다. 이 방법은 creating covariates using cohort attributes라는 설명서에 설명되어 있고, 공변량이 한 번만 필요하거나 고급 R 프로그래밍에 익숙하지 않은 경우 좋은 방법이다. 이 설명서에는 사용자정의 공변량 빌더를 만드는 것을 설명하고 더 복잡하지만 더 많은 연구에서 쉽게 다시 사용할 수 있다.
+참고: 사용자 정의 공변량을 추가하는 또 다른 방법은 공통 데이터 모델의 cohort_attribute 테이블을 사용하는 것이다. 이 방법은 creating covariates using cohort attributes라는 설명서에 설명되어 있고, 공변량이 한 번만 필요하거나 고급 R 프로그래밍에 익숙하지 않은 경우 좋은 방법이다. 이 설명서에는 사용자정의 공변량 빌더를 만드는 것을 설명하고 더 복잡하지만 더 많은 연구에서 쉽게 다시 사용할 수 있다.
 
 # 개요
 
@@ -71,13 +71,13 @@ createLooCovariateSettings <- function(useLengthOfObs = TRUE) {
 - cdmDatabaseSchema : OMOP CDM 인스턴스를 포함하는 데이터베이스 스키마의 이름. SQL  SQL 서버에서 이것은 데이터베이스와 스키마를 모두 지정한다(예: cdm_instance.dbo)
 - cdmVersion : 사용되는 OMOP CDM 버전 정의: 현재 "4" 및 "5" 지원
 - cohortTable : 우리가 공변량을 구성하고자 하는 코호트를 보유하고 있는 테이블의 이름. 이것은 완전히 구체적인 이름이므로 임시테이블의 이름(예: '#cohort_table') 또는 데이터베이스 스키마가 포함된 영구 테이블(예: 'cdm_schema.dbo.cohort)이 될 수 있다.
-- cohortId : 코호트의 코호트 정의 ID. -1로 설정된 경우 코호트 테이블의 모든 항목을 사용하면 된다.
+- cohortIds : 코호트의 코호트 정의 ID. -1로 설정된 경우 코호트 테이블의 모든 항목을 사용하면 된다.
 - cdmVersion : 공통 데이터 모델 버전
 - rowIdField :  결과 테이블에서 row_id 필드로 사용될 코호트 임시 테이블의 필드 이름이다. 1인당 1개이상의 기간이 있는 경우 특히 유용하다.
 - covariateSettings : 공변량 설정 함수에서 생성된 객체
 - aggregated :  공변량을 1인당 생성해야 하는가, 아니면 집계해야하는가?
 
-이 함수는 cohort 테이블 인자에 지정된 이름을 가진 테이블이 존재할 것으로 기대할 수 있다.  이 테이블은공변량을 생성하려는 사람과 인덱스날짜를 식별하며 다음 필드를 갖는다(subject_id,cohort_start_date, andcohort_definition_id). 1인당 인덱스 날짜(즉, cohort_start_date)가 두 개 이상일 수 있기 때문에 각 subject_id-cohort_start_date 조합에 대한 고유 식별자가 있는 추가 필드가 포함 될 수 있다. 이 필드의 이름은 rowIdField 인자에 저장된다.
+이 함수는 cohort 테이블 인자에 지정된 이름을 가진 테이블이 존재할 것으로 기대할 수 있다.  이 테이블은공변량을 생성하려는 사람과 인덱스날짜를 식별하며 다음 필드를 갖는다(subject_id,cohort_start_date, and cohort_definition_id). 1인당 인덱스 날짜(즉, cohort_start_date)가 두 개 이상일 수 있기 때문에 각 subject_id-cohort_start_date 조합에 대한 고유 식별자가 있는 추가 필드가 포함 될 수 있다. 이 필드의 이름은 rowIdField 인자에 저장된다.
 
 ## 함수 출력
 
@@ -95,7 +95,7 @@ getDbLooCovariateData <- function(connection,
                                   oracleTempSchema = NULL,
                                   cdmDatabaseSchema,
                                   cohortTable = "#cohort_person",
-                                  cohortId = -1,
+                                  cohortIds = c(-1),
                                   cdmVersion = "5",
                                   rowIdField = "subject_id",
                                   covariateSettings,
@@ -104,9 +104,10 @@ getDbLooCovariateData <- function(connection,
   if (covariateSettings$useLengthOfObs == FALSE) {
     return(NULL)
   }
-  if (aggregated)
+  if (aggregated) {
     stop("Aggregation not supported")
-  
+  }
+
   # Some SQL to construct the covariate:
   sql <- paste("SELECT @row_id_field AS row_id, 1 AS covariate_id,",
                "DATEDIFF(DAY, observation_period_start_date, cohort_start_date)",
@@ -116,43 +117,49 @@ getDbLooCovariateData <- function(connection,
                "ON op.person_id = c.subject_id",
                "WHERE cohort_start_date >= observation_period_start_date",
                "AND cohort_start_date <= observation_period_end_date",
-               "{@cohort_id != -1} ? {AND cohort_definition_id = @cohort_id}")
+               "{@cohort_ids != -1} ? {AND cohort_definition_id IN @cohort_ids}")
   sql <- SqlRender::render(sql,
                               cohort_table = cohortTable,
-                              cohort_id = cohortId,
+                              cohort_ids = cohortIds,
                               row_id_field = rowIdField,
                               cdm_database_schema = cdmDatabaseSchema)
   sql <- SqlRender::translate(sql, targetDialect = attr(connection, "dbms"))
-  
+
   # Retrieve the covariate:
   covariates <- DatabaseConnector::querySql.ffdf(connection, sql)
-  
+
   # Convert colum names to camelCase:
   colnames(covariates) <- SqlRender::snakeCaseToCamelCase(colnames(covariates))
-  
+
   # Construct covariate reference:
-  covariateRef <- data.frame(covariateId = 1,
-                             covariateName = "Length of observation",
-                             analysisId = 1,
-                             conceptId = 0)
+  covariateRef <- data.frame(
+    covariateId = 1,
+    covariateName = "Length of observation",
+    analysisId = 1,
+    conceptId = 0
+  )
   covariateRef <- ff::as.ffdf(covariateRef)
-  
+
   # Construct analysis reference:
-  analysisRef <- data.frame(analysisId = 1,
-                            analysisName = "Length of observation",
-                            domainId = "Demographics",
-                            startDay = 0,
-                            endDay = 0,
-                            isBinary = "N",
-                            missingMeansZero = "Y")
+  analysisRef <- data.frame(
+    analysisId = 1,
+    analysisName = "Length of observation",
+    domainId = "Demographics",
+    startDay = 0,
+    endDay = 0,
+    isBinary = "N",
+    missingMeansZero = "Y"
+  )
   analysisRef <- ff::as.ffdf(analysisRef)
-  
+
   # Construct analysis reference:
   metaData <- list(sql = sql, call = match.call())
-  result <- list(covariates = covariates, 
-                 covariateRef = covariateRef, 
-                 analysisRef = analysisRef,
-                 metaData = metaData)
+  result <- list(
+    covariates = covariates,
+    covariateRef = covariateRef,
+    analysisRef = analysisRef,
+    metaData = metaData
+  )
   class(result) <- "covariateData"
   return(result)
 }
@@ -162,7 +169,7 @@ getDbLooCovariateData <- function(connection,
 
 # 사용자 지정 공변량 빌더 사용
 
-PatientLevelPrediction 패키지의 사용자 정의 공변량 빌더와 cohortMethod 패키지와 같은 ReeatureExtraction 패키지에 의존하는 다른 패키지를 사용할 수 있다. 사용자 정의 공변량 빌더만 사용하려는 경우, 기존 공변량 설정을 자체 공변량 설정으로 간단히 대체할 수있다. 
+PatientLevelPrediction 패키지의 사용자 정의 공변량 빌더와 cohortMethod 패키지와 같은 FeatureExtraction 패키지에 의존하는 다른 패키지를 사용할 수 있다. 사용자 정의 공변량 빌더만 사용하려는 경우, 기존 공변량 설정을 자체 공변량 설정으로 간단히 대체할 수있다. 
 
 예를들어:
 
@@ -173,19 +180,21 @@ covariates <- getDbCovariateData(connectionDetails = connectionDetails,
                                  cdmDatabaseSchema = cdmDatabaseSchema,
                                  cohortDatabaseSchema = resultsDatabaseSchema,
                                  cohortTable = "rehospitalization",
-                                 cohortId = 1,
+                                 cohortIds = c(1),
                                  covariateSettings = looCovSet)
 ```
 
 이 경우 우리는 예측 모델인 관측 길이에 대한 공변량만 가질 것이다. 대부분의 경우, 우리는 기본 공변량 외에 우리의 맞춤 공변량을 원할 것이다. 공변량 설정 목록을 생성하여 이 작업을 수행할 수 있다.
 
 ```{r eval=FALSE}
-covariateSettings <- createCovariateSettings(useDemographicsGender = TRUE,
-                                             useDemographicsAgeGroup = TRUE,
-                                             useDemographicsRace = TRUE,
-                                             useDemographicsEthnicity = TRUE,
-                                             useDemographicsIndexYear = TRUE,
-                                             useDemographicsIndexMonth = TRUE)
+covariateSettings <- createCovariateSettings(
+  useDemographicsGender = TRUE,
+  useDemographicsAgeGroup = TRUE,
+  useDemographicsRace = TRUE,
+  useDemographicsEthnicity = TRUE,
+  useDemographicsIndexYear = TRUE,
+  useDemographicsIndexMonth = TRUE
+)
 
 looCovSet <- createLooCovariateSettings(useLengthOfObs = TRUE)
 
@@ -195,7 +204,7 @@ covariates <- getDbCovariateData(connectionDetails = connectionDetails,
                                  cdmDatabaseSchema = cdmDatabaseSchema,
                                  cohortDatabaseSchema = resultsDatabaseSchema,
                                  cohortTable = "rehospitalization",
-                                 cohortId = 1,
+                                 cohortIds = c(1),
                                  covariateSettings = covariateSettingsList)
 ```
 

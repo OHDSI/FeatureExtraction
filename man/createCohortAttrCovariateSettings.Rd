@@ -26,7 +26,7 @@ table can be found.}
 
 \item{includeAttrIds}{(optional) A list of attribute definition IDs to restrict to.}
 
-\item{isBinary}{Needed for aggregation: Are these binary variables? Binary 
+\item{isBinary}{Needed for aggregation: Are these binary variables? Binary
 variables should only have the values 0 or 1.}
 
 \item{missingMeansZero}{Needed for aggregation: For continuous values, should missing
@@ -49,4 +49,18 @@ these columns: \describe{ \item{cohort_definition_id}{A key to link to the cohor
 \item{subject_id}{A key to link to the cohort table.} \item{cohort_start_date}{A key to link to the
 cohort table.} \item{attribute_definition_id}{An foreign key linking to the attribute definition
 table.} \item{value_as_number}{A real number.} }
+}
+\examples{
+\dontrun{
+covariateSettings <- createCohortAttrCovariateSettings(
+  analysisId = 1,
+  attrDatabaseSchema = "main",
+  attrDefinitionTable = "attribute_definition",
+  cohortAttrTable = "cohort_attribute",
+  includeAttrIds = c(1),
+  isBinary = FALSE,
+  missingMeansZero = FALSE
+)
+}
+
 }

@@ -1,4 +1,4 @@
-# Copyright 2021 Observational Health Data Sciences and Informatics
+# Copyright 2024 Observational Health Data Sciences and Informatics
 #
 # This file is part of FeatureExtraction
 #
@@ -17,11 +17,11 @@
 #' Covariate Data
 #'
 #' @description
-#' \code{CovariateData} is an S4 class that inherits from \code{\link[Andromeda]{Andromeda}}. It contains 
+#' \code{CovariateData} is an S4 class that inherits from \code{\link[Andromeda]{Andromeda}}. It contains
 #' information on covariates, which can be either captured on a per-person basis, or aggregated across
 #' the cohort(s).
-#' 
-#' By default covariates refer to a specific time period, with for example different covariate IDs for 
+#'
+#' By default covariates refer to a specific time period, with for example different covariate IDs for
 #' whether a diagnosis code was observed in the year before and month before index date. However, a
 #' \code{CovariateData} can also be temporal, meaning that next to a covariate ID there is also a time ID,
 #' which identifies the (user specified) time window the covariate was captured.
@@ -53,17 +53,31 @@ setClass("CovariateData", contains = "Andromeda")
 #' The data will be written to a set of files in the folder specified by the user.
 #'
 #' @examples
-#' # todo
+#' \dontrun{
+#' covariateData <- FeatureExtraction:::createEmptyCovariateData(
+#'   cohortIds = 1,
+#'   aggregated = FALSE,
+#'   temporal = FALSE
+#' )
+#' # For this example we'll use a temporary file location:
+#' fileName <- tempfile()
+#' saveCovariateData(covariateData = covariateData, file = fileName)
+#' # Cleaning up the file used in this example:
+#' unlink(fileName)
+#' }
 #'
 #' @export
 saveCovariateData <- function(covariateData, file) {
-  if (missing(covariateData))
+  if (missing(covariateData)) {
     stop("Must specify covariateData")
-  if (missing(file))
+  }
+  if (missing(file)) {
     stop("Must specify file")
-  if (!inherits(covariateData, "CovariateData"))
+  }
+  if (!inherits(covariateData, "CovariateData")) {
     stop("Data not of class CovariateData")
-  
+  }
+
   Andromeda::saveAndromeda(covariateData, file)
 }
 
@@ -82,16 +96,24 @@ saveCovariateData <- function(covariateData, file) {
 #' An object of class \code{CovariateData}.
 #'
 #' @examples
-#' # todo
+#' \dontrun{
+#' binaryCovDataFile <- system.file("testdata/binaryCovariateData.zip",
+#'   package = "FeatureExtraction"
+#' )
+#' covData <- loadCovariateData(binaryCovDataFile)
+#' }
 #'
 #' @export
 loadCovariateData <- function(file, readOnly) {
-  if (!file.exists(file))
+  if (!file.exists(file)) {
     stop("Cannot find file ", file)
-  if (file.info(file)$isdir)
-    stop(file , " is a folder, but should be a file")
-  if (!missing(readOnly)) 
+  }
+  if (file.info(file)$isdir) {
+    stop(file, " is a folder, but should be a file")
+  }
+  if (!missing(readOnly)) {
     warning("readOnly argument has been deprecated")
+  }
   covariateData <- Andromeda::loadAndromeda(file)
   class(covariateData) <- "CovariateData"
   attr(class(covariateData), "package") <- "FeatureExtraction"
@@ -100,19 +122,21 @@ loadCovariateData <- function(file, readOnly) {
 
 # show()
 #' @param object  An object of class `CovariateData`.
-#' 
+#'
 #' @export
 #' @rdname CovariateData-class
 setMethod("show", "CovariateData", function(object) {
   cli::cat_line(pillar::style_subtle("# CovariateData object"))
   cli::cat_line("")
-  cohortId <- attr(object, "metaData")$cohortId
-  if (length(cohortId) > 1) {
-    cli::cat_line(paste("Cohorts of interest IDs:", paste(cohortId, collapse = ", ")))
-  } else if (cohortId == -1) {
-    cli::cat_line("All cohorts")
-  } else {
-    cli::cat_line(paste("Cohort of interest ID:", cohortId))
+  cohortIds <- attr(object, "metaData")$cohortIds
+  if (!is.null(cohortIds)) {
+    if (length(cohortIds) > 1) {
+      cli::cat_line(paste("Cohorts of interest IDs:", paste(cohortIds, collapse = ", ")))
+    } else if (cohortIds == -1) {
+      cli::cat_line("All cohorts")
+    } else {
+      cli::cat_line(paste("Cohort of interest ID:", cohortIds))
+    }
   }
   cli::cat_line("")
   cli::cat_line(pillar::style_subtle("Inherits from Andromeda:"))
@@ -123,7 +147,7 @@ setMethod("show", "CovariateData", function(object) {
 
 # summary()
 #' @param object  An object of class `CovariateData`.
-#' 
+#'
 #' @export
 #' @rdname CovariateData-class
 setMethod("summary", "CovariateData", function(object) {
@@ -134,9 +158,11 @@ setMethod("summary", "CovariateData", function(object) {
   if (!is.null(object$covariatesContinuous)) {
     covariateValueCount <- covariateValueCount + (object$covariatesContinuous %>% count() %>% pull())
   }
-  result <- list(metaData = attr(object, "metaData"),
-                 covariateCount = object$covariateRef %>% count() %>% pull(),
-                 covariateValueCount = covariateValueCount)
+  result <- list(
+    metaData = attr(object, "metaData"),
+    covariateCount = object$covariateRef %>% count() %>% pull(),
+    covariateValueCount = covariateValueCount
+  )
   class(result) <- "summary.CovariateData"
   return(result)
 })
@@ -151,11 +177,20 @@ print.summary.CovariateData <- function(x, ...) {
 
 #' Check whether an object is a CovariateData object
 #'
-#' @param x  The object to check.
+#' @param x The object to check.
 #'
 #' @return
 #' A logical value.
-#' 
+#'
+#' @examples
+#' \dontrun{
+#' binaryCovDataFile <- system.file("testdata/binaryCovariateData.zip",
+#'   package = "FeatureExtraction"
+#' )
+#' covData <- loadCovariateData(binaryCovDataFile)
+#' isCovData <- isCovariateData(covData)
+#' }
+#'
 #' @export
 isCovariateData <- function(x) {
   return(inherits(x, "CovariateData"))
@@ -167,13 +202,25 @@ isCovariateData <- function(x) {
 #'
 #' @return
 #' A logical value.
-#' 
+#'
+#' @examples
+#' \dontrun{
+#' covariateData <- FeatureExtraction:::createEmptyCovariateData(
+#'   cohortIds = 1,
+#'   aggregated = FALSE,
+#'   temporal = FALSE
+#' )
+#' isAggrCovData <- isAggregatedCovariateData(covariateData)
+#' }
+#'
 #' @export
 isAggregatedCovariateData <- function(x) {
-  if (!isCovariateData(x))
+  if (!isCovariateData(x)) {
     stop("Object not of class CovariateData")
-  if (!Andromeda::isValidAndromeda(x)) 
+  }
+  if (!Andromeda::isValidAndromeda(x)) {
     stop("CovariateData object is closed")
+  }
   return(!is.null(x$covariatesContinuous) || !"rowId" %in% colnames(x$covariates))
 }
 
@@ -183,19 +230,49 @@ isAggregatedCovariateData <- function(x) {
 #'
 #' @return
 #' A logical value.
-#' 
+#'
+#' @examples
+#' \dontrun{
+#' covariateData <- FeatureExtraction:::createEmptyCovariateData(
+#'   cohortIds = 1,
+#'   aggregated = FALSE,
+#'   temporal = FALSE
+#' )
+#' isTempCovData <- isTemporalCovariateData(covariateData)
+#' }
+#'
 #' @export
 isTemporalCovariateData <- function(x) {
-  if (!isCovariateData(x))
+  if (!isCovariateData(x)) {
     stop("Object not of class CovariateData")
-  if (!Andromeda::isValidAndromeda(x)) 
+  }
+  if (!Andromeda::isValidAndromeda(x)) {
     stop("CovariateData object is closed")
+  }
   return("timeId" %in% colnames(x$covariates))
 }
 
-createEmptyCovariateData <- function(cohortId, aggregated, temporal) {
-  dummy <- tibble(covariateId = 1,
-                  covariateValue = 1)
+#' Creates an empty covariate data object
+#'
+#' @param cohortIds For which cohort IDs should the covariate data be created?
+#' @param aggregated if the data should be aggregated
+#' @param temporal if the data is temporary
+#'
+#' @examples
+#' \dontrun{
+#' covariateData <- FeatureExtraction:::createEmptyCovariateData(
+#'   cohortIds = 1,
+#'   aggregated = FALSE,
+#'   temporal = FALSE
+#' )
+#' }
+#' @return the empty CovariateData object
+#'
+createEmptyCovariateData <- function(cohortIds, aggregated, temporal) {
+  dummy <- tibble(
+    covariateId = 1,
+    covariateValue = 1
+  )
   if (!aggregated) {
     dummy$rowId <- 1
   }
@@ -215,7 +292,7 @@ createEmptyCovariateData <- function(cohortId, aggregated, temporal) {
                                                              isBinary = "", 
                                                              missingMeansZero = "")[!1, ])
   attr(covariateData, "metaData") <- list(populationSize = 0,
-                                          cohortId = cohortId)
+                                          cohortIds = cohortIds)
   class(covariateData) <- "CovariateData"
   return(covariateData)
 }

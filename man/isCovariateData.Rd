@@ -15,3 +15,13 @@ A logical value.
 \description{
 Check whether an object is a CovariateData object
 }
+\examples{
+\dontrun{
+binaryCovDataFile <- system.file("testdata/binaryCovariateData.zip",
+  package = "FeatureExtraction"
+)
+covData <- loadCovariateData(binaryCovDataFile)
+isCovData <- isCovariateData(covData)
+}
+
+}

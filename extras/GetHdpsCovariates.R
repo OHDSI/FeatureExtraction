@@ -1,6 +1,6 @@
 # @file GetHdpsCovariates.R
 #
-# Copyright 2021 Observational Health Data Sciences and Informatics
+# Copyright 2024 Observational Health Data Sciences and Informatics
 #
 # This file is part of FeatureExtraction
 #
@@ -37,11 +37,16 @@ getDbHdpsCovariateData <- function(connection,
                                    cdmDatabaseSchema,
                                    cohortTable = "cohort_person",
                                    cohortId = -1,
+                                   cohortIds = c(-1),
                                    cdmVersion = "5",
                                    rowIdField = "subject_id",
                                    covariateSettings,
                                    aggregated = FALSE) {
-  if (cohortId != -1)
+  if (!missing(cohortId)) {
+    warning("cohortId argument has been deprecated, please use cohortIds")
+    cohortIds <- cohortId
+  }
+  if (cohortIds != -1)
     stop("Haven't implemented restricting to cohort ID yet.")
   if (aggregated)
     stop("Aggregation not implemented yet")
@@ -224,10 +229,10 @@ getDbHdpsCovariateData <- function(connection,
 #' Create HDPS covariate settings
 #'
 #' @details
-#' creates an object specifying how covariates should be contructed from data in the CDM model.
+#' creates an object specifying how covariates should be constructed from data in the CDM model.
 #'
 #' @param useCovariateCohortIdIs1                             A boolean value (TRUE/FALSE) to determine
-#'                                                            if a covariate should be contructed for
+#'                                                            if a covariate should be constructed for
 #'                                                            whether the cohort ID is 1 (currently
 #'                                                            primarily used in CohortMethod).
 #' @param useCovariateDemographics                            A boolean value (TRUE/FALSE) to determine
