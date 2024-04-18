@@ -1,9 +1,20 @@
+FeatureExtraction 3.5.0
+=======================
+
+New Features:
+
+- Adds the ability to filter covariates by setting a minimum threshold for covariate mean (#174)
+
+Bug Fixes:
+
+- Table 1 - does not report correct subject count (#237) 
+
 FeatureExtraction 3.4.1
 =======================
 
 Bug Fixes:
 
-- Weely R-check fails (#239)
+- Weekly R-check fails (#239)
 - BigQuery error (#208)
 - Error when specifying 1 temporal window in temportalCovariateSettings (#200)
 - metaData aggregation issue (#195)
