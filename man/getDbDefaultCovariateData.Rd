@@ -9,7 +9,6 @@ getDbDefaultCovariateData(
   oracleTempSchema = NULL,
   cdmDatabaseSchema,
   cohortTable = "#cohort_person",
-  cohortId = -1,
   cohortIds = c(-1),
   cdmVersion = "5",
   rowIdField = "subject_id",
@@ -37,10 +36,6 @@ specifiy both the database and the schema, so for example
 covariates. If it is a temp table, the name should have a hash prefix,
 e.g. '#temp_table'. If it is a non-temp table, it should include the
 database schema, e.g. 'cdm_database.cohort'.}
-
-\item{cohortId}{DEPRECATED:For which cohort ID should covariates be constructed? If set to -1,
-covariates will be constructed for all cohorts in the specified cohort
-table.}
 
 \item{cohortIds}{For which cohort ID(s) should covariates be constructed? If set to c(-1),
 covariates will be constructed for all cohorts in the specified cohort

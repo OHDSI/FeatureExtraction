@@ -32,7 +32,6 @@ getDbCohortBasedCovariatesData <- function(connection,
                                            oracleTempSchema = NULL,
                                            cdmDatabaseSchema,
                                            cohortTable = "#cohort_person",
-                                           cohortId = -1,
                                            cohortIds = c(-1),
                                            cdmVersion = "5",
                                            rowIdField = "subject_id",
@@ -44,18 +43,14 @@ getDbCohortBasedCovariatesData <- function(connection,
   checkmate::assertCharacter(oracleTempSchema, len = 1, null.ok = TRUE, add = errorMessages)
   checkmate::assertCharacter(cdmDatabaseSchema, len = 1, null.ok = TRUE, add = errorMessages)
   checkmate::assertCharacter(cohortTable, len = 1, add = errorMessages)
-  checkmate::assertIntegerish(cohortId, add = errorMessages)
-  # checkmate::assertCharacter(cdmVersion, len = 1, add = errorMessages)
+  checkmate::assertIntegerish(cohortIds, add = errorMessages)
+  checkmate::assertCharacter(cdmVersion, len = 1, add = errorMessages)
   checkmate::assertCharacter(rowIdField, len = 1, add = errorMessages)
   checkmate::assertClass(covariateSettings, "covariateSettings", add = errorMessages)
   checkmate::assertLogical(aggregated, len = 1, add = errorMessages)
   minCharacterizationMean <- utils::type.convert(minCharacterizationMean, as.is = TRUE)
   checkmate::assertNumeric(x = minCharacterizationMean, lower = 0, add = errorMessages)
   checkmate::reportAssertions(collection = errorMessages)
-  if (!missing(cohortId)) { 
-    warning("cohortId argument has been deprecated, please use cohortIds")
-    cohortIds <- cohortId
-  }
 
   start <- Sys.time()
   message("Constructing covariates from other cohorts")

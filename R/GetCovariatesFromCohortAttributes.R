@@ -73,7 +73,6 @@ getDbCohortAttrCovariatesData <- function(connection,
                                           oracleTempSchema = NULL,
                                           cdmDatabaseSchema,
                                           cohortTable = "#cohort_person",
-                                          cohortId = -1,
                                           cohortIds = c(-1),
                                           cdmVersion = "5",
                                           rowIdField = "subject_id",
@@ -84,10 +83,6 @@ getDbCohortAttrCovariatesData <- function(connection,
   }
   if (cdmVersion == "4") {
     stop("Common Data Model version 4 is not supported")
-  }
-  if (!missing(cohortId)) { 
-    warning("cohortId argument has been deprecated, please use cohortIds")
-    cohortIds <- cohortId
   }
   start <- Sys.time()
   writeLines("Constructing covariates from cohort attributes table")

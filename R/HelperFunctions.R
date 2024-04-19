@@ -65,7 +65,6 @@ filterByRowId <- function(covariateData, rowIds) {
 #' Filter covariates by cohort definition IDs
 #'
 #' @param covariateData  An object of type \code{CovariateData}
-#' @param cohortId       DEPRECATED The cohort definition IDs to keep.
 #' @param cohortIds      The cohort definition IDs to keep.
 #'
 #' @return
@@ -86,8 +85,7 @@ filterByRowId <- function(covariateData, rowIds) {
 #' }
 #'
 #' @export
-filterByCohortDefinitionId <- function(covariateData, 
-                                       cohortId = 1,
+filterByCohortDefinitionId <- function(covariateData,
                                        cohortIds = c(1)) {
   if (!isCovariateData(covariateData)) {
     stop("Data not of class CovariateData")
@@ -98,11 +96,7 @@ filterByCohortDefinitionId <- function(covariateData,
   if (!isAggregatedCovariateData(covariateData)) {
     stop("Can only filter aggregated data by cohortIds")
   }
-  if (!missing(cohortId)) { 
-    warning("cohortId argument has been deprecated, please use cohortIds")
-    cohortIds <- cohortId
-  }
-  
+
   if (is.null(covariateData$covariates)) {
     covariates <- NULL
   } else {

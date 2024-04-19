@@ -72,23 +72,3 @@ test_that("createCohortAttrCovariateSettings check", {
   result <- createCohortAttrCovariateSettings(attrDatabaseSchema = "main")
   expect_equal(class(result), "covariateSettings")
 })
-
-test_that("getDbCohortAttrCovariatesData cohortId warning", {
-  skip_if_not(dbms == "sqlite")
-  covariateSettings <- createCohortAttrCovariateSettings(
-    attrDatabaseSchema = eunomiaOhdsiDatabaseSchema,
-    cohortAttrTable = cohortAttributeTable,
-    attrDefinitionTable = attributeDefinitionTable,
-    includeAttrIds = c(1),
-    isBinary = FALSE,
-    missingMeansZero = TRUE
-  )
-  # cohortId argument
-  expect_warning(getDbCohortAttrCovariatesData(
-    connection = eunomiaConnection,
-    cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
-    cohortTable = cohortTable,
-    covariateSettings = covariateSettings,
-    cohortId = 1
-  ), "cohortId argument has been deprecated, please use cohortIds")
-})
