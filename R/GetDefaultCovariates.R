@@ -85,7 +85,7 @@ getDbDefaultCovariateData <- function(connection,
   }
   errorMessages <- checkmate::makeAssertCollection()
   minCharacterizationMean <- utils::type.convert(minCharacterizationMean, as.is = TRUE)
-  checkmate::assertNumeric(x = minCharacterizationMean, lower = 0, add = errorMessages)
+  checkmate::assertNumeric(x = minCharacterizationMean, lower = 0, upper = 1, add = errorMessages)
   checkmate::reportAssertions(collection = errorMessages)
   
   settings <- .toJson(covariateSettings)
@@ -295,6 +295,6 @@ getDbDefaultCovariateData <- function(connection,
 filterCovariateDataCovariates <- function(covariateData, covariatesName, minCharacterizationMean = 0) {
   if ("averageValue" %in% colnames(covariateData[[covariatesName]]) && minCharacterizationMean != 0) {
     covariateData[[covariatesName]] <- covariateData[[covariatesName]] %>%
-      dplyr::filter(.data$averageValue > minCharacterizationMean)
+      dplyr::filter(.data$averageValue >= minCharacterizationMean)
   }
 }

@@ -50,7 +50,7 @@ getDbCohortBasedCovariatesData <- function(connection,
   checkmate::assertClass(covariateSettings, "covariateSettings", add = errorMessages)
   checkmate::assertLogical(aggregated, len = 1, add = errorMessages)
   minCharacterizationMean <- utils::type.convert(minCharacterizationMean, as.is = TRUE)
-  checkmate::assertNumeric(x = minCharacterizationMean, lower = 0, add = errorMessages)
+  checkmate::assertNumeric(x = minCharacterizationMean, lower = 0, upper = 1, add = errorMessages)
   checkmate::reportAssertions(collection = errorMessages)
   if (!missing(cohortId)) { 
     warning("cohortId argument has been deprecated, please use cohortIds")
