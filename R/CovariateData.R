@@ -279,20 +279,28 @@ createEmptyCovariateData <- function(cohortIds, aggregated, temporal) {
   if (!is.null(temporal) && temporal) {
     dummy$timeId <- 1
   }
-  covariateData <- Andromeda::andromeda(covariates = dummy[!1, ],
-                                        covariateRef = tibble(covariateId = 1, 
-                                                              covariateName = "", 
-                                                              analysisId = 1,
-                                                              conceptId = 1)[!1, ],
-                                        analysisRef = tibble(analysisId = 1, 
-                                                             analysisName = "",
-                                                             domainId = "",
-                                                             startDay = 1, 
-                                                             endDay = 1, 
-                                                             isBinary = "", 
-                                                             missingMeansZero = "")[!1, ])
-  attr(covariateData, "metaData") <- list(populationSize = 0,
-                                          cohortIds = cohortIds)
+  covariateData <- Andromeda::andromeda(
+    covariates = dummy[!1, ],
+    covariateRef = tibble(
+      covariateId = 1,
+      covariateName = "",
+      analysisId = 1,
+      conceptId = 1
+    )[!1, ],
+    analysisRef = tibble(
+      analysisId = 1,
+      analysisName = "",
+      domainId = "",
+      startDay = 1,
+      endDay = 1,
+      isBinary = "",
+      missingMeansZero = ""
+    )[!1, ]
+  )
+  attr(covariateData, "metaData") <- list(
+    populationSize = 0,
+    cohortIds = cohortIds
+  )
   class(covariateData) <- "CovariateData"
   return(covariateData)
 }

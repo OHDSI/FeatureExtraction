@@ -308,13 +308,15 @@ data.frame(cohort_concept_id = c(1124300, 1118084), count = c(240761, 47293))
 ```{r eval=FALSE}
 covariateSettings <- createDefaultCovariateSettings()
 
-covariateData <- getDbCovariateData(connectionDetails = connectionDetails,
-                                    cdmDatabaseSchema = cdmDatabaseSchema,
-                                    cohortDatabaseSchema = resultsDatabaseSchema,
-                                    cohortTable = "cohorts_of_interest",
-                                    cohortIds = c(1118084),
-                                    rowIdField = "subject_id",
-                                    covariateSettings = covariateSettings)
+covariateData <- getDbCovariateData(
+  connectionDetails = connectionDetails,
+  cdmDatabaseSchema = cdmDatabaseSchema,
+  cohortDatabaseSchema = resultsDatabaseSchema,
+  cohortTable = "cohorts_of_interest",
+  cohortIds = c(1118084),
+  rowIdField = "subject_id",
+  covariateSettings = covariateSettings
+)
 
 summary(covariateData)
 ```
@@ -414,13 +416,15 @@ covariateData2 <- aggregateCovariates(covariateData)
 ```{r eval=FALSE}
 covariateSettings <- createDefaultCovariateSettings()
 
-covariateData2 <- getDbCovariateData(connectionDetails = connectionDetails,
-                                     cdmDatabaseSchema = cdmDatabaseSchema,
-                                     cohortDatabaseSchema = resultsDatabaseSchema,
-                                     cohortTable = "cohorts_of_interest",
-                                     cohortIds = c(1118084),
-                                     covariateSettings = covariateSettings,
-                                     aggregated = TRUE)
+covariateData2 <- getDbCovariateData(
+  connectionDetails = connectionDetails,
+  cdmDatabaseSchema = cdmDatabaseSchema,
+  cohortDatabaseSchema = resultsDatabaseSchema,
+  cohortTable = "cohorts_of_interest",
+  cohortIds = c(1118084),
+  covariateSettings = covariateSettings,
+  aggregated = TRUE
+)
 summary(covariateData2)
 ```
 ```{r echo=FALSE,message=FALSE}
@@ -498,13 +502,15 @@ if (file.exists(file.path(vignetteFolder, "aggregatedCovariates"))) {
 ```{r eval=FALSE}
 covariateSettings <- createTable1CovariateSettings()
 
-covariateData2b <- getDbCovariateData(connectionDetails = connectionDetails,
-                                      cdmDatabaseSchema = cdmDatabaseSchema,
-                                      cohortDatabaseSchema = resultsDatabaseSchema,
-                                      cohortTable = "cohorts_of_interest",
-                                      cohortIds = c(1118084),
-                                      covariateSettings = covariateSettings,
-                                      aggregated = TRUE)
+covariateData2b <- getDbCovariateData(
+  connectionDetails = connectionDetails,
+  cdmDatabaseSchema = cdmDatabaseSchema,
+  cohortDatabaseSchema = resultsDatabaseSchema,
+  cohortTable = "cohorts_of_interest",
+  cohortIds = c(1118084),
+  covariateSettings = covariateSettings,
+  aggregated = TRUE
+)
 summary(covariateData2b)
 ```
 ```{r echo=FALSE,message=FALSE}
@@ -526,21 +532,25 @@ settings <- createTable1CovariateSettings(
   addDescendantsToExclude = TRUE
 )
 
-covCelecoxib <- getDbCovariateData(connectionDetails = connectionDetails,
-                                   cdmDatabaseSchema = cdmDatabaseSchema,
-                                   cohortDatabaseSchema = resultsDatabaseSchema,
-                                   cohortTable = "cohorts_of_interest",
-                                   cohortIds = c(1118084),
-                                   covariateSettings = settings,
-                                   aggregated = TRUE)
+covCelecoxib <- getDbCovariateData(
+  connectionDetails = connectionDetails,
+  cdmDatabaseSchema = cdmDatabaseSchema,
+  cohortDatabaseSchema = resultsDatabaseSchema,
+  cohortTable = "cohorts_of_interest",
+  cohortIds = c(1118084),
+  covariateSettings = settings,
+  aggregated = TRUE
+)
 
-covDiclofenac <- getDbCovariateData(connectionDetails = connectionDetails,
-                                    cdmDatabaseSchema = cdmDatabaseSchema,
-                                    cohortDatabaseSchema = resultsDatabaseSchema,
-                                    cohortTable = "cohorts_of_interest",
-                                    cohortIds = c(1124300),
-                                    covariateSettings = settings,
-                                    aggregated = TRUE)
+covDiclofenac <- getDbCovariateData(
+  connectionDetails = connectionDetails,
+  cdmDatabaseSchema = cdmDatabaseSchema,
+  cohortDatabaseSchema = resultsDatabaseSchema,
+  cohortTable = "cohorts_of_interest",
+  cohortIds = c(1124300),
+  covariateSettings = settings,
+  aggregated = TRUE
+)
 std <- computeStandardizedDifference(covCelecoxib, covDiclofenac)
 ```
     

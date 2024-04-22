@@ -59,7 +59,7 @@
 #'                               of the createCovariate functions, or a list of such objects.
 #' @param aggregated             Should aggregate statistics be computed instead of covariates per
 #'                               cohort entry?
-#' @param minCharacterizationMean The minimum mean value for characterization output. Values below this will be cut off from output. This 
+#' @param minCharacterizationMean The minimum mean value for characterization output. Values below this will be cut off from output. This
 #'                                will help reduce the file size of the characterization output, but will remove information
 #'                                on covariates that have very low values. The default is 0.
 #'
@@ -115,7 +115,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
   if (cdmVersion == "4") {
     stop("CDM version 4 is not supported any more")
   }
-  if (!missing(cohortId)) { 
+  if (!missing(cohortId)) {
     warning("cohortId argument has been deprecated, please use cohortIds")
     cohortIds <- cohortId
   }
@@ -137,12 +137,16 @@ getDbCovariateData <- function(connectionDetails = NULL,
     cohortDatabaseSchemaTable <- paste(cohortDatabaseSchema, cohortTable, sep = ".")
   }
   sql <- "SELECT cohort_definition_id, COUNT_BIG(*) AS population_size FROM @cohort_database_schema_table {@cohort_ids != -1} ? {WHERE cohort_definition_id IN (@cohort_ids)} GROUP BY cohort_definition_id;"
-  sql <- SqlRender::render(sql = sql,
-                           cohort_database_schema_table = cohortDatabaseSchemaTable,
-                           cohort_ids = cohortIds)
-  sql <- SqlRender::translate(sql = sql,
-                              targetDialect = attr(connection, "dbms"),
-                              oracleTempSchema = oracleTempSchema)
+  sql <- SqlRender::render(
+    sql = sql,
+    cohort_database_schema_table = cohortDatabaseSchemaTable,
+    cohort_ids = cohortIds
+  )
+  sql <- SqlRender::translate(
+    sql = sql,
+    targetDialect = attr(connection, "dbms"),
+    oracleTempSchema = oracleTempSchema
+  )
   temp <- DatabaseConnector::querySql(connection, sql, snakeCaseToCamelCase = TRUE)
   if (aggregated) {
     populationSize <- temp$populationSize
@@ -164,16 +168,18 @@ getDbCovariateData <- function(connectionDetails = NULL,
       }
       for (i in 1:length(covariateSettings)) {
         fun <- attr(covariateSettings[[i]], "fun")
-        args <- list(connection = connection,
-                     oracleTempSchema = oracleTempSchema,
-                     cdmDatabaseSchema = cdmDatabaseSchema,
-                     cohortTable = cohortDatabaseSchemaTable,
-                     cohortIds = cohortIds,
-                     cdmVersion = cdmVersion,
-                     rowIdField = rowIdField,
-                     covariateSettings = covariateSettings[[i]],
-                     aggregated = aggregated,
-                     minCharacterizationMean = minCharacterizationMean)
+        args <- list(
+          connection = connection,
+          oracleTempSchema = oracleTempSchema,
+          cdmDatabaseSchema = cdmDatabaseSchema,
+          cohortTable = cohortDatabaseSchemaTable,
+          cohortIds = cohortIds,
+          cdmVersion = cdmVersion,
+          rowIdField = rowIdField,
+          covariateSettings = covariateSettings[[i]],
+          aggregated = aggregated,
+          minCharacterizationMean = minCharacterizationMean
+        )
         tempCovariateData <- do.call(eval(parse(text = fun)), args)
         if (is.null(covariateData)) {
           covariateData <- tempCovariateData
@@ -199,8 +205,10 @@ getDbCovariateData <- function(connectionDetails = NULL,
               attr(covariateData, "metaData")[[name]] <- attr(tempCovariateData, "metaData")[[name]]
             } else {
               attr(covariateData, "metaData")[[name]] <- list(
-                c(unlist(attr(covariateData, "metaData")[[name]]),
-                  attr(tempCovariateData, "metaData")[[name]])
+                c(
+                  unlist(attr(covariateData, "metaData")[[name]]),
+                  attr(tempCovariateData, "metaData")[[name]]
+                )
               )
             }
           }

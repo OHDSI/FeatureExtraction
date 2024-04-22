@@ -31,7 +31,7 @@
 #'                               it is a temp table, do not specify \code{targetDatabaseSchema}.
 #' @param targetCovariateRefTable (Optional) The name of the table where the covariate reference will be stored.
 #' @param targetAnalysisRefTable (Optional) The name of the table where the analysis reference will be stored.
-#' @param minCharacterizationMean The minimum mean value for binary characterization output. Values below this will be cut off from output. This 
+#' @param minCharacterizationMean The minimum mean value for binary characterization output. Values below this will be cut off from output. This
 #'                                will help reduce the file size of the characterization output, but will remove information
 #'                                on covariates that have very low values. The default is 0.
 #'
@@ -79,7 +79,7 @@ getDbDefaultCovariateData <- function(connection,
   if (!missing(targetCovariateTable) && !is.null(targetCovariateTable) && aggregated) {
     stop("Writing aggregated results to database is currently not supported")
   }
-  if (!missing(cohortId)) { 
+  if (!missing(cohortId)) {
     warning("cohortId argument has been deprecated, please use cohortIds")
     cohortIds <- cohortId
   }
@@ -87,7 +87,7 @@ getDbDefaultCovariateData <- function(connection,
   minCharacterizationMean <- utils::type.convert(minCharacterizationMean, as.is = TRUE)
   checkmate::assertNumeric(x = minCharacterizationMean, lower = 0, upper = 1, add = errorMessages)
   checkmate::reportAssertions(collection = errorMessages)
-  
+
   settings <- .toJson(covariateSettings)
   rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$init(system.file("", package = "FeatureExtraction"))
   json <- rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$createSql(settings, aggregated, cohortTable, rowIdField, rJava::.jarray(as.character(cohortIds)), cdmDatabaseSchema)
@@ -274,9 +274,11 @@ getDbDefaultCovariateData <- function(connection,
     attr(covariateData, "metaData") <- list()
     if (is.null(covariateData$covariates) && is.null(covariateData$covariatesContinuous)) {
       warning("No data found, probably because no covariates were specified.")
-      covariateData <- createEmptyCovariateData(cohortIds = cohortIds,
-                                                aggregated = aggregated,
-                                                temporal = covariateSettings$temporal)
+      covariateData <- createEmptyCovariateData(
+        cohortIds = cohortIds,
+        aggregated = aggregated,
+        temporal = covariateSettings$temporal
+      )
     }
     class(covariateData) <- "CovariateData"
     attr(class(covariateData), "package") <- "FeatureExtraction"
@@ -288,7 +290,7 @@ getDbDefaultCovariateData <- function(connection,
 #'
 #' @param covariateData The covariate data
 #' @param covariatesName The name of the covariates object inside the covariateData
-#' @param minCharacterizationMean The minimum mean value for characterization output. Values below this will be cut off from output. This 
+#' @param minCharacterizationMean The minimum mean value for characterization output. Values below this will be cut off from output. This
 #'                                will help reduce the file size of the characterization output, but will remove information
 #'                                on covariates that have very low values. The default is 0.
 filterCovariateDataCovariates <- function(covariateData, covariatesName, minCharacterizationMean = 0) {
