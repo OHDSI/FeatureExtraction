@@ -31,7 +31,7 @@
 #'                               it is a temp table, do not specify \code{targetDatabaseSchema}.
 #' @param targetCovariateRefTable (Optional) The name of the table where the covariate reference will be stored.
 #' @param targetAnalysisRefTable (Optional) The name of the table where the analysis reference will be stored.
-#' @param minCharacterizationMean The minimum mean value for characterization output. Values below this will be cut off from output. This 
+#' @param minCharacterizationMean The minimum mean value for binary characterization output. Values below this will be cut off from output. This 
 #'                                will help reduce the file size of the characterization output, but will remove information
 #'                                on covariates that have very low values. The default is 0.
 #'
@@ -85,7 +85,7 @@ getDbDefaultCovariateData <- function(connection,
   }
   errorMessages <- checkmate::makeAssertCollection()
   minCharacterizationMean <- utils::type.convert(minCharacterizationMean, as.is = TRUE)
-  checkmate::assertNumeric(x = minCharacterizationMean, lower = 0, add = errorMessages)
+  checkmate::assertNumeric(x = minCharacterizationMean, lower = 0, upper = 1, add = errorMessages)
   checkmate::reportAssertions(collection = errorMessages)
   
   settings <- .toJson(covariateSettings)
@@ -152,7 +152,6 @@ getDbDefaultCovariateData <- function(connection,
         andromedaTableName = "covariatesContinuous",
         snakeCaseToCamelCase = TRUE
       )
-      filterCovariateDataCovariates(covariateData, "covariatesContinuous", minCharacterizationMean)
     }
 
     # Covariate reference
@@ -295,6 +294,6 @@ getDbDefaultCovariateData <- function(connection,
 filterCovariateDataCovariates <- function(covariateData, covariatesName, minCharacterizationMean = 0) {
   if ("averageValue" %in% colnames(covariateData[[covariatesName]]) && minCharacterizationMean != 0) {
     covariateData[[covariatesName]] <- covariateData[[covariatesName]] %>%
-      dplyr::filter(.data$averageValue > minCharacterizationMean)
+      dplyr::filter(.data$averageValue >= minCharacterizationMean)
   }
 }
