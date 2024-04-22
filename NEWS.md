@@ -1,3 +1,10 @@
+FeatureExtraction 3.5.1
+=======================
+
+Bug Fixes:
+
+- Minimum threshold for covariate mean should be inclusive of the value parameter (#249)
+
 FeatureExtraction 3.5.0
 =======================
 

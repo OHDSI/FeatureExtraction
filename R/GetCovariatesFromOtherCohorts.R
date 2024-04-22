@@ -22,7 +22,7 @@
 #' @param covariateSettings   An object of type \code{covariateSettings} as created using the
 #'                            \code{\link{createCohortBasedCovariateSettings}} or
 #'                            \code{\link{createCohortBasedTemporalCovariateSettings}} functions.
-#' @param minCharacterizationMean The minimum mean value for characterization output. Values below this will be cut off from output. This 
+#' @param minCharacterizationMean The minimum mean value for binary characterization output. Values below this will be cut off from output. This
 #'                                will help reduce the file size of the characterization output, but will remove information
 #'                                on covariates that have very low values. The default is 0.
 #' @template GetCovarParams
@@ -50,9 +50,9 @@ getDbCohortBasedCovariatesData <- function(connection,
   checkmate::assertClass(covariateSettings, "covariateSettings", add = errorMessages)
   checkmate::assertLogical(aggregated, len = 1, add = errorMessages)
   minCharacterizationMean <- utils::type.convert(minCharacterizationMean, as.is = TRUE)
-  checkmate::assertNumeric(x = minCharacterizationMean, lower = 0, add = errorMessages)
+  checkmate::assertNumeric(x = minCharacterizationMean, lower = 0, upper = 1, add = errorMessages)
   checkmate::reportAssertions(collection = errorMessages)
-  if (!missing(cohortId)) { 
+  if (!missing(cohortId)) {
     warning("cohortId argument has been deprecated, please use cohortIds")
     cohortIds <- cohortId
   }

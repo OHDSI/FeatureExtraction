@@ -86,7 +86,7 @@ filterByRowId <- function(covariateData, rowIds) {
 #' }
 #'
 #' @export
-filterByCohortDefinitionId <- function(covariateData, 
+filterByCohortDefinitionId <- function(covariateData,
                                        cohortId = 1,
                                        cohortIds = c(1)) {
   if (!isCovariateData(covariateData)) {
@@ -98,11 +98,11 @@ filterByCohortDefinitionId <- function(covariateData,
   if (!isAggregatedCovariateData(covariateData)) {
     stop("Can only filter aggregated data by cohortIds")
   }
-  if (!missing(cohortId)) { 
+  if (!missing(cohortId)) {
     warning("cohortId argument has been deprecated, please use cohortIds")
     cohortIds <- cohortId
   }
-  
+
   if (is.null(covariateData$covariates)) {
     covariates <- NULL
   } else {
