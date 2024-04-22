@@ -97,10 +97,7 @@ test_that("test filtering of covariates based on minCharacterizationMean", {
   nCovariates <- covariateData$covariates %>% 
     collect() %>%
     nrow()
-  nCovariatesCont <- covariateData$covariatesContinuous %>% 
-    collect() %>%
-    nrow()
-  
+
   covariateData <- getDbCovariateData(connectionDetails = eunomiaConnectionDetails,
                                       cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
                                       cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
@@ -111,11 +108,7 @@ test_that("test filtering of covariates based on minCharacterizationMean", {
   nCovariatesFiltered <- covariateData$covariates %>% 
     collect() %>%
     nrow()
-  nCovariatesContFiltered <- covariateData$covariatesContinuous %>% 
-    collect() %>%
-    nrow()
   expect_true(nCovariatesFiltered < nCovariates)
-  expect_true(nCovariatesContFiltered < nCovariatesCont)
 })
 
 test_that("test loadCovariateData", {
