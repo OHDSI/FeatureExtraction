@@ -10,16 +10,22 @@ test_that("test CovariateData Class on Empty", {
 
   errCovData <- list()
 
-  covData <- FeatureExtraction:::createEmptyCovariateData(cohortIds = 9999,
-                                                          aggregated = FALSE,
-                                                          temporal = FALSE)
-  aggCovData <- FeatureExtraction:::createEmptyCovariateData(cohortIds = 9999,
-                                                             aggregated = TRUE,
-                                                             temporal = FALSE)
+  covData <- FeatureExtraction:::createEmptyCovariateData(
+    cohortIds = 9999,
+    aggregated = FALSE,
+    temporal = FALSE
+  )
+  aggCovData <- FeatureExtraction:::createEmptyCovariateData(
+    cohortIds = 9999,
+    aggregated = TRUE,
+    temporal = FALSE
+  )
 
-  tempCovData <- FeatureExtraction:::createEmptyCovariateData(cohortIds = 9999,
-                                                              aggregated = FALSE,
-                                                              temporal = TRUE)
+  tempCovData <- FeatureExtraction:::createEmptyCovariateData(
+    cohortIds = 9999,
+    aggregated = FALSE,
+    temporal = TRUE
+  )
 
   # check that objects are covariate Data class
   expect_false(isCovariateData(errCovData))
@@ -49,13 +55,15 @@ test_that("test saveCovariateData error cases", {
   skip_if_not(dbms == "sqlite")
   saveFileTest <- tempfile("covDatSave")
   settings <- createDefaultCovariateSettings()
-  covariateData <- getDbCovariateData(connectionDetails = eunomiaConnectionDetails,
-                                      cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
-                                      cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
-                                      cohortIds = c(1),
-                                      covariateSettings = settings,
-                                      aggregated = FALSE)
-  #create error for test
+  covariateData <- getDbCovariateData(
+    connectionDetails = eunomiaConnectionDetails,
+    cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
+    cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
+    cohortIds = c(1),
+    covariateSettings = settings,
+    aggregated = FALSE
+  )
+  # create error for test
   errCovData <- list()
 
   expect_error(saveCovariateData()) # empty call error
@@ -72,12 +80,14 @@ test_that("test saveCovariateData error cases", {
 test_that("test summary call for covariateData class", {
   skip_if_not(dbms == "sqlite")
   settings <- createDefaultCovariateSettings()
-  covariateData <- getDbCovariateData(connectionDetails = eunomiaConnectionDetails,
-                                      cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
-                                      cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
-                                      cohortIds = c(1),
-                                      covariateSettings = settings,
-                                      aggregated = FALSE)
+  covariateData <- getDbCovariateData(
+    connectionDetails = eunomiaConnectionDetails,
+    cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
+    cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
+    cohortIds = c(1),
+    covariateSettings = settings,
+    aggregated = FALSE
+  )
 
   sumOut <- summary(covariateData)
   Andromeda::close(covariateData)
@@ -87,25 +97,29 @@ test_that("test summary call for covariateData class", {
 test_that("test filtering of covariates based on minCharacterizationMean", {
   skip_if_not(dbms == "sqlite")
   settings <- createDefaultCovariateSettings()
-  covariateData <- getDbCovariateData(connectionDetails = eunomiaConnectionDetails,
-                                      cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
-                                      cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
-                                      cohortIds = c(1),
-                                      covariateSettings = settings,
-                                      aggregated = TRUE,
-                                      minCharacterizationMean = 0)
-  nCovariates <- covariateData$covariates %>% 
+  covariateData <- getDbCovariateData(
+    connectionDetails = eunomiaConnectionDetails,
+    cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
+    cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
+    cohortIds = c(1),
+    covariateSettings = settings,
+    aggregated = TRUE,
+    minCharacterizationMean = 0
+  )
+  nCovariates <- covariateData$covariates %>%
     collect() %>%
     nrow()
 
-  covariateData <- getDbCovariateData(connectionDetails = eunomiaConnectionDetails,
-                                      cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
-                                      cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
-                                      cohortIds = c(1),
-                                      covariateSettings = settings,
-                                      aggregated = TRUE,
-                                      minCharacterizationMean = 0.02)
-  nCovariatesFiltered <- covariateData$covariates %>% 
+  covariateData <- getDbCovariateData(
+    connectionDetails = eunomiaConnectionDetails,
+    cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
+    cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
+    cohortIds = c(1),
+    covariateSettings = settings,
+    aggregated = TRUE,
+    minCharacterizationMean = 0.02
+  )
+  nCovariatesFiltered <- covariateData$covariates %>%
     collect() %>%
     nrow()
   expect_true(nCovariatesFiltered < nCovariates)
@@ -121,7 +135,7 @@ test_that("Test exit/warning conditions", {
   expect_error(loadCovariateData(file = tempDir))
   on.exit(unlink(tempDir))
 
-  # ReadOnly parameter depreciated  
+  # ReadOnly parameter depreciated
   cvData <- FeatureExtraction:::createEmptyCovariateData(cohortIds = 1, aggregated = FALSE, temporal = FALSE)
   tempFile <- tempfile()
   tempFileName <- paste0(tempFile, ".zip")
@@ -132,7 +146,7 @@ test_that("Test exit/warning conditions", {
 })
 
 test_that("Test show method", {
-  cvData <- FeatureExtraction:::createEmptyCovariateData(cohortIds = c(1,2), aggregated = FALSE, temporal = FALSE)
+  cvData <- FeatureExtraction:::createEmptyCovariateData(cohortIds = c(1, 2), aggregated = FALSE, temporal = FALSE)
   expect_invisible(show(cvData))
   on.exit(rm(cvData))
 })
@@ -140,26 +154,30 @@ test_that("Test show method", {
 test_that("getDbCovariateData cohortId warning", {
   skip_if_not(dbms == "sqlite")
   settings <- createDefaultCovariateSettings()
-  expect_warning(getDbCovariateData(connectionDetails = eunomiaConnectionDetails,
-                     cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
-                     cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
-                     cohortId = c(1),
-                     covariateSettings = settings,
-                     aggregated = FALSE), "cohortId argument has been deprecated, please use cohortIds")
+  expect_warning(getDbCovariateData(
+    connectionDetails = eunomiaConnectionDetails,
+    cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
+    cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
+    cohortId = c(1),
+    covariateSettings = settings,
+    aggregated = FALSE
+  ), "cohortId argument has been deprecated, please use cohortIds")
 })
 
 test_that("getDbCovariateData settings list - check metaData", {
   skip_if_not(dbms == "sqlite")
   looCovSet <- FeatureExtraction:::.createLooCovariateSettings(useLengthOfObs = TRUE)
   covariateSettingsList <- list(looCovSet, looCovSet)
-  covariateData <- getDbCovariateData(connection = eunomiaConnection,
-                                      cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
-                                      cohortTable = "cohort",
-                                      cohortIds = c(-1),
-                                      covariateSettings = covariateSettingsList)
+  covariateData <- getDbCovariateData(
+    connection = eunomiaConnection,
+    cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
+    cohortTable = "cohort",
+    cohortIds = c(-1),
+    covariateSettings = covariateSettingsList
+  )
   metaData <- attr(covariateData, "metaData")
   expect_true("sql" %in% names(metaData))
-  expect_equal(class(metaData$sql), "list") 
+  expect_equal(class(metaData$sql), "list")
   expect_equal(length(metaData$sql), 1)
   expect_equal(length(metaData$sql[[1]]), 2)
 })

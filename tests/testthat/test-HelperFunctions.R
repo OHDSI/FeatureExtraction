@@ -5,14 +5,16 @@
 test_that("Test helper functions for non-aggregated covariate data", {
   skip_if_not(dbms == "sqlite")
   expect_error(filterByRowId("blah", 1), "not of class CovariateData")
-  
-  covariateData <- getDbCovariateData(connection = eunomiaConnection,
-                                      cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
-                                      cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
-                                      cohortIds = 1:2,
-                                      covariateSettings = createCovariateSettings(useDemographicsAgeGroup = TRUE, useChads2Vasc = TRUE),
-                                      aggregated = F)
-  
+
+  covariateData <- getDbCovariateData(
+    connection = eunomiaConnection,
+    cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
+    cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
+    cohortIds = 1:2,
+    covariateSettings = createCovariateSettings(useDemographicsAgeGroup = TRUE, useChads2Vasc = TRUE),
+    aggregated = F
+  )
+
   covariateDataFiltered <- filterByRowId(covariateData, rowIds = 1)
   expect_equal(unique(pull(covariateDataFiltered$covariates, rowId)), 1)
 
@@ -20,7 +22,7 @@ test_that("Test helper functions for non-aggregated covariate data", {
   expect_error(filterByCohortDefinitionId(locallyAggregated, cohortIds = c(1)), "no such column")
 
   expect_error(filterByCohortDefinitionId(covariateData, cohortIds = c(1)), "Can only filter aggregated")
-  
+
   Andromeda::close(covariateData)
   expect_error(filterByRowId(covariateData, 1), "closed")
 })
@@ -29,13 +31,15 @@ test_that("Test helper functions for aggregated covariate data", {
   skip_if_not(dbms == "sqlite")
   expect_error(filterByCohortDefinitionId("blah", 1), "not of class CovariateData")
 
-  aggregatedCovariateData <- getDbCovariateData(connection = eunomiaConnection,
-                                                cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
-                                                cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
-                                                cohortIds = 1:2,
-                                                covariateSettings = createCovariateSettings(useDemographicsAgeGroup = TRUE, useChads2Vasc = TRUE),
-                                                aggregated = TRUE)
-  
+  aggregatedCovariateData <- getDbCovariateData(
+    connection = eunomiaConnection,
+    cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
+    cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
+    cohortIds = 1:2,
+    covariateSettings = createCovariateSettings(useDemographicsAgeGroup = TRUE, useChads2Vasc = TRUE),
+    aggregated = TRUE
+  )
+
   aggCovariateDataFiltered <- filterByCohortDefinitionId(aggregatedCovariateData, cohortIds = c(1))
 
   expect_equal(unique(pull(aggCovariateDataFiltered$covariates, cohortDefinitionId)), 1)

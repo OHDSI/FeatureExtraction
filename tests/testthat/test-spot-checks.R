@@ -2,39 +2,45 @@ library(testthat)
 library(Andromeda)
 
 runSpotChecks <- function(connection, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortTable) {
-  settings <- createCovariateSettings(useDemographicsGender = TRUE,
-                                      useDemographicsAge = TRUE,
-                                      useConditionOccurrenceLongTerm = TRUE,
-                                      useDrugEraShortTerm = TRUE,
-                                      useVisitConceptCountLongTerm = TRUE,
-                                      longTermStartDays = -365,
-                                      mediumTermStartDays = -180,
-                                      shortTermStartDays = -30,
-                                      endDays = 0,
-                                      includedCovariateConceptIds = c(),
-                                      addDescendantsToInclude = FALSE,
-                                      excludedCovariateConceptIds = c(21603933),
-                                      addDescendantsToExclude = TRUE,
-                                      includedCovariateIds = c())
-  suppressWarnings(covariateData <- getDbCovariateData(connection = connection,
-                                                       cdmDatabaseSchema = cdmDatabaseSchema,
-                                                       oracleTempSchema = ohdsiDatabaseSchema,
-                                                       cohortDatabaseSchema = ohdsiDatabaseSchema,
-                                                       cohortTable = cohortTable,
-                                                       cohortTableIsTemp = TRUE,
-                                                       cohortIds = c(1124300),
-                                                       rowIdField = "subject_id",
-                                                       covariateSettings = settings))
-  suppressWarnings(covariateDataAgg <- getDbCovariateData(connection = connection,
-                                                          cdmDatabaseSchema = cdmDatabaseSchema,
-                                                          oracleTempSchema = ohdsiDatabaseSchema,
-                                                          cohortDatabaseSchema = ohdsiDatabaseSchema,
-                                                          cohortTable = cohortTable,
-                                                          cohortTableIsTemp = TRUE,
-                                                          cohortIds = c(1124300),
-                                                          rowIdField = "subject_id",
-                                                          covariateSettings = settings,
-                                                          aggregated = TRUE))
+  settings <- createCovariateSettings(
+    useDemographicsGender = TRUE,
+    useDemographicsAge = TRUE,
+    useConditionOccurrenceLongTerm = TRUE,
+    useDrugEraShortTerm = TRUE,
+    useVisitConceptCountLongTerm = TRUE,
+    longTermStartDays = -365,
+    mediumTermStartDays = -180,
+    shortTermStartDays = -30,
+    endDays = 0,
+    includedCovariateConceptIds = c(),
+    addDescendantsToInclude = FALSE,
+    excludedCovariateConceptIds = c(21603933),
+    addDescendantsToExclude = TRUE,
+    includedCovariateIds = c()
+  )
+  suppressWarnings(covariateData <- getDbCovariateData(
+    connection = connection,
+    cdmDatabaseSchema = cdmDatabaseSchema,
+    oracleTempSchema = ohdsiDatabaseSchema,
+    cohortDatabaseSchema = ohdsiDatabaseSchema,
+    cohortTable = cohortTable,
+    cohortTableIsTemp = TRUE,
+    cohortIds = c(1124300),
+    rowIdField = "subject_id",
+    covariateSettings = settings
+  ))
+  suppressWarnings(covariateDataAgg <- getDbCovariateData(
+    connection = connection,
+    cdmDatabaseSchema = cdmDatabaseSchema,
+    oracleTempSchema = ohdsiDatabaseSchema,
+    cohortDatabaseSchema = ohdsiDatabaseSchema,
+    cohortTable = cohortTable,
+    cohortTableIsTemp = TRUE,
+    cohortIds = c(1124300),
+    rowIdField = "subject_id",
+    covariateSettings = settings,
+    aggregated = TRUE
+  ))
   if (covariateData$covariates %>% count() %>% pull() == 0) {
     return(TRUE)
   }
