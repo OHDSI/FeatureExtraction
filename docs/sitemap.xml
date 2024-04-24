@@ -16,13 +16,13 @@
     <loc>/articles/CreatingCustomCovariateBuildersKorean.html</loc>
   </url>
   <url>
+    <loc>/articles/index.html</loc>
+  </url>
+  <url>
     <loc>/articles/UsingFeatureExtraction.html</loc>
   </url>
   <url>
     <loc>/articles/UsingFeatureExtractionKorean.html</loc>
-  </url>
-  <url>
-    <loc>/articles/index.html</loc>
   </url>
   <url>
     <loc>/authors.html</loc>
@@ -35,15 +35,6 @@
   </url>
   <url>
     <loc>/pull_request_template.html</loc>
-  </url>
-  <url>
-    <loc>/reference/CovariateData-class.html</loc>
-  </url>
-  <url>
-    <loc>/reference/FeatureExtraction-package.html</loc>
-  </url>
-  <url>
-    <loc>/reference/FeatureExtraction.html</loc>
   </url>
   <url>
     <loc>/reference/aggregateCovariates.html</loc>
@@ -59,6 +50,9 @@
   </url>
   <url>
     <loc>/reference/convertPrespecSettingsToDetailedSettings.html</loc>
+  </url>
+  <url>
+    <loc>/reference/CovariateData-class.html</loc>
   </url>
   <url>
     <loc>/reference/createAnalysisDetails.html</loc>
@@ -112,10 +106,19 @@
     <loc>/reference/dot-getDbLooCovariateData.html</loc>
   </url>
   <url>
+    <loc>/reference/FeatureExtraction-package.html</loc>
+  </url>
+  <url>
+    <loc>/reference/FeatureExtraction.html</loc>
+  </url>
+  <url>
     <loc>/reference/filterByCohortDefinitionId.html</loc>
   </url>
   <url>
     <loc>/reference/filterByRowId.html</loc>
+  </url>
+  <url>
+    <loc>/reference/filterCovariateDataCovariates.html</loc>
   </url>
   <url>
     <loc>/reference/getDbCohortAttrCovariatesData.html</loc>

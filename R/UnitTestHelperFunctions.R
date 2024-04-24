@@ -59,7 +59,7 @@
 #'                               of the createCovariate functions, or a list of such objects.
 #' @param aggregated             Should aggregate statistics be computed instead of covariates per
 #'                               cohort entry?
-#' @param minCharacterizationMean The minimum mean value for characterization output. Values below this will be cut off from output. This 
+#' @param minCharacterizationMean The minimum mean value for binary characterization output. Values below this will be cut off from output. This
 #'                                will help reduce the file size of the characterization output, but will remove information
 #'                                on covariates that have very low values. The default is 0.
 #' @return
@@ -107,20 +107,23 @@
   }
 
   # Some SQL to construct the covariate:
-  sql <- paste("SELECT @row_id_field AS row_id, 1 AS covariate_id,",
-               "DATEDIFF(DAY, observation_period_start_date, cohort_start_date)",
-               "AS covariate_value",
-               "FROM @cohort_table c",
-               "INNER JOIN @cdm_database_schema.observation_period op",
-               "ON op.person_id = c.subject_id",
-               "WHERE cohort_start_date >= observation_period_start_date",
-               "AND cohort_start_date <= observation_period_end_date",
-               "{@cohort_ids != -1} ? {AND cohort_definition_id IN @cohort_ids}")
+  sql <- paste(
+    "SELECT @row_id_field AS row_id, 1 AS covariate_id,",
+    "DATEDIFF(DAY, observation_period_start_date, cohort_start_date)",
+    "AS covariate_value",
+    "FROM @cohort_table c",
+    "INNER JOIN @cdm_database_schema.observation_period op",
+    "ON op.person_id = c.subject_id",
+    "WHERE cohort_start_date >= observation_period_start_date",
+    "AND cohort_start_date <= observation_period_end_date",
+    "{@cohort_ids != -1} ? {AND cohort_definition_id IN @cohort_ids}"
+  )
   sql <- SqlRender::render(sql,
-                           cohort_table = cohortTable,
-                           cohort_ids = cohortIds,
-                           row_id_field = rowIdField,
-                           cdm_database_schema = cdmDatabaseSchema)
+    cohort_table = cohortTable,
+    cohort_ids = cohortIds,
+    row_id_field = rowIdField,
+    cdm_database_schema = cdmDatabaseSchema
+  )
   sql <- SqlRender::translate(sql, targetDialect = attr(connection, "dbms"))
   # Retrieve the covariate:
   covariates <- DatabaseConnector::querySql(connection, sql, snakeCaseToCamelCase = TRUE)

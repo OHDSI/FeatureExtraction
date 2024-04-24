@@ -19,7 +19,7 @@ observations, etc."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/aj
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">FeatureExtraction</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.5.1</span>
       </span>
     </div>
 
@@ -99,7 +99,8 @@ observations, etc.</p>
 <span>  <span class="va">targetCovariateTable</span>,</span>
 <span>  <span class="va">targetCovariateRefTable</span>,</span>
 <span>  <span class="va">targetAnalysisRefTable</span>,</span>
-<span>  aggregated <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  aggregated <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  minCharacterizationMean <span class="op">=</span> <span class="fl">0</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -179,6 +180,12 @@ it is a temp table, do not specify <code>targetDatabaseSchema</code>.</p></dd>
 <dt>aggregated</dt>
 <dd><p>Should aggregate statistics be computed instead of covariates per
 cohort entry?</p></dd>
+
+
+<dt>minCharacterizationMean</dt>
+<dd><p>The minimum mean value for characterization output. Values below this will be cut off from output. This 
+will help reduce the file size of the characterization output, but will remove information
+on covariates that have very low values. The default is 0.</p></dd>
 
 </dl></div>
     <div id="value">
