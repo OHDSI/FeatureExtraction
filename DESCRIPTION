@@ -35,7 +35,7 @@ Suggests:
   testthat,
   knitr,
   rmarkdown,
-  Eunomia,
+  Eunomia (>= 2.0.0),
   withr
 License: Apache License 2.0
 VignetteBuilder: knitr
