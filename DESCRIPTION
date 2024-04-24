@@ -37,8 +37,6 @@ Suggests:
   rmarkdown,
   Eunomia,
   withr
-Remotes:
-  ohdsi/Eunomia
 License: Apache License 2.0
 VignetteBuilder: knitr
 URL: https://github.com/OHDSI/FeatureExtraction
