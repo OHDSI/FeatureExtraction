@@ -1,3 +1,10 @@
+FeatureExtraction 3.6.0
+=======================
+
+New Features:
+- Adds ConditionOccurrenceDuring, ConditionEraDuring, ConditionGroupEraDuring analyses (#253)
+
+
 FeatureExtraction 3.5.1
 =======================
 

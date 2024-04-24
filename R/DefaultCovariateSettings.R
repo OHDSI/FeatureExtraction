@@ -79,6 +79,13 @@
 #'                                                             setting in the condition_occurrence
 #'                                                             table starting in the short term window.
 #'                                                             (analysis ID 108)
+#' @param useConditionOccurrenceDuring                         One covariate per condition in the
+#'                                                             condition_occurrence table starting between
+#'                                                             cohort start and cohort end. (analysis ID 109)
+#' @param useConditionOccurrencePrimaryInpatientDuring         One covariate per condition observed as
+#'                                                             a primary diagnosis in an inpatient
+#'                                                             setting in the condition_occurrence table starting between
+#'                                                             cohort start and cohort end. (analysis ID 110)
 #' @param useConditionEraAnyTimePrior                          One covariate per condition in the
 #'                                                             condition_era table overlapping with any
 #'                                                             time prior to index. (analysis ID 201)
@@ -139,6 +146,13 @@
 #'                                                             up to groups in the condition_era table
 #'                                                             starting in the short term window.
 #'                                                             (analysis ID 216)
+#' @param useConditionEraDuring                                One covariate per condition in the condition_era table
+#'                                                             starting between cohort start and cohort end.
+#'                                                             (analysis ID 217)
+#' @param useConditionGroupEraDuring                           One covariate per condition era rolled
+#'                                                             up to groups in the condition_era table
+#'                                                             starting between cohort start and cohort end.
+#'                                                             (analysis ID 218)
 #' @param useDrugExposureAnyTimePrior                          One covariate per drug in the
 #'                                                             drug_exposure table starting any time
 #'                                                             prior to index. (analysis ID 301)
@@ -400,6 +414,7 @@
 #'   useConditionOccurrencePrimaryInpatientLongTerm = FALSE,
 #'   useConditionOccurrencePrimaryInpatientMediumTerm = FALSE,
 #'   useConditionOccurrencePrimaryInpatientShortTerm = FALSE,
+#'   useConditionOccurrenceDuring = FALSE,
 #'   useConditionEraAnyTimePrior = FALSE,
 #'   useConditionEraLongTerm = FALSE,
 #'   useConditionEraMediumTerm = FALSE,
@@ -408,6 +423,7 @@
 #'   useConditionEraStartLongTerm = FALSE,
 #'   useConditionEraStartMediumTerm = FALSE,
 #'   useConditionEraStartShortTerm = FALSE,
+#'   useConditionEraDuring = FALSE,
 #'   useConditionGroupEraAnyTimePrior = FALSE,
 #'   useConditionGroupEraLongTerm = TRUE,
 #'   useConditionGroupEraMediumTerm = FALSE,
@@ -416,6 +432,7 @@
 #'   useConditionGroupEraStartLongTerm = FALSE,
 #'   useConditionGroupEraStartMediumTerm = FALSE,
 #'   useConditionGroupEraStartShortTerm = FALSE,
+#'   useConditionGroupEraDuring = FALSE,
 #'   useDrugExposureAnyTimePrior = FALSE,
 #'   useDrugExposureLongTerm = FALSE,
 #'   useDrugExposureMediumTerm = FALSE,
@@ -518,6 +535,7 @@ createCovariateSettings <- function(useDemographicsGender = FALSE,
                                     useConditionOccurrencePrimaryInpatientLongTerm = FALSE,
                                     useConditionOccurrencePrimaryInpatientMediumTerm = FALSE,
                                     useConditionOccurrencePrimaryInpatientShortTerm = FALSE,
+                                    useConditionOccurrenceDuring = FALSE,
                                     useConditionEraAnyTimePrior = FALSE,
                                     useConditionEraLongTerm = FALSE,
                                     useConditionEraMediumTerm = FALSE,
@@ -526,6 +544,7 @@ createCovariateSettings <- function(useDemographicsGender = FALSE,
                                     useConditionEraStartLongTerm = FALSE,
                                     useConditionEraStartMediumTerm = FALSE,
                                     useConditionEraStartShortTerm = FALSE,
+                                    useConditionEraDuring = FALSE,
                                     useConditionGroupEraAnyTimePrior = FALSE,
                                     useConditionGroupEraLongTerm = FALSE,
                                     useConditionGroupEraMediumTerm = FALSE,
@@ -534,6 +553,7 @@ createCovariateSettings <- function(useDemographicsGender = FALSE,
                                     useConditionGroupEraStartLongTerm = FALSE,
                                     useConditionGroupEraStartMediumTerm = FALSE,
                                     useConditionGroupEraStartShortTerm = FALSE,
+                                    useConditionGroupEraDuring = FALSE,
                                     useDrugExposureAnyTimePrior = FALSE,
                                     useDrugExposureLongTerm = FALSE,
                                     useDrugExposureMediumTerm = FALSE,

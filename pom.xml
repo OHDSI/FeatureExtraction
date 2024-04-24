@@ -5,7 +5,7 @@
 	<groupId>org.ohdsi</groupId>
 	<artifactId>featureExtraction</artifactId>
 	<packaging>jar</packaging>
-	<version>3.5.1-SNAPSHOT</version>
+	<version>3.6.0-SNAPSHOT</version>
 	<name>featureExtraction</name>
 	<scm>
 		<connection>scm:git:https://github.com/OHDSI/featureExtraction</connection>
@@ -29,6 +29,17 @@
 			<url>https://repo.ohdsi.org/nexus/content/groups/public</url>
 		</repository>
 	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>central</id>
+			<url>https://repo.maven.apache.org/maven2</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>ohdsi</id>
+			<name>repo.ohdsi.org</name>
+			<url>https://repo.ohdsi.org/nexus/content/groups/public</url>
+		</pluginRepository>
+  </pluginRepositories>	
 	<dependencies>
 		<dependency>
 			<groupId>org.json</groupId>
