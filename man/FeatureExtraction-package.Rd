@@ -17,7 +17,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Anthony Sena \email{sena@ohdsi.org}
+\strong{Maintainer}: Ger Inberg \email{g.inberg@erasmusmc.nl}
 
 Authors:
 \itemize{
@@ -25,7 +25,7 @@ Authors:
   \item Marc Suchard
   \item Patrick Ryan
   \item Jenna Reps
-  \item Ger Inberg
+  \item Anthony Sena \email{sena@ohdsi.org}
 }
 
 }

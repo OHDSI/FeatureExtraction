@@ -13,3 +13,5 @@ deploy.sh
 compare_versions
 _pkgdown.yml
 nbactions.xml
+^CRAN-SUBMISSION$
+^cran-comments\.md$
