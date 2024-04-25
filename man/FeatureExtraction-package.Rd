@@ -6,7 +6,7 @@
 \alias{FeatureExtraction-package}
 \title{FeatureExtraction: Generating Features for a Cohort}
 \description{
-An R package for generating features (covariates) for a cohort using data in the Common Data Model.
+An R package for generating features for a cohort using data in the Common Data Model.
 }
 \seealso{
 Useful links:

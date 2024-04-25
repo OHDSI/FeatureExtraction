@@ -12,7 +12,7 @@ Authors@R: c(
   person("Ger", "Inberg", , "g.inberg@erasmusmc.nl", role = c("aut", "cre"))
   )
 Maintainer: Ger Inberg <g.inberg@erasmusmc.nl>
-Description: An R package for generating features (covariates) for a cohort using data in the Common Data Model.
+Description: An R package for generating features for a cohort using data in the Common Data Model.
 Depends:
   R (>= 3.2.2),
   DatabaseConnector (>= 3.0.0),
