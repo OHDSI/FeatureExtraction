@@ -165,6 +165,9 @@
 #' @param useDrugExposureShortTerm                             One covariate per drug in the
 #'                                                             drug_exposure table starting in the
 #'                                                             short term window. (analysis ID 304)
+#' @param useDrugExposureDuring                                One covariate per drug in the
+#'                                                             drug_exposure table starting between
+#'                                                             cohort start and cohort end. (analysis ID 305)
 #' @param useDrugEraAnyTimePrior                               One covariate per drug in the drug_era
 #'                                                             table overlapping with any time prior to
 #'                                                             index. (analysis ID 401)
@@ -189,6 +192,9 @@
 #' @param useDrugEraStartShortTerm                             One covariate per drug in the drug_era
 #'                                                             table starting in the long short window.
 #'                                                             (analysis ID 408)
+#' @param useDrugEraDuring                                     One covariate per drug in the
+#'                                                             drug_era table starting between
+#'                                                             cohort start and cohort end. (analysis ID 417)
 #' @param useDrugGroupEraAnyTimePrior                          One covariate per drug rolled up to ATC
 #'                                                             groups in the drug_era table overlapping
 #'                                                             with any time prior to index. (analysis
@@ -219,6 +225,9 @@
 #' @param useDrugGroupEraStartShortTerm                        One covariate per drug rolled up to ATC
 #'                                                             groups in the drug_era table starting in
 #'                                                             the short term window. (analysis ID 416)
+#' @param useDrugGroupEraDuring                                One covariate per drug rolled up to ATC 
+#'                                                             groups in the drug_era table starting between
+#'                                                             cohort start and cohort end. (analysis ID 418)
 #' @param useProcedureOccurrenceAnyTimePrior                   One covariate per procedure in the
 #'                                                             procedure_occurrence table any time
 #'                                                             prior to index. (analysis ID 501)
@@ -231,6 +240,9 @@
 #' @param useProcedureOccurrenceShortTerm                      One covariate per procedure in the
 #'                                                             procedure_occurrence table in the short
 #'                                                             term window. (analysis ID 504)
+#' @param useProcedureOccurrenceDuring                         One covariate per procedure in the
+#'                                                             procedure_occurrence table between 
+#'                                                             cohort start and cohort end. (analysis ID 505)
 #' @param useDeviceExposureAnyTimePrior                        One covariate per device in the device
 #'                                                             exposure table starting any time prior
 #'                                                             to index. (analysis ID 601)
@@ -243,6 +255,9 @@
 #' @param useDeviceExposureShortTerm                           One covariate per device in the device
 #'                                                             exposure table starting in the short
 #'                                                             term window. (analysis ID 604)
+#' @param useDeviceExposureDuring                              One covariate per device in the device
+#'                                                             exposure table starting between cohort 
+#'                                                             start and cohort end. (analysis ID 605)
 #' @param useMeasurementAnyTimePrior                           One covariate per measurement in the
 #'                                                             measurement table any time prior to
 #'                                                             index. (analysis ID 701)
@@ -255,6 +270,9 @@
 #' @param useMeasurementShortTerm                              One covariate per measurement in the
 #'                                                             measurement table in the short term
 #'                                                             window. (analysis ID 704)
+#' @param useMeasurementDuring                                 One covariate per measurement in the
+#'                                                             measurement table between cohort start
+#'                                                             and cohort end. (analysis ID 713)
 #' @param useMeasurementValueAnyTimePrior                      One covariate containing the value per
 #'                                                             measurement-unit combination any time
 #'                                                             prior to index. (analysis ID 705)
@@ -295,6 +313,12 @@
 #' @param useObservationShortTerm                              One covariate per observation in the
 #'                                                             observation table in the short term
 #'                                                             window. (analysis ID 804)
+#' @param useObservationShortTerm                              One covariate per observation in the
+#'                                                             observation table in the short term
+#'                                                             window. (analysis ID 804)
+#' @param useObservationDuration                               One covariate per observation in the
+#'                                                             observation table between cohort start
+#'                                                             and cohort end. (analysis ID 805)
 #' @param useCharlsonIndex                                     The Charlson comorbidity index (Romano
 #'                                                             adaptation) using all conditions prior
 #'                                                             to the window end. (analysis ID 901)
@@ -437,6 +461,7 @@
 #'   useDrugExposureLongTerm = FALSE,
 #'   useDrugExposureMediumTerm = FALSE,
 #'   useDrugExposureShortTerm = FALSE,
+#'   useDrugExposureDuring = FALSE,
 #'   useDrugEraAnyTimePrior = FALSE,
 #'   useDrugEraLongTerm = FALSE,
 #'   useDrugEraMediumTerm = FALSE,
@@ -445,6 +470,7 @@
 #'   useDrugEraStartLongTerm = FALSE,
 #'   useDrugEraStartMediumTerm = FALSE,
 #'   useDrugEraStartShortTerm = FALSE,
+#'   useDrugEraDuring = FALSE,
 #'   useDrugGroupEraAnyTimePrior = FALSE,
 #'   useDrugGroupEraLongTerm = TRUE,
 #'   useDrugGroupEraMediumTerm = FALSE,
@@ -453,18 +479,22 @@
 #'   useDrugGroupEraStartLongTerm = FALSE,
 #'   useDrugGroupEraStartMediumTerm = FALSE,
 #'   useDrugGroupEraStartShortTerm = FALSE,
+#'   useDrugGroupEraDuring = FALSE,
 #'   useProcedureOccurrenceAnyTimePrior = FALSE,
 #'   useProcedureOccurrenceLongTerm = TRUE,
 #'   useProcedureOccurrenceMediumTerm = FALSE,
 #'   useProcedureOccurrenceShortTerm = TRUE,
+#'   useProcedureOccurrenceDuring = FALSE,
 #'   useDeviceExposureAnyTimePrior = FALSE,
 #'   useDeviceExposureLongTerm = TRUE,
 #'   useDeviceExposureMediumTerm = FALSE,
 #'   useDeviceExposureShortTerm = TRUE,
+#'   useDeviceExposureDuring = FALSE,
 #'   useMeasurementAnyTimePrior = FALSE,
 #'   useMeasurementLongTerm = TRUE,
 #'   useMeasurementMediumTerm = FALSE,
 #'   useMeasurementShortTerm = TRUE,
+#'   useMeasurementDuring = FALSE,
 #'   useMeasurementValueAnyTimePrior = FALSE,
 #'   useMeasurementValueLongTerm = FALSE,
 #'   useMeasurementValueMediumTerm = FALSE,
@@ -477,6 +507,7 @@
 #'   useObservationLongTerm = TRUE,
 #'   useObservationMediumTerm = FALSE,
 #'   useObservationShortTerm = TRUE,
+#'   useObservationDuring = FALSE,
 #'   useCharlsonIndex = TRUE,
 #'   useDcsi = TRUE,
 #'   useChads2 = TRUE,
@@ -558,6 +589,7 @@ createCovariateSettings <- function(useDemographicsGender = FALSE,
                                     useDrugExposureLongTerm = FALSE,
                                     useDrugExposureMediumTerm = FALSE,
                                     useDrugExposureShortTerm = FALSE,
+                                    useDrugExposureDuring = FALSE,
                                     useDrugEraAnyTimePrior = FALSE,
                                     useDrugEraLongTerm = FALSE,
                                     useDrugEraMediumTerm = FALSE,
@@ -566,6 +598,7 @@ createCovariateSettings <- function(useDemographicsGender = FALSE,
                                     useDrugEraStartLongTerm = FALSE,
                                     useDrugEraStartMediumTerm = FALSE,
                                     useDrugEraStartShortTerm = FALSE,
+                                    useDrugEraDuring = FALSE,
                                     useDrugGroupEraAnyTimePrior = FALSE,
                                     useDrugGroupEraLongTerm = FALSE,
                                     useDrugGroupEraMediumTerm = FALSE,
@@ -574,18 +607,22 @@ createCovariateSettings <- function(useDemographicsGender = FALSE,
                                     useDrugGroupEraStartLongTerm = FALSE,
                                     useDrugGroupEraStartMediumTerm = FALSE,
                                     useDrugGroupEraStartShortTerm = FALSE,
+                                    useDrugGroupEraDuring = FALSE,
                                     useProcedureOccurrenceAnyTimePrior = FALSE,
                                     useProcedureOccurrenceLongTerm = FALSE,
                                     useProcedureOccurrenceMediumTerm = FALSE,
                                     useProcedureOccurrenceShortTerm = FALSE,
+                                    useProcedureOccurrenceDuring = FALSE,
                                     useDeviceExposureAnyTimePrior = FALSE,
                                     useDeviceExposureLongTerm = FALSE,
                                     useDeviceExposureMediumTerm = FALSE,
                                     useDeviceExposureShortTerm = FALSE,
+                                    useDeviceExposureDuring = FALSE,
                                     useMeasurementAnyTimePrior = FALSE,
                                     useMeasurementLongTerm = FALSE,
                                     useMeasurementMediumTerm = FALSE,
                                     useMeasurementShortTerm = FALSE,
+                                    useMeasurementDuring = FALSE,
                                     useMeasurementValueAnyTimePrior = FALSE,
                                     useMeasurementValueLongTerm = FALSE,
                                     useMeasurementValueMediumTerm = FALSE,
@@ -598,6 +635,7 @@ createCovariateSettings <- function(useDemographicsGender = FALSE,
                                     useObservationLongTerm = FALSE,
                                     useObservationMediumTerm = FALSE,
                                     useObservationShortTerm = FALSE,
+                                    useObservationDuring = FALSE,
                                     useCharlsonIndex = FALSE,
                                     useDcsi = FALSE,
                                     useChads2 = FALSE,
