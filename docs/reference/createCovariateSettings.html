@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">FeatureExtraction</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.6.0</span>
       </span>
     </div>
 
@@ -54,7 +54,7 @@
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://ohdsi.github.io/Hades" class="external-link"><img src='https://ohdsi.github.io/Hades/images/hadesMini.png' width=80 height=17 style='vertical-align: top;'></a>
+  <a href="https://ohdsi.github.io/Hades" class="external-link">hadesLogo</a>
 </li>
 <li>
   <a href="https://github.com/OHDSI/FeatureExtraction/" class="external-link">
@@ -102,6 +102,7 @@
 <span>  useConditionOccurrencePrimaryInpatientLongTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useConditionOccurrencePrimaryInpatientMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useConditionOccurrencePrimaryInpatientShortTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  useConditionOccurrenceDuring <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useConditionEraAnyTimePrior <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useConditionEraLongTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useConditionEraMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -110,6 +111,7 @@
 <span>  useConditionEraStartLongTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useConditionEraStartMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useConditionEraStartShortTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  useConditionEraDuring <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useConditionGroupEraAnyTimePrior <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useConditionGroupEraLongTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useConditionGroupEraMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -118,10 +120,12 @@
 <span>  useConditionGroupEraStartLongTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useConditionGroupEraStartMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useConditionGroupEraStartShortTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  useConditionGroupEraDuring <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useDrugExposureAnyTimePrior <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useDrugExposureLongTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useDrugExposureMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useDrugExposureShortTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  useDrugExposureDuring <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useDrugEraAnyTimePrior <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useDrugEraLongTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useDrugEraMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -130,6 +134,7 @@
 <span>  useDrugEraStartLongTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useDrugEraStartMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useDrugEraStartShortTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  useDrugEraDuring <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useDrugGroupEraAnyTimePrior <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useDrugGroupEraLongTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useDrugGroupEraMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -138,18 +143,22 @@
 <span>  useDrugGroupEraStartLongTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useDrugGroupEraStartMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useDrugGroupEraStartShortTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  useDrugGroupEraDuring <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useProcedureOccurrenceAnyTimePrior <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useProcedureOccurrenceLongTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useProcedureOccurrenceMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useProcedureOccurrenceShortTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  useProcedureOccurrenceDuring <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useDeviceExposureAnyTimePrior <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useDeviceExposureLongTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useDeviceExposureMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useDeviceExposureShortTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  useDeviceExposureDuring <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useMeasurementAnyTimePrior <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useMeasurementLongTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useMeasurementMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useMeasurementShortTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  useMeasurementDuring <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useMeasurementValueAnyTimePrior <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useMeasurementValueLongTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useMeasurementValueMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -162,6 +171,7 @@
 <span>  useObservationLongTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useObservationMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useObservationShortTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  useObservationDuring <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useCharlsonIndex <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useDcsi <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useChads2 <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -320,6 +330,12 @@ table starting in the short term window.
 (analysis ID 108)</p></dd>
 
 
+<dt>useConditionOccurrenceDuring</dt>
+<dd><p>One covariate per condition in the
+condition_occurrence table starting between
+cohort start and cohort end. (analysis ID 109)</p></dd>
+
+
 <dt>useConditionEraAnyTimePrior</dt>
 <dd><p>One covariate per condition in the
 condition_era table overlapping with any
@@ -370,6 +386,12 @@ medium term window. (analysis ID 207)</p></dd>
 <dd><p>One covariate per condition in the
 condition_era table starting in the
 short term window. (analysis ID 208)</p></dd>
+
+
+<dt>useConditionEraDuring</dt>
+<dd><p>One covariate per condition in the condition_era table
+starting between cohort start and cohort end.
+(analysis ID 217)</p></dd>
 
 
 <dt>useConditionGroupEraAnyTimePrior</dt>
@@ -428,6 +450,13 @@ starting in the short term window.
 (analysis ID 216)</p></dd>
 
 
+<dt>useConditionGroupEraDuring</dt>
+<dd><p>One covariate per condition era rolled
+up to groups in the condition_era table
+starting between cohort start and cohort end.
+(analysis ID 218)</p></dd>
+
+
 <dt>useDrugExposureAnyTimePrior</dt>
 <dd><p>One covariate per drug in the
 drug_exposure table starting any time
@@ -450,6 +479,12 @@ medium term window. (analysis ID 303)</p></dd>
 <dd><p>One covariate per drug in the
 drug_exposure table starting in the
 short term window. (analysis ID 304)</p></dd>
+
+
+<dt>useDrugExposureDuring</dt>
+<dd><p>One covariate per drug in the
+drug_exposure table starting between
+cohort start and cohort end. (analysis ID 305)</p></dd>
 
 
 <dt>useDrugEraAnyTimePrior</dt>
@@ -498,6 +533,12 @@ window. (analysis ID 407)</p></dd>
 <dd><p>One covariate per drug in the drug_era
 table starting in the long short window.
 (analysis ID 408)</p></dd>
+
+
+<dt>useDrugEraDuring</dt>
+<dd><p>One covariate per drug in the
+drug_era table starting between
+cohort start and cohort end. (analysis ID 417)</p></dd>
 
 
 <dt>useDrugGroupEraAnyTimePrior</dt>
@@ -554,6 +595,12 @@ groups in the drug_era table starting in
 the short term window. (analysis ID 416)</p></dd>
 
 
+<dt>useDrugGroupEraDuring</dt>
+<dd><p>One covariate per drug rolled up to ATC 
+groups in the drug_era table starting between
+cohort start and cohort end. (analysis ID 418)</p></dd>
+
+
 <dt>useProcedureOccurrenceAnyTimePrior</dt>
 <dd><p>One covariate per procedure in the
 procedure_occurrence table any time
@@ -576,6 +623,12 @@ term window. (analysis ID 503)</p></dd>
 <dd><p>One covariate per procedure in the
 procedure_occurrence table in the short
 term window. (analysis ID 504)</p></dd>
+
+
+<dt>useProcedureOccurrenceDuring</dt>
+<dd><p>One covariate per procedure in the
+procedure_occurrence table between 
+cohort start and cohort end. (analysis ID 505)</p></dd>
 
 
 <dt>useDeviceExposureAnyTimePrior</dt>
@@ -602,6 +655,12 @@ exposure table starting in the short
 term window. (analysis ID 604)</p></dd>
 
 
+<dt>useDeviceExposureDuring</dt>
+<dd><p>One covariate per device in the device
+exposure table starting between cohort 
+start and cohort end. (analysis ID 605)</p></dd>
+
+
 <dt>useMeasurementAnyTimePrior</dt>
 <dd><p>One covariate per measurement in the
 measurement table any time prior to
@@ -624,6 +683,12 @@ window. (analysis ID 703)</p></dd>
 <dd><p>One covariate per measurement in the
 measurement table in the short term
 window. (analysis ID 704)</p></dd>
+
+
+<dt>useMeasurementDuring</dt>
+<dd><p>One covariate per measurement in the
+measurement table between cohort start
+and cohort end. (analysis ID 713)</p></dd>
 
 
 <dt>useMeasurementValueAnyTimePrior</dt>
@@ -899,6 +964,19 @@ to the list of concepts to exclude?</p></dd>
 <dd><p>A list of covariate IDs that should be
 restricted to.</p></dd>
 
+
+<dt>useConditionOccurrencePrimaryInpatientDuring</dt>
+<dd><p>One covariate per condition observed as
+a primary diagnosis in an inpatient
+setting in the condition_occurrence table starting between
+cohort start and cohort end. (analysis ID 110)</p></dd>
+
+
+<dt>useObservationDuration</dt>
+<dd><p>One covariate per observation in the
+observation table between cohort start
+and cohort end. (analysis ID 805)</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -934,6 +1012,7 @@ restricted to.</p></dd>
 <span class="r-in"><span>  useConditionOccurrencePrimaryInpatientLongTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useConditionOccurrencePrimaryInpatientMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useConditionOccurrencePrimaryInpatientShortTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>  useConditionOccurrenceDuring <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useConditionEraAnyTimePrior <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useConditionEraLongTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useConditionEraMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
@@ -942,6 +1021,7 @@ restricted to.</p></dd>
 <span class="r-in"><span>  useConditionEraStartLongTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useConditionEraStartMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useConditionEraStartShortTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>  useConditionEraDuring <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useConditionGroupEraAnyTimePrior <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useConditionGroupEraLongTerm <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  useConditionGroupEraMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
@@ -950,10 +1030,12 @@ restricted to.</p></dd>
 <span class="r-in"><span>  useConditionGroupEraStartLongTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useConditionGroupEraStartMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useConditionGroupEraStartShortTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>  useConditionGroupEraDuring <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useDrugExposureAnyTimePrior <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useDrugExposureLongTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useDrugExposureMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useDrugExposureShortTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>  useDrugExposureDuring <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useDrugEraAnyTimePrior <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useDrugEraLongTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useDrugEraMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
@@ -962,6 +1044,7 @@ restricted to.</p></dd>
 <span class="r-in"><span>  useDrugEraStartLongTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useDrugEraStartMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useDrugEraStartShortTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>  useDrugEraDuring <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useDrugGroupEraAnyTimePrior <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useDrugGroupEraLongTerm <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  useDrugGroupEraMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
@@ -970,18 +1053,22 @@ restricted to.</p></dd>
 <span class="r-in"><span>  useDrugGroupEraStartLongTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useDrugGroupEraStartMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useDrugGroupEraStartShortTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>  useDrugGroupEraDuring <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useProcedureOccurrenceAnyTimePrior <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useProcedureOccurrenceLongTerm <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  useProcedureOccurrenceMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useProcedureOccurrenceShortTerm <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>  useProcedureOccurrenceDuring <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useDeviceExposureAnyTimePrior <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useDeviceExposureLongTerm <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  useDeviceExposureMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useDeviceExposureShortTerm <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>  useDeviceExposureDuring <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useMeasurementAnyTimePrior <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useMeasurementLongTerm <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  useMeasurementMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useMeasurementShortTerm <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>  useMeasurementDuring <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useMeasurementValueAnyTimePrior <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useMeasurementValueLongTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useMeasurementValueMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
@@ -994,6 +1081,7 @@ restricted to.</p></dd>
 <span class="r-in"><span>  useObservationLongTerm <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  useObservationMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useObservationShortTerm <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>  useObservationDuring <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useCharlsonIndex <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  useDcsi <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  useChads2 <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>

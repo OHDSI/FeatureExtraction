@@ -25,6 +25,7 @@ createCovariateSettings(
   useConditionOccurrencePrimaryInpatientLongTerm = FALSE,
   useConditionOccurrencePrimaryInpatientMediumTerm = FALSE,
   useConditionOccurrencePrimaryInpatientShortTerm = FALSE,
+  useConditionOccurrenceDuring = FALSE,
   useConditionEraAnyTimePrior = FALSE,
   useConditionEraLongTerm = FALSE,
   useConditionEraMediumTerm = FALSE,
@@ -33,6 +34,7 @@ createCovariateSettings(
   useConditionEraStartLongTerm = FALSE,
   useConditionEraStartMediumTerm = FALSE,
   useConditionEraStartShortTerm = FALSE,
+  useConditionEraDuring = FALSE,
   useConditionGroupEraAnyTimePrior = FALSE,
   useConditionGroupEraLongTerm = FALSE,
   useConditionGroupEraMediumTerm = FALSE,
@@ -41,10 +43,12 @@ createCovariateSettings(
   useConditionGroupEraStartLongTerm = FALSE,
   useConditionGroupEraStartMediumTerm = FALSE,
   useConditionGroupEraStartShortTerm = FALSE,
+  useConditionGroupEraDuring = FALSE,
   useDrugExposureAnyTimePrior = FALSE,
   useDrugExposureLongTerm = FALSE,
   useDrugExposureMediumTerm = FALSE,
   useDrugExposureShortTerm = FALSE,
+  useDrugExposureDuring = FALSE,
   useDrugEraAnyTimePrior = FALSE,
   useDrugEraLongTerm = FALSE,
   useDrugEraMediumTerm = FALSE,
@@ -53,6 +57,7 @@ createCovariateSettings(
   useDrugEraStartLongTerm = FALSE,
   useDrugEraStartMediumTerm = FALSE,
   useDrugEraStartShortTerm = FALSE,
+  useDrugEraDuring = FALSE,
   useDrugGroupEraAnyTimePrior = FALSE,
   useDrugGroupEraLongTerm = FALSE,
   useDrugGroupEraMediumTerm = FALSE,
@@ -61,18 +66,22 @@ createCovariateSettings(
   useDrugGroupEraStartLongTerm = FALSE,
   useDrugGroupEraStartMediumTerm = FALSE,
   useDrugGroupEraStartShortTerm = FALSE,
+  useDrugGroupEraDuring = FALSE,
   useProcedureOccurrenceAnyTimePrior = FALSE,
   useProcedureOccurrenceLongTerm = FALSE,
   useProcedureOccurrenceMediumTerm = FALSE,
   useProcedureOccurrenceShortTerm = FALSE,
+  useProcedureOccurrenceDuring = FALSE,
   useDeviceExposureAnyTimePrior = FALSE,
   useDeviceExposureLongTerm = FALSE,
   useDeviceExposureMediumTerm = FALSE,
   useDeviceExposureShortTerm = FALSE,
+  useDeviceExposureDuring = FALSE,
   useMeasurementAnyTimePrior = FALSE,
   useMeasurementLongTerm = FALSE,
   useMeasurementMediumTerm = FALSE,
   useMeasurementShortTerm = FALSE,
+  useMeasurementDuring = FALSE,
   useMeasurementValueAnyTimePrior = FALSE,
   useMeasurementValueLongTerm = FALSE,
   useMeasurementValueMediumTerm = FALSE,
@@ -85,6 +94,7 @@ createCovariateSettings(
   useObservationLongTerm = FALSE,
   useObservationMediumTerm = FALSE,
   useObservationShortTerm = FALSE,
+  useObservationDuring = FALSE,
   useCharlsonIndex = FALSE,
   useDcsi = FALSE,
   useChads2 = FALSE,
@@ -201,6 +211,10 @@ setting in the condition_occurrence
 table starting in the short term window.
 (analysis ID 108)}
 
+\item{useConditionOccurrenceDuring}{One covariate per condition in the
+condition_occurrence table starting between
+cohort start and cohort end. (analysis ID 109)}
+
 \item{useConditionEraAnyTimePrior}{One covariate per condition in the
 condition_era table overlapping with any
 time prior to index. (analysis ID 201)}
@@ -236,6 +250,10 @@ medium term window. (analysis ID 207)}
 \item{useConditionEraStartShortTerm}{One covariate per condition in the
 condition_era table starting in the
 short term window. (analysis ID 208)}
+
+\item{useConditionEraDuring}{One covariate per condition in the condition_era table
+starting between cohort start and cohort end.
+(analysis ID 217)}
 
 \item{useConditionGroupEraAnyTimePrior}{One covariate per condition era rolled
 up to groups in the condition_era table
@@ -277,6 +295,11 @@ up to groups in the condition_era table
 starting in the short term window.
 (analysis ID 216)}
 
+\item{useConditionGroupEraDuring}{One covariate per condition era rolled
+up to groups in the condition_era table
+starting between cohort start and cohort end.
+(analysis ID 218)}
+
 \item{useDrugExposureAnyTimePrior}{One covariate per drug in the
 drug_exposure table starting any time
 prior to index. (analysis ID 301)}
@@ -292,6 +315,10 @@ medium term window. (analysis ID 303)}
 \item{useDrugExposureShortTerm}{One covariate per drug in the
 drug_exposure table starting in the
 short term window. (analysis ID 304)}
+
+\item{useDrugExposureDuring}{One covariate per drug in the
+drug_exposure table starting between
+cohort start and cohort end. (analysis ID 305)}
 
 \item{useDrugEraAnyTimePrior}{One covariate per drug in the drug_era
 table overlapping with any time prior to
@@ -324,6 +351,10 @@ window. (analysis ID 407)}
 \item{useDrugEraStartShortTerm}{One covariate per drug in the drug_era
 table starting in the long short window.
 (analysis ID 408)}
+
+\item{useDrugEraDuring}{One covariate per drug in the
+drug_era table starting between
+cohort start and cohort end. (analysis ID 417)}
 
 \item{useDrugGroupEraAnyTimePrior}{One covariate per drug rolled up to ATC
 groups in the drug_era table overlapping
@@ -363,6 +394,10 @@ the medium term window. (analysis ID
 groups in the drug_era table starting in
 the short term window. (analysis ID 416)}
 
+\item{useDrugGroupEraDuring}{One covariate per drug rolled up to ATC 
+groups in the drug_era table starting between
+cohort start and cohort end. (analysis ID 418)}
+
 \item{useProcedureOccurrenceAnyTimePrior}{One covariate per procedure in the
 procedure_occurrence table any time
 prior to index. (analysis ID 501)}
@@ -378,6 +413,10 @@ term window. (analysis ID 503)}
 \item{useProcedureOccurrenceShortTerm}{One covariate per procedure in the
 procedure_occurrence table in the short
 term window. (analysis ID 504)}
+
+\item{useProcedureOccurrenceDuring}{One covariate per procedure in the
+procedure_occurrence table between 
+cohort start and cohort end. (analysis ID 505)}
 
 \item{useDeviceExposureAnyTimePrior}{One covariate per device in the device
 exposure table starting any time prior
@@ -395,6 +434,10 @@ term window. (analysis ID 603)}
 exposure table starting in the short
 term window. (analysis ID 604)}
 
+\item{useDeviceExposureDuring}{One covariate per device in the device
+exposure table starting between cohort 
+start and cohort end. (analysis ID 605)}
+
 \item{useMeasurementAnyTimePrior}{One covariate per measurement in the
 measurement table any time prior to
 index. (analysis ID 701)}
@@ -410,6 +453,10 @@ window. (analysis ID 703)}
 \item{useMeasurementShortTerm}{One covariate per measurement in the
 measurement table in the short term
 window. (analysis ID 704)}
+
+\item{useMeasurementDuring}{One covariate per measurement in the
+measurement table between cohort start
+and cohort end. (analysis ID 713)}
 
 \item{useMeasurementValueAnyTimePrior}{One covariate containing the value per
 measurement-unit combination any time
@@ -590,6 +637,15 @@ to the list of concepts to exclude?}
 
 \item{includedCovariateIds}{A list of covariate IDs that should be
 restricted to.}
+
+\item{useConditionOccurrencePrimaryInpatientDuring}{One covariate per condition observed as
+a primary diagnosis in an inpatient
+setting in the condition_occurrence table starting between
+cohort start and cohort end. (analysis ID 110)}
+
+\item{useObservationDuration}{One covariate per observation in the
+observation table between cohort start
+and cohort end. (analysis ID 805)}
 }
 \value{
 An object of type \code{covariateSettings}, to be used in other functions.
@@ -622,6 +678,7 @@ settings <- createCovariateSettings(
   useConditionOccurrencePrimaryInpatientLongTerm = FALSE,
   useConditionOccurrencePrimaryInpatientMediumTerm = FALSE,
   useConditionOccurrencePrimaryInpatientShortTerm = FALSE,
+  useConditionOccurrenceDuring = FALSE,
   useConditionEraAnyTimePrior = FALSE,
   useConditionEraLongTerm = FALSE,
   useConditionEraMediumTerm = FALSE,
@@ -630,6 +687,7 @@ settings <- createCovariateSettings(
   useConditionEraStartLongTerm = FALSE,
   useConditionEraStartMediumTerm = FALSE,
   useConditionEraStartShortTerm = FALSE,
+  useConditionEraDuring = FALSE,
   useConditionGroupEraAnyTimePrior = FALSE,
   useConditionGroupEraLongTerm = TRUE,
   useConditionGroupEraMediumTerm = FALSE,
@@ -638,10 +696,12 @@ settings <- createCovariateSettings(
   useConditionGroupEraStartLongTerm = FALSE,
   useConditionGroupEraStartMediumTerm = FALSE,
   useConditionGroupEraStartShortTerm = FALSE,
+  useConditionGroupEraDuring = FALSE,
   useDrugExposureAnyTimePrior = FALSE,
   useDrugExposureLongTerm = FALSE,
   useDrugExposureMediumTerm = FALSE,
   useDrugExposureShortTerm = FALSE,
+  useDrugExposureDuring = FALSE,
   useDrugEraAnyTimePrior = FALSE,
   useDrugEraLongTerm = FALSE,
   useDrugEraMediumTerm = FALSE,
@@ -650,6 +710,7 @@ settings <- createCovariateSettings(
   useDrugEraStartLongTerm = FALSE,
   useDrugEraStartMediumTerm = FALSE,
   useDrugEraStartShortTerm = FALSE,
+  useDrugEraDuring = FALSE,
   useDrugGroupEraAnyTimePrior = FALSE,
   useDrugGroupEraLongTerm = TRUE,
   useDrugGroupEraMediumTerm = FALSE,
@@ -658,18 +719,22 @@ settings <- createCovariateSettings(
   useDrugGroupEraStartLongTerm = FALSE,
   useDrugGroupEraStartMediumTerm = FALSE,
   useDrugGroupEraStartShortTerm = FALSE,
+  useDrugGroupEraDuring = FALSE,
   useProcedureOccurrenceAnyTimePrior = FALSE,
   useProcedureOccurrenceLongTerm = TRUE,
   useProcedureOccurrenceMediumTerm = FALSE,
   useProcedureOccurrenceShortTerm = TRUE,
+  useProcedureOccurrenceDuring = FALSE,
   useDeviceExposureAnyTimePrior = FALSE,
   useDeviceExposureLongTerm = TRUE,
   useDeviceExposureMediumTerm = FALSE,
   useDeviceExposureShortTerm = TRUE,
+  useDeviceExposureDuring = FALSE,
   useMeasurementAnyTimePrior = FALSE,
   useMeasurementLongTerm = TRUE,
   useMeasurementMediumTerm = FALSE,
   useMeasurementShortTerm = TRUE,
+  useMeasurementDuring = FALSE,
   useMeasurementValueAnyTimePrior = FALSE,
   useMeasurementValueLongTerm = FALSE,
   useMeasurementValueMediumTerm = FALSE,
@@ -682,6 +747,7 @@ settings <- createCovariateSettings(
   useObservationLongTerm = TRUE,
   useObservationMediumTerm = FALSE,
   useObservationShortTerm = TRUE,
+  useObservationDuring = FALSE,
   useCharlsonIndex = TRUE,
   useDcsi = TRUE,
   useChads2 = TRUE,
