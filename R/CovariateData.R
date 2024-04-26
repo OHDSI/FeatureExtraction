@@ -273,6 +273,7 @@ isTemporalCovariateData <- function(x) {
 #' @export
 createEmptyCovariateData <- function(cohortIds, aggregated, temporal) {
   dummy <- tibble(
+    cohortDefinitionId = 1,
     covariateId = 1,
     covariateValue = 1
   )

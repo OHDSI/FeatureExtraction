@@ -22,8 +22,8 @@ Filter covariates by cohort definition IDs
 \examples{
 \donttest{
 covariateData <- FeatureExtraction::createEmptyCovariateData(
-  cohortIds = 1,
-  aggregated = FALSE,
+  cohortIds = c(1, 2),
+  aggregated = TRUE,
   temporal = FALSE
 )
 

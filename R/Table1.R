@@ -64,7 +64,7 @@ getDefaultTable1Specifications <- function() {
 #' A data frame, or, when \code{output = "list"} a list of two data frames.
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' eunomiaConnectionDetails <- Eunomia::getEunomiaConnectionDetails()
 #' covSettings <- createDefaultCovariateSettings()
 #' Eunomia::createCohorts(

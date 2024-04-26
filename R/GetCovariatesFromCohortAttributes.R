@@ -25,7 +25,7 @@
 #' @template GetCovarParams
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' connectionDetails <- Eunomia::getEunomiaConnectionDetails()
 #' Eunomia::createCohorts(
 #'   connectionDetails = connectionDetails,
