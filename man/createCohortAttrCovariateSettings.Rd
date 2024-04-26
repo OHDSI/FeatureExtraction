@@ -51,7 +51,7 @@ cohort table.} \item{attribute_definition_id}{An foreign key linking to the attr
 table.} \item{value_as_number}{A real number.} }
 }
 \examples{
-\dontrun{
+\donttest{
 covariateSettings <- createCohortAttrCovariateSettings(
   analysisId = 1,
   attrDatabaseSchema = "main",

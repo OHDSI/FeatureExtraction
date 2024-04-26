@@ -16,8 +16,8 @@ A logical value.
 Check whether covariate data is temporal
 }
 \examples{
-\dontrun{
-covariateData <- FeatureExtraction:::createEmptyCovariateData(
+\donttest{
+covariateData <- FeatureExtraction::createEmptyCovariateData(
   cohortIds = 1,
   aggregated = FALSE,
   temporal = FALSE

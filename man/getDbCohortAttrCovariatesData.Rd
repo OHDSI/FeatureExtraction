@@ -76,7 +76,7 @@ unique identifier that will be used as rowID in the output. Typically, users don
 function directly but rather use the \code{\link{getDbCovariateData}} function instead.
 }
 \examples{
-\dontrun{
+\donttest{
 connectionDetails <- Eunomia::getEunomiaConnectionDetails()
 Eunomia::createCohorts(
   connectionDetails = connectionDetails,

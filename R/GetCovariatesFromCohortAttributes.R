@@ -25,7 +25,7 @@
 #' @template GetCovarParams
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' connectionDetails <- Eunomia::getEunomiaConnectionDetails()
 #' Eunomia::createCohorts(
 #'   connectionDetails = connectionDetails,
@@ -196,7 +196,7 @@ getDbCohortAttrCovariatesData <- function(connection,
 #' An object of type \code{covariateSettings}, to be used in other functions.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' covariateSettings <- createCohortAttrCovariateSettings(
 #'   analysisId = 1,
 #'   attrDatabaseSchema = "main",

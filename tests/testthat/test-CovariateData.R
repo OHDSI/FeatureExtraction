@@ -10,18 +10,18 @@ test_that("test CovariateData Class on Empty", {
 
   errCovData <- list()
 
-  covData <- FeatureExtraction:::createEmptyCovariateData(
+  covData <- FeatureExtraction::createEmptyCovariateData(
     cohortIds = 9999,
     aggregated = FALSE,
     temporal = FALSE
   )
-  aggCovData <- FeatureExtraction:::createEmptyCovariateData(
+  aggCovData <- FeatureExtraction::createEmptyCovariateData(
     cohortIds = 9999,
     aggregated = TRUE,
     temporal = FALSE
   )
 
-  tempCovData <- FeatureExtraction:::createEmptyCovariateData(
+  tempCovData <- FeatureExtraction::createEmptyCovariateData(
     cohortIds = 9999,
     aggregated = FALSE,
     temporal = TRUE
@@ -136,7 +136,7 @@ test_that("Test exit/warning conditions", {
   on.exit(unlink(tempDir))
 
   # ReadOnly parameter depreciated
-  cvData <- FeatureExtraction:::createEmptyCovariateData(cohortIds = 1, aggregated = FALSE, temporal = FALSE)
+  cvData <- FeatureExtraction::createEmptyCovariateData(cohortIds = 1, aggregated = FALSE, temporal = FALSE)
   tempFile <- tempfile()
   tempFileName <- paste0(tempFile, ".zip")
   saveCovariateData(cvData, tempFileName)
@@ -146,7 +146,7 @@ test_that("Test exit/warning conditions", {
 })
 
 test_that("Test show method", {
-  cvData <- FeatureExtraction:::createEmptyCovariateData(cohortIds = c(1, 2), aggregated = FALSE, temporal = FALSE)
+  cvData <- FeatureExtraction::createEmptyCovariateData(cohortIds = c(1, 2), aggregated = FALSE, temporal = FALSE)
   expect_invisible(show(cvData))
   on.exit(rm(cvData))
 })

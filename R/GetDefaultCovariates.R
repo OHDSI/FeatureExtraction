@@ -38,7 +38,7 @@
 #' @template GetCovarParams
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' connection <- DatabaseConnector::connect(connectionDetails)
 #' Eunomia::createCohorts(connectionDetails)
 #'

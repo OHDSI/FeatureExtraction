@@ -21,7 +21,7 @@ An object of class \code{CovariateData}.
 The data will be written to a set of files in the folder specified by the user.
 }
 \examples{
-\dontrun{
+\donttest{
 binaryCovDataFile <- system.file("testdata/binaryCovariateData.zip",
   package = "FeatureExtraction"
 )

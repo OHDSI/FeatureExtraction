@@ -18,8 +18,8 @@ An object of type \code{covariateData}.
 Filter covariates by row ID
 }
 \examples{
-\dontrun{
-covariateData <- FeatureExtraction:::createEmptyCovariateData(
+\donttest{
+covariateData <- FeatureExtraction::createEmptyCovariateData(
   cohortIds = 1,
   aggregated = FALSE,
   temporal = FALSE

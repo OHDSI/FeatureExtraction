@@ -14,7 +14,7 @@ Loads the default specifications for a table 1, to be used with the \code{\link{
 function.
 }
 \examples{
-\dontrun{
+\donttest{
 defaultTable1Specs <- getDefaultTable1Specifications()
 }
 

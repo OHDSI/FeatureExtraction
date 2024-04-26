@@ -13,6 +13,9 @@ saveCovariateData(covariateData, file)
 \item{file}{The name of the folder where the data will be written. The folder should not
 yet exist.}
 }
+\value{
+No return value, called for side effects.
+}
 \description{
 \code{saveCovariateData} saves an object of type covariateData to folder.
 }
@@ -20,8 +23,8 @@ yet exist.}
 The data will be written to a set of files in the folder specified by the user.
 }
 \examples{
-\dontrun{
-covariateData <- FeatureExtraction:::createEmptyCovariateData(
+\donttest{
+covariateData <- FeatureExtraction::createEmptyCovariateData(
   cohortIds = 1,
   aggregated = FALSE,
   temporal = FALSE

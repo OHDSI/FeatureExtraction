@@ -20,7 +20,7 @@ Convert prespecified covariate settings into detailed covariate settings
 For advanced users only.
 }
 \examples{
-\dontrun{
+\donttest{
 covSettings <- createDefaultCovariateSettings()
 detailedSettings <- convertPrespecSettingsToDetailedSettings(covariateSettings = covSettings)
 }

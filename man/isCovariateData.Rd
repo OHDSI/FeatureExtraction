@@ -16,7 +16,7 @@ A logical value.
 Check whether an object is a CovariateData object
 }
 \examples{
-\dontrun{
+\donttest{
 binaryCovDataFile <- system.file("testdata/binaryCovariateData.zip",
   package = "FeatureExtraction"
 )

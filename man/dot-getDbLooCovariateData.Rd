@@ -59,27 +59,3 @@ Returns an object of type \code{covariateData}, containing information on the co
 \description{
 Get covariate information from the database
 }
-\examples{
-\dontrun{
-eunomiaConnectionDetails <- Eunomia::getEunomiaConnectionDetails()
-covSettings <- .createLooCovariateSettings(useLengthOfObs = TRUE)
-Eunomia::createCohorts(
-  connectionDetails = eunomiaConnectionDetails,
-  cdmDatabaseSchema = "main",
-  cohortDatabaseSchema = "main",
-  cohortTable = "cohort"
-)
-connection <- DatabaseConnector::connect(connectionDetails)
-looCovariateData <- .getDbLooCovariateData(connection,
-  oracleTempSchema = NULL,
-  cdmDatabaseSchema = "main",
-  cohortTable = "cohort",
-  cohortId = 1,
-  cdmVersion = "5",
-  rowIdField = "subject_id",
-  covariateSettings = covSettings,
-  aggregated = FALSE
-)
-}
-
-}

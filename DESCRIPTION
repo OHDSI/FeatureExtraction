@@ -9,10 +9,11 @@ Authors@R: c(
   person("Patrick", "Ryan", role = c("aut")),
   person("Jenna", "Reps", role = c("aut")),
   person("Anthony", "Sena", , "sena@ohdsi.org", role = c("aut")),
-  person("Ger", "Inberg", , "g.inberg@erasmusmc.nl", role = c("aut", "cre"))
+  person("Ger", "Inberg", , "g.inberg@erasmusmc.nl", role = c("aut", "cre")),
+  person("Observational Health Data Science and Informatics", role = c("cph"))
   )
 Maintainer: Ger Inberg <g.inberg@erasmusmc.nl>
-Description: An R package for generating features for a cohort using data in the Common Data Model.
+Description: An R interface for generating features for a cohort using data in the Common Data Model. Features can be constructed using default or custom made feature definitions. Furthermore it's possible to aggregate features and get the summary statistics.
 Depends:
   R (>= 3.2.2),
   DatabaseConnector (>= 3.0.0),

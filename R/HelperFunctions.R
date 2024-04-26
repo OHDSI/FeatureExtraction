@@ -23,8 +23,8 @@
 #' An object of type \code{covariateData}.
 #'
 #' @examples
-#' \dontrun{
-#' covariateData <- FeatureExtraction:::createEmptyCovariateData(
+#' \donttest{
+#' covariateData <- FeatureExtraction::createEmptyCovariateData(
 #'   cohortIds = 1,
 #'   aggregated = FALSE,
 #'   temporal = FALSE
@@ -72,8 +72,8 @@ filterByRowId <- function(covariateData, rowIds) {
 #' An object of type \code{covariateData}.
 #'
 #' @examples
-#' \dontrun{
-#' covariateData <- FeatureExtraction:::createEmptyCovariateData(
+#' \donttest{
+#' covariateData <- FeatureExtraction::createEmptyCovariateData(
 #'   cohortIds = 1,
 #'   aggregated = FALSE,
 #'   temporal = FALSE

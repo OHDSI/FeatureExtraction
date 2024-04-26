@@ -86,7 +86,7 @@ cohort. The cohort is assumed to be in an existing table with these fields: 'sub
 unique identifier that will be used as rowID in the output.
 }
 \examples{
-\dontrun{
+\donttest{
 eunomiaConnectionDetails <- Eunomia::getEunomiaConnectionDetails()
 covSettings <- createDefaultCovariateSettings()
 Eunomia::createCohorts(
