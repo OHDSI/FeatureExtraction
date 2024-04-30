@@ -76,7 +76,7 @@ unique identifier that will be used as rowID in the output. Typically, users don
 function directly but rather use the \code{\link{getDbCovariateData}} function instead.
 }
 \examples{
-\dontrun{
+\donttest{
 connectionDetails <- Eunomia::getEunomiaConnectionDetails()
 Eunomia::createCohorts(
   connectionDetails = connectionDetails,
@@ -85,18 +85,6 @@ Eunomia::createCohorts(
   cohortTable = "cohort"
 )
 connection <- DatabaseConnector::connect(connectionDetails)
-sql <- "SELECT 1 AS attribute_definition_id, 'Length of observation in days' AS attribute_name
-       INTO @cohort_database_schema.@attribute_definition_table;"
-sql <- SqlRender::render(
-  sql,
-  cohort_database_schema = "main",
-  attribute_definition_table = "attribute_definition"
-)
-sql <- SqlRender::translate(
-  sql = sql,
-  targetDialect = attr(connection, "dbms")
-)
-DatabaseConnector::executeSql(connection, sql)
 covariateSettings <- createCohortAttrCovariateSettings(
   attrDatabaseSchema = "main",
   cohortAttrTable = "cohort_attribute",

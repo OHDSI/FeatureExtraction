@@ -99,9 +99,15 @@ unique identifier that will be used as rowID in the output. Typically, users don
 function directly but rather use the \code{\link{getDbCovariateData}} function instead.
 }
 \examples{
-\dontrun{
+\donttest{
+connectionDetails <- Eunomia::getEunomiaConnectionDetails()
+Eunomia::createCohorts(
+  connectionDetails = connectionDetails,
+  cdmDatabaseSchema = "main",
+  cohortDatabaseSchema = "main",
+  cohortTable = "cohort"
+)
 connection <- DatabaseConnector::connect(connectionDetails)
-Eunomia::createCohorts(connectionDetails)
 
 results <- getDbDefaultCovariateData(
   connection = connection,
@@ -109,10 +115,7 @@ results <- getDbDefaultCovariateData(
   cohortTable = "cohort",
   covariateSettings = createDefaultCovariateSettings(),
   targetDatabaseSchema = "main",
-  targetCovariateTable = "ut_cov",
-  targetCovariateRefTable = "ut_cov_ref",
-  targetAnalysisRefTable = "ut_cov_analysis_ref"
+  targetCovariateTable = "ut_cov"
 )
 }
-
 }
