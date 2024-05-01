@@ -78,7 +78,7 @@ test_that("tidyCovariates works", {
 })
 
 test_that("tidyCovariateData on Temporal Data", {
-  skip_if_not(dbms == "sqlite")
+  skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   covariateSettings <- createTemporalCovariateSettings(
     useDrugExposure = TRUE,
     temporalStartDays = -2:-1,

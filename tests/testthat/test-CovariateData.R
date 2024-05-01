@@ -52,7 +52,7 @@ test_that("test CovariateData Class on Empty", {
 })
 
 test_that("test saveCovariateData error cases", {
-  skip_if_not(dbms == "sqlite")
+  skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   saveFileTest <- tempfile("covDatSave")
   settings <- createDefaultCovariateSettings()
   covariateData <- getDbCovariateData(
@@ -78,7 +78,7 @@ test_that("test saveCovariateData error cases", {
 })
 
 test_that("test summary call for covariateData class", {
-  skip_if_not(dbms == "sqlite")
+  skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   settings <- createDefaultCovariateSettings()
   covariateData <- getDbCovariateData(
     connectionDetails = eunomiaConnectionDetails,
@@ -95,7 +95,7 @@ test_that("test summary call for covariateData class", {
 })
 
 test_that("test filtering of covariates based on minCharacterizationMean", {
-  skip_if_not(dbms == "sqlite")
+  skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   settings <- createDefaultCovariateSettings()
   covariateData <- getDbCovariateData(
     connectionDetails = eunomiaConnectionDetails,
@@ -152,7 +152,7 @@ test_that("Test show method", {
 })
 
 test_that("getDbCovariateData cohortId warning", {
-  skip_if_not(dbms == "sqlite")
+  skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   settings <- createDefaultCovariateSettings()
   expect_warning(getDbCovariateData(
     connectionDetails = eunomiaConnectionDetails,
@@ -165,7 +165,7 @@ test_that("getDbCovariateData cohortId warning", {
 })
 
 test_that("getDbCovariateData settings list - check metaData", {
-  skip_if_not(dbms == "sqlite")
+  skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   looCovSet <- FeatureExtraction:::.createLooCovariateSettings(useLengthOfObs = TRUE)
   covariateSettingsList <- list(looCovSet, looCovSet)
   covariateData <- getDbCovariateData(

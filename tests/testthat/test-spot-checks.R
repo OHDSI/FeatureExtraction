@@ -215,6 +215,6 @@ test_that("Run spot-checks at per-person level on Redshift", {
 })
 
 test_that("Run spot-checks at per-person level on Eunomia", {
-  skip_if_not(dbms == "sqlite")
+  skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   runSpotChecks(eunomiaConnection, eunomiaCdmDatabaseSchema, eunomiaOhdsiDatabaseSchema, cohortTable)
 })
