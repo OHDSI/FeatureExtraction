@@ -56,7 +56,7 @@
 #'   targetDatabaseSchema = "main",
 #'   targetCovariateTable = "ut_cov"
 #' )
-#'}
+#' }
 #' @export
 getDbDefaultCovariateData <- function(connection,
                                       oracleTempSchema = NULL,

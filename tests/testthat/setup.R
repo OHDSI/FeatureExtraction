@@ -84,7 +84,7 @@ checkRemoteFileAvailable <- function(remoteFile) {
   is_response <- function(x) {
     class(x) == "response"
   }
-  
+
   # First check internet connection
   if (!curl::has_internet()) {
     message("No internet connection.")
@@ -97,7 +97,7 @@ checkRemoteFileAvailable <- function(remoteFile) {
     return(NULL)
   }
   # Then stop if status > 400
-  if (httr::http_error(resp)) { 
+  if (httr::http_error(resp)) {
     message_for_status(resp)
     return(NULL)
   }

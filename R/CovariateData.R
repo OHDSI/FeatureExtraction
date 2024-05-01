@@ -51,7 +51,7 @@ setClass("CovariateData", contains = "Andromeda")
 #'
 #' @details
 #' The data will be written to a set of files in the folder specified by the user.
-#' 
+#'
 #' @return No return value, called for side effects.
 #'
 #' @examples
