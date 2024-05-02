@@ -28,9 +28,11 @@
 #' @param normalize          Normalize the covariates? (dividing by the max).
 #' @param removeRedundancy   Should redundant covariates be removed?
 #'
+#' @return An object of class \code{CovariateData}.
+#'
 #' @examples
-#' \dontrun{
-#' covariateData <- FeatureExtraction:::createEmptyCovariateData(
+#' \donttest{
+#' covariateData <- FeatureExtraction::createEmptyCovariateData(
 #'   cohortIds = 1,
 #'   aggregated = FALSE,
 #'   temporal = FALSE

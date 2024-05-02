@@ -23,11 +23,6 @@
 #' @return
 #' Returns an object of type \code{covariateSettings}, containing settings for the covariates.
 #'
-#' @examples
-#' \dontrun{
-#' looCovariateSettings <- .createLooCovariateSettings(useLengthOfObs = TRUE)
-#' }
-#'
 .createLooCovariateSettings <- function(useLengthOfObs = TRUE) {
   covariateSettings <- list(useLengthOfObs = useLengthOfObs)
   attr(covariateSettings, "fun") <- "FeatureExtraction:::.getDbLooCovariateData"
@@ -64,29 +59,6 @@
 #'                                on covariates that have very low values. The default is 0.
 #' @return
 #' Returns an object of type \code{covariateData}, containing information on the covariates.
-#'
-#' @examples
-#' \dontrun{
-#' eunomiaConnectionDetails <- Eunomia::getEunomiaConnectionDetails()
-#' covSettings <- .createLooCovariateSettings(useLengthOfObs = TRUE)
-#' Eunomia::createCohorts(
-#'   connectionDetails = eunomiaConnectionDetails,
-#'   cdmDatabaseSchema = "main",
-#'   cohortDatabaseSchema = "main",
-#'   cohortTable = "cohort"
-#' )
-#' connection <- DatabaseConnector::connect(connectionDetails)
-#' looCovariateData <- .getDbLooCovariateData(connection,
-#'   oracleTempSchema = NULL,
-#'   cdmDatabaseSchema = "main",
-#'   cohortTable = "cohort",
-#'   cohortId = 1,
-#'   cdmVersion = "5",
-#'   rowIdField = "subject_id",
-#'   covariateSettings = covSettings,
-#'   aggregated = FALSE
-#' )
-#' }
 #'
 .getDbLooCovariateData <- function(connection,
                                    oracleTempSchema = NULL,

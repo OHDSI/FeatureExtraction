@@ -73,6 +73,37 @@ dropUnitTestData <- function(connection, ohdsiDatabaseSchema, cohortTable, cohor
   DatabaseConnector::disconnect(connection)
 }
 
+checkRemoteFileAvailable <- function(remoteFile) {
+  try_GET <- function(x, ...) {
+    tryCatch(
+      httr::GET(url = x, httr::timeout(1), ...),
+      error = function(e) conditionMessage(e),
+      warning = function(w) conditionMessage(w)
+    )
+  }
+  is_response <- function(x) {
+    class(x) == "response"
+  }
+
+  # First check internet connection
+  if (!curl::has_internet()) {
+    message("No internet connection.")
+    return(NULL)
+  }
+  # Then try for timeout problems
+  resp <- try_GET(remoteFile)
+  if (!is_response(resp)) {
+    message(resp)
+    return(NULL)
+  }
+  # Then stop if status > 400
+  if (httr::http_error(resp)) {
+    message_for_status(resp)
+    return(NULL)
+  }
+  return("success")
+}
+
 # Database Test Settings -----------
 # postgres
 if (dbms == "postgresql") {
@@ -130,20 +161,24 @@ if (dbms == "redshift") {
 
 # eunomia
 if (dbms == "sqlite") {
-  eunomiaConnectionDetails <- Eunomia::getEunomiaConnectionDetails(databaseFile = "testEunomia.sqlite")
-  eunomiaCdmDatabaseSchema <- "main"
-  eunomiaOhdsiDatabaseSchema <- "main"
-  eunomiaConnection <- createUnitTestData(eunomiaConnectionDetails, eunomiaCdmDatabaseSchema, eunomiaOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
-  Eunomia::createCohorts(
-    connectionDetails = eunomiaConnectionDetails,
-    cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
-    cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
-    cohortTable = "cohort"
-  )
+  if (!is.null(checkRemoteFileAvailable("https://raw.githubusercontent.com/OHDSI/EunomiaDatasets/main/datasets/GiBleed/GiBleed_5.3.zip"))) {
+    eunomiaConnectionDetails <- Eunomia::getEunomiaConnectionDetails(databaseFile = "testEunomia.sqlite")
+    eunomiaCdmDatabaseSchema <- "main"
+    eunomiaOhdsiDatabaseSchema <- "main"
+    eunomiaConnection <- createUnitTestData(eunomiaConnectionDetails, eunomiaCdmDatabaseSchema, eunomiaOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
+    Eunomia::createCohorts(
+      connectionDetails = eunomiaConnectionDetails,
+      cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
+      cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
+      cohortTable = "cohort"
+    )
+  }
   withr::defer(
     {
-      dropUnitTestData(eunomiaConnection, eunomiaOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
-      unlink("testEunomia.sqlite", recursive = TRUE, force = TRUE)
+      if (exists("eunomiaConnection")) {
+        dropUnitTestData(eunomiaConnection, eunomiaOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
+        unlink("testEunomia.sqlite", recursive = TRUE, force = TRUE)
+      }
     },
     testthat::teardown_env()
   )

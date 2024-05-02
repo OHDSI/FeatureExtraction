@@ -67,7 +67,7 @@
 #' Returns an object of type \code{covariateData}, containing information on the covariates.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' eunomiaConnectionDetails <- Eunomia::getEunomiaConnectionDetails()
 #' covSettings <- createDefaultCovariateSettings()
 #' Eunomia::createCohorts(

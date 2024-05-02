@@ -52,9 +52,11 @@ setClass("CovariateData", contains = "Andromeda")
 #' @details
 #' The data will be written to a set of files in the folder specified by the user.
 #'
+#' @return No return value, called for side effects.
+#'
 #' @examples
-#' \dontrun{
-#' covariateData <- FeatureExtraction:::createEmptyCovariateData(
+#' \donttest{
+#' covariateData <- FeatureExtraction::createEmptyCovariateData(
 #'   cohortIds = 1,
 #'   aggregated = FALSE,
 #'   temporal = FALSE
@@ -96,7 +98,7 @@ saveCovariateData <- function(covariateData, file) {
 #' An object of class \code{CovariateData}.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' binaryCovDataFile <- system.file("testdata/binaryCovariateData.zip",
 #'   package = "FeatureExtraction"
 #' )
@@ -183,7 +185,7 @@ print.summary.CovariateData <- function(x, ...) {
 #' A logical value.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' binaryCovDataFile <- system.file("testdata/binaryCovariateData.zip",
 #'   package = "FeatureExtraction"
 #' )
@@ -204,8 +206,8 @@ isCovariateData <- function(x) {
 #' A logical value.
 #'
 #' @examples
-#' \dontrun{
-#' covariateData <- FeatureExtraction:::createEmptyCovariateData(
+#' \donttest{
+#' covariateData <- FeatureExtraction::createEmptyCovariateData(
 #'   cohortIds = 1,
 #'   aggregated = FALSE,
 #'   temporal = FALSE
@@ -232,8 +234,8 @@ isAggregatedCovariateData <- function(x) {
 #' A logical value.
 #'
 #' @examples
-#' \dontrun{
-#' covariateData <- FeatureExtraction:::createEmptyCovariateData(
+#' \donttest{
+#' covariateData <- FeatureExtraction::createEmptyCovariateData(
 #'   cohortIds = 1,
 #'   aggregated = FALSE,
 #'   temporal = FALSE
@@ -259,17 +261,19 @@ isTemporalCovariateData <- function(x) {
 #' @param temporal if the data is temporary
 #'
 #' @examples
-#' \dontrun{
-#' covariateData <- FeatureExtraction:::createEmptyCovariateData(
+#' \donttest{
+#' covariateData <- FeatureExtraction::createEmptyCovariateData(
 #'   cohortIds = 1,
 #'   aggregated = FALSE,
 #'   temporal = FALSE
 #' )
 #' }
-#' @return the empty CovariateData object
+#' @return an empty object of class \code{CovariateData}
 #'
+#' @export
 createEmptyCovariateData <- function(cohortIds, aggregated, temporal) {
   dummy <- tibble(
+    cohortDefinitionId = 1,
     covariateId = 1,
     covariateValue = 1
   )

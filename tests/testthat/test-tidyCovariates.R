@@ -6,7 +6,7 @@ test_that("Test exit conditions ", {
   # Covariate Data object check
   expect_error(tidyCovariateData(covariateData = list()))
   # CovariateData object closed
-  cvData <- FeatureExtraction:::createEmptyCovariateData(
+  cvData <- FeatureExtraction::createEmptyCovariateData(
     cohortIds = 1,
     aggregated = FALSE,
     temporal = FALSE
@@ -14,7 +14,7 @@ test_that("Test exit conditions ", {
   Andromeda::close(cvData)
   expect_error(tidyCovariateData(covariateData = cvData))
   # CovariateData aggregated
-  cvData <- FeatureExtraction:::createEmptyCovariateData(
+  cvData <- FeatureExtraction::createEmptyCovariateData(
     cohortIds = 1,
     aggregated = TRUE,
     temporal = FALSE
@@ -23,7 +23,7 @@ test_that("Test exit conditions ", {
 })
 
 test_that("Test empty covariateData", {
-  cvData <- FeatureExtraction:::createEmptyCovariateData(
+  cvData <- FeatureExtraction::createEmptyCovariateData(
     cohortIds = 1,
     aggregated = FALSE,
     temporal = FALSE
@@ -78,7 +78,7 @@ test_that("tidyCovariates works", {
 })
 
 test_that("tidyCovariateData on Temporal Data", {
-  skip_if_not(dbms == "sqlite")
+  skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   covariateSettings <- createTemporalCovariateSettings(
     useDrugExposure = TRUE,
     temporalStartDays = -2:-1,

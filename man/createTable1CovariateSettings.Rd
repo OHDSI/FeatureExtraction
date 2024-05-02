@@ -45,7 +45,7 @@ table 1. This function works by filtering the \code{covariateSettings} object fo
 the \code{specifications} object.
 }
 \examples{
-\dontrun{
+\donttest{
 table1CovSettings <- createTable1CovariateSettings(
   specifications = getDefaultTable1Specifications(),
   covariateSettings = createDefaultCovariateSettings(),

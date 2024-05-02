@@ -34,7 +34,7 @@ An object of type \code{covariateSettings}, to be used in other functions.
 Create default covariate settings
 }
 \examples{
-\dontrun{
+\donttest{
 covSettings <- createDefaultTemporalCovariateSettings(
   includedCovariateConceptIds = c(1),
   addDescendantsToInclude = FALSE,

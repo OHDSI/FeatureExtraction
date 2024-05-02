@@ -46,7 +46,7 @@ test_that("createTemporalSequenceCovariateSettings correctly sets function", {
 
 # check extraction
 test_that("getDbCovariateData works with createTemporalSequenceCovariateSettings", {
-  skip_if_not(dbms == "sqlite")
+  skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   covSet <- createTemporalSequenceCovariateSettings(
     useDemographicsGender = T,
     useDemographicsAge = T,
@@ -78,7 +78,7 @@ test_that("getDbCovariateData works with createTemporalSequenceCovariateSettings
 
 # Check backwards compatibility
 test_that("Temporal Covariate Settings are backwards compatible", {
-  skip_if_not(dbms == "sqlite")
+  skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
 
   # Temporal covariate settings created previously will not have
   # the temporalSequence property

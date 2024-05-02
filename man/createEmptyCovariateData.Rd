@@ -14,14 +14,14 @@ createEmptyCovariateData(cohortIds, aggregated, temporal)
 \item{temporal}{if the data is temporary}
 }
 \value{
-the empty CovariateData object
+an empty object of class \code{CovariateData}
 }
 \description{
 Creates an empty covariate data object
 }
 \examples{
-\dontrun{
-covariateData <- FeatureExtraction:::createEmptyCovariateData(
+\donttest{
+covariateData <- FeatureExtraction::createEmptyCovariateData(
   cohortIds = 1,
   aggregated = FALSE,
   temporal = FALSE

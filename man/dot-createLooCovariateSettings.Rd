@@ -15,9 +15,3 @@ Returns an object of type \code{covariateSettings}, containing settings for the 
 \description{
 Get covariate settings
 }
-\examples{
-\dontrun{
-looCovariateSettings <- .createLooCovariateSettings(useLengthOfObs = TRUE)
-}
-
-}

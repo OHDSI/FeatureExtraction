@@ -31,7 +31,7 @@ Computes the standardized difference for all covariates between two cohorts. The
 difference is defined as the difference between the mean divided by the overall standard deviation.
 }
 \examples{
-\dontrun{
+\donttest{
 binaryCovDataFile <- system.file("testdata/binaryCovariateData.zip",
   package = "FeatureExtraction"
 )

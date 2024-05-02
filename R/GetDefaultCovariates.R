@@ -38,9 +38,15 @@
 #' @template GetCovarParams
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' connectionDetails <- Eunomia::getEunomiaConnectionDetails()
+#' Eunomia::createCohorts(
+#'   connectionDetails = connectionDetails,
+#'   cdmDatabaseSchema = "main",
+#'   cohortDatabaseSchema = "main",
+#'   cohortTable = "cohort"
+#' )
 #' connection <- DatabaseConnector::connect(connectionDetails)
-#' Eunomia::createCohorts(connectionDetails)
 #'
 #' results <- getDbDefaultCovariateData(
 #'   connection = connection,
@@ -48,12 +54,9 @@
 #'   cohortTable = "cohort",
 #'   covariateSettings = createDefaultCovariateSettings(),
 #'   targetDatabaseSchema = "main",
-#'   targetCovariateTable = "ut_cov",
-#'   targetCovariateRefTable = "ut_cov_ref",
-#'   targetAnalysisRefTable = "ut_cov_analysis_ref"
+#'   targetCovariateTable = "ut_cov"
 #' )
 #' }
-#'
 #' @export
 getDbDefaultCovariateData <- function(connection,
                                       oracleTempSchema = NULL,

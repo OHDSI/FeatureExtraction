@@ -6,7 +6,7 @@
 \alias{FeatureExtraction-package}
 \title{FeatureExtraction: Generating Features for a Cohort}
 \description{
-An R package for generating features (covariates) for a cohort using data in the Common Data Model.
+An R interface for generating features for a cohort using data in the Common Data Model. Features can be constructed using default or custom made feature definitions. Furthermore it's possible to aggregate features and get the summary statistics.
 }
 \seealso{
 Useful links:
@@ -17,7 +17,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Anthony Sena \email{sena@ohdsi.org}
+\strong{Maintainer}: Ger Inberg \email{g.inberg@erasmusmc.nl}
 
 Authors:
 \itemize{
@@ -25,7 +25,12 @@ Authors:
   \item Marc Suchard
   \item Patrick Ryan
   \item Jenna Reps
-  \item Ger Inberg
+  \item Anthony Sena \email{sena@ohdsi.org}
+}
+
+Other contributors:
+\itemize{
+  \item Observational Health Data Science and Informatics [copyright holder]
 }
 
 }

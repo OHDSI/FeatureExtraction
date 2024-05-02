@@ -10,18 +10,18 @@ test_that("test CovariateData Class on Empty", {
 
   errCovData <- list()
 
-  covData <- FeatureExtraction:::createEmptyCovariateData(
+  covData <- FeatureExtraction::createEmptyCovariateData(
     cohortIds = 9999,
     aggregated = FALSE,
     temporal = FALSE
   )
-  aggCovData <- FeatureExtraction:::createEmptyCovariateData(
+  aggCovData <- FeatureExtraction::createEmptyCovariateData(
     cohortIds = 9999,
     aggregated = TRUE,
     temporal = FALSE
   )
 
-  tempCovData <- FeatureExtraction:::createEmptyCovariateData(
+  tempCovData <- FeatureExtraction::createEmptyCovariateData(
     cohortIds = 9999,
     aggregated = FALSE,
     temporal = TRUE
@@ -52,7 +52,7 @@ test_that("test CovariateData Class on Empty", {
 })
 
 test_that("test saveCovariateData error cases", {
-  skip_if_not(dbms == "sqlite")
+  skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   saveFileTest <- tempfile("covDatSave")
   settings <- createDefaultCovariateSettings()
   covariateData <- getDbCovariateData(
@@ -78,7 +78,7 @@ test_that("test saveCovariateData error cases", {
 })
 
 test_that("test summary call for covariateData class", {
-  skip_if_not(dbms == "sqlite")
+  skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   settings <- createDefaultCovariateSettings()
   covariateData <- getDbCovariateData(
     connectionDetails = eunomiaConnectionDetails,
@@ -95,7 +95,7 @@ test_that("test summary call for covariateData class", {
 })
 
 test_that("test filtering of covariates based on minCharacterizationMean", {
-  skip_if_not(dbms == "sqlite")
+  skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   settings <- createDefaultCovariateSettings()
   covariateData <- getDbCovariateData(
     connectionDetails = eunomiaConnectionDetails,
@@ -136,7 +136,7 @@ test_that("Test exit/warning conditions", {
   on.exit(unlink(tempDir))
 
   # ReadOnly parameter depreciated
-  cvData <- FeatureExtraction:::createEmptyCovariateData(cohortIds = 1, aggregated = FALSE, temporal = FALSE)
+  cvData <- FeatureExtraction::createEmptyCovariateData(cohortIds = 1, aggregated = FALSE, temporal = FALSE)
   tempFile <- tempfile()
   tempFileName <- paste0(tempFile, ".zip")
   saveCovariateData(cvData, tempFileName)
@@ -146,13 +146,13 @@ test_that("Test exit/warning conditions", {
 })
 
 test_that("Test show method", {
-  cvData <- FeatureExtraction:::createEmptyCovariateData(cohortIds = c(1, 2), aggregated = FALSE, temporal = FALSE)
+  cvData <- FeatureExtraction::createEmptyCovariateData(cohortIds = c(1, 2), aggregated = FALSE, temporal = FALSE)
   expect_invisible(show(cvData))
   on.exit(rm(cvData))
 })
 
 test_that("getDbCovariateData cohortId warning", {
-  skip_if_not(dbms == "sqlite")
+  skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   settings <- createDefaultCovariateSettings()
   expect_warning(getDbCovariateData(
     connectionDetails = eunomiaConnectionDetails,
@@ -165,7 +165,7 @@ test_that("getDbCovariateData cohortId warning", {
 })
 
 test_that("getDbCovariateData settings list - check metaData", {
-  skip_if_not(dbms == "sqlite")
+  skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   looCovSet <- FeatureExtraction:::.createLooCovariateSettings(useLengthOfObs = TRUE)
   covariateSettingsList <- list(looCovSet, looCovSet)
   covariateData <- getDbCovariateData(

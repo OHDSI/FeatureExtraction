@@ -2,9 +2,9 @@ FeatureExtraction
 =================
 
 [![Build Status](https://github.com/OHDSI/FeatureExtraction/workflows/R-CMD-check/badge.svg)](https://github.com/OHDSI/FeatureExtraction/actions?query=workflow%3AR-CMD-check)
-[![codecov.io](https://codecov.io/github/OHDSI/FeatureExtraction/coverage.svg?branch=main)](https://codecov.io/github/OHDSI/FeatureExtraction?branch=main)
+[![codecov.io](https://codecov.io/github/OHDSI/FeatureExtraction/coverage.svg?branch=main)](https://app.codecov.io/github/OHDSI/FeatureExtraction?branch=main)
 
-FeatureExtraction is part of [HADES](https://ohdsi.github.io/Hades).
+FeatureExtraction is part of [HADES](https://ohdsi.github.io/Hades/).
 
 Introduction
 ============
@@ -57,7 +57,7 @@ These vignettes are also available in Korean:
 Support
 =======
 * Developer questions/comments/feedback: <a href="http://forums.ohdsi.org/c/developers">OHDSI Forum</a>
-* We use the <a href="../../issues">GitHub issue tracker</a> for all bugs/issues/enhancements
+* We use the <a href="https://github.com/OHDSI/FeatureExtraction/issues">GitHub issue tracker</a> for all bugs/issues/enhancements
 
 Contributing
 ============

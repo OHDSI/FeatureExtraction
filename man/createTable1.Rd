@@ -53,7 +53,7 @@ Creates a formatted table of cohort characteristics, to be included in publicati
 Allows for creating a table describing a single cohort, or a table comparing two cohorts.
 }
 \examples{
-\dontrun{
+\donttest{
 eunomiaConnectionDetails <- Eunomia::getEunomiaConnectionDetails()
 covSettings <- createDefaultCovariateSettings()
 Eunomia::createCohorts(

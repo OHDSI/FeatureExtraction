@@ -1,3 +1,8 @@
+FeatureExtraction 3.5.2
+=======================
+
+- Move FeatureExtraction to CRAN (#104)
+
 FeatureExtraction 3.5.1
 =======================
 
