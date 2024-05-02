@@ -71,7 +71,7 @@ it is a temp table, do not specify \code{targetDatabaseSchema}.}
 \item{aggregated}{Should aggregate statistics be computed instead of covariates per
 cohort entry?}
 
-\item{minCharacterizationMean}{The minimum mean value for characterization output. Values below this will be cut off from output. This 
+\item{minCharacterizationMean}{The minimum mean value for binary characterization output. Values below this will be cut off from output. This
 will help reduce the file size of the characterization output, but will remove information
 on covariates that have very low values. The default is 0.}
 }
@@ -99,9 +99,15 @@ unique identifier that will be used as rowID in the output. Typically, users don
 function directly but rather use the \code{\link{getDbCovariateData}} function instead.
 }
 \examples{
-\dontrun{
+\donttest{
+connectionDetails <- Eunomia::getEunomiaConnectionDetails()
+Eunomia::createCohorts(
+  connectionDetails = connectionDetails,
+  cdmDatabaseSchema = "main",
+  cohortDatabaseSchema = "main",
+  cohortTable = "cohort"
+)
 connection <- DatabaseConnector::connect(connectionDetails)
-Eunomia::createCohorts(connectionDetails)
 
 results <- getDbDefaultCovariateData(
   connection = connection,
@@ -109,10 +115,7 @@ results <- getDbDefaultCovariateData(
   cohortTable = "cohort",
   covariateSettings = createDefaultCovariateSettings(),
   targetDatabaseSchema = "main",
-  targetCovariateTable = "ut_cov",
-  targetCovariateRefTable = "ut_cov_ref",
-  targetAnalysisRefTable = "ut_cov_analysis_ref"
+  targetCovariateTable = "ut_cov"
 )
 }
-
 }

@@ -1,18 +1,19 @@
 Package: FeatureExtraction
 Type: Package
 Title: Generating Features for a Cohort
-Version: 3.5.1
-Date: 2024-04-22
+Version: 3.5.2
+Date: 2024-05-01
 Authors@R: c(
   person("Martijn", "Schuemie", , "schuemie@ohdsi.org", role = c("aut")),
   person("Marc", "Suchard", role = c("aut")),
   person("Patrick", "Ryan", role = c("aut")),
   person("Jenna", "Reps", role = c("aut")),
-  person("Anthony", "Sena", , "sena@ohdsi.org", role = c("aut", "cre")),
-  person("Ger", "Inberg", role = c("aut"))
+  person("Anthony", "Sena", , "sena@ohdsi.org", role = c("aut")),
+  person("Ger", "Inberg", , "g.inberg@erasmusmc.nl", role = c("aut", "cre")),
+  person("Observational Health Data Science and Informatics", role = c("cph"))
   )
-Maintainer: Anthony Sena <sena@ohdsi.org>
-Description: An R package for generating features (covariates) for a cohort using data in the Common Data Model.
+Maintainer: Ger Inberg <g.inberg@erasmusmc.nl>
+Description: An R interface for generating features for a cohort using data in the Common Data Model. Features can be constructed using default or custom made feature definitions. Furthermore it's possible to aggregate features and get the summary statistics.
 Depends:
   R (>= 3.2.2),
   DatabaseConnector (>= 3.0.0),
@@ -35,10 +36,10 @@ Suggests:
   testthat,
   knitr,
   rmarkdown,
-  Eunomia,
-  withr
-Remotes:
-  ohdsi/Eunomia
+  Eunomia (>= 2.0.0),
+  withr,
+  curl,
+  httr
 License: Apache License 2.0
 VignetteBuilder: knitr
 URL: https://github.com/OHDSI/FeatureExtraction

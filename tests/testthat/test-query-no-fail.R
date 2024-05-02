@@ -167,7 +167,7 @@ test_that("Run all analysis at per-person level on Redshift", {
 })
 
 test_that("Run all analysis at per-person level on Eunomia", {
-  skip_if_not(dbms == "sqlite")
+  skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   covariateData <- runExtractionPerPerson(eunomiaConnection, eunomiaCdmDatabaseSchema, eunomiaOhdsiDatabaseSchema, cohortTable)
   expect_true(is(covariateData, "CovariateData"))
 })
@@ -340,7 +340,7 @@ test_that("Run all analysis at aggregated level on Redshift", {
 })
 
 test_that("Run all analysis at aggregated level on Eunomia", {
-  skip_if_not(dbms == "sqlite")
+  skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   covariateData <- runExtractionAggregated(eunomiaConnection, eunomiaCdmDatabaseSchema, eunomiaOhdsiDatabaseSchema, cohortTable)
   expect_true(is(covariateData, "CovariateData"))
 })
@@ -444,7 +444,7 @@ test_that("Run all temporalanalysis at per-person level on Redshift", {
 })
 
 test_that("Run all temporalanalysis at per-person level on Eunomia", {
-  skip_if_not(dbms == "sqlite")
+  skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   covariateData <- runExtractionTemporalPerPerson(eunomiaConnection, eunomiaCdmDatabaseSchema, eunomiaOhdsiDatabaseSchema, cohortTable)
   expect_true(is(covariateData, "CovariateData"))
 })
@@ -549,7 +549,7 @@ test_that("Run all temporalanalysis at aggregated level on Redshift", {
 })
 
 test_that("Run all temporalanalysis at aggregated level on Eunomia", {
-  skip_if_not(dbms == "sqlite")
+  skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   covariateData <- runExtractionTemporalAggregated(eunomiaConnection, eunomiaCdmDatabaseSchema, eunomiaOhdsiDatabaseSchema, cohortTable)
   expect_true(is(covariateData, "CovariateData"))
 })

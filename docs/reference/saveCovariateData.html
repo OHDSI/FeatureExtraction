@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">FeatureExtraction</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.5.2</span>
       </span>
     </div>
 
@@ -96,6 +96,12 @@
 yet exist.</p></dd>
 
 </dl></div>
+    <div id="value">
+    <h2>Value</h2>
+    
+
+<p>No return value, called for side effects.</p>
+    </div>
     <div id="details">
     <h2>Details</h2>
     <p>The data will be written to a set of files in the folder specified by the user.</p>
@@ -103,8 +109,8 @@ yet exist.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="va">covariateData</span> <span class="op">&lt;-</span> <span class="fu">FeatureExtraction</span><span class="fu">:::</span><span class="fu"><a href="createEmptyCovariateData.html">createEmptyCovariateData</a></span><span class="op">(</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="va">covariateData</span> <span class="op">&lt;-</span> <span class="fu">FeatureExtraction</span><span class="fu">::</span><span class="fu"><a href="createEmptyCovariateData.html">createEmptyCovariateData</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  cohortIds <span class="op">=</span> <span class="fl">1</span>,</span></span>
 <span class="r-in"><span>  aggregated <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  temporal <span class="op">=</span> <span class="cn">FALSE</span></span></span>
@@ -112,9 +118,10 @@ yet exist.</p></dd>
 <span class="r-in"><span><span class="co"># For this example we'll use a temporary file location:</span></span></span>
 <span class="r-in"><span><span class="va">fileName</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">saveCovariateData</span><span class="op">(</span>covariateData <span class="op">=</span> <span class="va">covariateData</span>, file <span class="op">=</span> <span class="va">fileName</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Disconnected Andromeda. This data object can no longer be used</span>
 <span class="r-in"><span><span class="co"># Cleaning up the file used in this example:</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">fileName</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

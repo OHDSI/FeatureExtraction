@@ -33,7 +33,7 @@ creates an object specifying in detail how temporal covariates should be constru
 the CDM model. Warning: this function is for advanced users only.
 }
 \examples{
-\dontrun{
+\donttest{
 analysisDetails <- createAnalysisDetails(
   analysisId = 1,
   sqlFileName = "DemographicsGender.sql",

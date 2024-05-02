@@ -24,7 +24,7 @@
 #' A specifications objects.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' defaultTable1Specs <- getDefaultTable1Specifications()
 #' }
 #'
@@ -64,7 +64,7 @@ getDefaultTable1Specifications <- function() {
 #' A data frame, or, when \code{output = "list"} a list of two data frames.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' eunomiaConnectionDetails <- Eunomia::getEunomiaConnectionDetails()
 #' covSettings <- createDefaultCovariateSettings()
 #' Eunomia::createCohorts(
@@ -680,7 +680,7 @@ createTable1 <- function(covariateData1,
 #' \code{\link{getDbCovariateData}} function.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' table1CovSettings <- createTable1CovariateSettings(
 #'   specifications = getDefaultTable1Specifications(),
 #'   covariateSettings = createDefaultCovariateSettings(),

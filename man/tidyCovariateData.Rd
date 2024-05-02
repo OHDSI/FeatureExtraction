@@ -23,6 +23,9 @@ frequency.}
 
 \item{removeRedundancy}{Should redundant covariates be removed?}
 }
+\value{
+An object of class \code{CovariateData}.
+}
 \description{
 Tidy covariate data
 }
@@ -31,8 +34,8 @@ Normalize covariate values by dividing by the max and/or remove redundant covari
 infrequent covariates. For temporal covariates, redundancy is evaluated per time ID.
 }
 \examples{
-\dontrun{
-covariateData <- FeatureExtraction:::createEmptyCovariateData(
+\donttest{
+covariateData <- FeatureExtraction::createEmptyCovariateData(
   cohortIds = 1,
   aggregated = FALSE,
   temporal = FALSE

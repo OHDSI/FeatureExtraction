@@ -69,7 +69,7 @@ of the createCovariate functions, or a list of such objects.}
 \item{aggregated}{Should aggregate statistics be computed instead of covariates per
 cohort entry?}
 
-\item{minCharacterizationMean}{The minimum mean value for characterization output. Values below this will be cut off from output. This 
+\item{minCharacterizationMean}{The minimum mean value for characterization output. Values below this will be cut off from output. This
 will help reduce the file size of the characterization output, but will remove information
 on covariates that have very low values. The default is 0.}
 }
@@ -86,7 +86,7 @@ cohort. The cohort is assumed to be in an existing table with these fields: 'sub
 unique identifier that will be used as rowID in the output.
 }
 \examples{
-\dontrun{
+\donttest{
 eunomiaConnectionDetails <- Eunomia::getEunomiaConnectionDetails()
 covSettings <- createDefaultCovariateSettings()
 Eunomia::createCohorts(

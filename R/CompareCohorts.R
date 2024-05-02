@@ -32,7 +32,7 @@
 #' of mean.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' binaryCovDataFile <- system.file("testdata/binaryCovariateData.zip",
 #'   package = "FeatureExtraction"
 #' )

@@ -29,7 +29,7 @@
 #' An object of type \code{covariateSettings}, to be used in other functions.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' analysisDetails <- createAnalysisDetails(
 #'   analysisId = 1,
 #'   sqlFileName = "DemographicsGender.sql",
@@ -78,7 +78,7 @@ createDetailedCovariateSettings <- function(analyses = list()) {
 #' An object of type \code{covariateSettings}, to be used in other functions.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' analysisDetails <- createAnalysisDetails(
 #'   analysisId = 1,
 #'   sqlFileName = "DemographicsGender.sql",
@@ -193,7 +193,7 @@ createAnalysisDetails <- function(analysisId,
 #' An object of type \code{covariateSettings}, to be used in other functions.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' covSettings <- createDefaultCovariateSettings()
 #' detailedSettings <- convertPrespecSettingsToDetailedSettings(covariateSettings = covSettings)
 #' }
@@ -225,7 +225,7 @@ convertPrespecSettingsToDetailedSettings <- function(covariateSettings) {
 #' An object of type \code{covariateSettings}, to be used in other functions.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' covSettings <- createDefaultCovariateSettings(
 #'   includedCovariateConceptIds = c(1),
 #'   addDescendantsToInclude = FALSE,
@@ -273,7 +273,7 @@ createDefaultCovariateSettings <- function(includedCovariateConceptIds = c(),
 #' An object of type \code{covariateSettings}, to be used in other functions.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' covSettings <- createDefaultTemporalCovariateSettings(
 #'   includedCovariateConceptIds = c(1),
 #'   addDescendantsToInclude = FALSE,

@@ -21,7 +21,7 @@ creates an object specifying in detail how covariates should be constructed from
 model. Warning: this function is for advanced users only.
 }
 \examples{
-\dontrun{
+\donttest{
 analysisDetails <- createAnalysisDetails(
   analysisId = 1,
   sqlFileName = "DemographicsGender.sql",

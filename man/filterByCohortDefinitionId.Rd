@@ -20,10 +20,10 @@ An object of type \code{covariateData}.
 Filter covariates by cohort definition IDs
 }
 \examples{
-\dontrun{
-covariateData <- FeatureExtraction:::createEmptyCovariateData(
-  cohortIds = 1,
-  aggregated = FALSE,
+\donttest{
+covariateData <- FeatureExtraction::createEmptyCovariateData(
+  cohortIds = c(1, 2),
+  aggregated = TRUE,
   temporal = FALSE
 )
 

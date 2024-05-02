@@ -10,7 +10,7 @@ test_that("getDefaultTable1Specifications works", {
 
 
 test_that("createTable1 works with categorical covariates", {
-  skip_if_not(dbms == "sqlite")
+  skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
 
   settings <- createCovariateSettings(
     useDemographicsAgeGroup = TRUE,
@@ -82,7 +82,7 @@ test_that("createTable1 works with categorical covariates", {
 
 
 test_that("createTable1 works with continuous covariates", {
-  skip_if_not(dbms == "sqlite")
+  skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
 
   settings <- createCovariateSettings(
     useDemographicsAgeGroup = TRUE,
@@ -142,7 +142,7 @@ test_that("createTable1 works with continuous covariates", {
 
 
 test_that("createTable1 works with other covariates", {
-  skip_if_not(dbms == "sqlite")
+  skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   settings <- createCovariateSettings(
     useDemographicsAgeGroup = TRUE,
     useChads2Vasc = TRUE

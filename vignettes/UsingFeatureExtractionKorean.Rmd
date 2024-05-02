@@ -17,7 +17,7 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
 ---
 ```{r set-options,echo=FALSE,message=FALSE,warning=FALSE,eval=TRUE}
-options(width = 200)
+old <- options(width = 200)
 library(FeatureExtraction)
 vignetteFolder <- "c:/temp/vignetteFeatureExtraction"
 ```
@@ -605,3 +605,7 @@ if (file.exists(file.path(vignetteFolder, "covDiclofenac"))) {
 ```
 \fontsize{10}{12}
 \selectfont
+
+```{r reset-options,echo=FALSE,message=FALSE,warning=FALSE,eval=TRUE}
+options(old)
+```
