@@ -250,7 +250,7 @@ createTemporalCovariateSettings <- function(useDemographicsGender = FALSE,
                                             addDescendantsToExclude = FALSE,
                                             includedCovariateIds = c()) {
   covariateSettings <- list(
-    temporal = FALSE,
+    temporal = TRUE,
     temporalSequence = FALSE
   )
   formalNames <- names(formals(createTemporalCovariateSettings))

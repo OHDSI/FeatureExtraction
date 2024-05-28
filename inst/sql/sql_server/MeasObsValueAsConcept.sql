@@ -16,7 +16,7 @@ INTO #temp_features
 FROM (
 }
 	SELECT @domain_concept_id,
-		value_as_concept_id
+		value_as_concept_id,
 {@temporal} ? {
 		time_id,
 }	
@@ -70,13 +70,13 @@ FROM #temp_features
 GROUP BY covariate_id;
 
 SELECT 
-	covariate_id,
+	temp_features.covariate_id,
 {@temporal} ? {
 	time_id,
 }	
 {@aggregated} ? {
 	cohort_definition_id,
-	MAX(sum_value) AS sum_value,
+  sum_value
 } : {
 	row_id,
 	1 AS covariate_value 
@@ -93,32 +93,32 @@ INSERT INTO #cov_ref (
 	covariate_id,
 	covariate_name,
 	analysis_id,
-	c1.concept_id
+	concept_id
 	)
 SELECT covariate_id,
 {@temporal} ? {
 	CAST(CONCAT('@domain_table: ', 
 							CASE WHEN c1.concept_name IS NULL THEN 'Unknown concept' ELSE c1.concept_name END, 
-							" = ", 
+							' = ', 
 							CASE WHEN c2.concept_name IS NULL THEN 'Unknown concept' ELSE c2.concept_name END
 			 ) AS VARCHAR(512)) AS covariate_name,
 } : {
 {@start_day == 'anyTimePrior'} ? {
 	CAST(CONCAT('@domain_table any time prior through @end_day days relative to index: ', 
 							CASE WHEN c1.concept_name IS NULL THEN 'Unknown concept' ELSE c1.concept_name END, 
-							" = ", 
+							' = ', 
 							CASE WHEN c2.concept_name IS NULL THEN 'Unknown concept' ELSE c2.concept_name END
 			 ) AS VARCHAR(512)) AS covariate_name,
 } : {
 	CAST(CONCAT('@domain_table during day @start_day through @end_day days relative to index: ', 
 							CASE WHEN c1.concept_name IS NULL THEN 'Unknown concept' ELSE c1.concept_name END, 
-							" = ", 
+							' = ', 
 							CASE WHEN c2.concept_name IS NULL THEN 'Unknown concept' ELSE c2.concept_name END
 			 ) AS VARCHAR(512)) AS covariate_name,
 }
 }
 	@analysis_id AS analysis_id,
-	@domain_concept_id AS concept_id
+	no_collisions.@domain_concept_id AS concept_id
 FROM (
 	SELECT covariate_id,
 	  @domain_concept_id,
@@ -128,7 +128,7 @@ FROM (
 LEFT JOIN @cdm_database_schema.concept c1
 	ON c1.concept_id = no_collisions.@domain_concept_id
 LEFT JOIN @cdm_database_schema.concept c2
-	ON c2.concept_id = no_collisions.value_as_concept_id
+	ON c2.concept_id = no_collisions.value_as_concept_id;
 	
 INSERT INTO #analysis_ref (
 	analysis_id,
