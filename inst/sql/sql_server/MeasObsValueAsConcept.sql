@@ -44,6 +44,7 @@ FROM (
 		AND @domain_concept_id != 0
 }
 		AND value_as_concept_id IS NOT NULL
+		AND value_as_concept_id != 0
 {@excluded_concept_table != ''} ? {		AND @domain_concept_id NOT IN (SELECT id FROM @excluded_concept_table)}
 {@included_concept_table != ''} ? {		AND @domain_concept_id IN (SELECT id FROM @included_concept_table)}
 {@cohort_definition_id != -1} ? {		AND cohort.cohort_definition_id IN (@cohort_definition_id)}
