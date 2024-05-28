@@ -33,7 +33,9 @@ createTemporalCovariateSettings(
   useMeasurement = FALSE,
   useMeasurementValue = FALSE,
   useMeasurementRangeGroup = FALSE,
+  useMeasurementValueAsConcept = FALSE,
   useObservation = FALSE,
+  useObservationValueAsConcept = FALSE,
   useCharlsonIndex = FALSE,
   useDcsi = FALSE,
   useChads2 = FALSE,
@@ -126,8 +128,8 @@ the drug_era table starting in the time window.
 (analysis ID 403)}
 
 \item{useDrugEraGroupOverlap}{One covariate per drug rolled up to ATC groups in
-the drug_era table overlapping with any part of
-the time window. (analysis ID 404)}
+the drug_era table overlapping with any part of the
+time window. (analysis ID 404)}
 
 \item{useProcedureOccurrence}{One covariate per procedure in the
 procedure_occurrence table in the time window.
@@ -148,8 +150,16 @@ multiple values are found, the last is taken.
 below, within, or above normal range within the time
 period. (analysis ID 703)}
 
+\item{useMeasurementValueAsConcept}{One covariate per measurement-value concept
+combination within the time period. (analysis ID
+704)}
+
 \item{useObservation}{One covariate per observation in the observation
 table in the time window. (analysis ID 801)}
+
+\item{useObservationValueAsConcept}{One covariate per observation-value concept
+combination within the time period. (analysis ID
+802)}
 
 \item{useCharlsonIndex}{The Charlson comorbidity index (Romano adaptation)
 using all conditions prior to the window end.
@@ -256,7 +266,9 @@ settings <- createTemporalCovariateSettings(
   useMeasurement = TRUE,
   useMeasurementValue = FALSE,
   useMeasurementRangeGroup = TRUE,
+  useMeasurementValueAsConcept = TRUE,
   useObservation = TRUE,
+  useObservationValueAsConcept = TRUE,
   useCharlsonIndex = TRUE,
   useDcsi = TRUE,
   useChads2 = TRUE,
