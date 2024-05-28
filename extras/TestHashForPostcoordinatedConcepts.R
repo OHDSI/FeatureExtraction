@@ -1,3 +1,14 @@
+# To compute covariate IDs for postcoordinated concepts (concept_id - value_as_concept_id pairs),
+# we use a simple hashing function we implement in SQL. The resulting covariate ID uses 52 bits of
+# precision, so will fit in an R numeric type without loss of precision. 
+#
+# Below is some code evaluating how likely we are to have collisions in covariate IDs (the same
+# covariate ID for different concept_id - value_as_concept_id pairs). Although collisions are 
+# unlikely, they may occur. In general we are not concerned, as most covariates are used for 
+# predicition or confounder adjustment, and this may simply lead to one covariate (out of tens
+# of thousands) being less predictive. 
+
+
 # Get all possible concept IDs from the vocabulary -----------------------------
 connectionDetails = DatabaseConnector::createConnectionDetails(
   dbms = "redshift",
@@ -136,4 +147,19 @@ FROM (
 DatabaseConnector::renderTranslateQuerySql(connection, sql)
 # #   COVARIATE_ID
 # 1 248934763863
+
+# OR not available in Oracle, but can be implemented using a + b - (a&b)
+sql <- "
+SELECT (((a + a/262144 - 2*(a & a/262144))) & 262143)*2097152 +
+       (((b + b/2097152 - 2*(b & b/2097152))) & 2097151) AS covariate_id
+FROM (
+  SELECT 380844 AS a,
+    2821462 AS b
+) tmp;
+"
+DatabaseConnector::renderTranslateQuerySql(connection, sql)
+# #   COVARIATE_ID
+# 1 248934763863
+
+
 DatabaseConnector::disconnect(connection)

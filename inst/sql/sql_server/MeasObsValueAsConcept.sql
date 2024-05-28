@@ -1,12 +1,13 @@
 -- Feature construction
+-- For description of covariate_id computation, see extras/TestHashForPostcoordinatedConcepts.R
 DROP TABLE IF EXISTS #temp_features;
 DROP TABLE IF EXISTS #no_collisions;
 
 {@aggregated} ? {
 SELECT @domain_concept_id,
 	value_as_concept_id,
-	((((@domain_concept_id | @domain_concept_id/262144) - (@domain_concept_id & @domain_concept_id/262144)) & 262143)*2097152 +
-		(((value_as_concept_id | value_as_concept_id/2097152) - (value_as_concept_id & value_as_concept_id/2097152)) & 2097151))*1000 + @analysis_id AS covariate_id,
+	((CAST(@domain_concept_id + CAST(@domain_concept_id/262144 AS BIGINT) - 2*(CAST(@domain_concept_id AS BIGINT) & CAST(@domain_concept_id/262144 AS BIGINT)) AS BIGINT) & 262143)*2097152 +
+     (CAST(value_as_concept_id + CAST(value_as_concept_id/2097152 AS BIGINT) - 2*(CAST(value_as_concept_id AS BIGINT) & CAST(value_as_concept_id/2097152 AS BIGINT)) AS BIGINT) & 2097151)) * 1000 + @analysis_id AS covariate_id,
 {@temporal} ? {
 	time_id,
 }	
@@ -24,8 +25,8 @@ FROM (
 		cohort_definition_id,
 		cohort.@row_id_field AS row_id
 } : {
-		((((@domain_concept_id | @domain_concept_id/262144) - (@domain_concept_id & @domain_concept_id/262144)) & 262143)*2097152 +
-			(((value_as_concept_id | value_as_concept_id/2097152) - (value_as_concept_id & value_as_concept_id/2097152)) & 2097151))*1000 + @analysis_id AS covariate_id,
+	((CAST(@domain_concept_id + CAST(@domain_concept_id/262144 AS BIGINT) - 2*(CAST(@domain_concept_id AS BIGINT) & CAST(@domain_concept_id/262144 AS BIGINT)) AS BIGINT) & 262143)*2097152 +
+     (CAST(value_as_concept_id + CAST(value_as_concept_id/2097152 AS BIGINT) - 2*(CAST(value_as_concept_id AS BIGINT) & CAST(value_as_concept_id/2097152 AS BIGINT)) AS BIGINT) & 2097151)) * 1000 + @analysis_id AS covariate_id,
 		cohort.@row_id_field AS row_id
 	INTO #temp_features
 }

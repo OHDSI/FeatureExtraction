@@ -23,7 +23,7 @@ Imports:
   dplyr,
   rJava,
   jsonlite,
-  SqlRender (>= 1.6.0),
+  SqlRender (>= 1.17.1),
   ParallelLogger (>= 2.0.2),
   cli,
   pillar,
@@ -40,6 +40,8 @@ Suggests:
   withr,
   curl,
   httr
+Remotes:
+  ohdsi/SqlRender@develop
 License: Apache License 2.0
 VignetteBuilder: knitr
 URL: https://github.com/OHDSI/FeatureExtraction
