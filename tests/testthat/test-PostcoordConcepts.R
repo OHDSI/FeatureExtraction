@@ -58,6 +58,8 @@ test_that("Postcoordinated concepts on Eunomia", {
   covariateRef <- covariateData$covariateRef %>%
     collect()
   expect_equal(covariateRef$covariateId, c(246174076422716, 246174077980716))
+  expect_equal(covariateRef$conceptId, c(3000963, 3000963))
+  expect_equal(covariateRef$valueAsConceptId, c(4083207, 4084765))
   
   analysisRef <- covariateData$analysisRef %>%
     collect()

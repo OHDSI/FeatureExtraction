@@ -95,7 +95,8 @@ INSERT INTO #cov_ref (
 	covariate_id,
 	covariate_name,
 	analysis_id,
-	concept_id
+	concept_id,
+	value_as_concept_id
 	)
 SELECT covariate_id,
 {@temporal} ? {
@@ -120,7 +121,8 @@ SELECT covariate_id,
 }
 }
 	@analysis_id AS analysis_id,
-	no_collisions.@domain_concept_id AS concept_id
+	no_collisions.@domain_concept_id AS concept_id,
+	no_collisions.value_as_concept_id AS concept_id
 FROM (
 	SELECT covariate_id,
 	  @domain_concept_id,
