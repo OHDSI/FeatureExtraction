@@ -19,6 +19,7 @@ SELECT @domain_concept_id,
 cohort_definition_id,
 subject_id,
 cohort_start_date,
+{@temporal} ? {time_id,}
 event_year FROM (
 }
 	SELECT DISTINCT @domain_concept_id,

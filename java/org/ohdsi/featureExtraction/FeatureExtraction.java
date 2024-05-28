@@ -54,6 +54,7 @@ public class FeatureExtraction {
 	private static Map<String, PrespecAnalysis> nameToPrespecAnalysis = null;
 	private static Map<String, PrespecAnalysis> nameToPrespecTemporalAnalysis = null;
 	private static Map<String, PrespecAnalysis> nameToPrespecTemporalSequenceAnalysis = null;
+	private static Map<String, PrespecAnalysis> nameToPrespecTemporalAnnualAnalysis = null;
 	private static Map<String, String> nameToSql = null;
 	private static String createCovRefTableSql = null;
 	private static Map<String, Map<String, OtherParameter>> typeToNameToOtherParameters = null;
@@ -122,6 +123,7 @@ public class FeatureExtraction {
 					nameToPrespecAnalysis = loadPrespecAnalysis(packageFolder, "PrespecAnalyses.csv");
 					nameToPrespecTemporalAnalysis = loadPrespecAnalysis(packageFolder, "PrespecTemporalAnalyses.csv");
 					nameToPrespecTemporalSequenceAnalysis = loadPrespecAnalysis(packageFolder, "PrespecTemporalSequenceAnalyses.csv");
+					nameToPrespecTemporalAnnualAnalysis = loadPrespecAnalysis(packageFolder, "PrespecTemporalAnnualAnalysis.csv");
 					loadPrespecAnalysis(packageFolder, "OtherSqlToLoad.csv"); // Called for side-effect of adding SQL filenames to nameToSql keys.
 					loadTemplateSql(packageFolder);
 					createCovRefTableSql = loadSqlFile(packageFolder, "CreateCovAnalysisRefTables.sql");
@@ -260,7 +262,9 @@ public class FeatureExtraction {
 							// prespecAnalysis.description = row.get(i);
 						else
 							prespecAnalysis.keyToValue.put(header.get(i), row.get(i));
-					nameToSql.put(prespecAnalysis.sqlFileName, null);
+					if (prespecAnalysis.sqlFileName != null) {
+						nameToSql.put(prespecAnalysis.sqlFileName, null);
+					}
 					nameToPrespecAnalysis.put(prespecAnalysis.analysisName, prespecAnalysis);
 				}
 			}
@@ -286,6 +290,13 @@ public class FeatureExtraction {
 		}
 		return Collections.unmodifiableMap(nameToPrespecTemporalAnalysis);
 	}
+
+	public static Map<String, PrespecAnalysis> getNameToPrespecTemporalAnnualAnalysis() {
+		if (nameToPrespecTemporalAnnualAnalysis == null) {
+			FeatureExtraction.init(null);
+		}
+		return Collections.unmodifiableMap(nameToPrespecTemporalAnnualAnalysis);
+ 	}
 
 	/**
 	 * Creates a default settings object
@@ -816,7 +827,7 @@ public class FeatureExtraction {
 		while (analysesIterator.hasNext()) {
 			JSONObject analysis = (JSONObject) analysesIterator.next();
 			if (!filtered(analysis)) {
-				String covariateTable = "#cov_" + a++;
+				String covariateTable = "#cov_" + a++ + (temporalAnnual ? "_annual" : "");
 				analysis.put("covariateTable", covariateTable);
 				String templateSql = nameToSql.get(analysis.get(SQL_FILE_NAME));
 				JSONObject parameters = analysis.getJSONObject(PARAMETERS);
