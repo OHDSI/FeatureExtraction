@@ -13,7 +13,7 @@ test_that("Postcoordinated concepts on Eunomia", {
   )
   DatabaseConnector::insertTable(
     connection = eunomiaConnection,
-    tableName = "#cohort",
+    tableName = "#pcc_cohort",
     data = cohort,
     dropTableIfExists = TRUE,
     tempTable = TRUE,
@@ -46,7 +46,7 @@ test_that("Postcoordinated concepts on Eunomia", {
   covariateData <- getDbCovariateData(
     connection = eunomiaConnection,
     cdmDatabaseSchema = "main",
-    cohortTable = "#cohort",
+    cohortTable = "#pcc_cohort",
     cohortTableIsTemp = TRUE,
     covariateSettings = settings
   )
