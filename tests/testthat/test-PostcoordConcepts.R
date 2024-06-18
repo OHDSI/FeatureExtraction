@@ -51,18 +51,52 @@ test_that("Postcoordinated concepts on Eunomia", {
     covariateSettings = settings
   )
   covariates <- covariateData$covariates%>%
-    collect() 
+    collect() %>%
+    arrange(rowId)
   expect_equal(covariates$rowId, c(1, 3, 4))
-  expect_equal(covariates$covariateId, c(246174076422716, 246174077980716, 246174077980716))
+  expect_equal(covariates$covariateId, c(583329995308716, 583329563103716, 583329563103716))
   expect_equal(covariates$covariateValue, c(1, 1, 1))
   
   covariateRef <- covariateData$covariateRef %>%
-    collect()
-  expect_equal(covariateRef$covariateId, c(246174076422716, 246174077980716))
+    collect() %>%
+    arrange(covariateId)
+  expect_equal(covariateRef$covariateId, c(583329563103716, 583329995308716))
   expect_equal(covariateRef$conceptId, c(3000963, 3000963))
-  expect_equal(covariateRef$valueAsConceptId, c(4083207, 4084765))
+  expect_equal(covariateRef$valueAsConceptId, c(4084765, 4083207))
   
   analysisRef <- covariateData$analysisRef %>%
     collect()
   expect_equal(analysisRef$analysisId, 716)
+  
+  # Introduce collisions
+  measurement <- data.frame(
+    measurementId = c(0, 0, 0, 0),
+    measurementTypeConceptId = c(0, 0, 0, 0),
+    personId = c(1, 1, 3, 4),
+    measurementConceptId = c(3048564, 3048564, 40483078, 40483078),
+    valueAsConceptId = c(4069590, 4069590, 4069590, 4069590),
+    measurementDate = as.Date(c("2000-01-14", "2000-01-01", "2000-01-14", "2000-01-01"))
+  )
+  DatabaseConnector::insertTable(
+    connection = eunomiaConnection,
+    tableName = "measurement",
+    databaseSchema = "main",
+    data = measurement,
+    dropTableIfExists = FALSE,
+    tempTable = FALSE,
+    createTable = FALSE,
+    progressBar = FALSE,
+    camelCaseToSnakeCase = TRUE
+  )
+  settings <- createCovariateSettings(useMeasurementValueAsConceptShortTerm = TRUE,
+                                      shortTermStartDays = -30)
+  
+  expect_warning({covariateData <- getDbCovariateData(
+    connection = eunomiaConnection,
+    cdmDatabaseSchema = "main",
+    cohortTable = "#pcc_cohort",
+    cohortTableIsTemp = TRUE,
+    covariateSettings = settings
+  )},
+  "Collisions")
 })

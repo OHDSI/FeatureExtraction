@@ -171,6 +171,13 @@ getDbDefaultCovariateData <- function(connection,
       andromedaTableName = "covariateRef",
       snakeCaseToCamelCase = TRUE
     )
+    collisions <- covariateData$covariateRef %>%
+      filter(collisions > 0) %>%
+      collect()
+    if (nrow(collisions) > 0) {
+      warning(sprintf("Collisions in covariate IDs detected for post-coordinated concepts with covariate IDs %s", 
+                      paste(collisions$covariateId, paste = ", ")))
+    }
 
     # Analysis reference
     sql <- SqlRender::translate(

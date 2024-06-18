@@ -6,8 +6,9 @@ DROP TABLE IF EXISTS #no_collisions;
 {@aggregated} ? {
 SELECT @domain_concept_id,
 	value_as_concept_id,
-	((CAST(@domain_concept_id + CAST(@domain_concept_id/262144 AS BIGINT) - 2*(CAST(@domain_concept_id AS BIGINT) & CAST(@domain_concept_id/262144 AS BIGINT)) AS BIGINT) & 262143)*2097152 +
-     (CAST(value_as_concept_id + CAST(value_as_concept_id/2097152 AS BIGINT) - 2*(CAST(value_as_concept_id AS BIGINT) & CAST(value_as_concept_id/2097152 AS BIGINT)) AS BIGINT) & 2097151)) * 1000 + @analysis_id AS covariate_id,
+	(CAST(@domain_concept_id * 2654435769 / 4096 AS BIGINT) & 1048575)*4194304000 +
+    (CAST(value_as_concept_id * 2654435769 / 1024 AS BIGINT) & 4194303)*1000 + 
+	@analysis_id AS covariate_id,
 {@temporal} ? {
 	time_id,
 }	
@@ -25,8 +26,9 @@ FROM (
 		cohort_definition_id,
 		cohort.@row_id_field AS row_id
 } : {
-	((CAST(@domain_concept_id + CAST(@domain_concept_id/262144 AS BIGINT) - 2*(CAST(@domain_concept_id AS BIGINT) & CAST(@domain_concept_id/262144 AS BIGINT)) AS BIGINT) & 262143)*2097152 +
-     (CAST(value_as_concept_id + CAST(value_as_concept_id/2097152 AS BIGINT) - 2*(CAST(value_as_concept_id AS BIGINT) & CAST(value_as_concept_id/2097152 AS BIGINT)) AS BIGINT) & 2097151)) * 1000 + @analysis_id AS covariate_id,
+	(CAST(@domain_concept_id * 2654435769 / 4096 AS BIGINT) & 1048575)*4194304000 +
+    (CAST(value_as_concept_id * 2654435769 / 1024 AS BIGINT) & 4194303)*1000 + 
+	@analysis_id AS covariate_id,
 		cohort.@row_id_field AS row_id
 	INTO #temp_features
 }
@@ -66,13 +68,19 @@ GROUP BY @domain_concept_id,
 
 SELECT covariate_id,
 	MIN(@domain_concept_id) AS @domain_concept_id,
-	MIN(value_as_concept_id) AS value_as_concept_id
+	MIN(value_as_concept_id) AS value_as_concept_id,
+	COUNT(*) - 1 AS collisions
 INTO #no_collisions
-FROM #temp_features
+FROM (
+	SELECT DISTINCT 
+		covariate_id,
+		@domain_concept_id,
+		value_as_concept_id
+	FROM #temp_features
+	) tmp
 GROUP BY covariate_id;
 
-SELECT 
-	temp_features.covariate_id,
+SELECT temp_features.covariate_id,
 {@temporal} ? {
 	time_id,
 }	
@@ -96,7 +104,8 @@ INSERT INTO #cov_ref (
 	covariate_name,
 	analysis_id,
 	concept_id,
-	value_as_concept_id
+	value_as_concept_id,
+	collisions
 	)
 SELECT covariate_id,
 {@temporal} ? {
@@ -122,11 +131,13 @@ SELECT covariate_id,
 }
 	@analysis_id AS analysis_id,
 	no_collisions.@domain_concept_id AS concept_id,
-	no_collisions.value_as_concept_id AS concept_id
+	no_collisions.value_as_concept_id AS concept_id,
+	no_collisions.collisions
 FROM (
 	SELECT covariate_id,
 	  @domain_concept_id,
-	  value_as_concept_id
+	  value_as_concept_id,
+	  collisions
 	FROM #no_collisions
 	) no_collisions
 LEFT JOIN @cdm_database_schema.concept c1
