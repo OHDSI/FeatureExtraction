@@ -105,17 +105,100 @@ checkRemoteFileAvailable <- function(remoteFile) {
 }
 
 # Database Test Settings -----------
+# bigquery - To avoid rate limit on BigQuery, only test on 1 OS
+if (dbms == "bigquery" && .Platform$OS.type == "windows") {
+  bqKeyFile <- tempfile(fileext = ".json")
+  writeLines(Sys.getenv("CDM_BIG_QUERY_KEY_FILE"), bqKeyFile)
+  if (testthat::is_testing()) {
+    withr::defer(unlink(bqKeyFile, force = TRUE), testthat::teardown_env())
+  }
+  bqConnectionString <- gsub("<keyfile path>",
+                             normalizePath(bqKeyFile, winslash = "/"),
+                             Sys.getenv("CDM_BIG_QUERY_CONNECTION_STRING"))
+  connectionDetails = DatabaseConnector::createConnectionDetails(
+    dbms = dbms,
+    user = "",
+    password = "",
+    connectionString = !!bqConnectionString,
+    pathToDriver = jdbcDriverFolder
+  )
+  cdmDatabaseSchema <- Sys.getenv("CDM_BIG_QUERY_CDM_SCHEMA")
+  vocabularyDatabaseSchema <- Sys.getenv("CDM_BIG_QUERY_CDM_SCHEMA")
+  cohortDatabaseSchema <- Sys.getenv("CDM_BIG_QUERY_OHDSI_SCHEMA")
+  options(sqlRenderTempEmulationSchema = Sys.getenv("CDM_BIG_QUERY_OHDSI_SCHEMA"))
+}
+
+# oracle
+if (dbms == "oracle") {
+  DatabaseConnector::downloadJdbcDrivers(dbms)
+  oracleConnectionDetails <- createConnectionDetails(
+    dbms = dbms,
+    user = Sys.getenv("CDM5_ORACLE_USER"),
+    password = URLdecode(Sys.getenv("CDM5_ORACLE_PASSWORD")),
+    server = Sys.getenv("CDM5_ORACLE_SERVER")
+  )
+  oracleCdmDatabaseSchema <- Sys.getenv("CDM5_ORACLE_CDM_SCHEMA")
+  oracleOhdsiDatabaseSchema <- Sys.getenv("CDM5_ORACLE_OHDSI_SCHEMA")
+  # Set the tempEmulationSchema globally
+  options(sqlRenderTempEmulationSchema = oracleOhdsiDatabaseSchema)
+}
+
 # postgres
 if (dbms == "postgresql") {
-  DatabaseConnector::downloadJdbcDrivers("postgresql")
+  DatabaseConnector::downloadJdbcDrivers(dbms)
   pgConnectionDetails <- createConnectionDetails(
-    dbms = "postgresql",
+    dbms = dbms,
     user = Sys.getenv("CDM5_POSTGRESQL_USER"),
     password = URLdecode(Sys.getenv("CDM5_POSTGRESQL_PASSWORD")),
     server = Sys.getenv("CDM5_POSTGRESQL_SERVER")
   )
   pgCdmDatabaseSchema <- Sys.getenv("CDM5_POSTGRESQL_CDM_SCHEMA")
   pgOhdsiDatabaseSchema <- Sys.getenv("CDM5_POSTGRESQL_OHDSI_SCHEMA")
+}
+
+# redshift
+if (dbms == "redshift") {
+  DatabaseConnector::downloadJdbcDrivers(dbms)
+  redshiftConnectionDetails <- createConnectionDetails(
+    dbms = dbms,
+    user = Sys.getenv("CDM5_REDSHIFT_USER"),
+    password = URLdecode(Sys.getenv("CDM5_REDSHIFT_PASSWORD")),
+    server = Sys.getenv("CDM5_REDSHIFT_SERVER")
+  )
+  redshiftCdmDatabaseSchema <- Sys.getenv("CDM5_REDSHIFT_CDM_SCHEMA")
+  redshiftOhdsiDatabaseSchema <- Sys.getenv("CDM5_REDSHIFT_OHDSI_SCHEMA")
+}
+
+# snowflake
+if (dbms == "snowflake") {
+  DatabaseConnector::downloadJdbcDrivers(dbms)
+  connectionDetails = DatabaseConnector::createConnectionDetails(
+    dbms = dbms,
+    user = Sys.getenv("CDM_SNOWFLAKE_USER"),
+    password = URLdecode(Sys.getenv("CDM_SNOWFLAKE_PASSWORD")),
+    connectionString = Sys.getenv("CDM_SNOWFLAKE_CONNECTION_STRING"),
+    pathToDriver = jdbcDriverFolder
+  )
+  cdmDatabaseSchema <- Sys.getenv("CDM_SNOWFLAKE_CDM53_SCHEMA")
+  vocabularyDatabaseSchema <- Sys.getenv("CDM_SNOWFLAKE_CDM53_SCHEMA")
+  cohortDatabaseSchema <- Sys.getenv("CDM_SNOWFLAKE_OHDSI_SCHEMA")
+  options(sqlRenderTempEmulationSchema = Sys.getenv("CDM_SNOWFLAKE_OHDSI_SCHEMA"))  
+}
+
+# spark
+if (dbms == "spark") {
+  DatabaseConnector::downloadJdbcDrivers(dbms)
+  connectionDetails = DatabaseConnector::createConnectionDetails(
+    dbms = dbms,
+    user = Sys.getenv("CDM5_SPARK_USER"),
+    password = URLdecode(Sys.getenv("CDM5_SPARK_PASSWORD")),
+    connectionString = Sys.getenv("CDM5_SPARK_CONNECTION_STRING"),
+    pathToDriver = jdbcDriverFolder
+  )
+  cdmDatabaseSchema <- Sys.getenv("CDM5_SPARK_CDM_SCHEMA")
+  vocabularyDatabaseSchema <- Sys.getenv("CDM5_SPARK_CDM_SCHEMA")
+  cohortDatabaseSchema <- Sys.getenv("CDM5_SPARK_OHDSI_SCHEMA")
+  options(sqlRenderTempEmulationSchema = Sys.getenv("CDM5_SPARK_OHDSI_SCHEMA"))  
 }
 
 # sql server
@@ -129,34 +212,6 @@ if (dbms == "sql server") {
   )
   sqlServerCdmDatabaseSchema <- Sys.getenv("CDM5_SQL_SERVER_CDM_SCHEMA")
   sqlServerOhdsiDatabaseSchema <- Sys.getenv("CDM5_SQL_SERVER_OHDSI_SCHEMA")
-}
-
-# oracle
-if (dbms == "oracle") {
-  DatabaseConnector::downloadJdbcDrivers("oracle")
-  oracleConnectionDetails <- createConnectionDetails(
-    dbms = "oracle",
-    user = Sys.getenv("CDM5_ORACLE_USER"),
-    password = URLdecode(Sys.getenv("CDM5_ORACLE_PASSWORD")),
-    server = Sys.getenv("CDM5_ORACLE_SERVER")
-  )
-  oracleCdmDatabaseSchema <- Sys.getenv("CDM5_ORACLE_CDM_SCHEMA")
-  oracleOhdsiDatabaseSchema <- Sys.getenv("CDM5_ORACLE_OHDSI_SCHEMA")
-  # Set the tempEmulationSchema globally
-  options(sqlRenderTempEmulationSchema = oracleOhdsiDatabaseSchema)
-}
-
-# redshift
-if (dbms == "redshift") {
-  DatabaseConnector::downloadJdbcDrivers("redshift")
-  redshiftConnectionDetails <- createConnectionDetails(
-    dbms = "redshift",
-    user = Sys.getenv("CDM5_REDSHIFT_USER"),
-    password = URLdecode(Sys.getenv("CDM5_REDSHIFT_PASSWORD")),
-    server = Sys.getenv("CDM5_REDSHIFT_SERVER")
-  )
-  redshiftCdmDatabaseSchema <- Sys.getenv("CDM5_REDSHIFT_CDM_SCHEMA")
-  redshiftOhdsiDatabaseSchema <- Sys.getenv("CDM5_REDSHIFT_OHDSI_SCHEMA")
 }
 
 # eunomia
