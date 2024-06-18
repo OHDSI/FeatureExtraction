@@ -107,6 +107,7 @@ checkRemoteFileAvailable <- function(remoteFile) {
 # Database Test Settings -----------
 # bigquery - To avoid rate limit on BigQuery, only test on 1 OS
 if (dbms == "bigquery" && .Platform$OS.type == "windows") {
+  DatabaseConnector::downloadJdbcDrivers(dbms)
   bqKeyFile <- tempfile(fileext = ".json")
   writeLines(Sys.getenv("CDM_BIG_QUERY_KEY_FILE"), bqKeyFile)
   if (testthat::is_testing()) {
@@ -119,8 +120,7 @@ if (dbms == "bigquery" && .Platform$OS.type == "windows") {
     dbms = dbms,
     user = "",
     password = "",
-    connectionString = !!bqConnectionString,
-    pathToDriver = jdbcDriverFolder
+    connectionString = !!bqConnectionString
   )
   cdmDatabaseSchema <- Sys.getenv("CDM_BIG_QUERY_CDM_SCHEMA")
   vocabularyDatabaseSchema <- Sys.getenv("CDM_BIG_QUERY_CDM_SCHEMA")
@@ -176,8 +176,7 @@ if (dbms == "snowflake") {
     dbms = dbms,
     user = Sys.getenv("CDM_SNOWFLAKE_USER"),
     password = URLdecode(Sys.getenv("CDM_SNOWFLAKE_PASSWORD")),
-    connectionString = Sys.getenv("CDM_SNOWFLAKE_CONNECTION_STRING"),
-    pathToDriver = jdbcDriverFolder
+    connectionString = Sys.getenv("CDM_SNOWFLAKE_CONNECTION_STRING")
   )
   cdmDatabaseSchema <- Sys.getenv("CDM_SNOWFLAKE_CDM53_SCHEMA")
   vocabularyDatabaseSchema <- Sys.getenv("CDM_SNOWFLAKE_CDM53_SCHEMA")
@@ -192,8 +191,7 @@ if (dbms == "spark") {
     dbms = dbms,
     user = Sys.getenv("CDM5_SPARK_USER"),
     password = URLdecode(Sys.getenv("CDM5_SPARK_PASSWORD")),
-    connectionString = Sys.getenv("CDM5_SPARK_CONNECTION_STRING"),
-    pathToDriver = jdbcDriverFolder
+    connectionString = Sys.getenv("CDM5_SPARK_CONNECTION_STRING")
   )
   cdmDatabaseSchema <- Sys.getenv("CDM5_SPARK_CDM_SCHEMA")
   vocabularyDatabaseSchema <- Sys.getenv("CDM5_SPARK_CDM_SCHEMA")
