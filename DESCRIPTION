@@ -23,7 +23,7 @@ Imports:
   dplyr,
   rJava,
   jsonlite,
-  SqlRender (>= 1.6.0),
+  SqlRender (>= 1.18.0),
   ParallelLogger (>= 2.0.2),
   cli,
   pillar,
