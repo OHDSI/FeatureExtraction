@@ -1,3 +1,15 @@
+FeatureExtraction 3.6.0
+=======================
+
+New Features:
+- Support for observation / measurement values (#67)
+- Add additional DB testing servers github action: Spark, Snowflake, BigQuery (#247)
+
+Bug fixes:
+- Inconsistent Handling of cohortIds in getDbCovariateData Depending on aggregated Setting (#229)
+- minor typo in specification file (#260)
+- Update custom covariate builder vignette (#258)
+
 FeatureExtraction 3.5.2
 =======================
 
