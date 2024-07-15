@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">FeatureExtraction</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.5.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.6.0</span>
       </span>
     </div>
 
@@ -100,7 +100,7 @@
                         <h4 data-toc-skip class="author">Martijn J.
 Schuemie</h4>
             
-            <h4 data-toc-skip class="date">2024-05-01</h4>
+            <h4 data-toc-skip class="date">2024-07-15</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/FeatureExtraction/blob/HEAD/vignettes/CreatingCustomCovariateBuilders.Rmd" class="external-link"><code>vignettes/CreatingCustomCovariateBuilders.Rmd</code></a></small>
       <div class="hidden name"><code>CreatingCustomCovariateBuilders.Rmd</code></div>
@@ -218,6 +218,16 @@ settings function.</li>
 <li>
 <code>aggregated</code>: Should covariates be constructed
 per-person, or aggregated across the cohort?</li>
+<li>
+<code>minCharacterizationMean</code>: The minimum mean value for
+characterization output. Values below this will be cut off from output.
+This will help reduce the file size of the characterization output, but
+will remove information on covariates that have very low values. The
+default is 0. Note: this parameter only works when
+<code>aggregated</code> is set to TRUE. Since aggregation is not
+supported in this function, it doesn’t actually filter the output.
+However, the <code>getDbCovariateData</code> function requires this
+parameter to be present.</li>
 </ul>
 <p>The function can expect that a table exists with the name specified
 in the <code>cohortTable</code> argument. This table will identify the
@@ -273,7 +283,8 @@ constructed.</p>
 <span>                                  <span class="va">cohortIds</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span>,</span>
 <span>                                  <span class="va">rowIdField</span> <span class="op">=</span> <span class="st">"subject_id"</span>,</span>
 <span>                                  <span class="va">covariateSettings</span>,</span>
-<span>                                  <span class="va">aggregated</span> <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
+<span>                                  <span class="va">aggregated</span> <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>                                  <span class="va">minCharacterizationMean</span> <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines</a></span><span class="op">(</span><span class="st">"Constructing length of observation covariates"</span><span class="op">)</span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="va">covariateSettings</span><span class="op">$</span><span class="va">useLengthOfObs</span> <span class="op">==</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span></span>

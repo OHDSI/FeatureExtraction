@@ -162,7 +162,7 @@
 #'                                                             medium term window. (analysis ID 403)
 #' @param useDrugEraShortTerm                                  One covariate per drug in the drug_era
 #'                                                             table overlapping with any part of the
-#'                                                             short window. (analysis ID 404)
+#'                                                             short term window. (analysis ID 404)
 #' @param useDrugEraOverlapping                                One covariate per drug in the drug_era
 #'                                                             table overlapping with the end of the
 #'                                                             risk window. (analysis ID 405)
@@ -173,7 +173,7 @@
 #'                                                             table starting in the medium term
 #'                                                             window. (analysis ID 407)
 #' @param useDrugEraStartShortTerm                             One covariate per drug in the drug_era
-#'                                                             table starting in the long short window.
+#'                                                             table starting in the short term window.
 #'                                                             (analysis ID 408)
 #' @param useDrugGroupEraAnyTimePrior                          One covariate per drug rolled up to ATC
 #'                                                             groups in the drug_era table overlapping

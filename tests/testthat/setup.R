@@ -113,10 +113,12 @@ if (dbms == "bigquery" && .Platform$OS.type == "windows") {
   if (testthat::is_testing()) {
     withr::defer(unlink(bqKeyFile, force = TRUE), testthat::teardown_env())
   }
-  bqConnectionString <- gsub("<keyfile path>",
-                             normalizePath(bqKeyFile, winslash = "/"),
-                             Sys.getenv("CDM_BIG_QUERY_CONNECTION_STRING"))
-  connectionDetails = DatabaseConnector::createConnectionDetails(
+  bqConnectionString <- gsub(
+    "<keyfile path>",
+    normalizePath(bqKeyFile, winslash = "/"),
+    Sys.getenv("CDM_BIG_QUERY_CONNECTION_STRING")
+  )
+  connectionDetails <- DatabaseConnector::createConnectionDetails(
     dbms = dbms,
     user = "",
     password = "",
@@ -172,7 +174,7 @@ if (dbms == "redshift") {
 # snowflake
 if (dbms == "snowflake") {
   DatabaseConnector::downloadJdbcDrivers(dbms)
-  connectionDetails = DatabaseConnector::createConnectionDetails(
+  connectionDetails <- DatabaseConnector::createConnectionDetails(
     dbms = dbms,
     user = Sys.getenv("CDM_SNOWFLAKE_USER"),
     password = URLdecode(Sys.getenv("CDM_SNOWFLAKE_PASSWORD")),
@@ -181,13 +183,13 @@ if (dbms == "snowflake") {
   cdmDatabaseSchema <- Sys.getenv("CDM_SNOWFLAKE_CDM53_SCHEMA")
   vocabularyDatabaseSchema <- Sys.getenv("CDM_SNOWFLAKE_CDM53_SCHEMA")
   cohortDatabaseSchema <- Sys.getenv("CDM_SNOWFLAKE_OHDSI_SCHEMA")
-  options(sqlRenderTempEmulationSchema = Sys.getenv("CDM_SNOWFLAKE_OHDSI_SCHEMA"))  
+  options(sqlRenderTempEmulationSchema = Sys.getenv("CDM_SNOWFLAKE_OHDSI_SCHEMA"))
 }
 
 # spark
 if (dbms == "spark") {
   DatabaseConnector::downloadJdbcDrivers(dbms)
-  connectionDetails = DatabaseConnector::createConnectionDetails(
+  connectionDetails <- DatabaseConnector::createConnectionDetails(
     dbms = dbms,
     user = Sys.getenv("CDM5_SPARK_USER"),
     password = URLdecode(Sys.getenv("CDM5_SPARK_PASSWORD")),
@@ -196,7 +198,7 @@ if (dbms == "spark") {
   cdmDatabaseSchema <- Sys.getenv("CDM5_SPARK_CDM_SCHEMA")
   vocabularyDatabaseSchema <- Sys.getenv("CDM5_SPARK_CDM_SCHEMA")
   cohortDatabaseSchema <- Sys.getenv("CDM5_SPARK_OHDSI_SCHEMA")
-  options(sqlRenderTempEmulationSchema = Sys.getenv("CDM5_SPARK_OHDSI_SCHEMA"))  
+  options(sqlRenderTempEmulationSchema = Sys.getenv("CDM5_SPARK_OHDSI_SCHEMA"))
 }
 
 # sql server

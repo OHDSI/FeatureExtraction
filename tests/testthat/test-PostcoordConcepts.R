@@ -40,9 +40,11 @@ test_that("Postcoordinated concepts on Eunomia", {
     progressBar = FALSE,
     camelCaseToSnakeCase = TRUE
   )
-  settings <- createCovariateSettings(useMeasurementValueAsConceptShortTerm = TRUE,
-                                      shortTermStartDays = -30)
-  
+  settings <- createCovariateSettings(
+    useMeasurementValueAsConceptShortTerm = TRUE,
+    shortTermStartDays = -30
+  )
+
   covariateData <- getDbCovariateData(
     connection = eunomiaConnection,
     cdmDatabaseSchema = "main",
@@ -50,24 +52,24 @@ test_that("Postcoordinated concepts on Eunomia", {
     cohortTableIsTemp = TRUE,
     covariateSettings = settings
   )
-  covariates <- covariateData$covariates%>%
+  covariates <- covariateData$covariates %>%
     collect() %>%
     arrange(rowId)
   expect_equal(covariates$rowId, c(1, 3, 4))
   expect_equal(covariates$covariateId, c(583329995308716, 583329563103716, 583329563103716))
   expect_equal(covariates$covariateValue, c(1, 1, 1))
-  
+
   covariateRef <- covariateData$covariateRef %>%
     collect() %>%
     arrange(covariateId)
   expect_equal(covariateRef$covariateId, c(583329563103716, 583329995308716))
   expect_equal(covariateRef$conceptId, c(3000963, 3000963))
   expect_equal(covariateRef$valueAsConceptId, c(4084765, 4083207))
-  
+
   analysisRef <- covariateData$analysisRef %>%
     collect()
   expect_equal(analysisRef$analysisId, 716)
-  
+
   # Introduce collisions
   measurement <- data.frame(
     measurementId = c(0, 0, 0, 0),
@@ -88,15 +90,21 @@ test_that("Postcoordinated concepts on Eunomia", {
     progressBar = FALSE,
     camelCaseToSnakeCase = TRUE
   )
-  settings <- createCovariateSettings(useMeasurementValueAsConceptShortTerm = TRUE,
-                                      shortTermStartDays = -30)
-  
-  expect_warning({covariateData <- getDbCovariateData(
-    connection = eunomiaConnection,
-    cdmDatabaseSchema = "main",
-    cohortTable = "#pcc_cohort",
-    cohortTableIsTemp = TRUE,
-    covariateSettings = settings
-  )},
-  "Collisions")
+  settings <- createCovariateSettings(
+    useMeasurementValueAsConceptShortTerm = TRUE,
+    shortTermStartDays = -30
+  )
+
+  expect_warning(
+    {
+      covariateData <- getDbCovariateData(
+        connection = eunomiaConnection,
+        cdmDatabaseSchema = "main",
+        cohortTable = "#pcc_cohort",
+        cohortTableIsTemp = TRUE,
+        covariateSettings = settings
+      )
+    },
+    "Collisions"
+  )
 })
