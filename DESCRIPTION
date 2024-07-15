@@ -2,7 +2,7 @@ Package: FeatureExtraction
 Type: Package
 Title: Generating Features for a Cohort
 Version: 3.6.0
-Date: 2024-05-01
+Date: 2024-07-15
 Authors@R: c(
   person("Martijn", "Schuemie", , "schuemie@ohdsi.org", role = c("aut")),
   person("Marc", "Suchard", role = c("aut")),
