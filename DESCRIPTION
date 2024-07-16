@@ -1,8 +1,8 @@
 Package: FeatureExtraction
 Type: Package
 Title: Generating Features for a Cohort
-Version: 3.5.2
-Date: 2024-05-01
+Version: 3.6.0
+Date: 2024-07-15
 Authors@R: c(
   person("Martijn", "Schuemie", , "schuemie@ohdsi.org", role = c("aut")),
   person("Marc", "Suchard", role = c("aut")),
@@ -23,7 +23,7 @@ Imports:
   dplyr,
   rJava,
   jsonlite,
-  SqlRender (>= 1.6.0),
+  SqlRender (>= 1.18.0),
   ParallelLogger (>= 2.0.2),
   cli,
   pillar,

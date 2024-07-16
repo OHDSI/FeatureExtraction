@@ -162,7 +162,7 @@
 #'                                                             medium term window. (analysis ID 403)
 #' @param useDrugEraShortTerm                                  One covariate per drug in the drug_era
 #'                                                             table overlapping with any part of the
-#'                                                             short window. (analysis ID 404)
+#'                                                             short term window. (analysis ID 404)
 #' @param useDrugEraOverlapping                                One covariate per drug in the drug_era
 #'                                                             table overlapping with the end of the
 #'                                                             risk window. (analysis ID 405)
@@ -173,7 +173,7 @@
 #'                                                             table starting in the medium term
 #'                                                             window. (analysis ID 407)
 #' @param useDrugEraStartShortTerm                             One covariate per drug in the drug_era
-#'                                                             table starting in the long short window.
+#'                                                             table starting in the short term window.
 #'                                                             (analysis ID 408)
 #' @param useDrugGroupEraAnyTimePrior                          One covariate per drug rolled up to ATC
 #'                                                             groups in the drug_era table overlapping
@@ -269,6 +269,18 @@
 #'                                                             measurements are below, within, or above
 #'                                                             normal range in the short term window.
 #'                                                             (analysis ID 712)
+#' @param useMeasurementValueAsConceptAnyTimePrior             One covariate per measurement-value
+#'                                                             concept combination any time prior to
+#'                                                             index. (analysis ID 713)
+#' @param useMeasurementValueAsConceptLongTerm                 One covariate per measurement-value
+#'                                                             concept combination in the long term
+#'                                                             window. (analysis ID 714)
+#' @param useMeasurementValueAsConceptMediumTerm               One covariate per measurement-value
+#'                                                             concept combination in the medium term
+#'                                                             window. (analysis ID 715)
+#' @param useMeasurementValueAsConceptShortTerm                One covariate per measurement-value
+#'                                                             concept combination in the short term
+#'                                                             window. (analysis ID 716)
 #' @param useObservationAnyTimePrior                           One covariate per observation in the
 #'                                                             observation table any time prior to
 #'                                                             index. (analysis ID 801)
@@ -281,6 +293,18 @@
 #' @param useObservationShortTerm                              One covariate per observation in the
 #'                                                             observation table in the short term
 #'                                                             window. (analysis ID 804)
+#' @param useObservationValueAsConceptAnyTimePrior             One covariate per observation-value
+#'                                                             concept combination any time prior to
+#'                                                             index. (analysis ID 805)
+#' @param useObservationValueAsConceptLongTerm                 One covariate per observation-value
+#'                                                             concept combination in the long term
+#'                                                             window. (analysis ID 806)
+#' @param useObservationValueAsConceptMediumTerm               One covariate per observation-value
+#'                                                             concept combination in the medium term
+#'                                                             window. (analysis ID 807)
+#' @param useObservationValueAsConceptShortTerm                One covariate per observation-value
+#'                                                             concept combination in the short term
+#'                                                             window. (analysis ID 808)
 #' @param useCharlsonIndex                                     The Charlson comorbidity index (Romano
 #'                                                             adaptation) using all conditions prior
 #'                                                             to the window end. (analysis ID 901)
@@ -455,11 +479,19 @@
 #'   useMeasurementRangeGroupAnyTimePrior = FALSE,
 #'   useMeasurementRangeGroupLongTerm = TRUE,
 #'   useMeasurementRangeGroupMediumTerm = FALSE,
-#'   useMeasurementRangeGroupShortTerm = FALSE,
+#'   useMeasurementRangeGroupShortTerm = TRUE,
+#'   useMeasurementValueAsConceptAnyTimePrior = FALSE,
+#'   useMeasurementValueAsConceptLongTerm = TRUE,
+#'   useMeasurementValueAsConceptMediumTerm = FALSE,
+#'   useMeasurementValueAsConceptShortTerm = TRUE,       
 #'   useObservationAnyTimePrior = FALSE,
 #'   useObservationLongTerm = TRUE,
 #'   useObservationMediumTerm = FALSE,
 #'   useObservationShortTerm = TRUE,
+#'   useObservationValueAsConceptAnyTimePrior = FALSE,
+#'   useObservationValueAsConceptLongTerm = TRUE,
+#'   useObservationValueAsConceptMediumTerm = FALSE,
+#'   useObservationValueAsConceptShortTerm = TRUE,
 #'   useCharlsonIndex = TRUE,
 #'   useDcsi = TRUE,
 #'   useChads2 = TRUE,
@@ -574,10 +606,18 @@ createCovariateSettings <- function(useDemographicsGender = FALSE,
                                     useMeasurementRangeGroupLongTerm = FALSE,
                                     useMeasurementRangeGroupMediumTerm = FALSE,
                                     useMeasurementRangeGroupShortTerm = FALSE,
+                                    useMeasurementValueAsConceptAnyTimePrior = FALSE,
+                                    useMeasurementValueAsConceptLongTerm = FALSE,
+                                    useMeasurementValueAsConceptMediumTerm = FALSE,
+                                    useMeasurementValueAsConceptShortTerm = FALSE,
                                     useObservationAnyTimePrior = FALSE,
                                     useObservationLongTerm = FALSE,
                                     useObservationMediumTerm = FALSE,
                                     useObservationShortTerm = FALSE,
+                                    useObservationValueAsConceptAnyTimePrior = FALSE,
+                                    useObservationValueAsConceptLongTerm = FALSE,
+                                    useObservationValueAsConceptMediumTerm = FALSE,
+                                    useObservationValueAsConceptShortTerm = FALSE,                                    
                                     useCharlsonIndex = FALSE,
                                     useDcsi = FALSE,
                                     useChads2 = FALSE,

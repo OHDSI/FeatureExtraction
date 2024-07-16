@@ -644,7 +644,7 @@ public class FeatureExtraction {
 		}
 		
 		jsonWriter.key("sqlQueryFeatureRef");
-		jsonWriter.value("SELECT covariate_id, covariate_name, analysis_id, concept_id  FROM #cov_ref");
+		jsonWriter.value("SELECT covariate_id, covariate_name, analysis_id, concept_id, value_as_concept_id, collisions FROM #cov_ref");
 		
 		jsonWriter.key("sqlQueryAnalysisRef");
 		if (temporal) {

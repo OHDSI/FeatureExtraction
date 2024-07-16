@@ -72,6 +72,8 @@ The covariate construction function has to accept the following arguments:
 * `rowIdField`:  The name of the field in the cohort temp table that is to be used as the row_id field in the output table. This can be especially usefull if there is more than one period per person.
 * `covariateSettings`: The object created in your covariate settings function.
 * `aggregated`: Should covariates be constructed per-person, or aggregated across the cohort?
+*  `minCharacterizationMean`: The minimum mean value for characterization output. Values below this will be cut off from output. This will help reduce the file size of the characterization output, but will remove information on covariates that have very low values. The default is 0. Note: this parameter only works
+when `aggregated` is set to TRUE. Since aggregation is not supported in this function, it doesn't actually filter the output. However, the `getDbCovariateData` function requires this parameter to be present.
 
 The function can expect that a  table exists with the name specified in the `cohortTable` argument. This table will identify the persons and the index dates for which we want to construct the covariates, and will have the following fields: `subject_id`, `cohort_start_date`, and `cohort_definition_id`. Because sometimes there can be more than one index date (i.e. `cohort_start_date`) per person, an additional field can be included with a unique identifier for each `subject_id` - `cohort_start_date` combination. The name of this field will be specified in the `rowIdField` argument
 
@@ -96,7 +98,8 @@ getDbLooCovariateData <- function(connection,
                                   cohortIds = c(-1),
                                   rowIdField = "subject_id",
                                   covariateSettings,
-                                  aggregated = FALSE) {
+                                  aggregated = FALSE,
+                                  minCharacterizationMean = 0) {
   writeLines("Constructing length of observation covariates")
   if (covariateSettings$useLengthOfObs == FALSE) {
     return(NULL)

@@ -58,7 +58,11 @@
 #' @param covariateSettings      Either an object of type \code{covariateSettings} as created using one
 #'                               of the createCovariate functions, or a list of such objects.
 #' @param aggregated             Should aggregate statistics be computed instead of covariates per
-#'                               cohort entry?
+#'                               cohort entry? If aggregated is set to FALSE, the results returned will be based
+#'                               on each subject_id and cohort_start_date in your cohort table. If your cohort
+#'                               contains multiple entries for the same subject_id (due to different cohort_start_date values),
+#'                               you must carefully set the rowIdField so you can identify the patients properly.
+#'                               See issue #229 for more discussion on this parameter.
 #' @param minCharacterizationMean The minimum mean value for characterization output. Values below this will be cut off from output. This
 #'                                will help reduce the file size of the characterization output, but will remove information
 #'                                on covariates that have very low values. The default is 0.

@@ -69,8 +69,8 @@
 #'                                                 the drug_era table starting in the time window.
 #'                                                 (analysis ID 403)
 #' @param useDrugEraGroupOverlap                   One covariate per drug rolled up to ATC groups in
-#'                                                 the drug_era table overlapping with any part of
-#'                                                 the time window. (analysis ID 404)
+#'                                                 the drug_era table overlapping with any part of the
+#'                                                 time window. (analysis ID 404)
 #' @param useProcedureOccurrence                   One covariate per procedure in the
 #'                                                 procedure_occurrence table in the time window.
 #'                                                 (analysis ID 501)
@@ -85,8 +85,14 @@
 #' @param useMeasurementRangeGroup                 Covariates indicating whether measurements are
 #'                                                 below, within, or above normal range within the time
 #'                                                 period. (analysis ID 703)
+#' @param useMeasurementValueAsConcept             One covariate per measurement-value concept
+#'                                                 combination within the time period. (analysis ID
+#'                                                 704)
 #' @param useObservation                           One covariate per observation in the observation
 #'                                                 table in the time window. (analysis ID 801)
+#' @param useObservationValueAsConcept             One covariate per observation-value concept
+#'                                                 combination within the time period. (analysis ID
+#'                                                 802)
 #' @param useCharlsonIndex                         The Charlson comorbidity index (Romano adaptation)
 #'                                                 using all conditions prior to the window end.
 #'                                                 (analysis ID 901)
@@ -168,7 +174,9 @@
 #'   useMeasurement = TRUE,
 #'   useMeasurementValue = FALSE,
 #'   useMeasurementRangeGroup = TRUE,
+#'   useMeasurementValueAsConcept = TRUE,
 #'   useObservation = TRUE,
+#'   useObservationValueAsConcept = TRUE,
 #'   useCharlsonIndex = TRUE,
 #'   useDcsi = TRUE,
 #'   useChads2 = TRUE,
@@ -219,7 +227,9 @@ createTemporalCovariateSettings <- function(useDemographicsGender = FALSE,
                                             useMeasurement = FALSE,
                                             useMeasurementValue = FALSE,
                                             useMeasurementRangeGroup = FALSE,
+                                            useMeasurementValueAsConcept = FALSE,
                                             useObservation = FALSE,
+                                            useObservationValueAsConcept = FALSE,
                                             useCharlsonIndex = FALSE,
                                             useDcsi = FALSE,
                                             useChads2 = FALSE,

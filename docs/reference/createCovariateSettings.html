@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">FeatureExtraction</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.5.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.6.0</span>
       </span>
     </div>
 
@@ -158,10 +158,18 @@
 <span>  useMeasurementRangeGroupLongTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useMeasurementRangeGroupMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useMeasurementRangeGroupShortTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  useMeasurementValueAsConceptAnyTimePrior <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  useMeasurementValueAsConceptLongTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  useMeasurementValueAsConceptMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  useMeasurementValueAsConceptShortTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useObservationAnyTimePrior <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useObservationLongTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useObservationMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useObservationShortTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  useObservationValueAsConceptAnyTimePrior <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  useObservationValueAsConceptLongTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  useObservationValueAsConceptMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  useObservationValueAsConceptShortTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useCharlsonIndex <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useDcsi <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useChads2 <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -678,6 +686,30 @@ normal range in the short term window.
 (analysis ID 712)</p></dd>
 
 
+<dt>useMeasurementValueAsConceptAnyTimePrior</dt>
+<dd><p>One covariate per measurement-value
+concept combination any time prior to
+index. (analysis ID 713)</p></dd>
+
+
+<dt>useMeasurementValueAsConceptLongTerm</dt>
+<dd><p>One covariate per measurement-value
+concept combination in the long term
+window. (analysis ID 714)</p></dd>
+
+
+<dt>useMeasurementValueAsConceptMediumTerm</dt>
+<dd><p>One covariate per measurement-value
+concept combination in the medium term
+window. (analysis ID 715)</p></dd>
+
+
+<dt>useMeasurementValueAsConceptShortTerm</dt>
+<dd><p>One covariate per measurement-value
+concept combination in the short term
+window. (analysis ID 716)</p></dd>
+
+
 <dt>useObservationAnyTimePrior</dt>
 <dd><p>One covariate per observation in the
 observation table any time prior to
@@ -700,6 +732,30 @@ window. (analysis ID 803)</p></dd>
 <dd><p>One covariate per observation in the
 observation table in the short term
 window. (analysis ID 804)</p></dd>
+
+
+<dt>useObservationValueAsConceptAnyTimePrior</dt>
+<dd><p>One covariate per observation-value
+concept combination any time prior to
+index. (analysis ID 805)</p></dd>
+
+
+<dt>useObservationValueAsConceptLongTerm</dt>
+<dd><p>One covariate per observation-value
+concept combination in the long term
+window. (analysis ID 806)</p></dd>
+
+
+<dt>useObservationValueAsConceptMediumTerm</dt>
+<dd><p>One covariate per observation-value
+concept combination in the medium term
+window. (analysis ID 807)</p></dd>
+
+
+<dt>useObservationValueAsConceptShortTerm</dt>
+<dd><p>One covariate per observation-value
+concept combination in the short term
+window. (analysis ID 808)</p></dd>
 
 
 <dt>useCharlsonIndex</dt>
@@ -989,11 +1045,19 @@ restricted to.</p></dd>
 <span class="r-in"><span>  useMeasurementRangeGroupAnyTimePrior <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useMeasurementRangeGroupLongTerm <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  useMeasurementRangeGroupMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
-<span class="r-in"><span>  useMeasurementRangeGroupShortTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>  useMeasurementRangeGroupShortTerm <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>  useMeasurementValueAsConceptAnyTimePrior <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>  useMeasurementValueAsConceptLongTerm <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>  useMeasurementValueAsConceptMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>  useMeasurementValueAsConceptShortTerm <span class="op">=</span> <span class="cn">TRUE</span>,       </span></span>
 <span class="r-in"><span>  useObservationAnyTimePrior <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useObservationLongTerm <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  useObservationMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useObservationShortTerm <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>  useObservationValueAsConceptAnyTimePrior <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>  useObservationValueAsConceptLongTerm <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>  useObservationValueAsConceptMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>  useObservationValueAsConceptShortTerm <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  useCharlsonIndex <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  useDcsi <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  useChads2 <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>

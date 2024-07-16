@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">FeatureExtraction</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.5.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.6.0</span>
       </span>
     </div>
 
@@ -110,7 +110,9 @@
 <span>  useMeasurement <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useMeasurementValue <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useMeasurementRangeGroup <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  useMeasurementValueAsConcept <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useObservation <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  useObservationValueAsConcept <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useCharlsonIndex <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useDcsi <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useChads2 <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -250,8 +252,8 @@ the drug_era table starting in the time window.
 
 <dt>useDrugEraGroupOverlap</dt>
 <dd><p>One covariate per drug rolled up to ATC groups in
-the drug_era table overlapping with any part of
-the time window. (analysis ID 404)</p></dd>
+the drug_era table overlapping with any part of the
+time window. (analysis ID 404)</p></dd>
 
 
 <dt>useProcedureOccurrence</dt>
@@ -283,9 +285,21 @@ below, within, or above normal range within the time
 period. (analysis ID 703)</p></dd>
 
 
+<dt>useMeasurementValueAsConcept</dt>
+<dd><p>One covariate per measurement-value concept
+combination within the time period. (analysis ID
+704)</p></dd>
+
+
 <dt>useObservation</dt>
 <dd><p>One covariate per observation in the observation
 table in the time window. (analysis ID 801)</p></dd>
+
+
+<dt>useObservationValueAsConcept</dt>
+<dd><p>One covariate per observation-value concept
+combination within the time period. (analysis ID
+802)</p></dd>
 
 
 <dt>useCharlsonIndex</dt>
@@ -434,7 +448,9 @@ to.</p></dd>
 <span class="r-in"><span>  useMeasurement <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  useMeasurementValue <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useMeasurementRangeGroup <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>  useMeasurementValueAsConcept <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  useObservation <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>  useObservationValueAsConcept <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  useCharlsonIndex <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  useDcsi <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  useChads2 <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
