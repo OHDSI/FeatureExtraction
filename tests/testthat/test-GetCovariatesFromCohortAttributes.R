@@ -7,7 +7,6 @@
 # covr::file_report(covr::file_coverage("R/GetCovariatesFromCohortAttributes.R", "tests/testthat/test-GetCovariatesFromCohortAttributes.R"))
 
 test_that("getDbCohortAttrCovariatesData aggregation not supported check", {
-  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   expect_error(getDbCohortAttrCovariatesData(
     connection = eunomiaConnection,
@@ -18,7 +17,6 @@ test_that("getDbCohortAttrCovariatesData aggregation not supported check", {
 })
 
 test_that("getDbCohortAttrCovariatesData CDM v4 not supported check", {
-  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   expect_error(getDbCohortAttrCovariatesData(
     connection = eunomiaConnection,
@@ -72,7 +70,6 @@ test_that("getDbCohortAttrCovariatesData hasIncludedAttributes > 0", {
 })
 
 test_that("createCohortAttrCovariateSettings check", {
-  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   result <- createCohortAttrCovariateSettings(attrDatabaseSchema = "main")
   expect_equal(class(result), "covariateSettings")

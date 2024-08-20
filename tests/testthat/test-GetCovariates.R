@@ -34,7 +34,6 @@ getCovariateSettings <- function() {
 # }
 
 test_that("getDbCovariateData enforces specification of database details", {
-  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   # No database details specified
   expect_error(getDbCovariateData(
@@ -73,7 +72,6 @@ test_that("getDbCovariateData CDM v4 not supported", {
 })
 
 test_that("getDbCovariateData cohortTableIsTemp tests when table name lacks # symbol", {
-  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   result <- getDbCovariateData(
     connection = eunomiaConnection,

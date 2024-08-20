@@ -3,7 +3,6 @@
 # covr::file_report(covr::file_coverage("R/HelperFunctions.R", "tests/testthat/test-HelperFunctions.R"))
 
 test_that("Test helper functions for non-aggregated covariate data", {
-  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   expect_error(filterByRowId("blah", 1), "not of class CovariateData")
 

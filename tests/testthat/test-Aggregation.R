@@ -30,7 +30,6 @@ test_that("aggregateCovariates works", {
 })
 
 test_that("aggregateCovariates handles temporalCovariates", {
-  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   settings <- createTemporalCovariateSettings(useDemographicsGender = TRUE)
   covariateData <- getDbCovariateData(

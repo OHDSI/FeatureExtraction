@@ -143,7 +143,6 @@ runExtractionPerPerson <- function(connection, cdmDatabaseSchema, ohdsiDatabaseS
 }
 
 test_that("Run all analysis at per-person level on PostgreSQL", {
-  skip_on_cran()
   skip_if_not(dbms == "postgresql")
   pgConnection <- createUnitTestData(pgConnectionDetails, pgCdmDatabaseSchema, pgOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
   on.exit(dropUnitTestData(pgConnection, pgOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable))
@@ -152,7 +151,6 @@ test_that("Run all analysis at per-person level on PostgreSQL", {
 })
 
 test_that("Run all analysis at per-person level on SQL Server", {
-  skip_on_cran()
   skip_if_not(dbms == "sql server")
   sqlServerConnection <- createUnitTestData(sqlServerConnectionDetails, sqlServerCdmDatabaseSchema, sqlServerOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
   on.exit(dropUnitTestData(sqlServerConnection, sqlServerOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable))
@@ -161,7 +159,6 @@ test_that("Run all analysis at per-person level on SQL Server", {
 })
 
 test_that("Run all analysis at per-person level on Oracle", {
-  skip_on_cran()
   skip_if_not(dbms == "oracle")
   oracleConnection <- createUnitTestData(oracleConnectionDetails, oracleCdmDatabaseSchema, oracleOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
   on.exit(dropUnitTestData(oracleConnection, oracleOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable))
@@ -170,7 +167,6 @@ test_that("Run all analysis at per-person level on Oracle", {
 })
 
 test_that("Run all analysis at per-person level on Redshift", {
-  skip_on_cran()
   skip_if_not(dbms == "redshift")
   redshiftConnection <- createUnitTestData(redshiftConnectionDetails, redshiftCdmDatabaseSchema, redshiftOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
   on.exit(dropUnitTestData(redshiftConnection, redshiftOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable))
@@ -179,7 +175,6 @@ test_that("Run all analysis at per-person level on Redshift", {
 })
 
 test_that("Run all analysis at per-person level on Eunomia", {
-  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   covariateData <- runExtractionPerPerson(eunomiaConnection, eunomiaCdmDatabaseSchema, eunomiaOhdsiDatabaseSchema, cohortTable)
   expect_true(is(covariateData, "CovariateData"))
@@ -329,7 +324,6 @@ runExtractionAggregated <- function(connection, cdmDatabaseSchema, ohdsiDatabase
 }
 
 test_that("Run all analysis at aggregated level on PostgreSQL", {
-  skip_on_cran()
   skip_if_not(dbms == "postgresql")
   pgConnection <- createUnitTestData(pgConnectionDetails, pgCdmDatabaseSchema, pgOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
   on.exit(dropUnitTestData(pgConnection, pgOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable))
@@ -338,7 +332,6 @@ test_that("Run all analysis at aggregated level on PostgreSQL", {
 })
 
 test_that("Run all analysis at aggregated level on SQL Server", {
-  skip_on_cran()
   skip_if_not(dbms == "sql server")
   sqlServerConnection <- createUnitTestData(sqlServerConnectionDetails, sqlServerCdmDatabaseSchema, sqlServerOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
   on.exit(dropUnitTestData(sqlServerConnection, sqlServerOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable))
@@ -347,7 +340,6 @@ test_that("Run all analysis at aggregated level on SQL Server", {
 })
 
 test_that("Run all analysis at aggregated level on Oracle", {
-  skip_on_cran()
   skip_if_not(dbms == "oracle")
   oracleConnection <- createUnitTestData(oracleConnectionDetails, oracleCdmDatabaseSchema, oracleOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
   on.exit(dropUnitTestData(oracleConnection, oracleOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable))
@@ -356,7 +348,6 @@ test_that("Run all analysis at aggregated level on Oracle", {
 })
 
 test_that("Run all analysis at aggregated level on Redshift", {
-  skip_on_cran()
   skip_if_not(dbms == "redshift")
   redshiftConnection <- createUnitTestData(redshiftConnectionDetails, redshiftCdmDatabaseSchema, redshiftOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
   on.exit(dropUnitTestData(redshiftConnection, redshiftOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable))
@@ -365,7 +356,6 @@ test_that("Run all analysis at aggregated level on Redshift", {
 })
 
 test_that("Run all analysis at aggregated level on Eunomia", {
-  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   covariateData <- runExtractionAggregated(eunomiaConnection, eunomiaCdmDatabaseSchema, eunomiaOhdsiDatabaseSchema, cohortTable)
   expect_true(is(covariateData, "CovariateData"))
@@ -440,7 +430,6 @@ runExtractionTemporalPerPerson <- function(connection, cdmDatabaseSchema, ohdsiD
 }
 
 test_that("Run all temporalanalysis at per-person level on PostgreSQL", {
-  skip_on_cran()
   skip_if_not(dbms == "postgresql")
   pgConnection <- createUnitTestData(pgConnectionDetails, pgCdmDatabaseSchema, pgOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
   on.exit(dropUnitTestData(pgConnection, pgOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable))
@@ -449,7 +438,6 @@ test_that("Run all temporalanalysis at per-person level on PostgreSQL", {
 })
 
 test_that("Run all temporalanalysis at per-person level on SQL Server", {
-  skip_on_cran()
   skip_if_not(dbms == "sql server")
   sqlServerConnection <- createUnitTestData(sqlServerConnectionDetails, sqlServerCdmDatabaseSchema, sqlServerOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
   on.exit(dropUnitTestData(sqlServerConnection, sqlServerOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable))
@@ -458,7 +446,6 @@ test_that("Run all temporalanalysis at per-person level on SQL Server", {
 })
 
 test_that("Run all temporalanalysis at per-person level on Oracle", {
-  skip_on_cran()
   skip_if_not(dbms == "oracle")
   oracleConnection <- createUnitTestData(oracleConnectionDetails, oracleCdmDatabaseSchema, oracleOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
   on.exit(dropUnitTestData(oracleConnection, oracleOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable))
@@ -467,7 +454,6 @@ test_that("Run all temporalanalysis at per-person level on Oracle", {
 })
 
 test_that("Run all temporalanalysis at per-person level on Redshift", {
-  skip_on_cran()
   skip_if_not(dbms == "redshift")
   redshiftConnection <- createUnitTestData(redshiftConnectionDetails, redshiftCdmDatabaseSchema, redshiftOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
   on.exit(dropUnitTestData(redshiftConnection, redshiftOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable))
@@ -476,7 +462,6 @@ test_that("Run all temporalanalysis at per-person level on Redshift", {
 })
 
 test_that("Run all temporalanalysis at per-person level on Eunomia", {
-  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   covariateData <- runExtractionTemporalPerPerson(eunomiaConnection, eunomiaCdmDatabaseSchema, eunomiaOhdsiDatabaseSchema, cohortTable)
   expect_true(is(covariateData, "CovariateData"))
@@ -552,7 +537,6 @@ runExtractionTemporalAggregated <- function(connection, cdmDatabaseSchema, ohdsi
 }
 
 test_that("Run all temporalanalysis at aggregated level on PostgreSQL", {
-  skip_on_cran()
   skip_if_not(dbms == "postgresql")
   pgConnection <- createUnitTestData(pgConnectionDetails, pgCdmDatabaseSchema, pgOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
   on.exit(dropUnitTestData(pgConnection, pgOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable))
@@ -561,7 +545,6 @@ test_that("Run all temporalanalysis at aggregated level on PostgreSQL", {
 })
 
 test_that("Run all temporalanalysis at aggregated level on SQL Server", {
-  skip_on_cran()
   skip_if_not(dbms == "sql server")
   sqlServerConnection <- createUnitTestData(sqlServerConnectionDetails, sqlServerCdmDatabaseSchema, sqlServerOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
   on.exit(dropUnitTestData(sqlServerConnection, sqlServerOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable))
@@ -570,7 +553,6 @@ test_that("Run all temporalanalysis at aggregated level on SQL Server", {
 })
 
 test_that("Run all temporalanalysis at aggregated level on Oracle", {
-  skip_on_cran()
   skip_if_not(dbms == "oracle")
   oracleConnection <- createUnitTestData(oracleConnectionDetails, oracleCdmDatabaseSchema, oracleOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
   on.exit(dropUnitTestData(oracleConnection, oracleOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable))
@@ -579,7 +561,6 @@ test_that("Run all temporalanalysis at aggregated level on Oracle", {
 })
 
 test_that("Run all temporalanalysis at aggregated level on Redshift", {
-  skip_on_cran()
   skip_if_not(dbms == "redshift")
   redshiftConnection <- createUnitTestData(redshiftConnectionDetails, redshiftCdmDatabaseSchema, redshiftOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
   on.exit(dropUnitTestData(redshiftConnection, redshiftOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable))
@@ -588,7 +569,6 @@ test_that("Run all temporalanalysis at aggregated level on Redshift", {
 })
 
 test_that("Run all temporalanalysis at aggregated level on Eunomia", {
-  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   covariateData <- runExtractionTemporalAggregated(eunomiaConnection, eunomiaCdmDatabaseSchema, eunomiaOhdsiDatabaseSchema, cohortTable)
   expect_true(is(covariateData, "CovariateData"))
