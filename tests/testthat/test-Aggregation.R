@@ -3,6 +3,7 @@
 # covr::file_report(covr::file_coverage("R/Aggregation.R", "tests/testthat/test-Aggregation.R"))
 
 test_that("aggregateCovariates works", {
+  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   settings <- createCovariateSettings(useDemographicsAgeGroup = TRUE, useChads2Vasc = TRUE)
   covariateData <- getDbCovariateData(
@@ -29,6 +30,7 @@ test_that("aggregateCovariates works", {
 })
 
 test_that("aggregateCovariates handles temporalCovariates", {
+  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   settings <- createTemporalCovariateSettings(useDemographicsGender = TRUE)
   covariateData <- getDbCovariateData(

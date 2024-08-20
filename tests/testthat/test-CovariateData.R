@@ -3,6 +3,7 @@
 # covr::file_report(covr::file_coverage("R/CovariateData.R", "tests/testthat/test-CovariateData.R"))
 
 test_that("test CovariateData Class on Empty", {
+  skip_on_cran()
   skip_if_not(dbms == "sqlite")
   # create 4 scenarios of Covariate Data
   # 1) error (non class), 2) covariate data, 3) aggregatedCovariate Data,
@@ -52,6 +53,7 @@ test_that("test CovariateData Class on Empty", {
 })
 
 test_that("test saveCovariateData error cases", {
+  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   saveFileTest <- tempfile("covDatSave")
   settings <- createDefaultCovariateSettings()
@@ -78,6 +80,7 @@ test_that("test saveCovariateData error cases", {
 })
 
 test_that("test summary call for covariateData class", {
+  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   settings <- createDefaultCovariateSettings()
   covariateData <- getDbCovariateData(
@@ -95,6 +98,7 @@ test_that("test summary call for covariateData class", {
 })
 
 test_that("test filtering of covariates based on minCharacterizationMean", {
+  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   settings <- createDefaultCovariateSettings()
   covariateData <- getDbCovariateData(
@@ -126,10 +130,12 @@ test_that("test filtering of covariates based on minCharacterizationMean", {
 })
 
 test_that("test loadCovariateData", {
+  skip_on_cran()
   expect_error(loadCovariateData("errorPath"))
 })
 
 test_that("Test exit/warning conditions", {
+  skip_on_cran()
   # Empty Directory test
   tempDir <- tempdir()
   expect_error(loadCovariateData(file = tempDir))
@@ -146,12 +152,14 @@ test_that("Test exit/warning conditions", {
 })
 
 test_that("Test show method", {
+  skip_on_cran()
   cvData <- FeatureExtraction::createEmptyCovariateData(cohortIds = c(1, 2), aggregated = FALSE, temporal = FALSE)
   expect_invisible(show(cvData))
   on.exit(rm(cvData))
 })
 
 test_that("getDbCovariateData cohortId warning", {
+  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   settings <- createDefaultCovariateSettings()
   expect_warning(getDbCovariateData(
@@ -165,6 +173,7 @@ test_that("getDbCovariateData cohortId warning", {
 })
 
 test_that("getDbCovariateData settings list - check metaData", {
+  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   looCovSet <- FeatureExtraction:::.createLooCovariateSettings(useLengthOfObs = TRUE)
   covariateSettingsList <- list(looCovSet, looCovSet)

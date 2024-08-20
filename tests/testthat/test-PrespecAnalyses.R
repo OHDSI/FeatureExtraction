@@ -1,6 +1,7 @@
 # This file contains tests for all the PrespecAnalyses files in the inst/csv folder.
 
 test_that("PrespecAnalyses check for uniqueness", {
+  skip_on_cran()
   analysesFiles <- list.files(system.file("csv", package = "FeatureExtraction"),
     pattern = "^.*.Analyses*.csv$",
     full.names = TRUE

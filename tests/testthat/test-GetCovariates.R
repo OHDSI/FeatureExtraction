@@ -34,6 +34,7 @@ getCovariateSettings <- function() {
 # }
 
 test_that("getDbCovariateData enforces specification of database details", {
+  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   # No database details specified
   expect_error(getDbCovariateData(
@@ -60,6 +61,7 @@ test_that("getDbCovariateData enforces specification of database details", {
 })
 
 test_that("getDbCovariateData CDM v4 not supported", {
+  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   expect_error(getDbCovariateData(
     connectionDetails = eunomiaConnectionDetails,
@@ -71,6 +73,7 @@ test_that("getDbCovariateData CDM v4 not supported", {
 })
 
 test_that("getDbCovariateData cohortTableIsTemp tests when table name lacks # symbol", {
+  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   result <- getDbCovariateData(
     connection = eunomiaConnection,
@@ -83,6 +86,7 @@ test_that("getDbCovariateData cohortTableIsTemp tests when table name lacks # sy
 })
 
 test_that("getDbCovariateData cohortTableIsTemp tests when table name contains # symbol", {
+  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   result <- getDbCovariateData(
     connection = eunomiaConnection,
@@ -95,6 +99,7 @@ test_that("getDbCovariateData cohortTableIsTemp tests when table name contains #
 })
 
 test_that("getDbCovariateData populationSize == 0 tests", {
+  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   expect_warning(getDbCovariateData(
     connection = eunomiaConnection,
@@ -107,6 +112,7 @@ test_that("getDbCovariateData populationSize == 0 tests", {
 })
 
 test_that("Custom covariate builder", {
+  skip_on_cran()
   # TODO: This test is probably good to run on all DB platforms
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   covariateSettings <- createCovariateSettings(
@@ -129,6 +135,7 @@ test_that("Custom covariate builder", {
 })
 
 test_that("getDbCovariateData care site from person tests", {
+  skip_on_cran()
   # TODO: This test is probably good to run on all DB platforms
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
 
@@ -171,6 +178,7 @@ test_that("getDbCovariateData care site from person tests", {
 })
 
 test_that("getDbCovariateData care site from visit_occurrence tests", {
+  skip_on_cran()
   # TODO: This test is probably good to run on all DB platforms
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
 

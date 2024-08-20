@@ -3,6 +3,7 @@ library(FeatureExtraction)
 library(dplyr)
 
 test_that("Postcoordinated concepts on Eunomia", {
+  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   # eunomiaConnection <- DatabaseConnector::connect(Eunomia::getEunomiaConnectionDetails())
   cohort <- data.frame(

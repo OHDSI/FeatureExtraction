@@ -1,5 +1,6 @@
 # This file covers the code in DetailedCovariateData.R. View coverage for this file using
 test_that("test createDetailedCovariateSettings", {
+  skip_on_cran()
   analysisDetails <- createAnalysisDetails(
     analysisId = 1,
     sqlFileName = "DemographicsGender.sql",
@@ -23,6 +24,7 @@ test_that("test createDetailedCovariateSettings", {
 })
 
 test_that("test createDetailedTemporalCovariateSettings", {
+  skip_on_cran()
   analysisDetails <- createAnalysisDetails(
     analysisId = 1,
     sqlFileName = "DemographicsGender.sql",
@@ -44,6 +46,7 @@ test_that("test createDetailedTemporalCovariateSettings", {
 })
 
 test_that("test convertPrespecSettingsToDetailedSettings", {
+  skip_on_cran()
   settings <- createCovariateSettings(useDemographicsAgeGroup = TRUE, useChads2Vasc = TRUE)
   convertedSettings <- convertPrespecSettingsToDetailedSettings(settings)
   expect_s3_class(convertedSettings, "covariateSettings")
@@ -52,11 +55,13 @@ test_that("test convertPrespecSettingsToDetailedSettings", {
 })
 
 test_that("test createDefaultCovariateSettings", {
+  skip_on_cran()
   settings <- createDefaultCovariateSettings()
   expect_s3_class(settings, "covariateSettings")
 })
 
 test_that("test createDefaultTemporalCovariateSettings", {
+  skip_on_cran()
   settings <- createDefaultTemporalCovariateSettings()
   expect_s3_class(settings, "covariateSettings")
 })

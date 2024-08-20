@@ -3,6 +3,7 @@
 # covr::file_report(covr::file_coverage("R/GetDefaultCovariates.R", "tests/testthat/test-GetDefaultCovariates.R"))
 
 test_that("Test exit conditions", {
+  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
 
   # covariateSettings object type

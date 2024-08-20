@@ -3,6 +3,7 @@
 # covr::file_report(covr::file_coverage("R/Table1.R", "tests/testthat/test-Table1.R"))
 
 test_that("getDefaultTable1Specifications works", {
+  skip_on_cran()
   spec <- getDefaultTable1Specifications()
   expect_s3_class(spec, "data.frame")
   expect_equal(names(spec), c("label", "analysisId", "covariateIds"))
@@ -10,6 +11,7 @@ test_that("getDefaultTable1Specifications works", {
 
 
 test_that("createTable1 works with categorical covariates", {
+  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
 
   settings <- createCovariateSettings(
@@ -82,6 +84,7 @@ test_that("createTable1 works with categorical covariates", {
 
 
 test_that("createTable1 works with continuous covariates", {
+  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
 
   settings <- createCovariateSettings(
@@ -166,6 +169,7 @@ test_that("createTable1 works with other covariates", {
 })
 
 test_that("createTable1CovariateSettings works", {
+  skip_on_cran()
   covariateSettings <- createTable1CovariateSettings()
   expect_s3_class(covariateSettings, "covariateSettings")
 })

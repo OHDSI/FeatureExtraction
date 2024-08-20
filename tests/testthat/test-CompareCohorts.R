@@ -3,6 +3,7 @@
 # covr::file_report(covr::file_coverage("R/CompareCohorts.R", "tests/testthat/test-CompareCohorts.R"))
 
 test_that("Test stdDiff continuous variable computation", {
+  skip_on_cran()
   # NOTE: Data stored in "inst/testdata/continuousCovariateData.zip" created by:
   # ------------------------------------------------------------------------------
   # connectionDetails <- Eunomia::getEunomiaConnectionDetails()
@@ -39,6 +40,7 @@ test_that("Test stdDiff continuous variable computation", {
 })
 
 test_that("Test stdDiff binary variable computation", {
+  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   connectionDetails <- Eunomia::getEunomiaConnectionDetails()
   Eunomia::createCohorts(connectionDetails)

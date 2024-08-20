@@ -3,6 +3,7 @@
 # covr::file_report(covr::file_coverage("R/DefaultTemporalSequenceCovariateSettings.R", "tests/testthat/test-GetCovariatesTemporalSequence.R"))
 
 test_that("createTemporalSequenceCovariateSettings correctly sets list", {
+  skip_on_cran()
   settings <- createTemporalSequenceCovariateSettings(
     useDemographicsGender = T,
     useConditionEraGroupStart = T,
@@ -30,6 +31,7 @@ test_that("createTemporalSequenceCovariateSettings correctly sets list", {
 
 
 test_that("createTemporalSequenceCovariateSettings correctly sets function", {
+  skip_on_cran()
   settings <- createTemporalSequenceCovariateSettings(
     useDemographicsGender = T,
     useConditionEraGroupStart = T,
@@ -46,6 +48,7 @@ test_that("createTemporalSequenceCovariateSettings correctly sets function", {
 
 # check extraction
 test_that("getDbCovariateData works with createTemporalSequenceCovariateSettings", {
+  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   covSet <- createTemporalSequenceCovariateSettings(
     useDemographicsGender = T,
@@ -78,6 +81,7 @@ test_that("getDbCovariateData works with createTemporalSequenceCovariateSettings
 
 # Check backwards compatibility
 test_that("Temporal Covariate Settings are backwards compatible", {
+  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
 
   # Temporal covariate settings created previously will not have

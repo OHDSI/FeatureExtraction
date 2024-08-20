@@ -3,6 +3,7 @@
 # covr::file_report(covr::file_coverage("R/Normalization.R", "tests/testthat/test-tidyCovariates.R"))
 
 test_that("Test exit conditions ", {
+  skip_on_cran()
   # Covariate Data object check
   expect_error(tidyCovariateData(covariateData = list()))
   # CovariateData object closed
@@ -23,6 +24,7 @@ test_that("Test exit conditions ", {
 })
 
 test_that("Test empty covariateData", {
+  skip_on_cran()
   cvData <- FeatureExtraction::createEmptyCovariateData(
     cohortIds = 1,
     aggregated = FALSE,
@@ -33,6 +35,7 @@ test_that("Test empty covariateData", {
 })
 
 test_that("tidyCovariates works", {
+  skip_on_cran()
   # Generate some data:
   createCovariate <- function(i, analysisId) {
     return(tibble(
@@ -78,6 +81,7 @@ test_that("tidyCovariates works", {
 })
 
 test_that("tidyCovariateData on Temporal Data", {
+  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   covariateSettings <- createTemporalCovariateSettings(
     useDrugExposure = TRUE,
