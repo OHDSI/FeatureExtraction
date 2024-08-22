@@ -93,7 +93,8 @@ getDbDefaultCovariateData <- function(connection,
 
   settings <- .toJson(covariateSettings)
   rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$init(system.file("", package = "FeatureExtraction"))
-  json <- rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$createSql(settings, aggregated, cohortTable, rowIdField, rJava::.jarray(as.character(cohortIds)), cdmDatabaseSchema)
+  json <- rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$createSql(
+    settings, aggregated, cohortTable, rowIdField, rJava::.jarray(as.character(cohortIds)), cdmDatabaseSchema, as.character(minCharacterizationMean))
   todo <- .fromJson(json)
   if (length(todo$tempTables) != 0) {
     ParallelLogger::logInfo("Sending temp tables to server")
@@ -138,7 +139,6 @@ getDbDefaultCovariateData <- function(connection,
         andromedaTableName = "covariates",
         snakeCaseToCamelCase = TRUE
       )
-      filterCovariateDataCovariates(covariateData, "covariates", minCharacterizationMean)
     }
 
     # Continuous aggregated features
