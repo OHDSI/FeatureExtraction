@@ -86,13 +86,13 @@ public class FeatureExtraction {
 		//String settings = getDefaultPrespecTemporalAnalyses();
 //		String settings = getDefaultPrespecTemporalSequenceAnalyses();
 		// String settings = convertSettingsPrespecToDetails(getDefaultPrespecTemporalAnalyses());
-		// System.out.println(convertSettingsPrespecToDetails(getDefaultPrespecAnalyses()));		
+		// System.out.println(convertSettingsPrespecToDetails(getDefaultPrespecAnalyses()));
 		String settings =
 				 "{\"temporal\":true,\"temporalSequence\":false,\"ConditionEraGroupOverlap\":true,\"temporalStartDays\":0,\"temporalEndDays\":0,\"includedCovariateConceptIds\":[],\"addDescendantsToInclude\":false,\"excludedCovariateConceptIds\":[],\"addDescendantsToExclude\":false,\"includedCovariateIds\":[]}";
 		//String settings =
 		//"{\"temporal\":false,\"temporalSequence\":false,\"analyses\":[{\"analysisId\":999,\"sqlFileName\":\"CohortBasedBinaryCovariates.sql\",\"parameters\":{\"covariateCohortTable\":\"cohort\",\"analysisId\":999,\"analysisName\":\"Cohort\",\"startDay\":-365,\"endDay\":0},\"includedCovariateConceptIds\":[],\"addDescendantsToInclude\":false,\"excludedCovariateConceptIds\":[],\"addDescendantsToExclude\":false,\"includedCovariateIds\":[]}]}";
 		// String settings = convertSettingsPrespecToDetails(getDefaultPrespecAnalyses());
-		System.out.println(createSql(settings, true, "#temp_cohort", "row_id", -1, "cdm_synpuf", 0.0));
+		System.out.println(createSql(settings, true, "#temp_cohort", "row_id", -1, "cdm_synpuf"));
 		// System.out.println(createSql(getDefaultPrespecAnalyses(), true, "#temp_cohort", "row_id", -1, "cdm_synpuf"));
 		// System.out.println(createSql(getDefaultPrespecTemporalAnalyses(), false, "#temp_cohort", "row_id", -1, "cdm_synpuf"));
 	}
@@ -524,14 +524,12 @@ public class FeatureExtraction {
 	 *            The ID of the cohort to characterize. If set to -1, all entries in the cohort table will be used.
 	 * @param cdmDatabaseSchema
 	 *            The name of the database schema that contains the OMOP CDM instance. Requires read permissions to this database. On SQL Server, this should
-	 *            specify both the database and the schema, so for example 'cdm_instance.dbo'.
-	 * @param minCharacterizationMean The minimum mean value for characterization output. Values below this will be cut off from output. This will help reduce
-	 *            the file size of the characterization output, but will remove information on covariates that have very low values.           
+	 *            specify both the database and the schema, so for example 'cdm_instance.dbo'.        
 	 * @return A JSON object.
 	 */
 	public static String createSql(String settings, boolean aggregated, String cohortTable, String rowIdField, int cohortDefinitionId,
-			String cdmDatabaseSchema, double minCharacterizationMean) {
-		return createSql(settings, aggregated, cohortTable, rowIdField, new long[]{cohortDefinitionId}, cdmDatabaseSchema, minCharacterizationMean);
+			String cdmDatabaseSchema) {
+		return createSql(settings, aggregated, cohortTable, rowIdField, new long[]{cohortDefinitionId}, cdmDatabaseSchema, 0.0d);
 	}
 	
 	/**
