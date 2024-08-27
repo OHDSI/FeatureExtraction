@@ -33,7 +33,7 @@ function \code{createConnectionDetails} in the
 Either the \code{connection} or \code{connectionDetails} argument
 should be specified.}
 
-\item{oracleTempSchema}{A schema where temp tables can be created in Oracle.}
+\item{oracleTempSchema}{DEPRECATED: use \code{tempEmulationSchema} instead.}
 
 \item{cdmDatabaseSchema}{The name of the database schema that contains the OMOP CDM instance.
 Requires read permissions to this database. On SQL Server, this should
