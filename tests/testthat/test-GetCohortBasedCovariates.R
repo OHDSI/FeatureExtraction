@@ -90,7 +90,7 @@ runCohortBasedBinaryNonAggTest <- function(connection, cdmDatabaseSchema, ohdsiD
   tempTable <- substr(cohortTable, 1, 1) == "#"
   covs <- getDbCovariateData(
     connection = connection,
-    oracleTempSchema = getOption("sqlRenderTempEmulationSchema"),
+    tempEmulationSchema = getOption("sqlRenderTempEmulationSchema"),
     cdmDatabaseSchema = cdmDatabaseSchema,
     cohortDatabaseSchema = ohdsiDatabaseSchema,
     cohortTableIsTemp = tempTable,
@@ -132,7 +132,7 @@ runCohortBasedBinaryAggTest <- function(connection, cdmDatabaseSchema, ohdsiData
   tempTable <- substr(cohortTable, 1, 1) == "#"
   covs <- getDbCovariateData(
     connection = connection,
-    oracleTempSchema = getOption("sqlRenderTempEmulationSchema"),
+    tempEmulationSchema = getOption("sqlRenderTempEmulationSchema"),
     cdmDatabaseSchema = cdmDatabaseSchema,
     cohortDatabaseSchema = ohdsiDatabaseSchema,
     cohortTableIsTemp = tempTable,
@@ -175,7 +175,7 @@ runCohortBasedBinaryNonAggTemporalTest <- function(connection, cdmDatabaseSchema
   tempTable <- substr(cohortTable, 1, 1) == "#"
   covs <- getDbCovariateData(
     connection = connection,
-    oracleTempSchema = getOption("sqlRenderTempEmulationSchema"),
+    tempEmulationSchema = getOption("sqlRenderTempEmulationSchema"),
     cdmDatabaseSchema = cdmDatabaseSchema,
     cohortDatabaseSchema = ohdsiDatabaseSchema,
     cohortTableIsTemp = tempTable,
@@ -219,7 +219,7 @@ runCohortBasedBinaryAggTemporalTest <- function(connection, cdmDatabaseSchema, o
   tempTable <- substr(cohortTable, 1, 1) == "#"
   covs <- getDbCovariateData(
     connection = connection,
-    oracleTempSchema = getOption("sqlRenderTempEmulationSchema"),
+    tempEmulationSchema = getOption("sqlRenderTempEmulationSchema"),
     cdmDatabaseSchema = cdmDatabaseSchema,
     cohortDatabaseSchema = ohdsiDatabaseSchema,
     cohortTableIsTemp = tempTable,
@@ -266,7 +266,7 @@ runCohortBasedCountsNonAggTest <- function(connection, cdmDatabaseSchema, ohdsiD
   tempTable <- substr(cohortTable, 1, 1) == "#"
   covs <- getDbCovariateData(
     connection = connection,
-    oracleTempSchema = getOption("sqlRenderTempEmulationSchema"),
+    tempEmulationSchema = getOption("sqlRenderTempEmulationSchema"),
     cdmDatabaseSchema = cdmDatabaseSchema,
     cohortDatabaseSchema = ohdsiDatabaseSchema,
     cohortTable = cohortTable,
@@ -310,7 +310,7 @@ runCohortBasedCountsAggTest <- function(connection, cdmDatabaseSchema, ohdsiData
   tempTable <- substr(cohortTable, 1, 1) == "#"
   covs <- getDbCovariateData(
     connection = connection,
-    oracleTempSchema = getOption("sqlRenderTempEmulationSchema"),
+    tempEmulationSchema = getOption("sqlRenderTempEmulationSchema"),
     cdmDatabaseSchema = cdmDatabaseSchema,
     cohortDatabaseSchema = ohdsiDatabaseSchema,
     cohortTableIsTemp = tempTable,
@@ -356,7 +356,7 @@ runCohortBasedCountsNonAggTemporalTest <- function(connection, cdmDatabaseSchema
   tempTable <- substr(cohortTable, 1, 1) == "#"
   covs <- getDbCovariateData(
     connection = connection,
-    oracleTempSchema = getOption("sqlRenderTempEmulationSchema"),
+    tempEmulationSchema = getOption("sqlRenderTempEmulationSchema"),
     cdmDatabaseSchema = cdmDatabaseSchema,
     cohortDatabaseSchema = ohdsiDatabaseSchema,
     cohortTableIsTemp = tempTable,
@@ -401,7 +401,7 @@ runCohortBasedCountsAggTemporalTest <- function(connection, cdmDatabaseSchema, o
   tempTable <- substr(cohortTable, 1, 1) == "#"
   covs <- getDbCovariateData(
     connection = connection,
-    oracleTempSchema = getOption("sqlRenderTempEmulationSchema"),
+    tempEmulationSchema = getOption("sqlRenderTempEmulationSchema"),
     cdmDatabaseSchema = cdmDatabaseSchema,
     cohortDatabaseSchema = ohdsiDatabaseSchema,
     cohortTable = cohortTable,
@@ -450,7 +450,7 @@ runCohortBasedCountsAggMultiCohortTest <- function(connection, cdmDatabaseSchema
   tempTable <- substr(cohortTable, 1, 1) == "#"
   covs <- getDbCovariateData(
     connection = connection,
-    oracleTempSchema = getOption("sqlRenderTempEmulationSchema"),
+    tempEmulationSchema = getOption("sqlRenderTempEmulationSchema"),
     cdmDatabaseSchema = cdmDatabaseSchema,
     cohortDatabaseSchema = ohdsiDatabaseSchema,
     cohortTableIsTemp = tempTable,

@@ -131,7 +131,7 @@ runExtractionPerPerson <- function(connection, cdmDatabaseSchema, ohdsiDatabaseS
   suppressWarnings(covariateData <- getDbCovariateData(
     connection = connection,
     cdmDatabaseSchema = cdmDatabaseSchema,
-    oracleTempSchema = ohdsiDatabaseSchema,
+    tempEmulationSchema = ohdsiDatabaseSchema,
     cohortDatabaseSchema = ohdsiDatabaseSchema,
     cohortTable = cohortTable,
     cohortTableIsTemp = TRUE,
@@ -311,7 +311,7 @@ runExtractionAggregated <- function(connection, cdmDatabaseSchema, ohdsiDatabase
   suppressWarnings(covariateData <- getDbCovariateData(
     connection = connection,
     cdmDatabaseSchema = cdmDatabaseSchema,
-    oracleTempSchema = ohdsiDatabaseSchema,
+    tempEmulationSchema = ohdsiDatabaseSchema,
     cohortDatabaseSchema = ohdsiDatabaseSchema,
     cohortTable = cohortTable,
     cohortTableIsTemp = TRUE,
@@ -418,7 +418,7 @@ runExtractionTemporalPerPerson <- function(connection, cdmDatabaseSchema, ohdsiD
   suppressWarnings(covariateData <- getDbCovariateData(
     connection = connection,
     cdmDatabaseSchema = cdmDatabaseSchema,
-    oracleTempSchema = ohdsiDatabaseSchema,
+    tempEmulationSchema = ohdsiDatabaseSchema,
     cohortDatabaseSchema = ohdsiDatabaseSchema,
     cohortTable = cohortTable,
     cohortTableIsTemp = TRUE,
@@ -524,7 +524,7 @@ runExtractionTemporalAggregated <- function(connection, cdmDatabaseSchema, ohdsi
   suppressWarnings(covariateData <- getDbCovariateData(
     connection = connection,
     cdmDatabaseSchema = cdmDatabaseSchema,
-    oracleTempSchema = ohdsiDatabaseSchema,
+    tempEmulationSchema = ohdsiDatabaseSchema,
     cohortDatabaseSchema = ohdsiDatabaseSchema,
     cohortTable = cohortTable,
     cohortTableIsTemp = TRUE,

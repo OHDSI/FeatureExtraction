@@ -64,7 +64,7 @@ Eunomia::createCohorts(
 )
 covData1 <- getDbCovariateData(
   connectionDetails = eunomiaConnectionDetails,
-  oracleTempSchema = NULL,
+  tempEmulationSchema = NULL,
   cdmDatabaseSchema = "main",
   cdmVersion = "5",
   cohortTable = "cohort",
@@ -77,7 +77,7 @@ covData1 <- getDbCovariateData(
 )
 covData2 <- getDbCovariateData(
   connectionDetails = eunomiaConnectionDetails,
-  oracleTempSchema = NULL,
+  tempEmulationSchema = NULL,
   cdmDatabaseSchema = "main",
   cdmVersion = "5",
   cohortTable = "cohort",

@@ -72,7 +72,8 @@ getDbDefaultCovariateData <- function(connection,
                                       targetCovariateRefTable,
                                       targetAnalysisRefTable,
                                       aggregated = FALSE,
-                                      minCharacterizationMean = 0) {
+                                      minCharacterizationMean = 0,
+                                      tempEmulationSchema = NULL) {
   if (!is(covariateSettings, "covariateSettings")) {
     stop("Covariate settings object not of type covariateSettings")
   }
@@ -85,6 +86,13 @@ getDbDefaultCovariateData <- function(connection,
   if (!missing(cohortId)) {
     warning("cohortId argument has been deprecated, please use cohortIds")
     cohortIds <- cohortId
+  }
+  if (!is.null(oracleTempSchema) && oracleTempSchema != "") {
+    warn("The 'oracleTempSchema' argument is deprecated. Use 'tempEmulationSchema' instead.",
+         .frequency = "regularly",
+         .frequency_id = "oracleTempSchema"
+    )
+    tempEmulationSchema <- oracleTempSchema
   }
   errorMessages <- checkmate::makeAssertCollection()
   minCharacterizationMean <- utils::type.convert(minCharacterizationMean, as.is = TRUE)
@@ -104,7 +112,7 @@ getDbDefaultCovariateData <- function(connection,
         dropTableIfExists = TRUE,
         createTable = TRUE,
         tempTable = TRUE,
-        oracleTempSchema = oracleTempSchema
+        tempEmulationSchema = tempEmulationSchema
       )
     }
   }
@@ -114,7 +122,7 @@ getDbDefaultCovariateData <- function(connection,
   sql <- SqlRender::translate(
     sql = todo$sqlConstruction,
     targetDialect = attr(connection, "dbms"),
-    oracleTempSchema = oracleTempSchema
+    tempEmulationSchema = tempEmulationSchema
   )
   profile <- (!is.null(getOption("dbProfile")) && getOption("dbProfile") == TRUE)
   DatabaseConnector::executeSql(connection, sql, profile = profile)
@@ -128,7 +136,7 @@ getDbDefaultCovariateData <- function(connection,
       sql <- SqlRender::translate(
         sql = todo$sqlQueryFeatures,
         targetDialect = attr(connection, "dbms"),
-        oracleTempSchema = oracleTempSchema
+        tempEmulationSchema = tempEmulationSchema
       )
 
       DatabaseConnector::querySqlToAndromeda(
@@ -161,7 +169,7 @@ getDbDefaultCovariateData <- function(connection,
     sql <- SqlRender::translate(
       sql = todo$sqlQueryFeatureRef,
       targetDialect = attr(connection, "dbms"),
-      oracleTempSchema = oracleTempSchema
+      tempEmulationSchema = tempEmulationSchema
     )
 
     DatabaseConnector::querySqlToAndromeda(
@@ -185,7 +193,7 @@ getDbDefaultCovariateData <- function(connection,
     sql <- SqlRender::translate(
       sql = todo$sqlQueryAnalysisRef,
       targetDialect = attr(connection, "dbms"),
-      oracleTempSchema = oracleTempSchema
+      tempEmulationSchema = tempEmulationSchema
     )
     DatabaseConnector::querySqlToAndromeda(
       connection = connection,
@@ -200,7 +208,7 @@ getDbDefaultCovariateData <- function(connection,
       sql <- SqlRender::translate(
         sql = todo$sqlQueryTimeRef,
         targetDialect = attr(connection, "dbms"),
-        oracleTempSchema = oracleTempSchema
+        tempEmulationSchema = tempEmulationSchema
       )
       DatabaseConnector::querySqlToAndromeda(
         connection = connection,
@@ -233,7 +241,7 @@ getDbDefaultCovariateData <- function(connection,
       sql <- SqlRender::translate(
         sql = sql,
         targetDialect = attr(connection, "dbms"),
-        oracleTempSchema = oracleTempSchema
+        tempEmulationSchema = tempEmulationSchema
       )
       DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
     }
@@ -244,7 +252,7 @@ getDbDefaultCovariateData <- function(connection,
       sql <- SqlRender::translate(
         sql = sql,
         targetDialect = attr(connection, "dbms"),
-        oracleTempSchema = oracleTempSchema
+        tempEmulationSchema = tempEmulationSchema
       )
       DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
     }
@@ -255,7 +263,7 @@ getDbDefaultCovariateData <- function(connection,
       sql <- SqlRender::translate(
         sql = sql,
         targetDialect = attr(connection, "dbms"),
-        oracleTempSchema = oracleTempSchema
+        tempEmulationSchema = tempEmulationSchema
       )
       DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
     }
@@ -266,7 +274,7 @@ getDbDefaultCovariateData <- function(connection,
   sql <- SqlRender::translate(
     sql = todo$sqlCleanup,
     targetDialect = attr(connection, "dbms"),
-    oracleTempSchema = oracleTempSchema
+    tempEmulationSchema = tempEmulationSchema
   )
   DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
   if (length(todo$tempTables) != 0) {
@@ -276,7 +284,7 @@ getDbDefaultCovariateData <- function(connection,
       sql <- SqlRender::translate(
         sql = sql,
         targetDialect = attr(connection, "dbms"),
-        oracleTempSchema = oracleTempSchema
+        tempEmulationSchema = tempEmulationSchema
       )
       DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
     }
