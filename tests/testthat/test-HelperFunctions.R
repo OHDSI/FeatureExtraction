@@ -28,6 +28,7 @@ test_that("Test helper functions for non-aggregated covariate data", {
 })
 
 test_that("Test helper functions for aggregated covariate data", {
+  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   expect_error(filterByCohortDefinitionId("blah", 1), "not of class CovariateData")
 

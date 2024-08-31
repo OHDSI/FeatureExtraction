@@ -486,6 +486,7 @@ test_that("Cohort-based covariates: binary, non-aggregated on Eunomia", {
 })
 
 test_that("Cohort-based covariates: binary, aggregated on Eunomia", {
+  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   runCohortBasedBinaryAggTest(
     connection = eunomiaConnection,
@@ -496,6 +497,7 @@ test_that("Cohort-based covariates: binary, aggregated on Eunomia", {
 })
 
 test_that("Cohort-based covariates: binary, non-aggregated, temporal on Eunomia", {
+  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   runCohortBasedBinaryNonAggTemporalTest(
     connection = eunomiaConnection,
@@ -506,6 +508,7 @@ test_that("Cohort-based covariates: binary, non-aggregated, temporal on Eunomia"
 })
 
 test_that("Cohort-based covariates: binary, aggregated, temporal on Eunomia", {
+  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   runCohortBasedBinaryAggTemporalTest(
     connection = eunomiaConnection,
@@ -516,6 +519,7 @@ test_that("Cohort-based covariates: binary, aggregated, temporal on Eunomia", {
 })
 
 test_that("Cohort-based covariates: counts, non-aggregated on Eunomia", {
+  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   runCohortBasedCountsNonAggTest(
     connection = eunomiaConnection,
@@ -526,6 +530,7 @@ test_that("Cohort-based covariates: counts, non-aggregated on Eunomia", {
 })
 
 test_that("Cohort-based covariates: counts, aggregated on Eunomia", {
+  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   runCohortBasedCountsAggTest(
     connection = eunomiaConnection,
@@ -536,6 +541,7 @@ test_that("Cohort-based covariates: counts, aggregated on Eunomia", {
 })
 
 test_that("Cohort-based covariates: counts, non-aggregated, temporal on Eunomia", {
+  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   runCohortBasedCountsNonAggTemporalTest(
     connection = eunomiaConnection,
@@ -546,6 +552,7 @@ test_that("Cohort-based covariates: counts, non-aggregated, temporal on Eunomia"
 })
 
 test_that("Cohort-based covariates: counts, aggregated, temporal on Eunomia", {
+  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   runCohortBasedCountsAggTemporalTest(
     connection = eunomiaConnection,
@@ -556,6 +563,7 @@ test_that("Cohort-based covariates: counts, aggregated, temporal on Eunomia", {
 })
 
 test_that("Cohort-based covariates: counts, aggregated, using multiple cohort IDs on Eunomia", {
+  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   runCohortBasedCountsAggMultiCohortTest(
     connection = eunomiaConnection,
