@@ -75,7 +75,7 @@ public class FeatureExtraction {
 	private static String									ADD_DESCENDANTS_SQL				= "SELECT descendant_concept_id AS id\nINTO @target_temp\nFROM @cdm_database_schema.concept_ancestor\nINNER JOIN @source_temp\n\tON ancestor_concept_id = id;\n\n";
 	
 	public static void main(String[] args) {
-		init("C:/Users/mschuemi/git/FeatureExtraction/inst");
+		init("/Users/ginberg/Code/FeatureExtraction/inst");
 		// init("C:/R/R-3.3.1/library/FeatureExtraction");
 //		init("D:/git/OHDSI/FeatureExtraction/inst");
 		// System.out.println(convertSettingsPrespecToDetails("{\"temporal\":false,\"DemographicsGender\":true,\"DemographicsAge\":true,\"longTermStartDays\":-365,\"mediumTermStartDays\":-180,\"shortTermStartDays\":-30,\"endDays\":0,\"includedCovariateConceptIds\":[],\"addDescendantsToInclude\":false,\"excludedCovariateConceptIds\":[1,2,3],\"addDescendantsToExclude\":false,\"includedCovariateIds\":[]}"));
@@ -480,15 +480,17 @@ public class FeatureExtraction {
 	 * @param cdmDatabaseSchema
 	 *            The name of the database schema that contains the OMOP CDM instance. Requires read permissions to this database. On SQL Server, this should
 	 *            specify both the database and the schema, so for example 'cdm_instance.dbo'.
+	 * @param minCharacterizationMean The minimum mean value for characterization output. Values below this will be cut off from output. This will help reduce
+	 *            the file size of the characterization output, but will remove information on covariates that have very low values.
 	 * @return A JSON object.
 	 */
 	public static String createSql(String settings, boolean aggregated, String cohortTable, String rowIdField, String[] cohortDefinitionIds,
-			String cdmDatabaseSchema) {
+			String cdmDatabaseSchema, String minCharacterizationMean) {
 		
 		long[] idsAsLongs = new long[cohortDefinitionIds.length];
 		for (int i = 0; i < cohortDefinitionIds.length; i++)
 			idsAsLongs[i] = Long.valueOf(cohortDefinitionIds[i]);
-		return createSql(settings, aggregated, cohortTable, rowIdField, idsAsLongs, cdmDatabaseSchema);
+		return createSql(settings, aggregated, cohortTable, rowIdField, idsAsLongs, cdmDatabaseSchema, Double.valueOf(minCharacterizationMean));
 	}
 	
 	
@@ -522,12 +524,12 @@ public class FeatureExtraction {
 	 *            The ID of the cohort to characterize. If set to -1, all entries in the cohort table will be used.
 	 * @param cdmDatabaseSchema
 	 *            The name of the database schema that contains the OMOP CDM instance. Requires read permissions to this database. On SQL Server, this should
-	 *            specify both the database and the schema, so for example 'cdm_instance.dbo'.
+	 *            specify both the database and the schema, so for example 'cdm_instance.dbo'.        
 	 * @return A JSON object.
 	 */
 	public static String createSql(String settings, boolean aggregated, String cohortTable, String rowIdField, int cohortDefinitionId,
 			String cdmDatabaseSchema) {
-		return createSql(settings, aggregated, cohortTable, rowIdField, new long[]{cohortDefinitionId}, cdmDatabaseSchema);
+		return createSql(settings, aggregated, cohortTable, rowIdField, new long[]{cohortDefinitionId}, cdmDatabaseSchema, 0.0d);
 	}
 	
 	/**
@@ -559,10 +561,12 @@ public class FeatureExtraction {
 	 * @param cdmDatabaseSchema
 	 *            The name of the database schema that contains the OMOP CDM instance. Requires read permissions to this database. On SQL Server, this should
 	 *            specify both the database and the schema, so for example 'cdm_instance.dbo'.
+	 * @param minCharacterizationMean The minimum mean value for characterization output. Values below this will be cut off from output. This will help reduce
+	 *            the file size of the characterization output, but will remove information on covariates that have very low values.
 	 * @return A JSON object.
 	 */
 	public static String createSql(String settings, boolean aggregated, String cohortTable, String rowIdField, long[] cohortDefinitionIds,
-			String cdmDatabaseSchema) {
+			String cdmDatabaseSchema, double minCharacterizationMean) {
 			  
 		JSONObject jsonObject = new JSONObject(settings);
 		
@@ -629,7 +633,7 @@ public class FeatureExtraction {
 		jsonWriter.key("sqlConstruction");
 		jsonWriter.value(createConstructionSql(jsonObject, idSetToName, temporal, temporalSequence, aggregated, cohortTable, rowIdField, cohortDefinitionIds, cdmDatabaseSchema));
 		
-		String sqlQueryFeatures = createQuerySql(jsonObject, cohortTable, cohortDefinitionIds, aggregated, temporal, temporalSequence);
+		String sqlQueryFeatures = createQuerySql(jsonObject, cohortTable, cohortDefinitionIds, aggregated, temporal, temporalSequence, minCharacterizationMean);
 		if (sqlQueryFeatures != null) {
 			jsonWriter.key("sqlQueryFeatures");
 			jsonWriter.value(sqlQueryFeatures);
@@ -700,7 +704,8 @@ public class FeatureExtraction {
 		return sql.toString();
 	}
 	
-	private static String createQuerySql(JSONObject jsonObject, String cohortTable, long[] cohortDefinitionIds, boolean aggregated, boolean temporal, boolean temporalSequence) {
+	private static String createQuerySql(JSONObject jsonObject, String cohortTable, long[] cohortDefinitionIds, boolean aggregated, boolean temporal, boolean temporalSequence,
+	                                     double minCharacterizationMean) {
 		StringBuilder fields = new StringBuilder();
 		if (aggregated) {
 			fields.append("cohort_definition_id, covariate_id, sum_value");
@@ -736,8 +741,12 @@ public class FeatureExtraction {
 		if (!hasFeature)
 			return null;
 		if (aggregated) {
-			sql.append(
-					"\n) all_covariates\nINNER JOIN (\nSELECT cohort_definition_id, COUNT(*) AS total_count\nFROM @cohort_table {@cohort_definition_id != -1} ? {\nWHERE cohort_definition_id IN (@cohort_definition_id)} GROUP BY cohort_definition_id\n) total\n  ON all_covariates.cohort_definition_id = total.cohort_definition_id;");
+			sql.append("\n) all_covariates\nINNER JOIN (\nSELECT cohort_definition_id, COUNT(*) AS total_count\nFROM @cohort_table {@cohort_definition_id != -1} ? {\nWHERE cohort_definition_id IN (@cohort_definition_id)}");
+			sql.append(" GROUP BY cohort_definition_id\n) total\n  ON all_covariates.cohort_definition_id = total.cohort_definition_id");
+			if (minCharacterizationMean != 0) {
+				sql.append(" WHERE average_value >= " + minCharacterizationMean);
+			}
+			sql.append(";");
 		} else {
 			sql.append("\n) all_covariates;");
 		}
