@@ -21,7 +21,7 @@ runSpotChecks <- function(connection, cdmDatabaseSchema, ohdsiDatabaseSchema, co
   suppressWarnings(covariateData <- getDbCovariateData(
     connection = connection,
     cdmDatabaseSchema = cdmDatabaseSchema,
-    oracleTempSchema = ohdsiDatabaseSchema,
+    tempEmulationSchema = ohdsiDatabaseSchema,
     cohortDatabaseSchema = ohdsiDatabaseSchema,
     cohortTable = cohortTable,
     cohortTableIsTemp = TRUE,
@@ -32,7 +32,7 @@ runSpotChecks <- function(connection, cdmDatabaseSchema, ohdsiDatabaseSchema, co
   suppressWarnings(covariateDataAgg <- getDbCovariateData(
     connection = connection,
     cdmDatabaseSchema = cdmDatabaseSchema,
-    oracleTempSchema = ohdsiDatabaseSchema,
+    tempEmulationSchema = ohdsiDatabaseSchema,
     cohortDatabaseSchema = ohdsiDatabaseSchema,
     cohortTable = cohortTable,
     cohortTableIsTemp = TRUE,
