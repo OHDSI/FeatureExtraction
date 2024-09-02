@@ -721,7 +721,7 @@ settings <- createCovariateSettings(
   useMeasurementValueAsConceptAnyTimePrior = FALSE,
   useMeasurementValueAsConceptLongTerm = TRUE,
   useMeasurementValueAsConceptMediumTerm = FALSE,
-  useMeasurementValueAsConceptShortTerm = TRUE,       
+  useMeasurementValueAsConceptShortTerm = TRUE,
   useObservationAnyTimePrior = FALSE,
   useObservationLongTerm = TRUE,
   useObservationMediumTerm = FALSE,
