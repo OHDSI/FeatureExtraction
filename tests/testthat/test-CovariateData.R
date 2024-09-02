@@ -125,7 +125,7 @@ test_that("test filtering of covariates based on minCharacterizationMean", {
   nCovariatesFiltered <- covariateDataFiltered$covariates %>%
     collect() %>%
     nrow()
-  
+
   expect_true(nCovariatesFiltered < nCovariates)
   expect_true(covariateDataFiltered$covariates %>% pull(averageValue) %>% min() >= minCharMeanValue)
 })

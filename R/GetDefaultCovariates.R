@@ -89,8 +89,8 @@ getDbDefaultCovariateData <- function(connection,
   }
   if (!is.null(oracleTempSchema) && oracleTempSchema != "") {
     rlang::warn("The 'oracleTempSchema' argument is deprecated. Use 'tempEmulationSchema' instead.",
-                .frequency = "regularly",
-                .frequency_id = "oracleTempSchema"
+      .frequency = "regularly",
+      .frequency_id = "oracleTempSchema"
     )
     tempEmulationSchema <- oracleTempSchema
   }
@@ -102,7 +102,8 @@ getDbDefaultCovariateData <- function(connection,
   settings <- .toJson(covariateSettings)
   rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$init(system.file("", package = "FeatureExtraction"))
   json <- rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$createSql(
-    settings, aggregated, cohortTable, rowIdField, rJava::.jarray(as.character(cohortIds)), cdmDatabaseSchema, as.character(minCharacterizationMean))
+    settings, aggregated, cohortTable, rowIdField, rJava::.jarray(as.character(cohortIds)), cdmDatabaseSchema, as.character(minCharacterizationMean)
+  )
   todo <- .fromJson(json)
   if (length(todo$tempTables) != 0) {
     ParallelLogger::logInfo("Sending temp tables to server")

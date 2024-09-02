@@ -80,8 +80,8 @@ getDbCohortAttrCovariatesData <- function(connection,
   }
   if (!is.null(oracleTempSchema) && oracleTempSchema != "") {
     rlang::warn("The 'oracleTempSchema' argument is deprecated. Use 'tempEmulationSchema' instead.",
-                .frequency = "regularly",
-                .frequency_id = "oracleTempSchema"
+      .frequency = "regularly",
+      .frequency_id = "oracleTempSchema"
     )
     tempEmulationSchema <- oracleTempSchema
   }
