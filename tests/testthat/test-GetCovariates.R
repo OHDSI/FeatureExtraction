@@ -133,7 +133,6 @@ test_that("Custom covariate builder", {
 })
 
 test_that("getDbCovariateData care site from person tests", {
-  skip_on_cran()
   # TODO: This test is probably good to run on all DB platforms
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
 
@@ -176,7 +175,6 @@ test_that("getDbCovariateData care site from person tests", {
 })
 
 test_that("getDbCovariateData care site from visit_occurrence tests", {
-  skip_on_cran()
   # TODO: This test is probably good to run on all DB platforms
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
 

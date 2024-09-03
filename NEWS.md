@@ -1,3 +1,10 @@
+FeatureExtraction 3.7.0
+=======================
+
+- Deprecate oracleTempSchema param, add tempEmulationSchema param (#126)
+- Filter binary covariates server side (#255)
+- Limit tests that are run on CRAN (#267)
+
 FeatureExtraction 3.6.0
 =======================
 
