@@ -7,7 +7,10 @@
 #'
 #' @param connection          A connection to the server containing the schema as created using the
 #'                            \code{connect} function in the \code{DatabaseConnector} package.
-#' @param oracleTempSchema    A schema where temp tables can be created in Oracle.
+#' @param oracleTempSchema    DEPRECATED: use \code{tempEmulationSchema} instead.
+#' @param tempEmulationSchema Some database platforms like Oracle and Impala do not truly support
+#'                            temp tables. To emulate temp tables, provide a schema with write
+#'                            privileges where temp tables can be created.
 #' @param cdmDatabaseSchema   The name of the database schema that contains the OMOP CDM instance.
 #'                            Requires read permissions to this database. On SQL Server, this should
 #'                            specifiy both the database and the schema, so for example
@@ -28,7 +31,7 @@
 #'                            row_id field in the output table. This can be especially usefull if there
 #'                            is more than one period per person.
 #' @param aggregated          Should aggregate statistics be computed instead of covariates per
-#'                            cohort entry? 
+#'                            cohort entry?
 #'
 #' @return
 #' Returns an object of type \code{CovariateData}, which is an Andromeda object containing information on the baseline covariates.

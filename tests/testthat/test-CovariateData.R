@@ -52,6 +52,7 @@ test_that("test CovariateData Class on Empty", {
 })
 
 test_that("test saveCovariateData error cases", {
+  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   saveFileTest <- tempfile("covDatSave")
   settings <- createDefaultCovariateSettings()
@@ -95,6 +96,7 @@ test_that("test summary call for covariateData class", {
 })
 
 test_that("test filtering of covariates based on minCharacterizationMean", {
+  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   settings <- createDefaultCovariateSettings()
   covariateData <- getDbCovariateData(
@@ -110,19 +112,22 @@ test_that("test filtering of covariates based on minCharacterizationMean", {
     collect() %>%
     nrow()
 
-  covariateData <- getDbCovariateData(
+  minCharMeanValue <- 0.02
+  covariateDataFiltered <- getDbCovariateData(
     connectionDetails = eunomiaConnectionDetails,
     cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
     cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
     cohortIds = c(1),
     covariateSettings = settings,
     aggregated = TRUE,
-    minCharacterizationMean = 0.02
+    minCharacterizationMean = minCharMeanValue
   )
-  nCovariatesFiltered <- covariateData$covariates %>%
+  nCovariatesFiltered <- covariateDataFiltered$covariates %>%
     collect() %>%
     nrow()
+
   expect_true(nCovariatesFiltered < nCovariates)
+  expect_true(covariateDataFiltered$covariates %>% pull(averageValue) %>% min() >= minCharMeanValue)
 })
 
 test_that("test loadCovariateData", {
@@ -152,6 +157,7 @@ test_that("Test show method", {
 })
 
 test_that("getDbCovariateData cohortId warning", {
+  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   settings <- createDefaultCovariateSettings()
   expect_warning(getDbCovariateData(
@@ -165,6 +171,7 @@ test_that("getDbCovariateData cohortId warning", {
 })
 
 test_that("getDbCovariateData settings list - check metaData", {
+  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   looCovSet <- FeatureExtraction:::.createLooCovariateSettings(useLengthOfObs = TRUE)
   covariateSettingsList <- list(looCovSet, looCovSet)

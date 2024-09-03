@@ -1,8 +1,8 @@
 Package: FeatureExtraction
 Type: Package
 Title: Generating Features for a Cohort
-Version: 3.6.0
-Date: 2024-07-15
+Version: 3.7.0
+Date: 2024-09-02
 Authors@R: c(
   person("Martijn", "Schuemie", , "schuemie@ohdsi.org", role = c("aut")),
   person("Marc", "Suchard", role = c("aut")),
@@ -45,6 +45,6 @@ VignetteBuilder: knitr
 URL: https://github.com/OHDSI/FeatureExtraction
 BugReports: https://github.com/OHDSI/FeatureExtraction/issues
 NeedsCompilation: no
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Encoding: UTF-8
 Language: en-US

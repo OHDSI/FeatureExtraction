@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">FeatureExtraction</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.7.0</span>
       </span>
     </div>
 
@@ -83,7 +83,7 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">.getDbLooCovariateData</span><span class="op">(</span></span>
 <span>  <span class="va">connection</span>,</span>
-<span>  oracleTempSchema <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  tempEmulationSchema <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">cdmDatabaseSchema</span>,</span>
 <span>  cohortTable <span class="op">=</span> <span class="st">"#cohort_person"</span>,</span>
 <span>  cohortIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span>,</span>
@@ -104,8 +104,10 @@ Either the <code>connection</code> or <code>connectionDetails</code> argument
 should be specified.</p></dd>
 
 
-<dt>oracleTempSchema</dt>
-<dd><p>A schema where temp tables can be created in Oracle.</p></dd>
+<dt>tempEmulationSchema</dt>
+<dd><p>Some database platforms like Oracle and Impala do not truly support
+temp tables. To emulate temp tables, provide a schema with write
+privileges where temp tables can be created.</p></dd>
 
 
 <dt>cdmDatabaseSchema</dt>

@@ -72,7 +72,8 @@ getDbDefaultCovariateData <- function(connection,
                                       targetCovariateRefTable,
                                       targetAnalysisRefTable,
                                       aggregated = FALSE,
-                                      minCharacterizationMean = 0) {
+                                      minCharacterizationMean = 0,
+                                      tempEmulationSchema = NULL) {
   if (!is(covariateSettings, "covariateSettings")) {
     stop("Covariate settings object not of type covariateSettings")
   }
@@ -86,6 +87,13 @@ getDbDefaultCovariateData <- function(connection,
     warning("cohortId argument has been deprecated, please use cohortIds")
     cohortIds <- cohortId
   }
+  if (!is.null(oracleTempSchema) && oracleTempSchema != "") {
+    rlang::warn("The 'oracleTempSchema' argument is deprecated. Use 'tempEmulationSchema' instead.",
+      .frequency = "regularly",
+      .frequency_id = "oracleTempSchema"
+    )
+    tempEmulationSchema <- oracleTempSchema
+  }
   errorMessages <- checkmate::makeAssertCollection()
   minCharacterizationMean <- utils::type.convert(minCharacterizationMean, as.is = TRUE)
   checkmate::assertNumeric(x = minCharacterizationMean, lower = 0, upper = 1, add = errorMessages)
@@ -93,7 +101,9 @@ getDbDefaultCovariateData <- function(connection,
 
   settings <- .toJson(covariateSettings)
   rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$init(system.file("", package = "FeatureExtraction"))
-  json <- rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$createSql(settings, aggregated, cohortTable, rowIdField, rJava::.jarray(as.character(cohortIds)), cdmDatabaseSchema)
+  json <- rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$createSql(
+    settings, aggregated, cohortTable, rowIdField, rJava::.jarray(as.character(cohortIds)), cdmDatabaseSchema, as.character(minCharacterizationMean)
+  )
   todo <- .fromJson(json)
   if (length(todo$tempTables) != 0) {
     ParallelLogger::logInfo("Sending temp tables to server")
@@ -104,7 +114,7 @@ getDbDefaultCovariateData <- function(connection,
         dropTableIfExists = TRUE,
         createTable = TRUE,
         tempTable = TRUE,
-        oracleTempSchema = oracleTempSchema
+        tempEmulationSchema = tempEmulationSchema
       )
     }
   }
@@ -114,7 +124,7 @@ getDbDefaultCovariateData <- function(connection,
   sql <- SqlRender::translate(
     sql = todo$sqlConstruction,
     targetDialect = attr(connection, "dbms"),
-    oracleTempSchema = oracleTempSchema
+    tempEmulationSchema = tempEmulationSchema
   )
   profile <- (!is.null(getOption("dbProfile")) && getOption("dbProfile") == TRUE)
   DatabaseConnector::executeSql(connection, sql, profile = profile)
@@ -128,7 +138,7 @@ getDbDefaultCovariateData <- function(connection,
       sql <- SqlRender::translate(
         sql = todo$sqlQueryFeatures,
         targetDialect = attr(connection, "dbms"),
-        oracleTempSchema = oracleTempSchema
+        tempEmulationSchema = tempEmulationSchema
       )
 
       DatabaseConnector::querySqlToAndromeda(
@@ -138,7 +148,6 @@ getDbDefaultCovariateData <- function(connection,
         andromedaTableName = "covariates",
         snakeCaseToCamelCase = TRUE
       )
-      filterCovariateDataCovariates(covariateData, "covariates", minCharacterizationMean)
     }
 
     # Continuous aggregated features
@@ -161,7 +170,7 @@ getDbDefaultCovariateData <- function(connection,
     sql <- SqlRender::translate(
       sql = todo$sqlQueryFeatureRef,
       targetDialect = attr(connection, "dbms"),
-      oracleTempSchema = oracleTempSchema
+      tempEmulationSchema = tempEmulationSchema
     )
 
     DatabaseConnector::querySqlToAndromeda(
@@ -185,7 +194,7 @@ getDbDefaultCovariateData <- function(connection,
     sql <- SqlRender::translate(
       sql = todo$sqlQueryAnalysisRef,
       targetDialect = attr(connection, "dbms"),
-      oracleTempSchema = oracleTempSchema
+      tempEmulationSchema = tempEmulationSchema
     )
     DatabaseConnector::querySqlToAndromeda(
       connection = connection,
@@ -200,7 +209,7 @@ getDbDefaultCovariateData <- function(connection,
       sql <- SqlRender::translate(
         sql = todo$sqlQueryTimeRef,
         targetDialect = attr(connection, "dbms"),
-        oracleTempSchema = oracleTempSchema
+        tempEmulationSchema = tempEmulationSchema
       )
       DatabaseConnector::querySqlToAndromeda(
         connection = connection,
@@ -233,7 +242,7 @@ getDbDefaultCovariateData <- function(connection,
       sql <- SqlRender::translate(
         sql = sql,
         targetDialect = attr(connection, "dbms"),
-        oracleTempSchema = oracleTempSchema
+        tempEmulationSchema = tempEmulationSchema
       )
       DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
     }
@@ -244,7 +253,7 @@ getDbDefaultCovariateData <- function(connection,
       sql <- SqlRender::translate(
         sql = sql,
         targetDialect = attr(connection, "dbms"),
-        oracleTempSchema = oracleTempSchema
+        tempEmulationSchema = tempEmulationSchema
       )
       DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
     }
@@ -255,7 +264,7 @@ getDbDefaultCovariateData <- function(connection,
       sql <- SqlRender::translate(
         sql = sql,
         targetDialect = attr(connection, "dbms"),
-        oracleTempSchema = oracleTempSchema
+        tempEmulationSchema = tempEmulationSchema
       )
       DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
     }
@@ -266,7 +275,7 @@ getDbDefaultCovariateData <- function(connection,
   sql <- SqlRender::translate(
     sql = todo$sqlCleanup,
     targetDialect = attr(connection, "dbms"),
-    oracleTempSchema = oracleTempSchema
+    tempEmulationSchema = tempEmulationSchema
   )
   DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
   if (length(todo$tempTables) != 0) {
@@ -276,7 +285,7 @@ getDbDefaultCovariateData <- function(connection,
       sql <- SqlRender::translate(
         sql = sql,
         targetDialect = attr(connection, "dbms"),
-        oracleTempSchema = oracleTempSchema
+        tempEmulationSchema = tempEmulationSchema
       )
       DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
     }
@@ -295,19 +304,5 @@ getDbDefaultCovariateData <- function(connection,
     class(covariateData) <- "CovariateData"
     attr(class(covariateData), "package") <- "FeatureExtraction"
     return(covariateData)
-  }
-}
-
-#' Filters the covariateData covariates based on the given characterization mean value.
-#'
-#' @param covariateData The covariate data
-#' @param covariatesName The name of the covariates object inside the covariateData
-#' @param minCharacterizationMean The minimum mean value for characterization output. Values below this will be cut off from output. This
-#'                                will help reduce the file size of the characterization output, but will remove information
-#'                                on covariates that have very low values. The default is 0.
-filterCovariateDataCovariates <- function(covariateData, covariatesName, minCharacterizationMean = 0) {
-  if ("averageValue" %in% colnames(covariateData[[covariatesName]]) && minCharacterizationMean != 0) {
-    covariateData[[covariatesName]] <- covariateData[[covariatesName]] %>%
-      dplyr::filter(.data$averageValue >= minCharacterizationMean)
   }
 }

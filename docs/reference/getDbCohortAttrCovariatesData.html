@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">FeatureExtraction</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.7.0</span>
       </span>
     </div>
 
@@ -91,7 +91,8 @@
 <span>  cdmVersion <span class="op">=</span> <span class="st">"5"</span>,</span>
 <span>  rowIdField <span class="op">=</span> <span class="st">"subject_id"</span>,</span>
 <span>  <span class="va">covariateSettings</span>,</span>
-<span>  aggregated <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  aggregated <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  tempEmulationSchema <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -103,7 +104,7 @@
 
 
 <dt>oracleTempSchema</dt>
-<dd><p>A schema where temp tables can be created in Oracle.</p></dd>
+<dd><p>DEPRECATED: use <code>tempEmulationSchema</code> instead.</p></dd>
 
 
 <dt>cdmDatabaseSchema</dt>
@@ -152,6 +153,12 @@ is more than one period per person.</p></dd>
 <dd><p>Should aggregate statistics be computed instead of covariates per
 cohort entry?</p></dd>
 
+
+<dt>tempEmulationSchema</dt>
+<dd><p>Some database platforms like Oracle and Impala do not truly support
+temp tables. To emulate temp tables, provide a schema with write
+privileges where temp tables can be created.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -187,30 +194,16 @@ function directly but rather use the <code><a href="getDbCovariateData.html">get
 <span class="r-in"><span><span class="va">connectionDetails</span> <span class="op">&lt;-</span> <span class="fu">Eunomia</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Eunomia/man/getEunomiaConnectionDetails.html" class="external-link">getEunomiaConnectionDetails</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> attempting to download GiBleed</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> attempting to extract and load: /Users/ginberg/Data/eunomia/GiBleed_5.3.zip to: /Users/ginberg/Data/eunomia/GiBleed_5.3.sqlite</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in vroom_(file, delim = delim %||% col_types$delim, col_names = col_names,     col_types = col_types, id = id, skip = skip, col_select = col_select,     name_repair = .name_repair, na = na, quote = quote, trim_ws = trim_ws,     escape_double = escape_double, escape_backslash = escape_backslash,     comment = comment, skip_empty_rows = skip_empty_rows, locale = locale,     guess_max = guess_max, n_max = n_max, altrep = vroom_altrep(altrep),     num_threads = num_threads, progress = progress):</span> bad value</span>
 <span class="r-in"><span><span class="fu">Eunomia</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Eunomia/man/createCohorts.html" class="external-link">createCohorts</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>,</span></span>
 <span class="r-in"><span>  cdmDatabaseSchema <span class="op">=</span> <span class="st">"main"</span>,</span></span>
 <span class="r-in"><span>  cohortDatabaseSchema <span class="op">=</span> <span class="st">"main"</span>,</span></span>
 <span class="r-in"><span>  cohortTable <span class="op">=</span> <span class="st">"cohort"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cohorts created in table main.cohort</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   cohortId       name</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        1  Celecoxib</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2        2 Diclofenac</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3        3    GiBleed</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4        4     NSAIDs</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                        description</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    A simplified cohort definition for new users of celecoxib, designed specifically for Eunomia.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    A simplified cohort definition for new users ofdiclofenac, designed specifically for Eunomia.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 A simplified cohort definition for gastrointestinal bleeding, designed specifically for Eunomia.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4       A simplified cohort definition for new users of NSAIDs, designed specifically for Eunomia.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   count</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1844</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2   850</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3   479</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  2694</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'connectionDetails' not found</span>
 <span class="r-in"><span><span class="va">connection</span> <span class="op">&lt;-</span> <span class="fu">DatabaseConnector</span><span class="fu">::</span><span class="fu"><a href="https://ohdsi.github.io/DatabaseConnector/reference/connect.html" class="external-link">connect</a></span><span class="op">(</span><span class="va">connectionDetails</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Connecting using SQLite driver</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'connectionDetails' not found</span>
 <span class="r-in"><span><span class="va">covariateSettings</span> <span class="op">&lt;-</span> <span class="fu"><a href="createCohortAttrCovariateSettings.html">createCohortAttrCovariateSettings</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  attrDatabaseSchema <span class="op">=</span> <span class="st">"main"</span>,</span></span>
 <span class="r-in"><span>  cohortAttrTable <span class="op">=</span> <span class="st">"cohort_attribute"</span>,</span></span>
@@ -222,7 +215,7 @@ function directly but rather use the <code><a href="getDbCovariateData.html">get
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">covData</span> <span class="op">&lt;-</span> <span class="fu">getDbCohortAttrCovariatesData</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  connection <span class="op">=</span> <span class="va">connection</span>,</span></span>
-<span class="r-in"><span>  oracleTempSchema <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
+<span class="r-in"><span>  tempEmulationSchema <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
 <span class="r-in"><span>  cdmDatabaseSchema <span class="op">=</span> <span class="st">"main"</span>,</span></span>
 <span class="r-in"><span>  cdmVersion <span class="op">=</span> <span class="st">"5"</span>,</span></span>
 <span class="r-in"><span>  cohortTable <span class="op">=</span> <span class="st">"cohort"</span>,</span></span>
@@ -232,8 +225,7 @@ function directly but rather use the <code><a href="getDbCovariateData.html">get
 <span class="r-in"><span>  aggregated <span class="op">=</span> <span class="cn">FALSE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Constructing covariates from cohort attributes table</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Inserting data took 0.0033 secs</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Loading took 0.0245 secs</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'connection' not found</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

@@ -3,6 +3,7 @@ FeatureExtraction
 
 [![Build Status](https://github.com/OHDSI/FeatureExtraction/workflows/R-CMD-check/badge.svg)](https://github.com/OHDSI/FeatureExtraction/actions?query=workflow%3AR-CMD-check)
 [![codecov.io](https://codecov.io/github/OHDSI/FeatureExtraction/coverage.svg?branch=main)](https://app.codecov.io/github/OHDSI/FeatureExtraction?branch=main)
+[![CRAN status](https://www.r-pkg.org/badges/version/FeatureExtraction)](https://CRAN.R-project.org/package=FeatureExtraction)
 
 FeatureExtraction is part of [HADES](https://ohdsi.github.io/Hades/).
 

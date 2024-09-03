@@ -133,7 +133,7 @@ if (dbms == "bigquery" && .Platform$OS.type == "windows") {
 # oracle
 if (dbms == "oracle") {
   DatabaseConnector::downloadJdbcDrivers(dbms)
-  oracleConnectionDetails <- createConnectionDetails(
+  oracleConnectionDetails <- DatabaseConnector::createConnectionDetails(
     dbms = dbms,
     user = Sys.getenv("CDM5_ORACLE_USER"),
     password = URLdecode(Sys.getenv("CDM5_ORACLE_PASSWORD")),
@@ -148,7 +148,7 @@ if (dbms == "oracle") {
 # postgres
 if (dbms == "postgresql") {
   DatabaseConnector::downloadJdbcDrivers(dbms)
-  pgConnectionDetails <- createConnectionDetails(
+  pgConnectionDetails <- DatabaseConnector::createConnectionDetails(
     dbms = dbms,
     user = Sys.getenv("CDM5_POSTGRESQL_USER"),
     password = URLdecode(Sys.getenv("CDM5_POSTGRESQL_PASSWORD")),
@@ -161,7 +161,7 @@ if (dbms == "postgresql") {
 # redshift
 if (dbms == "redshift") {
   DatabaseConnector::downloadJdbcDrivers(dbms)
-  redshiftConnectionDetails <- createConnectionDetails(
+  redshiftConnectionDetails <- DatabaseConnector::createConnectionDetails(
     dbms = dbms,
     user = Sys.getenv("CDM5_REDSHIFT_USER"),
     password = URLdecode(Sys.getenv("CDM5_REDSHIFT_PASSWORD")),
@@ -204,7 +204,7 @@ if (dbms == "spark") {
 # sql server
 if (dbms == "sql server") {
   DatabaseConnector::downloadJdbcDrivers("sql server")
-  sqlServerConnectionDetails <- createConnectionDetails(
+  sqlServerConnectionDetails <- DatabaseConnector::createConnectionDetails(
     dbms = "sql server",
     user = Sys.getenv("CDM5_SQL_SERVER_USER"),
     password = URLdecode(Sys.getenv("CDM5_SQL_SERVER_PASSWORD")),

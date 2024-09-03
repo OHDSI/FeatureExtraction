@@ -45,7 +45,7 @@
 #'
 #' covData <- getDbCohortAttrCovariatesData(
 #'   connection = connection,
-#'   oracleTempSchema = NULL,
+#'   tempEmulationSchema = NULL,
 #'   cdmDatabaseSchema = "main",
 #'   cdmVersion = "5",
 #'   cohortTable = "cohort",
@@ -66,7 +66,8 @@ getDbCohortAttrCovariatesData <- function(connection,
                                           cdmVersion = "5",
                                           rowIdField = "subject_id",
                                           covariateSettings,
-                                          aggregated = FALSE) {
+                                          aggregated = FALSE,
+                                          tempEmulationSchema = NULL) {
   if (aggregated) {
     stop("Aggregation not implemented for covariates from cohort attributes.")
   }
@@ -76,6 +77,13 @@ getDbCohortAttrCovariatesData <- function(connection,
   if (!missing(cohortId)) {
     warning("cohortId argument has been deprecated, please use cohortIds")
     cohortIds <- cohortId
+  }
+  if (!is.null(oracleTempSchema) && oracleTempSchema != "") {
+    rlang::warn("The 'oracleTempSchema' argument is deprecated. Use 'tempEmulationSchema' instead.",
+      .frequency = "regularly",
+      .frequency_id = "oracleTempSchema"
+    )
+    tempEmulationSchema <- oracleTempSchema
   }
   start <- Sys.time()
   writeLines("Constructing covariates from cohort attributes table")
@@ -93,7 +101,7 @@ getDbCohortAttrCovariatesData <- function(connection,
       dropTableIfExists = TRUE,
       createTable = TRUE,
       tempTable = TRUE,
-      oracleTempSchema = oracleTempSchema
+      tempEmulationSchema = tempEmulationSchema
     )
   }
   sql <- SqlRender::readSql(system.file("sql/sql_server/GetAttrCovariates.sql", package = "FeatureExtraction"))
@@ -108,12 +116,12 @@ getDbCohortAttrCovariatesData <- function(connection,
   renderedSql <- SqlRender::translate(
     sql = renderedSql,
     targetDialect = attr(connection, "dbms"),
-    oracleTempSchema = oracleTempSchema
+    tempEmulationSchema = tempEmulationSchema
   )
   # renderedSql <- SqlRender::loadRenderTranslateSql("GetAttrCovariates.sql",
   #                                                  packageName = "FeatureExtraction",
   #                                                  dbms = attr(connection, "dbms"),
-  #                                                  oracleTempSchema = oracleTempSchema,
+  #                                                  tempEmulationSchema = tempEmulationSchema,
   #                                                  attr_database_schema = covariateSettings$attrDatabaseSchema,
   #                                                  cohort_table = cohortTable,
   #                                                  row_id_field = rowIdField,
@@ -129,7 +137,7 @@ getDbCohortAttrCovariatesData <- function(connection,
   covariateRefSql <- SqlRender::translate(
     sql = covariateRefSql,
     targetDialect = attr(connection, "dbms"),
-    oracleTempSchema = oracleTempSchema
+    tempEmulationSchema = tempEmulationSchema
   )
   covariateRef <- DatabaseConnector::querySql(connection, covariateRefSql, snakeCaseToCamelCase = TRUE)
   covariateRef$analysisId <- rep(as.numeric(covariateSettings$analysisId), length = nrow(covariateRef))

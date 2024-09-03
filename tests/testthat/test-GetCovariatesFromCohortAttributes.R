@@ -27,6 +27,7 @@ test_that("getDbCohortAttrCovariatesData CDM v4 not supported check", {
 })
 
 test_that("getDbCohortAttrCovariatesData hasIncludedAttributes == 0", {
+  skip_on_cran()
   # TODO: This test is probably good to run on all DB platforms
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   covariateSettings <- createCohortAttrCovariateSettings(
@@ -47,6 +48,7 @@ test_that("getDbCohortAttrCovariatesData hasIncludedAttributes == 0", {
 })
 
 test_that("getDbCohortAttrCovariatesData hasIncludedAttributes > 0", {
+  skip_on_cran()
   # TODO: This test is probably good to run on all DB platforms
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   covariateSettings <- createCohortAttrCovariateSettings(
@@ -74,6 +76,7 @@ test_that("createCohortAttrCovariateSettings check", {
 })
 
 test_that("getDbCohortAttrCovariatesData cohortId warning", {
+  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   covariateSettings <- createCohortAttrCovariateSettings(
     attrDatabaseSchema = eunomiaOhdsiDatabaseSchema,

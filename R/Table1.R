@@ -75,7 +75,7 @@ getDefaultTable1Specifications <- function() {
 #' )
 #' covData1 <- getDbCovariateData(
 #'   connectionDetails = eunomiaConnectionDetails,
-#'   oracleTempSchema = NULL,
+#'   tempEmulationSchema = NULL,
 #'   cdmDatabaseSchema = "main",
 #'   cdmVersion = "5",
 #'   cohortTable = "cohort",
@@ -88,7 +88,7 @@ getDefaultTable1Specifications <- function() {
 #' )
 #' covData2 <- getDbCovariateData(
 #'   connectionDetails = eunomiaConnectionDetails,
-#'   oracleTempSchema = NULL,
+#'   tempEmulationSchema = NULL,
 #'   cdmDatabaseSchema = "main",
 #'   cdmVersion = "5",
 #'   cohortTable = "cohort",

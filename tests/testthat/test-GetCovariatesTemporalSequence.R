@@ -78,6 +78,7 @@ test_that("getDbCovariateData works with createTemporalSequenceCovariateSettings
 
 # Check backwards compatibility
 test_that("Temporal Covariate Settings are backwards compatible", {
+  skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
 
   # Temporal covariate settings created previously will not have
