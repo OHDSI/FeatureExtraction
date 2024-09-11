@@ -744,7 +744,7 @@ public class FeatureExtraction {
 			sql.append("\n) all_covariates\nINNER JOIN (\nSELECT cohort_definition_id, COUNT(*) AS total_count\nFROM @cohort_table {@cohort_definition_id != -1} ? {\nWHERE cohort_definition_id IN (@cohort_definition_id)}");
 			sql.append(" GROUP BY cohort_definition_id\n) total\n  ON all_covariates.cohort_definition_id = total.cohort_definition_id");
 			if (minCharacterizationMean != 0) {
-				sql.append(" WHERE average_value >= " + minCharacterizationMean);
+				sql.append(" WHERE all_covariates.sum_value / (1.0 * total.total_count) >= " + minCharacterizationMean);
 			}
 			sql.append(";");
 		} else {
