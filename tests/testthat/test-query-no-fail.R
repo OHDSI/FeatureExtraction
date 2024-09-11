@@ -318,7 +318,8 @@ runExtractionAggregated <- function(connection, cdmDatabaseSchema, ohdsiDatabase
     cohortIds = c(1124300),
     rowIdField = "subject_id",
     covariateSettings = settings,
-    aggregated = TRUE
+    aggregated = TRUE,
+    minCharacterizationMean = 0.001
   ))
   return(covariateData)
 }
@@ -531,7 +532,8 @@ runExtractionTemporalAggregated <- function(connection, cdmDatabaseSchema, ohdsi
     cohortIds = c(1124300),
     rowIdField = "subject_id",
     covariateSettings = settings,
-    aggregated = TRUE
+    aggregated = TRUE,
+    minCharacterizationMean = 0.001
   ))
   return(covariateData)
 }
