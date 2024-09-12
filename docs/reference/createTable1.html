@@ -18,7 +18,7 @@ Allows for creating a table describing a single cohort, or a table comparing two
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">FeatureExtraction</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.7.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.7.1</span>
       </span>
     </div>
 
@@ -160,8 +160,9 @@ provided, <code>covariateData2</code> is assumed to contain data on only 1 cohor
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="va">eunomiaConnectionDetails</span> <span class="op">&lt;-</span> <span class="fu">Eunomia</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Eunomia/man/getEunomiaConnectionDetails.html" class="external-link">getEunomiaConnectionDetails</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> attempting to download GiBleed</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> attempting to extract and load: /Users/ginberg/Data/eunomia/GiBleed_5.3.zip to: /Users/ginberg/Data/eunomia/GiBleed_5.3.sqlite</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in vroom_(file, delim = delim %||% col_types$delim, col_names = col_names,     col_types = col_types, id = id, skip = skip, col_select = col_select,     name_repair = .name_repair, na = na, quote = quote, trim_ws = trim_ws,     escape_double = escape_double, escape_backslash = escape_backslash,     comment = comment, skip_empty_rows = skip_empty_rows, locale = locale,     guess_max = guess_max, n_max = n_max, altrep = vroom_altrep(altrep),     num_threads = num_threads, progress = progress):</span> bad value</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>downloaded length 0 != reported length 0</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>URL 'https://raw.githubusercontent.com/OHDSI/EunomiaDatasets/main/datasets/GiBleed/GiBleed_5.3.zip': Timeout of 60 seconds was reached</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in utils::download.file(url = paste(baseUrl, datasetName, zipName,     sep = "/"), destfile = file.path(pathToData, zipName)):</span> download from 'https://raw.githubusercontent.com/OHDSI/EunomiaDatasets/main/datasets/GiBleed/GiBleed_5.3.zip' failed</span>
 <span class="r-in"><span><span class="va">covSettings</span> <span class="op">&lt;-</span> <span class="fu"><a href="createDefaultCovariateSettings.html">createDefaultCovariateSettings</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">Eunomia</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Eunomia/man/createCohorts.html" class="external-link">createCohorts</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  connectionDetails <span class="op">=</span> <span class="va">eunomiaConnectionDetails</span>,</span></span>

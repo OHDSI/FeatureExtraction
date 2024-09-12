@@ -1,3 +1,8 @@
+FeatureExtraction 3.7.1
+=======================
+
+- Fix bug related to minCharacterizationMean (#274)
+
 FeatureExtraction 3.7.0
 =======================
 
