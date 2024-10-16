@@ -55,6 +55,8 @@ test_that("getDbCovariateData works with createTemporalSequenceCovariateSettings
     useDemographicsAgeGroup = T,
     useConditionEraGroupStart = T,
     useDrugEraStart = T,
+    useMeasurement = T,
+    useMeasurementValue = T,
     timePart = "month",
     timeInterval = 1,
     sequenceEndDay = -1,
