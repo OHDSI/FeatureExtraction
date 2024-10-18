@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">FeatureExtraction</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.7.2</span>
       </span>
     </div>
 
@@ -192,19 +192,30 @@ function directly but rather use the <code><a href="getDbCovariateData.html">get
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="va">connectionDetails</span> <span class="op">&lt;-</span> <span class="fu">Eunomia</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Eunomia/man/getEunomiaConnectionDetails.html" class="external-link">getEunomiaConnectionDetails</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> attempting to download GiBleed</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>downloaded length 0 != reported length 0</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>URL 'https://raw.githubusercontent.com/OHDSI/EunomiaDatasets/main/datasets/GiBleed/GiBleed_5.3.zip': Timeout of 60 seconds was reached</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in utils::download.file(url = paste(baseUrl, datasetName, zipName,     sep = "/"), destfile = file.path(pathToData, zipName)):</span> download from 'https://raw.githubusercontent.com/OHDSI/EunomiaDatasets/main/datasets/GiBleed/GiBleed_5.3.zip' failed</span>
 <span class="r-in"><span><span class="fu">Eunomia</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Eunomia/man/createCohorts.html" class="external-link">createCohorts</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>,</span></span>
 <span class="r-in"><span>  cdmDatabaseSchema <span class="op">=</span> <span class="st">"main"</span>,</span></span>
 <span class="r-in"><span>  cohortDatabaseSchema <span class="op">=</span> <span class="st">"main"</span>,</span></span>
 <span class="r-in"><span>  cohortTable <span class="op">=</span> <span class="st">"cohort"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'connectionDetails' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cohorts created in table main.cohort</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   cohortId       name</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        1  Celecoxib</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2        2 Diclofenac</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3        3    GiBleed</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4        4     NSAIDs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                        description</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1    A simplified cohort definition for new users of celecoxib, designed specifically for Eunomia.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2    A simplified cohort definition for new users ofdiclofenac, designed specifically for Eunomia.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 A simplified cohort definition for gastrointestinal bleeding, designed specifically for Eunomia.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4       A simplified cohort definition for new users of NSAIDs, designed specifically for Eunomia.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   count</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1844</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   850</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   479</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  2694</span>
 <span class="r-in"><span><span class="va">connection</span> <span class="op">&lt;-</span> <span class="fu">DatabaseConnector</span><span class="fu">::</span><span class="fu"><a href="https://ohdsi.github.io/DatabaseConnector/reference/connect.html" class="external-link">connect</a></span><span class="op">(</span><span class="va">connectionDetails</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'connectionDetails' not found</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Connecting using SQLite driver</span>
 <span class="r-in"><span><span class="va">covariateSettings</span> <span class="op">&lt;-</span> <span class="fu"><a href="createCohortAttrCovariateSettings.html">createCohortAttrCovariateSettings</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  attrDatabaseSchema <span class="op">=</span> <span class="st">"main"</span>,</span></span>
 <span class="r-in"><span>  cohortAttrTable <span class="op">=</span> <span class="st">"cohort_attribute"</span>,</span></span>
@@ -226,7 +237,8 @@ function directly but rather use the <code><a href="getDbCovariateData.html">get
 <span class="r-in"><span>  aggregated <span class="op">=</span> <span class="cn">FALSE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Constructing covariates from cohort attributes table</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'connection' not found</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Inserting data took 0.0045 secs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Loading took 0.0251 secs</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

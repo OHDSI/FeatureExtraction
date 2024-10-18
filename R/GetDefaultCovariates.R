@@ -155,7 +155,7 @@ getDbDefaultCovariateData <- function(connection,
       sql <- SqlRender::translate(
         sql = todo$sqlQueryContinuousFeatures,
         targetDialect = attr(connection, "dbms"),
-        oracleTempSchema = oracleTempSchema
+        tempEmulationSchema = tempEmulationSchema
       )
       DatabaseConnector::querySqlToAndromeda(
         connection = connection,

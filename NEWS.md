@@ -1,3 +1,9 @@
+FeatureExtraction 3.7.2
+=======================
+
+- Fix bug in MeasurementValue.sql (#279)
+- Fix running getDbCovariateData on snowflake (#236)
+
 FeatureExtraction 3.7.1
 =======================
 
