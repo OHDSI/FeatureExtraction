@@ -38,10 +38,12 @@ getDbCohortBasedCovariatesData <- function(connection,
                                            rowIdField = "subject_id",
                                            covariateSettings,
                                            aggregated = FALSE,
-                                           minCharacterizationMean = 0) {
+                                           minCharacterizationMean = 0,
+                                           tempEmulationSchema = NULL) {
   errorMessages <- checkmate::makeAssertCollection()
   checkmate::assertClass(connection, "DatabaseConnectorConnection", add = errorMessages)
   checkmate::assertCharacter(oracleTempSchema, len = 1, null.ok = TRUE, add = errorMessages)
+  checkmate::assertCharacter(tempEmulationSchema, len = 1, null.ok = TRUE, add = errorMessages)
   checkmate::assertCharacter(cdmDatabaseSchema, len = 1, null.ok = TRUE, add = errorMessages)
   checkmate::assertCharacter(cohortTable, len = 1, add = errorMessages)
   checkmate::assertIntegerish(cohortId, add = errorMessages)
@@ -56,6 +58,13 @@ getDbCohortBasedCovariatesData <- function(connection,
     warning("cohortId argument has been deprecated, please use cohortIds")
     cohortIds <- cohortId
   }
+  if (!is.null(oracleTempSchema) && oracleTempSchema != "") {
+    rlang::warn("The 'oracleTempSchema' argument is deprecated. Use 'tempEmulationSchema' instead.",
+      .frequency = "regularly",
+      .frequency_id = "oracleTempSchema"
+    )
+    tempEmulationSchema <- oracleTempSchema
+  }
 
   start <- Sys.time()
   message("Constructing covariates from other cohorts")
@@ -69,7 +78,7 @@ getDbCohortBasedCovariatesData <- function(connection,
     dropTableIfExists = TRUE,
     createTable = TRUE,
     tempTable = TRUE,
-    oracleTempSchema = oracleTempSchema,
+    tempEmulationSchema = tempEmulationSchema,
     camelCaseToSnakeCase = TRUE
   )
   if (is.null(covariateSettings$covariateCohortTable)) {
@@ -137,7 +146,7 @@ getDbCohortBasedCovariatesData <- function(connection,
   }
   result <- getDbDefaultCovariateData(
     connection = connection,
-    oracleTempSchema = oracleTempSchema,
+    tempEmulationSchema = tempEmulationSchema,
     cdmDatabaseSchema = cdmDatabaseSchema,
     cohortTable = cohortTable,
     cohortIds = cohortIds,
@@ -154,7 +163,7 @@ getDbCohortBasedCovariatesData <- function(connection,
     sql = sql,
     progressBar = FALSE,
     reportOverallTime = FALSE,
-    oracleTempSchema = oracleTempSchema
+    tempEmulationSchema = tempEmulationSchema
   )
   return(result)
 }

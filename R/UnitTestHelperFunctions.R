@@ -36,7 +36,9 @@
 #'                               \code{connect} function in the \code{DatabaseConnector} package.
 #'                               Either the \code{connection} or \code{connectionDetails} argument
 #'                               should be specified.
-#' @param oracleTempSchema       A schema where temp tables can be created in Oracle.
+#' @param tempEmulationSchema    Some database platforms like Oracle and Impala do not truly support
+#'                               temp tables. To emulate temp tables, provide a schema with write
+#'                               privileges where temp tables can be created.
 #' @param cdmDatabaseSchema      The name of the database schema that contains the OMOP CDM instance.
 #'                               Requires read permissions to this database. On SQL Server, this should
 #'                               specify both the database and the schema, so for example
@@ -61,7 +63,7 @@
 #' Returns an object of type \code{covariateData}, containing information on the covariates.
 #'
 .getDbLooCovariateData <- function(connection,
-                                   oracleTempSchema = NULL,
+                                   tempEmulationSchema = NULL,
                                    cdmDatabaseSchema,
                                    cohortTable = "#cohort_person",
                                    cohortIds = c(-1),

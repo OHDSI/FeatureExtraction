@@ -131,7 +131,7 @@ runExtractionPerPerson <- function(connection, cdmDatabaseSchema, ohdsiDatabaseS
   suppressWarnings(covariateData <- getDbCovariateData(
     connection = connection,
     cdmDatabaseSchema = cdmDatabaseSchema,
-    oracleTempSchema = ohdsiDatabaseSchema,
+    tempEmulationSchema = ohdsiDatabaseSchema,
     cohortDatabaseSchema = ohdsiDatabaseSchema,
     cohortTable = cohortTable,
     cohortTableIsTemp = TRUE,
@@ -311,14 +311,15 @@ runExtractionAggregated <- function(connection, cdmDatabaseSchema, ohdsiDatabase
   suppressWarnings(covariateData <- getDbCovariateData(
     connection = connection,
     cdmDatabaseSchema = cdmDatabaseSchema,
-    oracleTempSchema = ohdsiDatabaseSchema,
+    tempEmulationSchema = ohdsiDatabaseSchema,
     cohortDatabaseSchema = ohdsiDatabaseSchema,
     cohortTable = cohortTable,
     cohortTableIsTemp = TRUE,
     cohortIds = c(1124300),
     rowIdField = "subject_id",
     covariateSettings = settings,
-    aggregated = TRUE
+    aggregated = TRUE,
+    minCharacterizationMean = 0.001
   ))
   return(covariateData)
 }
@@ -418,7 +419,7 @@ runExtractionTemporalPerPerson <- function(connection, cdmDatabaseSchema, ohdsiD
   suppressWarnings(covariateData <- getDbCovariateData(
     connection = connection,
     cdmDatabaseSchema = cdmDatabaseSchema,
-    oracleTempSchema = ohdsiDatabaseSchema,
+    tempEmulationSchema = ohdsiDatabaseSchema,
     cohortDatabaseSchema = ohdsiDatabaseSchema,
     cohortTable = cohortTable,
     cohortTableIsTemp = TRUE,
@@ -524,14 +525,15 @@ runExtractionTemporalAggregated <- function(connection, cdmDatabaseSchema, ohdsi
   suppressWarnings(covariateData <- getDbCovariateData(
     connection = connection,
     cdmDatabaseSchema = cdmDatabaseSchema,
-    oracleTempSchema = ohdsiDatabaseSchema,
+    tempEmulationSchema = ohdsiDatabaseSchema,
     cohortDatabaseSchema = ohdsiDatabaseSchema,
     cohortTable = cohortTable,
     cohortTableIsTemp = TRUE,
     cohortIds = c(1124300),
     rowIdField = "subject_id",
     covariateSettings = settings,
-    aggregated = TRUE
+    aggregated = TRUE,
+    minCharacterizationMean = 0.001
   ))
   return(covariateData)
 }

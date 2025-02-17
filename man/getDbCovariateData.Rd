@@ -18,7 +18,8 @@ getDbCovariateData(
   rowIdField = "subject_id",
   covariateSettings,
   aggregated = FALSE,
-  minCharacterizationMean = 0
+  minCharacterizationMean = 0,
+  tempEmulationSchema = NULL
 )
 }
 \arguments{
@@ -32,7 +33,7 @@ function \code{createConnectionDetails} in the
 Either the \code{connection} or \code{connectionDetails} argument
 should be specified.}
 
-\item{oracleTempSchema}{A schema where temp tables can be created in Oracle.}
+\item{oracleTempSchema}{DEPRECATED: use \code{tempEmulationSchema} instead.}
 
 \item{cdmDatabaseSchema}{The name of the database schema that contains the OMOP CDM instance.
 Requires read permissions to this database. On SQL Server, this should
@@ -67,15 +68,19 @@ there is more than one period per person.}
 of the createCovariate functions, or a list of such objects.}
 
 \item{aggregated}{Should aggregate statistics be computed instead of covariates per
-cohort entry? If aggregated is set to FALSE, the results returned will be based 
-on each subject_id and cohort_start_date in your cohort table. If your cohort 
-contains multiple entries for the same subject_id (due to different cohort_start_date values), 
+cohort entry? If aggregated is set to FALSE, the results returned will be based
+on each subject_id and cohort_start_date in your cohort table. If your cohort
+contains multiple entries for the same subject_id (due to different cohort_start_date values),
 you must carefully set the rowIdField so you can identify the patients properly.
 See issue #229 for more discussion on this parameter.}
 
-\item{minCharacterizationMean}{The minimum mean value for characterization output. Values below this will be cut off from output. This 
+\item{minCharacterizationMean}{The minimum mean value for characterization output. Values below this will be cut off from output. This
 will help reduce the file size of the characterization output, but will remove information
 on covariates that have very low values. The default is 0.}
+
+\item{tempEmulationSchema}{Some database platforms like Oracle and Impala do not truly support
+temp tables. To emulate temp tables, provide a schema with write
+privileges where temp tables can be created.}
 }
 \value{
 Returns an object of type \code{covariateData}, containing information on the covariates.
@@ -101,7 +106,7 @@ Eunomia::createCohorts(
 )
 covData <- getDbCovariateData(
   connectionDetails = eunomiaConnectionDetails,
-  oracleTempSchema = NULL,
+  tempEmulationSchema = NULL,
   cdmDatabaseSchema = "main",
   cdmVersion = "5",
   cohortTable = "cohort",

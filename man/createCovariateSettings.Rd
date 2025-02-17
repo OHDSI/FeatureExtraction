@@ -315,7 +315,7 @@ medium term window. (analysis ID 403)}
 
 \item{useDrugEraShortTerm}{One covariate per drug in the drug_era
 table overlapping with any part of the
-short window. (analysis ID 404)}
+short term window. (analysis ID 404)}
 
 \item{useDrugEraOverlapping}{One covariate per drug in the drug_era
 table overlapping with the end of the
@@ -330,7 +330,7 @@ table starting in the medium term
 window. (analysis ID 407)}
 
 \item{useDrugEraStartShortTerm}{One covariate per drug in the drug_era
-table starting in the long short window.
+table starting in the short term window.
 (analysis ID 408)}
 
 \item{useDrugGroupEraAnyTimePrior}{One covariate per drug rolled up to ATC
@@ -721,7 +721,7 @@ settings <- createCovariateSettings(
   useMeasurementValueAsConceptAnyTimePrior = FALSE,
   useMeasurementValueAsConceptLongTerm = TRUE,
   useMeasurementValueAsConceptMediumTerm = FALSE,
-  useMeasurementValueAsConceptShortTerm = TRUE,       
+  useMeasurementValueAsConceptShortTerm = TRUE,
   useObservationAnyTimePrior = FALSE,
   useObservationLongTerm = TRUE,
   useObservationMediumTerm = FALSE,

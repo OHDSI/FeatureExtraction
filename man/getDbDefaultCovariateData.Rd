@@ -19,14 +19,15 @@ getDbDefaultCovariateData(
   targetCovariateRefTable,
   targetAnalysisRefTable,
   aggregated = FALSE,
-  minCharacterizationMean = 0
+  minCharacterizationMean = 0,
+  tempEmulationSchema = NULL
 )
 }
 \arguments{
 \item{connection}{A connection to the server containing the schema as created using the
 \code{connect} function in the \code{DatabaseConnector} package.}
 
-\item{oracleTempSchema}{A schema where temp tables can be created in Oracle.}
+\item{oracleTempSchema}{DEPRECATED: use \code{tempEmulationSchema} instead.}
 
 \item{cdmDatabaseSchema}{The name of the database schema that contains the OMOP CDM instance.
 Requires read permissions to this database. On SQL Server, this should
@@ -74,6 +75,10 @@ cohort entry?}
 \item{minCharacterizationMean}{The minimum mean value for binary characterization output. Values below this will be cut off from output. This
 will help reduce the file size of the characterization output, but will remove information
 on covariates that have very low values. The default is 0.}
+
+\item{tempEmulationSchema}{Some database platforms like Oracle and Impala do not truly support
+temp tables. To emulate temp tables, provide a schema with write
+privileges where temp tables can be created.}
 }
 \value{
 Returns an object of type \code{CovariateData}, which is an Andromeda object containing information on the baseline covariates.

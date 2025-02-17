@@ -33,7 +33,7 @@
 #'                               \code{connect} function in the \code{DatabaseConnector} package.
 #'                               Either the \code{connection} or \code{connectionDetails} argument
 #'                               should be specified.
-#' @param oracleTempSchema       A schema where temp tables can be created in Oracle.
+#' @param oracleTempSchema       DEPRECATED: use \code{tempEmulationSchema} instead.
 #' @param cdmDatabaseSchema      The name of the database schema that contains the OMOP CDM instance.
 #'                               Requires read permissions to this database. On SQL Server, this should
 #'                               specify both the database and the schema, so for example
@@ -66,6 +66,9 @@
 #' @param minCharacterizationMean The minimum mean value for characterization output. Values below this will be cut off from output. This
 #'                                will help reduce the file size of the characterization output, but will remove information
 #'                                on covariates that have very low values. The default is 0.
+#' @param tempEmulationSchema    Some database platforms like Oracle and Impala do not truly support
+#'                               temp tables. To emulate temp tables, provide a schema with write
+#'                               privileges where temp tables can be created.
 #'
 #' @return
 #' Returns an object of type \code{covariateData}, containing information on the covariates.
@@ -82,7 +85,7 @@
 #' )
 #' covData <- getDbCovariateData(
 #'   connectionDetails = eunomiaConnectionDetails,
-#'   oracleTempSchema = NULL,
+#'   tempEmulationSchema = NULL,
 #'   cdmDatabaseSchema = "main",
 #'   cdmVersion = "5",
 #'   cohortTable = "cohort",
@@ -109,7 +112,8 @@ getDbCovariateData <- function(connectionDetails = NULL,
                                rowIdField = "subject_id",
                                covariateSettings,
                                aggregated = FALSE,
-                               minCharacterizationMean = 0) {
+                               minCharacterizationMean = 0,
+                               tempEmulationSchema = NULL) {
   if (is.null(connectionDetails) && is.null(connection)) {
     stop("Need to provide either connectionDetails or connection")
   }
@@ -122,6 +126,13 @@ getDbCovariateData <- function(connectionDetails = NULL,
   if (!missing(cohortId)) {
     warning("cohortId argument has been deprecated, please use cohortIds")
     cohortIds <- cohortId
+  }
+  if (!is.null(oracleTempSchema) && oracleTempSchema != "") {
+    rlang::warn("The 'oracleTempSchema' argument is deprecated. Use 'tempEmulationSchema' instead.",
+      .frequency = "regularly",
+      .frequency_id = "oracleTempSchema"
+    )
+    tempEmulationSchema <- oracleTempSchema
   }
   errorMessages <- checkmate::makeAssertCollection()
   minCharacterizationMean <- utils::type.convert(minCharacterizationMean, as.is = TRUE)
@@ -149,7 +160,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
   sql <- SqlRender::translate(
     sql = sql,
     targetDialect = attr(connection, "dbms"),
-    oracleTempSchema = oracleTempSchema
+    tempEmulationSchema = tempEmulationSchema
   )
   temp <- DatabaseConnector::querySql(connection, sql, snakeCaseToCamelCase = TRUE)
   if (aggregated) {
@@ -174,7 +185,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
         fun <- attr(covariateSettings[[i]], "fun")
         args <- list(
           connection = connection,
-          oracleTempSchema = oracleTempSchema,
+          tempEmulationSchema = tempEmulationSchema,
           cdmDatabaseSchema = cdmDatabaseSchema,
           cohortTable = cohortDatabaseSchemaTable,
           cohortIds = cohortIds,
