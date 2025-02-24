@@ -19,7 +19,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<src.dir>java</src.dir>
 		<test.dir>test</test.dir>
-		<SqlRender.version>1.18.1</SqlRender.version>
+		<SqlRender.version>1.19.1</SqlRender.version>
         <doclint.config>all,-missing</doclint.config>
 	</properties>
 	<repositories>

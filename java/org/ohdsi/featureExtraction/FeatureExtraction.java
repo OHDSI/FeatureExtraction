@@ -610,7 +610,10 @@ public class FeatureExtraction {
 			temporalSequence = jsonObject.getBoolean(TEMPORAL_SEQUENCE);
 		} catch(Exception e) {}
 		boolean temporal = jsonObject.getBoolean(TEMPORAL);
-		boolean temporalAnnual = jsonObject.has(TEMPORAL_ANNUAL) && jsonObject.getBoolean(TEMPORAL_ANNUAL);
+		boolean temporalAnnual = false;
+		try {
+			temporalAnnual = jsonObject.has(TEMPORAL_ANNUAL) && jsonObject.getBoolean(TEMPORAL_ANNUAL);
+		} catch(Exception e) {}
 		Map<IdSet, String> idSetToName = extractUniqueIdSets(jsonObject);
 
 		StringWriter stringWriter = new StringWriter();
