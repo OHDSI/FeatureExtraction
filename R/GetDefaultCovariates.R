@@ -73,7 +73,7 @@ getDbDefaultCovariateData <- function(connection,
                                       targetAnalysisRefTable,
                                       aggregated = FALSE,
                                       minCharacterizationMean = 0,
-                                      tempEmulationSchema = NULL) {
+                                      tempEmulationSchema = getOption("sqlRenderTempEmulationSchema")) {
   if (!is(covariateSettings, "covariateSettings")) {
     stop("Covariate settings object not of type covariateSettings")
   }

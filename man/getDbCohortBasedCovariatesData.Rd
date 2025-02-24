@@ -16,7 +16,7 @@ getDbCohortBasedCovariatesData(
   covariateSettings,
   aggregated = FALSE,
   minCharacterizationMean = 0,
-  tempEmulationSchema = NULL
+  tempEmulationSchema = getOption("sqlRenderTempEmulationSchema")
 )
 }
 \arguments{
