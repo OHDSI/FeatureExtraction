@@ -746,8 +746,7 @@ public class FeatureExtraction {
 	                                     double minCharacterizationMean) {
 		boolean temporalAnnual = isTemporalAnnual(jsonObject);
 		Stream<String> fields = Stream.<Stream<String>>of(
-				Stream.of("covariate_id"),
-				aggregated ? Stream.of("cohort_definition_id", "sum_value") : Stream.of("row_id", "covariate_value"),
+				aggregated ? Stream.of("cohort_definition_id", "covariate_id", "sum_value") : Stream.of("row_id", "covariate_id", "covariate_value"),
 				temporal || temporalSequence ? Stream.of("time_id") : Stream.of(),
 				temporalAnnual ? Stream.of("event_year") : Stream.of()
 		).flatMap(Function.identity());
