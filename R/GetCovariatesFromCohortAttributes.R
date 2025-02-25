@@ -67,7 +67,7 @@ getDbCohortAttrCovariatesData <- function(connection,
                                           rowIdField = "subject_id",
                                           covariateSettings,
                                           aggregated = FALSE,
-                                          tempEmulationSchema = NULL) {
+                                          tempEmulationSchema = getOption("sqlRenderTempEmulationSchema")) {
   if (aggregated) {
     stop("Aggregation not implemented for covariates from cohort attributes.")
   }

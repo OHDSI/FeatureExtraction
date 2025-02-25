@@ -39,7 +39,7 @@ getDbCohortBasedCovariatesData <- function(connection,
                                            covariateSettings,
                                            aggregated = FALSE,
                                            minCharacterizationMean = 0,
-                                           tempEmulationSchema = NULL) {
+                                           tempEmulationSchema = getOption("sqlRenderTempEmulationSchema")) {
   errorMessages <- checkmate::makeAssertCollection()
   checkmate::assertClass(connection, "DatabaseConnectorConnection", add = errorMessages)
   checkmate::assertCharacter(oracleTempSchema, len = 1, null.ok = TRUE, add = errorMessages)
