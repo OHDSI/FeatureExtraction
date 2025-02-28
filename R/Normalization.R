@@ -194,6 +194,9 @@ tidyCovariateData <- function(covariateData,
         collect()
     }
     newCovariateData$covariates <- newCovariates
+    if (!is.null(covariateData$timeRef)) {
+      newCovariateData$timeRef <- covariateData$timeRef
+    }
   }
 
   class(newCovariateData) <- "CovariateData"
