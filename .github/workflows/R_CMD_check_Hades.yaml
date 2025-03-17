@@ -113,6 +113,7 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           remotes::install_cran("covr")
+          Sys.setenv("R_MAX_VSIZE" = 100Gb)
         shell: Rscript {0}
         
       - name: Remove check folder if exists
