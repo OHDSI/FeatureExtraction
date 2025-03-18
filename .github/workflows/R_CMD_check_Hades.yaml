@@ -111,13 +111,18 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           remotes::install_cran("covr")
-          Sys.setenv('R_MAX_VSIZE'=100000000000)
         shell: Rscript {0}
         
       - name: Remove check folder if exists
         if: runner.os == 'macOS'
         run: unlink("check", recursive = TRUE)
         shell: Rscript {0}
+      
+      - name: Create and populate .Renviron file
+        if: runner.os == 'macOS'
+        run: |
+          echo R_MAX_VSIZE="100000000000" >> ~/.Renviron
+        shell: bash
 
       - name: Check
         env:
