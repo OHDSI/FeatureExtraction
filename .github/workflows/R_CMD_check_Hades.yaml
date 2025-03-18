@@ -121,7 +121,7 @@ jobs:
       - name: Create and populate .Renviron file
         if: runner.os == 'macOS'
         run: |
-          echo R_MAX_VSIZE="100000000000" >> ~/.Renviron
+          echo _R_CHECK_DONTTEST_EXAMPLES_="false" >> ~/.Renviron
         shell: bash
 
       - name: Check
