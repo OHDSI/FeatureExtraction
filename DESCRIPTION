@@ -31,7 +31,8 @@ Imports:
   rlang,
   RSQLite,
   DBI,
-  checkmate
+  checkmate,
+  vroom
 Suggests:
   testthat,
   knitr,

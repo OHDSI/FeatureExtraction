@@ -117,12 +117,6 @@ jobs:
         if: runner.os == 'macOS'
         run: unlink("check", recursive = TRUE)
         shell: Rscript {0}
-      
-      - name: Create and populate .Renviron file
-        if: runner.os == 'macOS'
-        run: |
-          echo _R_CHECK_DONTTEST_EXAMPLES_="false" >> ~/.Renviron
-        shell: bash
 
       - name: Check
         env:
