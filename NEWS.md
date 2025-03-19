@@ -1,3 +1,11 @@
+FeatureExtraction 3.8.0
+=======================
+
+- Add temporal annual distribution functionality (#271)
+- Fix timeRef not returned from tidyCovariates (#289)
+- Set default for tempEmulationSchema (#286)
+- Fix R-check on Mac OS (#294)
+
 FeatureExtraction 3.7.2
 =======================
 
