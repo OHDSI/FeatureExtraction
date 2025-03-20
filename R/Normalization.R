@@ -1,4 +1,4 @@
-# Copyright 2024 Observational Health Data Sciences and Informatics
+# Copyright 2025 Observational Health Data Sciences and Informatics
 #
 # This file is part of FeatureExtraction
 #
@@ -194,6 +194,9 @@ tidyCovariateData <- function(covariateData,
         collect()
     }
     newCovariateData$covariates <- newCovariates
+    if (!is.null(covariateData$timeRef)) {
+      newCovariateData$timeRef <- covariateData$timeRef
+    }
   }
 
   class(newCovariateData) <- "CovariateData"

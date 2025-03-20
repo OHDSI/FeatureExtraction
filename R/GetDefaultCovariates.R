@@ -1,4 +1,4 @@
-# Copyright 2024 Observational Health Data Sciences and Informatics
+# Copyright 2025 Observational Health Data Sciences and Informatics
 #
 # This file is part of FeatureExtraction
 #
@@ -73,7 +73,7 @@ getDbDefaultCovariateData <- function(connection,
                                       targetAnalysisRefTable,
                                       aggregated = FALSE,
                                       minCharacterizationMean = 0,
-                                      tempEmulationSchema = NULL) {
+                                      tempEmulationSchema = getOption("sqlRenderTempEmulationSchema")) {
   if (!is(covariateSettings, "covariateSettings")) {
     stop("Covariate settings object not of type covariateSettings")
   }

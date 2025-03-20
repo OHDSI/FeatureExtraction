@@ -1,4 +1,4 @@
-# Copyright 2024 Observational Health Data Sciences and Informatics
+# Copyright 2025 Observational Health Data Sciences and Informatics
 #
 # This file is part of FeatureExtraction
 #
@@ -34,7 +34,7 @@ getDefaultTable1Specifications <- function() {
   # Workaround for issue https://github.com/tidyverse/vroom/issues/519:
   readr::local_edition(1)
   colTypes <- list(label = readr::col_character(), analysisId = readr::col_integer(), covariateIds = readr::col_character())
-  specifications <- readr::read_csv(fileName, col_types = colTypes)
+  specifications <- vroom::vroom(fileName, col_types = colTypes)
   return(specifications)
 }
 

@@ -1,4 +1,4 @@
-# Copyright 2024 Observational Health Data Sciences and Informatics
+# Copyright 2025 Observational Health Data Sciences and Informatics
 #
 # This file is part of FeatureExtraction
 #
@@ -67,7 +67,7 @@ getDbCohortAttrCovariatesData <- function(connection,
                                           rowIdField = "subject_id",
                                           covariateSettings,
                                           aggregated = FALSE,
-                                          tempEmulationSchema = NULL) {
+                                          tempEmulationSchema = getOption("sqlRenderTempEmulationSchema")) {
   if (aggregated) {
     stop("Aggregation not implemented for covariates from cohort attributes.")
   }

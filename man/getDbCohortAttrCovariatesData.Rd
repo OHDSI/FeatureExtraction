@@ -15,7 +15,7 @@ getDbCohortAttrCovariatesData(
   rowIdField = "subject_id",
   covariateSettings,
   aggregated = FALSE,
-  tempEmulationSchema = NULL
+  tempEmulationSchema = getOption("sqlRenderTempEmulationSchema")
 )
 }
 \arguments{

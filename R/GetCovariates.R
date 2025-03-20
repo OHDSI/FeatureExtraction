@@ -1,4 +1,4 @@
-# Copyright 2024 Observational Health Data Sciences and Informatics
+# Copyright 2025 Observational Health Data Sciences and Informatics
 #
 # This file is part of FeatureExtraction
 #
@@ -113,7 +113,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
                                covariateSettings,
                                aggregated = FALSE,
                                minCharacterizationMean = 0,
-                               tempEmulationSchema = NULL) {
+                               tempEmulationSchema = getOption("sqlRenderTempEmulationSchema")) {
   if (is.null(connectionDetails) && is.null(connection)) {
     stop("Need to provide either connectionDetails or connection")
   }
