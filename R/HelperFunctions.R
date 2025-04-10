@@ -47,6 +47,7 @@ filterByRowId <- function(covariateData, rowIds) {
   if (isAggregatedCovariateData(covariateData)) {
     stop("Cannot filter aggregated data by rowId")
   }
+  
   covariates <- covariateData$covariates %>%
     filter(.data$rowId %in% rowIds)
 
@@ -138,4 +139,67 @@ filterByCohortDefinitionId <- function(covariateData,
     )
     checkmate::assertTRUE(all(covariateId == round(covariateId)), .var.name = message, add = add)
   }
+}
+
+getEunomiaConnectionDetails <- function(databaseFile) {
+  andromedaVersion <- packageVersion("Andromeda")
+  if (andromedaVersion < "1.0.0") {
+    result <- Eunomia::getEunomiaConnectionDetails(databaseFile)
+  } else {
+    result <- Eunomia::getEunomiaConnectionDetails(dbms = "duckdb")
+  }
+  return(result)
+}
+
+createCohorts <- function(connectionDetails,
+                          cdmDatabaseSchema = "main",
+                          cohortDatabaseSchema = "main",
+                          cohortTable = "cohort") {
+  
+  if (!("ConnectionDetails" %in% class(connectionDetails))) {
+    stop("connectionDetails is not valid.")
+  }
+  if (cdmDatabaseSchema != "main" || cohortDatabaseSchema != "main") {
+    stop("sqlite only supports the main schema")
+  }
+  if (cohortTable != "cohort") {
+    warning("The cohortTable argument to createCohorts was deprecated in Eunomia v2.1.0")
+  }
+  
+  andromedaVersion <- packageVersion("Andromeda")
+  if (andromedaVersion < "1.0.0") {
+    connection <- DBI::dbConnect(RSQLite::SQLite(), connectionDetails$server())
+    on.exit(DBI::dbDisconnect(connection))
+    
+    # Create example cohort table
+    pathToSql <- system.file("sql", "CreateCohortTable.sql",package = "Eunomia", mustWork = TRUE)
+    sql <- readChar(pathToSql, file.info(pathToSql)$size)
+    sql <- gsub("--[a-zA-Z0-9 ]*", "", sql) # remove comments in sql
+    sql <- strsplit(gsub("\n", " ", sql), ";")[[1]] # remove newlines, split on semicolon
+    sql <- trimws(sql) # trim white space
+    sql <- sql[-which(sql == "")] # remove empty lines
+    
+    for (i in seq_along(sql)) {
+      DBI::dbExecute(connection, sql[i])
+    }
+  } else {
+    connection <- DatabaseConnector::connect(connectionDetails)
+    on.exit(DatabaseConnector::dbDisconnect(connection))
+    
+    # Create example cohort table
+    cohortData <- readRDS(system.file("testdata", "cohort.rds", package = "FeatureExtraction", mustWork = T))
+    DatabaseConnector::dbWriteTable(conn = connection, name = cohortTable, value = cohortData, overwrite = TRUE)
+  }
+
+  # Fetch cohort counts:
+  sql <- "SELECT cohort_definition_id, COUNT(*) AS count
+          FROM main.cohort
+          GROUP BY cohort_definition_id"
+  counts <- DatabaseConnector::querySql(connection, sql)
+  colnames(counts) <- tolower(colnames(counts))
+  
+  cohortsToCreate <- read.csv(system.file("settings", "CohortsToCreate.csv", package = "Eunomia", mustWork = T))
+  counts <- merge(cohortsToCreate, counts, by.x = "cohortId", by.y = "cohort_definition_id")
+  writeLines("Cohorts created in table main.cohort")
+  return(counts)
 }

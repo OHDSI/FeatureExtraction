@@ -26,8 +26,8 @@
 #'
 #' @examples
 #' \donttest{
-#' connectionDetails <- Eunomia::getEunomiaConnectionDetails()
-#' Eunomia::createCohorts(
+#' connectionDetails <- getEunomiaConnectionDetails()
+#' createCohorts(
 #'   connectionDetails = connectionDetails,
 #'   cdmDatabaseSchema = "main",
 #'   cohortDatabaseSchema = "main",

@@ -217,11 +217,11 @@ if (dbms == "sql server") {
 # eunomia
 if (dbms == "sqlite") {
   if (!is.null(checkRemoteFileAvailable("https://raw.githubusercontent.com/OHDSI/EunomiaDatasets/main/datasets/GiBleed/GiBleed_5.3.zip"))) {
-    eunomiaConnectionDetails <- Eunomia::getEunomiaConnectionDetails(databaseFile = "testEunomia.sqlite")
+    eunomiaConnectionDetails <- getEunomiaConnectionDetails(databaseFile = "testEunomia.sqlite")
     eunomiaCdmDatabaseSchema <- "main"
     eunomiaOhdsiDatabaseSchema <- "main"
     eunomiaConnection <- createUnitTestData(eunomiaConnectionDetails, eunomiaCdmDatabaseSchema, eunomiaOhdsiDatabaseSchema, cohortTable, cohortAttributeTable, attributeDefinitionTable)
-    Eunomia::createCohorts(
+    createCohorts(
       connectionDetails = eunomiaConnectionDetails,
       cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
       cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,

@@ -56,6 +56,11 @@ aggregateCovariates <- function(covariateData) {
   class(result) <- "CovariateData"
   attr(class(result), "package") <- "FeatureExtraction"
   populationSize <- attr(covariateData, "metaData")$populationSize
+  
+  andromedaVersion <- packageVersion("Andromeda")
+  if (andromedaVersion >= "1.0.0") {
+    covariateData$covariates <- covariateData$covariates %>% dplyr::rename(rowIdTest = rowId)
+  }
 
   # Aggregate binary variables
   result$covariates <- covariateData$analysisRef %>%
