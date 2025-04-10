@@ -20,7 +20,7 @@ test_that("Test helper functions for non-aggregated covariate data", {
 
   locallyAggregated <- aggregateCovariates(covariateData)
   locallyAggregated <- aggregateCovariates(covariateData)
-  andromedaVersion <- packageVersion("Andromeda")
+  andromedaVersion <- utils::packageVersion("Andromeda")
   if (andromedaVersion < "1.0.0") {
     expect_error(filterByCohortDefinitionId(locallyAggregated, cohortIds = c(1)), "no such column")
   } else {

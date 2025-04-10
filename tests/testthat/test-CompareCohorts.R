@@ -14,7 +14,7 @@ test_that("Test stdDiff continuous variable computation", {
   #                                               covariateSettings = FeatureExtraction::createCovariateSettings(useCharlsonIndex = TRUE))
   # FeatureExtraction::saveCovariateData(data, "inst/testdata/continuousCovariateData.zip")
   # ------------------------------------------------------------------------------
-  andromedaVersion <- packageVersion("Andromeda")
+  andromedaVersion <- utils::packageVersion("Andromeda")
   if (andromedaVersion < "1.0.0") {
     data <- loadCovariateData(getTestResourceFilePath("continuousCovariateData.zip"))
     # Compute the expected value based on cohorts 1 & 2's values from

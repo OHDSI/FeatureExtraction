@@ -57,9 +57,9 @@ aggregateCovariates <- function(covariateData) {
   attr(class(result), "package") <- "FeatureExtraction"
   populationSize <- attr(covariateData, "metaData")$populationSize
   
-  andromedaVersion <- packageVersion("Andromeda")
+  andromedaVersion <- utils::packageVersion("Andromeda")
   if (andromedaVersion >= "1.0.0") {
-    covariateData$covariates <- covariateData$covariates %>% dplyr::rename(rowIdTemp = rowId)
+    covariateData$covariates <- covariateData$covariates %>% dplyr::rename(rowIdTemp = .data$rowId)
   }
 
   # Aggregate binary variables
@@ -136,7 +136,7 @@ aggregateCovariates <- function(covariateData) {
   
   # revert tmp change
   if (andromedaVersion >= "1.0.0") {
-    covariateData$covariates <- covariateData$covariates %>% dplyr::rename(rowId = rowIdTemp)
+    covariateData$covariates <- covariateData$covariates %>% dplyr::rename(rowId = .data$rowIdTemp)
   }
   
   delta <- Sys.time() - start

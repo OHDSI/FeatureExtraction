@@ -142,7 +142,7 @@ filterByCohortDefinitionId <- function(covariateData,
 }
 
 getEunomiaConnectionDetails <- function(databaseFile) {
-  andromedaVersion <- packageVersion("Andromeda")
+  andromedaVersion <- utils::packageVersion("Andromeda")
   if (andromedaVersion < "1.0.0") {
     result <- Eunomia::getEunomiaConnectionDetails(databaseFile)
   } else {
@@ -166,7 +166,7 @@ createCohorts <- function(connectionDetails,
     warning("The cohortTable argument to createCohorts was deprecated in Eunomia v2.1.0")
   }
   
-  andromedaVersion <- packageVersion("Andromeda")
+  andromedaVersion <- utils::packageVersion("Andromeda")
   if (andromedaVersion < "1.0.0") {
     connection <- DBI::dbConnect(RSQLite::SQLite(), connectionDetails$server())
     on.exit(DBI::dbDisconnect(connection))
