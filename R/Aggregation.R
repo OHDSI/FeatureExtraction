@@ -59,7 +59,7 @@ aggregateCovariates <- function(covariateData) {
   
   andromedaVersion <- packageVersion("Andromeda")
   if (andromedaVersion >= "1.0.0") {
-    covariateData$covariates <- covariateData$covariates %>% dplyr::rename(rowIdTest = rowId)
+    covariateData$covariates <- covariateData$covariates %>% dplyr::rename(rowIdTemp = rowId)
   }
 
   # Aggregate binary variables
@@ -133,6 +133,12 @@ aggregateCovariates <- function(covariateData) {
   if (nrow(covariatesContinuous) > 0) {
     result$covariatesContinuous <- covariatesContinuous
   }
+  
+  # revert tmp change
+  if (andromedaVersion >= "1.0.0") {
+    covariateData$covariates <- covariateData$covariates %>% dplyr::rename(rowId = rowIdTemp)
+  }
+  
   delta <- Sys.time() - start
   writeLines(paste("Aggregating covariates took", signif(delta, 3), attr(delta, "units")))
   return(result)
