@@ -36,11 +36,7 @@ andromedaVersion <- utils::packageVersion("Andromeda")
 if (andromedaVersion < "1.0.0") {
 binaryCovDataFile <- system.file("testdata/binaryCovariateData.zip",
   package = "FeatureExtraction"
-)} else {
-binaryCovDataFile <- system.file("testdata/binaryCovariateDataDuckDB.zip",
-  package = "FeatureExtraction"
 )
-}
 covariateData1 <- loadCovariateData(binaryCovDataFile)
 covariateData2 <- loadCovariateData(binaryCovDataFile)
 covDataDiff <- computeStandardizedDifference(
@@ -49,5 +45,6 @@ covDataDiff <- computeStandardizedDifference(
   cohortId1 = 1,
   cohortId2 = 2
 )
+}
 }
 }
