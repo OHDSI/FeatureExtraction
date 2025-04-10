@@ -65,9 +65,9 @@ getDefaultTable1Specifications <- function() {
 #'
 #' @examples
 #' \donttest{
-#' eunomiaConnectionDetails <- getEunomiaConnectionDetails()
+#' eunomiaConnectionDetails <- FeatureExtraction:::getEunomiaConnectionDetails()
 #' covSettings <- createDefaultCovariateSettings()
-#' createCohorts(
+#' FeatureExtraction:::createCohorts(
 #'   connectionDetails = eunomiaConnectionDetails,
 #'   cdmDatabaseSchema = "main",
 #'   cohortDatabaseSchema = "main",

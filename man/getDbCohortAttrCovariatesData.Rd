@@ -82,8 +82,8 @@ function directly but rather use the \code{\link{getDbCovariateData}} function i
 }
 \examples{
 \donttest{
-connectionDetails <- getEunomiaConnectionDetails()
-createCohorts(
+connectionDetails <- FeatureExtraction:::getEunomiaConnectionDetails()
+FeatureExtraction:::createCohorts(
   connectionDetails = connectionDetails,
   cdmDatabaseSchema = "main",
   cohortDatabaseSchema = "main",

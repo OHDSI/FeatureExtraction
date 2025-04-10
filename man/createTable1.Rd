@@ -54,9 +54,9 @@ Allows for creating a table describing a single cohort, or a table comparing two
 }
 \examples{
 \donttest{
-eunomiaConnectionDetails <- getEunomiaConnectionDetails()
+eunomiaConnectionDetails <- FeatureExtraction:::getEunomiaConnectionDetails()
 covSettings <- createDefaultCovariateSettings()
-createCohorts(
+FeatureExtraction:::createCohorts(
   connectionDetails = eunomiaConnectionDetails,
   cdmDatabaseSchema = "main",
   cohortDatabaseSchema = "main",

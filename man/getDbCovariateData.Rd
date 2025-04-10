@@ -96,9 +96,9 @@ unique identifier that will be used as rowID in the output.
 }
 \examples{
 \donttest{
-eunomiaConnectionDetails <- getEunomiaConnectionDetails()
+eunomiaConnectionDetails <- FeatureExtraction:::getEunomiaConnectionDetails()
 covSettings <- createDefaultCovariateSettings()
-createCohorts(
+FeatureExtraction:::createCohorts(
   connectionDetails = eunomiaConnectionDetails,
   cdmDatabaseSchema = "main",
   cohortDatabaseSchema = "main",
