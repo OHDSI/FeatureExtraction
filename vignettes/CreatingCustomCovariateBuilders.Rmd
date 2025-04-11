@@ -64,7 +64,7 @@ In this example the function has only one argument: `useLengthOfObs`. This argum
 The covariate construction function has to accept the following arguments:
 
 * `connection`: A connection to the server containing the schema as created using the `connect` function in the `DatabaseConnector` package.
-* `oracleTempSchema`: A schema where temp tables can be created in Oracle.
+* `tempEmulationSchema`: Schema for emulating temp tables on Oracle, Impala, and similar platforms.
 * `cdmDatabaseSchema`: The name of the database schema that contains the OMOP CDM instance.  On SQL  Server, this will specify both the database and the schema, so for example 'cdm_instance.dbo'.
 * `cdmVersion`: Defines the OMOP CDM version used: currently supports "4" and "5".
 * `cohortTable`: Name of the table holding the cohort for which we want to construct covariates. This is a fully specified name, so either the name of a temp table (e.g. '#cohort_table'), or a permanent table including its database schema (e.g. 'cdm_schema.dbo.cohort').
@@ -91,7 +91,7 @@ Additionally, the object should have an attribute called `metaData`, which is a 
 
 ```{r eval=FALSE}
 getDbLooCovariateData <- function(connection,
-                                  oracleTempSchema = NULL,
+                                  tempEmulationSchema = NULL,
                                   cdmDatabaseSchema,
                                   cdmVersion = "5",
                                   cohortTable = "#cohort_person",
@@ -118,7 +118,7 @@ getDbLooCovariateData <- function(connection,
     "ON op.person_id = c.subject_id",
     "WHERE cohort_start_date >= observation_period_start_date",
     "AND cohort_start_date <= observation_period_end_date",
-    "{@cohort_ids != -1} ? {AND cohort_definition_id IN @cohort_ids}"
+    "{@cohort_ids != -1} ? {AND cohort_definition_id IN (@cohort_ids)}"
   )
   sql <- SqlRender::render(sql,
     cohort_table = cohortTable,
