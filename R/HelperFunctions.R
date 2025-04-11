@@ -141,7 +141,7 @@ filterByCohortDefinitionId <- function(covariateData,
   }
 }
 
-getEunomiaConnectionDetails <- function(databaseFile) {
+getEunomiaConnectionDetails <- function(databaseFile = tempfile(fileext = ".sqlite")) {
   andromedaVersion <- utils::packageVersion("Andromeda")
   if (andromedaVersion < "1.0.0") {
     result <- Eunomia::getEunomiaConnectionDetails(databaseFile)
@@ -190,12 +190,12 @@ createCohorts <- function(connectionDetails,
     cohortData <- readRDS(system.file("testdata", "cohort.rds", package = "FeatureExtraction", mustWork = T))
     DatabaseConnector::dbWriteTable(conn = connection, name = cohortTable, value = cohortData, overwrite = TRUE)
   }
-
+  
   # Fetch cohort counts:
   sql <- "SELECT cohort_definition_id, COUNT(*) AS count
           FROM main.cohort
           GROUP BY cohort_definition_id"
-  counts <- DatabaseConnector::querySql(connection, sql)
+  counts <- DBI::dbGetQuery(connection, sql)
   colnames(counts) <- tolower(colnames(counts))
   
   cohortsToCreate <- read.csv(system.file("settings", "CohortsToCreate.csv", package = "Eunomia", mustWork = T))
