@@ -39,8 +39,8 @@
 #'
 #' @examples
 #' \donttest{
-#' connectionDetails <- FeatureExtraction:::getEunomiaConnectionDetails()
-#' FeatureExtraction:::createCohorts(
+#' connectionDetails <- Eunomia::getEunomiaConnectionDetails()
+#' Eunomia::createCohorts(
 #'   connectionDetails = connectionDetails,
 #'   cdmDatabaseSchema = "main",
 #'   cohortDatabaseSchema = "main",

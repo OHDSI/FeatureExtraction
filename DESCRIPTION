@@ -2,7 +2,7 @@ Package: FeatureExtraction
 Type: Package
 Title: Generating Features for a Cohort
 Version: 3.9.0
-Date: 2025-03-19
+Date: 2025-04-14
 Authors@R: c(
   person("Martijn", "Schuemie", , "schuemie@ohdsi.org", role = c("aut")),
   person("Marc", "Suchard", role = c("aut")),
@@ -17,7 +17,7 @@ Description: An R interface for generating features for a cohort using data in t
 Depends:
   R (>= 3.2.2),
   DatabaseConnector (>= 3.0.0),
-  Andromeda (>= 1.0.0)
+  Andromeda
 Imports:
   methods,
   dplyr,
@@ -49,5 +49,3 @@ NeedsCompilation: no
 RoxygenNote: 7.3.2
 Encoding: UTF-8
 Language: en-US
-Remotes:
-  ohdsi/Andromeda@develop

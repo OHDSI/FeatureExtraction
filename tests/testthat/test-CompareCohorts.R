@@ -53,8 +53,8 @@ test_that("Test stdDiff continuous variable computation", {
 test_that("Test stdDiff binary variable computation", {
   skip_on_cran()
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
-  connectionDetails <- getEunomiaConnectionDetails()
-  createCohorts(connectionDetails)
+  connectionDetails <- Eunomia::getEunomiaConnectionDetails()
+  Eunomia::createCohorts(connectionDetails)
   data <- FeatureExtraction::getDbCovariateData(
     connectionDetails = connectionDetails,
     cdmDatabaseSchema = "main",
