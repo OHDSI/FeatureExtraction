@@ -17,9 +17,16 @@ Check whether an object is a CovariateData object
 }
 \examples{
 \donttest{
-binaryCovDataFile <- system.file("testdata/binaryCovariateData.zip",
-  package = "FeatureExtraction"
-)
+andromedaVersion <- utils::packageVersion("Andromeda")
+if (andromedaVersion < "1.0.0") {
+  binaryCovDataFile <- system.file("testdata/binaryCovariateData.zip",
+    package = "FeatureExtraction"
+  )
+} else {
+  binaryCovDataFile <- system.file("testdata/binaryCovariateDataDuckDB.zip",
+    package = "FeatureExtraction"
+  )
+}
 covData <- loadCovariateData(binaryCovDataFile)
 isCovData <- isCovariateData(covData)
 }
