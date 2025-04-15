@@ -1,3 +1,9 @@
+FeatureExtraction 3.9.0
+=======================
+
+- Compatibility with Andromeda version 1.0.0 (#288)
+- Fix documentation for custom covariate builder example (#297)
+
 FeatureExtraction 3.8.0
 =======================
 

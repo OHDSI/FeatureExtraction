@@ -36,7 +36,7 @@ test_that("Test stdDiff continuous variable computation", {
       sd2 = 0.345
     )
   }
-  
+
   output <- computeStandardizedDifference(
     covariateData1 = data,
     covariateData2 = data,
@@ -45,7 +45,7 @@ test_that("Test stdDiff continuous variable computation", {
   )
   testData$sd <- sqrt((testData$sd1^2 + testData$sd2^2) / 2)
   testData$stdDiff <- (testData$mean2 - testData$mean1) / testData$sd
-  
+
   # Compute the standardized difference of mean using the source data
   expect_equal(output$stdDiff, testData$stdDiff, tolerance = 0.001, scale = 1)
 })
