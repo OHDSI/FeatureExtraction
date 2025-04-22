@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">FeatureExtraction</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.8.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.9.0</span>
       </span>
     </div>
 
@@ -99,7 +99,7 @@
                         <h4 data-toc-skip class="author">Martijn J.
 Schuemie</h4>
             
-            <h4 data-toc-skip class="date">2025-03-19</h4>
+            <h4 data-toc-skip class="date">2025-04-15</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/FeatureExtraction/blob/HEAD/vignettes/CreatingCustomCovariateBuilders.Rmd" class="external-link"><code>vignettes/CreatingCustomCovariateBuilders.Rmd</code></a></small>
       <div class="hidden name"><code>CreatingCustomCovariateBuilders.Rmd</code></div>
@@ -188,8 +188,8 @@ arguments:</p>
 schema as created using the <code>connect</code> function in the
 <code>DatabaseConnector</code> package.</li>
 <li>
-<code>oracleTempSchema</code>: A schema where temp tables can be
-created in Oracle.</li>
+<code>tempEmulationSchema</code>: Schema for emulating temp tables
+on Oracle, Impala, and similar platforms.</li>
 <li>
 <code>cdmDatabaseSchema</code>: The name of the database schema that
 contains the OMOP CDM instance. On SQL Server, this will specify both
@@ -275,7 +275,7 @@ constructed.</p>
 </h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">getDbLooCovariateData</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">connection</span>,</span>
-<span>                                  <span class="va">oracleTempSchema</span> <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>                                  <span class="va">tempEmulationSchema</span> <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>                                  <span class="va">cdmDatabaseSchema</span>,</span>
 <span>                                  <span class="va">cdmVersion</span> <span class="op">=</span> <span class="st">"5"</span>,</span>
 <span>                                  <span class="va">cohortTable</span> <span class="op">=</span> <span class="st">"#cohort_person"</span>,</span>
@@ -302,7 +302,7 @@ constructed.</p>
 <span>    <span class="st">"ON op.person_id = c.subject_id"</span>,</span>
 <span>    <span class="st">"WHERE cohort_start_date &gt;= observation_period_start_date"</span>,</span>
 <span>    <span class="st">"AND cohort_start_date &lt;= observation_period_end_date"</span>,</span>
-<span>    <span class="st">"{@cohort_ids != -1} ? {AND cohort_definition_id IN @cohort_ids}"</span></span>
+<span>    <span class="st">"{@cohort_ids != -1} ? {AND cohort_definition_id IN (@cohort_ids)}"</span></span>
 <span>  <span class="op">)</span></span>
 <span>  <span class="va">sql</span> <span class="op">&lt;-</span> <span class="fu">SqlRender</span><span class="fu">::</span><span class="fu"><a href="https://ohdsi.github.io/SqlRender/reference/render.html" class="external-link">render</a></span><span class="op">(</span><span class="va">sql</span>,</span>
 <span>    cohort_table <span class="op">=</span> <span class="va">cohortTable</span>,</span>

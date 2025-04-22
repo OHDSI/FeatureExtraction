@@ -47,6 +47,7 @@ filterByRowId <- function(covariateData, rowIds) {
   if (isAggregatedCovariateData(covariateData)) {
     stop("Cannot filter aggregated data by rowId")
   }
+
   covariates <- covariateData$covariates %>%
     filter(.data$rowId %in% rowIds)
 
