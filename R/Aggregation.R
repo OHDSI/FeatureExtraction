@@ -133,9 +133,7 @@ aggregateCovariates <- function(covariateData) {
   }
 
   # revert tmp change
-  if (andromedaVersion >= "1.0.0") {
-    covariateData$covariates <- covariateData$covariates %>% dplyr::rename(rowId = .data$rowIdTemp)
-  }
+  covariateData$covariates <- covariateData$covariates %>% dplyr::rename(rowId = .data$rowIdTemp)
 
   delta <- Sys.time() - start
   writeLines(paste("Aggregating covariates took", signif(delta, 3), attr(delta, "units")))
