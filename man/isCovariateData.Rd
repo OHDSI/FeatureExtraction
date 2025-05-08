@@ -18,7 +18,8 @@ Check whether an object is a CovariateData object
 \examples{
 \donttest{
 binaryCovDataFile <- system.file("testdata/binaryCovariateData.zip",
-  package = "FeatureExtraction")
+  package = "FeatureExtraction"
+)
 covData <- loadCovariateData(binaryCovDataFile)
 isCovData <- isCovariateData(covData)
 }

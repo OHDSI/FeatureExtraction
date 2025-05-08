@@ -33,7 +33,8 @@ difference is defined as the difference between the mean divided by the overall 
 \examples{
 \donttest{
 binaryCovDataFile <- system.file("testdata/binaryCovariateData.zip",
-  package = "FeatureExtraction")
+  package = "FeatureExtraction"
+)
 covariateData1 <- loadCovariateData(binaryCovDataFile)
 covariateData2 <- loadCovariateData(binaryCovDataFile)
 covDataDiff <- computeStandardizedDifference(
