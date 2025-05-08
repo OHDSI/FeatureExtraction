@@ -14,28 +14,15 @@ test_that("Test stdDiff continuous variable computation", {
   #                                               covariateSettings = FeatureExtraction::createCovariateSettings(useCharlsonIndex = TRUE))
   # FeatureExtraction::saveCovariateData(data, "inst/testdata/continuousCovariateData.zip")
   # ------------------------------------------------------------------------------
-  andromedaVersion <- utils::packageVersion("Andromeda")
-  if (andromedaVersion < "1.0.0") {
-    data <- loadCovariateData(getTestResourceFilePath("continuousCovariateData.zip"))
-    # Compute the expected value based on cohorts 1 & 2's values from
-    # the loaded covariate data
-    testData <- data.frame(
-      mean1 = 0.6144252,
-      sd1 = 0.3865994,
-      mean2 = 0.4035294,
-      sd2 = 0.3446752
-    )
-  } else {
-    data <- loadCovariateData(getTestResourceFilePath("continuousCovariateDataDuckDB.zip"))
-    # Compute the expected value based on cohorts 1 & 2's values from
-    # the loaded covariate data
-    testData <- data.frame(
-      mean1 = 0.614,
-      sd1 = 0.387,
-      mean2 = 0.404,
-      sd2 = 0.345
-    )
-  }
+  data <- loadCovariateData(getTestResourceFilePath("continuousCovariateData.zip"))
+  # Compute the expected value based on cohorts 1 & 2's values from
+  # the loaded covariate data
+  testData <- data.frame(
+    mean1 = 0.614,
+    sd1 = 0.387,
+    mean2 = 0.404,
+    sd2 = 0.345
+  )
 
   output <- computeStandardizedDifference(
     covariateData1 = data,
