@@ -100,7 +100,8 @@ saveCovariateData <- function(covariateData, file) {
 #' @examples
 #' \donttest{
 #' binaryCovDataFile <- system.file("testdata/binaryCovariateData.zip",
-#'   package = "FeatureExtraction")
+#'   package = "FeatureExtraction"
+#' )
 #' covData <- loadCovariateData(binaryCovDataFile)
 #' }
 #'
@@ -186,7 +187,8 @@ print.summary.CovariateData <- function(x, ...) {
 #' @examples
 #' \donttest{
 #' binaryCovDataFile <- system.file("testdata/binaryCovariateData.zip",
-#'   package = "FeatureExtraction")
+#'   package = "FeatureExtraction"
+#' )
 #' covData <- loadCovariateData(binaryCovDataFile)
 #' isCovData <- isCovariateData(covData)
 #' }

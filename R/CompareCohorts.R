@@ -34,7 +34,8 @@
 #' @examples
 #' \donttest{
 #' binaryCovDataFile <- system.file("testdata/binaryCovariateData.zip",
-#'   package = "FeatureExtraction")
+#'   package = "FeatureExtraction"
+#' )
 #' covariateData1 <- loadCovariateData(binaryCovDataFile)
 #' covariateData2 <- loadCovariateData(binaryCovDataFile)
 #' covDataDiff <- computeStandardizedDifference(

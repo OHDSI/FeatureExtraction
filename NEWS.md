@@ -1,3 +1,8 @@
+FeatureExtraction 3.10.0
+=======================
+
+- Require Andromeda version 1.0.0 (#303)
+
 FeatureExtraction 3.9.0
 =======================
 
