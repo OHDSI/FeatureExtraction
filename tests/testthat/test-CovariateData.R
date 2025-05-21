@@ -202,9 +202,12 @@ test_that("getDbCovariateData settings list - check covariatesContinuous", {
   covariateData <- getDbCovariateData(
     connection = eunomiaConnection,
     cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
+    cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
     cohortTable = "cohort",
-    cohortIds = c(-1),
-    covariateSettings = covariateSettingsList
+    cohortIds = c(1),
+    covariateSettings = covariateSettingsList,
+    aggregated = TRUE,
+    minCharacterizationMean = 0
   )
   expect_false(is.null(covariateData$covariatesContinuous))
 })
