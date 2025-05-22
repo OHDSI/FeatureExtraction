@@ -209,10 +209,11 @@ getDbCovariateData <- function(connectionDetails = NULL,
           if (hasData(covariateData$covariatesContinuous)) {
             if (hasData(tempCovariateData$covariatesContinuous)) {
               Andromeda::appendToTable(covariateData$covariatesContinuous, tempCovariateData$covariatesContinuous)
-            } else if (hasData(tempCovariateData$covariatesContinuous)) {
-              covariateData$covariatesContinuous <- tempCovariateData$covariatesContinuous
             }
+          } else if (hasData(tempCovariateData$covariatesContinuous)) {
+            covariateData$covariatesContinuous <- tempCovariateData$covariatesContinuous
           }
+          
           Andromeda::appendToTable(covariateData$covariateRef, tempCovariateData$covariateRef)
           Andromeda::appendToTable(covariateData$analysisRef, tempCovariateData$analysisRef)
           for (name in names(attr(tempCovariateData, "metaData"))) {
