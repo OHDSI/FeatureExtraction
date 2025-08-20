@@ -69,6 +69,8 @@
 #' @param tempEmulationSchema    Some database platforms like Oracle and Impala do not truly support
 #'                               temp tables. To emulate temp tables, provide a schema with write
 #'                               privileges where temp tables can be created.
+#' @param covariateCohortDatabaseSchema database schema of the covariate cohort from the execution settings
+#' @param covariateCohortTable table name of the covariate cohort from the execution settings
 #'
 #' @return
 #' Returns an object of type \code{covariateData}, containing information on the covariates.
@@ -113,7 +115,9 @@ getDbCovariateData <- function(connectionDetails = NULL,
                                covariateSettings,
                                aggregated = FALSE,
                                minCharacterizationMean = 0,
-                               tempEmulationSchema = getOption("sqlRenderTempEmulationSchema")) {
+                               tempEmulationSchema = getOption("sqlRenderTempEmulationSchema"),
+                               covariateCohortDatabaseSchema = NULL,
+                               covariateCohortTable = NULL) {
   if (is.null(connectionDetails) && is.null(connection)) {
     stop("Need to provide either connectionDetails or connection")
   }
@@ -180,6 +184,11 @@ getDbCovariateData <- function(connectionDetails = NULL,
       covariateData <- NULL
       hasData <- function(data) {
         return(!is.null(data) && (data %>% count() %>% pull()) > 0)
+      }
+      if (!is.null(covariateCohortDatabaseSchema) && !is.null(covariateCohortTable)) {
+        covariateSettings <- replaceCovariateSettingsCohortSchemaTable(covariateSettings,
+                                                                       covariateCohortDatabaseSchema,
+                                                                       covariateCohortTable)
       }
       for (i in 1:length(covariateSettings)) {
         fun <- attr(covariateSettings[[i]], "fun")

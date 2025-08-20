@@ -330,24 +330,28 @@ warnIfPredefined <- function(analysisId, temporal = FALSE) {
 #' with information from the execution settings
 #' 
 #' @param covariateSettings An object of type \code{covariateSettings}
-#' @param executionSettings An object of type \code{CdmExecutionSettings}
+#' @param covariateCohortDatabaseSchema database schema of the covariate cohort from the execution settings
+#' @param covariateCohortTable table name of the covariate cohort from the execution settings
 #'
 #' @return
 #' An object of type \code{covariateSettings}
 #' 
 #' @export 
-replaceCovariateSettingsCohortSchemaTable <- function(covariateSettings, executionSettings) {
+replaceCovariateSettingsCohortSchemaTable <- function(covariateSettings, 
+                                                      covariateCohortDatabaseSchema,
+                                                      covariateCohortTable) {
   errorMessages <- checkmate::makeAssertCollection()
   checkmate::assertList(covariateSettings, min.len = 1, add = errorMessages)
-  checkmate::assertClass(executionSettings, "CdmExecutionSettings", add = errorMessages)
+  checkmate::assertCharacter(covariateCohortDatabaseSchema, add = errorMessages)
+  checkmate::assertCharacter(covariateCohortTable, add = errorMessages)
   checkmate::reportAssertions(collection = errorMessages)
   
   replaceProperties <- function(s) {
     if (inherits(s, "covariateSettings") && "fun" %in% names(attributes(s))) {
       if (attr(s, "fun") == "getDbCohortBasedCovariatesData") {
         # Set the covariateCohortDatabaseSchema & covariateCohortTable values
-        s$covariateCohortDatabaseSchema <- executionSettings$workDatabaseSchema
-        s$covariateCohortTable <- executionSettings$cohortTableNames$cohortTable
+        s$covariateCohortDatabaseSchema <- covariateCohortDatabaseSchema
+        s$covariateCohortTable <- covariateCohortTable
       }
     }
     return(s)
