@@ -14,9 +14,9 @@ replaceCovariateSettingsCohortSchemaTable(
 \arguments{
 \item{covariateSettings}{An object of type \code{covariateSettings}}
 
-\item{covariateCohortDatabaseSchema}{database schema of the covariate cohort from the execution settings}
+\item{covariateCohortDatabaseSchema}{The database schema where the cohorts used to define the covariates can be found.}
 
-\item{covariateCohortTable}{table name of the covariate cohort from the execution settings}
+\item{covariateCohortTable}{The table where the cohorts used to define the covariates can be found.}
 }
 \value{
 An object of type \code{covariateSettings}
