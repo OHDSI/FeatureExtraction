@@ -330,13 +330,12 @@ warnIfPredefined <- function(analysisId, temporal = FALSE) {
 #' with information from the execution settings
 #' 
 #' @param covariateSettings An object of type \code{covariateSettings}
-#' @param covariateCohortDatabaseSchema database schema of the covariate cohort from the execution settings
-#' @param covariateCohortTable table name of the covariate cohort from the execution settings
+#' @param covariateCohortDatabaseSchema The database schema where the cohorts used to define the covariates can be found.
+#' @param covariateCohortTable The table where the cohorts used to define the covariates can be found.
 #'
 #' @return
 #' An object of type \code{covariateSettings}
-#' 
-#' @export 
+#'
 replaceCovariateSettingsCohortSchemaTable <- function(covariateSettings, 
                                                       covariateCohortDatabaseSchema,
                                                       covariateCohortTable) {

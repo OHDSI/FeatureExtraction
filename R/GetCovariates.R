@@ -69,8 +69,8 @@
 #' @param tempEmulationSchema    Some database platforms like Oracle and Impala do not truly support
 #'                               temp tables. To emulate temp tables, provide a schema with write
 #'                               privileges where temp tables can be created.
-#' @param covariateCohortDatabaseSchema database schema of the covariate cohort from the execution settings
-#' @param covariateCohortTable table name of the covariate cohort from the execution settings
+#' @param covariateCohortDatabaseSchema The database schema where the cohorts used to define the covariates can be found.
+#' @param covariateCohortTable          The table where the cohorts used to define the covariates can be found. 
 #'
 #' @return
 #' Returns an object of type \code{covariateData}, containing information on the covariates.
