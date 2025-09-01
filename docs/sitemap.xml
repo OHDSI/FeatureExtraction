@@ -49,6 +49,7 @@
 <url><loc>/reference/isCovariateData.html</loc></url>
 <url><loc>/reference/isTemporalCovariateData.html</loc></url>
 <url><loc>/reference/loadCovariateData.html</loc></url>
+<url><loc>/reference/replaceCovariateSettingsCohortSchemaTable.html</loc></url>
 <url><loc>/reference/saveCovariateData.html</loc></url>
 <url><loc>/reference/tidyCovariateData.html</loc></url>
 </urlset>

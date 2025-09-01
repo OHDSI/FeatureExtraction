@@ -194,7 +194,7 @@ test_that("getDbCovariateData settings list - check covariatesContinuous", {
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
   covariateSettingsList <- list(
     FeatureExtraction::createCovariateSettings(
-      useDemographicsGender = T, 
+      useDemographicsGender = T,
       useDemographicsAgeGroup = T
     ),
     FeatureExtraction::createDefaultCovariateSettings()

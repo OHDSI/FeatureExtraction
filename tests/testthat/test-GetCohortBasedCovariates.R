@@ -70,7 +70,7 @@ dropCohortBasedCovariateTestData <- function(connection,
 }
 
 # Database specific tests ---------------
-runCohortBasedBinaryNonAggTest <- function(connection, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortTable, 
+runCohortBasedBinaryNonAggTest <- function(connection, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortTable,
                                            covariateCohortDatabaseSchema = NULL, covariateCohortTable = NULL) {
   createCohortBasedCovariateTestData(
     connection = connection,
@@ -495,19 +495,20 @@ test_that("Cohort-based covariates: binary, non-aggregated, custom covariate coh
     cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
     ohdsiDatabaseSchema = eunomiaOhdsiDatabaseSchema,
     cohortTable = "cohort_cov",
-    covariateCohortDatabaseSchema = eunomiaOhdsiDatabaseSchema, 
+    covariateCohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
     covariateCohortTable = "cohort_cov"
   )
-  testthat::expect_error( 
+  testthat::expect_error(
     runCohortBasedBinaryNonAggTest(
       connection = eunomiaConnection,
       cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
       ohdsiDatabaseSchema = eunomiaOhdsiDatabaseSchema,
       cohortTable = "cohort_cov",
-      covariateCohortDatabaseSchema = "unknown", 
+      covariateCohortDatabaseSchema = "unknown",
       covariateCohortTable = "unknown"
     ),
-    "no such table: unknown.unknown")
+    "no such table: unknown.unknown"
+  )
 })
 
 test_that("Cohort-based covariates: binary, aggregated on Eunomia", {

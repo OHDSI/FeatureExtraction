@@ -181,8 +181,8 @@ tidyCovariateData <- function(covariateData,
     }
 
     # When performing both filtering by covariate IDs and normalization, it is *much* faster
-    # to apply the filtering to the maxValuePerCovariateId table, and let the inner join 
-    # apply the filtering to the covariate table (instead of filtering the covariate table 
+    # to apply the filtering to the maxValuePerCovariateId table, and let the inner join
+    # apply the filtering to the covariate table (instead of filtering the covariate table
     # directly).
     if (normalize) {
       ParallelLogger::logInfo("Normalizing covariates")
@@ -198,8 +198,8 @@ tidyCovariateData <- function(covariateData,
         collect()
     } else if (length(deleteCovariateIds) > 0) {
       newCovariates <- newCovariates %>%
-          filter(!.data$covariateId %in% deleteCovariateIds)
-    } 
+        filter(!.data$covariateId %in% deleteCovariateIds)
+    }
     newCovariateData$covariates <- newCovariates
     if (!is.null(covariateData$timeRef)) {
       newCovariateData$timeRef <- covariateData$timeRef

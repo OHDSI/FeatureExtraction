@@ -2,7 +2,7 @@
 % Please edit documentation in R/GetCovariatesFromOtherCohorts.R
 \name{replaceCovariateSettingsCohortSchemaTable}
 \alias{replaceCovariateSettingsCohortSchemaTable}
-\title{Utility function to set the cohort table & schema on createCohortBasedCovariateSettings 
+\title{Utility function to set the cohort table & schema on createCohortBasedCovariateSettings
 with information from the execution settings}
 \usage{
 replaceCovariateSettingsCohortSchemaTable(
@@ -22,6 +22,6 @@ replaceCovariateSettingsCohortSchemaTable(
 An object of type \code{covariateSettings}
 }
 \description{
-Utility function to set the cohort table & schema on createCohortBasedCovariateSettings 
+Utility function to set the cohort table & schema on createCohortBasedCovariateSettings
 with information from the execution settings
 }

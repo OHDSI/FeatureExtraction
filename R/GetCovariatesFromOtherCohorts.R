@@ -326,9 +326,9 @@ warnIfPredefined <- function(analysisId, temporal = FALSE) {
   }
 }
 
-#' Utility function to set the cohort table & schema on createCohortBasedCovariateSettings 
+#' Utility function to set the cohort table & schema on createCohortBasedCovariateSettings
 #' with information from the execution settings
-#' 
+#'
 #' @param covariateSettings An object of type \code{covariateSettings}
 #' @param covariateCohortDatabaseSchema The database schema where the cohorts used to define the covariates can be found.
 #' @param covariateCohortTable The table where the cohorts used to define the covariates can be found.
@@ -336,7 +336,7 @@ warnIfPredefined <- function(analysisId, temporal = FALSE) {
 #' @return
 #' An object of type \code{covariateSettings}
 #'
-replaceCovariateSettingsCohortSchemaTable <- function(covariateSettings, 
+replaceCovariateSettingsCohortSchemaTable <- function(covariateSettings,
                                                       covariateCohortDatabaseSchema,
                                                       covariateCohortTable) {
   errorMessages <- checkmate::makeAssertCollection()
@@ -344,7 +344,7 @@ replaceCovariateSettingsCohortSchemaTable <- function(covariateSettings,
   checkmate::assertCharacter(covariateCohortDatabaseSchema, add = errorMessages)
   checkmate::assertCharacter(covariateCohortTable, add = errorMessages)
   checkmate::reportAssertions(collection = errorMessages)
-  
+
   replaceProperties <- function(s) {
     if (inherits(s, "covariateSettings") && "fun" %in% names(attributes(s))) {
       if (attr(s, "fun") == "getDbCohortBasedCovariatesData") {
