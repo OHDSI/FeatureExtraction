@@ -325,3 +325,42 @@ warnIfPredefined <- function(analysisId, temporal = FALSE) {
     warning(sprintf("Analysis ID %d also used for prespecified analysis '%s'.", analysisId, preSpecAnalysis$analysisName))
   }
 }
+
+#' Utility function to set the cohort table & schema on createCohortBasedCovariateSettings
+#' with information from the execution settings
+#'
+#' @param covariateSettings An object of type \code{covariateSettings}
+#' @param covariateCohortDatabaseSchema The database schema where the cohorts used to define the covariates can be found.
+#' @param covariateCohortTable The table where the cohorts used to define the covariates can be found.
+#'
+#' @return
+#' An object of type \code{covariateSettings}
+#'
+replaceCovariateSettingsCohortSchemaTable <- function(covariateSettings,
+                                                      covariateCohortDatabaseSchema,
+                                                      covariateCohortTable) {
+  errorMessages <- checkmate::makeAssertCollection()
+  checkmate::assertList(covariateSettings, min.len = 1, add = errorMessages)
+  checkmate::assertCharacter(covariateCohortDatabaseSchema, add = errorMessages)
+  checkmate::assertCharacter(covariateCohortTable, add = errorMessages)
+  checkmate::reportAssertions(collection = errorMessages)
+
+  replaceProperties <- function(s) {
+    if (inherits(s, "covariateSettings") && "fun" %in% names(attributes(s))) {
+      if (attr(s, "fun") == "getDbCohortBasedCovariatesData") {
+        # Set the covariateCohortDatabaseSchema & covariateCohortTable values
+        s$covariateCohortDatabaseSchema <- covariateCohortDatabaseSchema
+        s$covariateCohortTable <- covariateCohortTable
+      }
+    }
+    return(s)
+  }
+  if (is.null(names(covariateSettings))) {
+    # List of lists
+    modifiedCovariateSettings <- lapply(covariateSettings, replaceProperties)
+  } else {
+    # Plain list
+    modifiedCovariateSettings <- replaceProperties(covariateSettings)
+  }
+  return(modifiedCovariateSettings)
+}

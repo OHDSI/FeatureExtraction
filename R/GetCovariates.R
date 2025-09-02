@@ -69,6 +69,8 @@
 #' @param tempEmulationSchema    Some database platforms like Oracle and Impala do not truly support
 #'                               temp tables. To emulate temp tables, provide a schema with write
 #'                               privileges where temp tables can be created.
+#' @param covariateCohortDatabaseSchema The database schema where the cohorts used to define the covariates can be found.
+#' @param covariateCohortTable          The table where the cohorts used to define the covariates can be found.
 #'
 #' @return
 #' Returns an object of type \code{covariateData}, containing information on the covariates.
@@ -113,7 +115,9 @@ getDbCovariateData <- function(connectionDetails = NULL,
                                covariateSettings,
                                aggregated = FALSE,
                                minCharacterizationMean = 0,
-                               tempEmulationSchema = getOption("sqlRenderTempEmulationSchema")) {
+                               tempEmulationSchema = getOption("sqlRenderTempEmulationSchema"),
+                               covariateCohortDatabaseSchema = NULL,
+                               covariateCohortTable = NULL) {
   if (is.null(connectionDetails) && is.null(connection)) {
     stop("Need to provide either connectionDetails or connection")
   }
@@ -181,6 +185,13 @@ getDbCovariateData <- function(connectionDetails = NULL,
       hasData <- function(data) {
         return(!is.null(data) && (data %>% count() %>% pull()) > 0)
       }
+      if (!is.null(covariateCohortDatabaseSchema) && !is.null(covariateCohortTable)) {
+        covariateSettings <- replaceCovariateSettingsCohortSchemaTable(
+          covariateSettings,
+          covariateCohortDatabaseSchema,
+          covariateCohortTable
+        )
+      }
       for (i in 1:length(covariateSettings)) {
         fun <- attr(covariateSettings[[i]], "fun")
         args <- list(
@@ -209,10 +220,11 @@ getDbCovariateData <- function(connectionDetails = NULL,
           if (hasData(covariateData$covariatesContinuous)) {
             if (hasData(tempCovariateData$covariatesContinuous)) {
               Andromeda::appendToTable(covariateData$covariatesContinuous, tempCovariateData$covariatesContinuous)
-            } else if (hasData(tempCovariateData$covariatesContinuous)) {
-              covariateData$covariatesContinuous <- tempCovariateData$covariatesContinuous
             }
+          } else if (hasData(tempCovariateData$covariatesContinuous)) {
+            covariateData$covariatesContinuous <- tempCovariateData$covariatesContinuous
           }
+
           Andromeda::appendToTable(covariateData$covariateRef, tempCovariateData$covariateRef)
           Andromeda::appendToTable(covariateData$analysisRef, tempCovariateData$analysisRef)
           for (name in names(attr(tempCovariateData, "metaData"))) {

@@ -70,7 +70,8 @@ dropCohortBasedCovariateTestData <- function(connection,
 }
 
 # Database specific tests ---------------
-runCohortBasedBinaryNonAggTest <- function(connection, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortTable) {
+runCohortBasedBinaryNonAggTest <- function(connection, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortTable,
+                                           covariateCohortDatabaseSchema = NULL, covariateCohortTable = NULL) {
   createCohortBasedCovariateTestData(
     connection = connection,
     databaseSchema = ohdsiDatabaseSchema,
@@ -99,7 +100,9 @@ runCohortBasedBinaryNonAggTest <- function(connection, cdmDatabaseSchema, ohdsiD
     cdmVersion = "5",
     rowIdField = "subject_id",
     covariateSettings = settings,
-    aggregated = FALSE
+    aggregated = FALSE,
+    covariateCohortDatabaseSchema = covariateCohortDatabaseSchema,
+    covariateCohortTable = covariateCohortTable
   )
 
   covariates <- dplyr::collect(covs$covariates)
@@ -482,6 +485,29 @@ test_that("Cohort-based covariates: binary, non-aggregated on Eunomia", {
     cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
     ohdsiDatabaseSchema = eunomiaOhdsiDatabaseSchema,
     cohortTable = "cohort_cov"
+  )
+})
+
+test_that("Cohort-based covariates: binary, non-aggregated, custom covariate cohort schema/table on Eunomia", {
+  skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
+  runCohortBasedBinaryNonAggTest(
+    connection = eunomiaConnection,
+    cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
+    ohdsiDatabaseSchema = eunomiaOhdsiDatabaseSchema,
+    cohortTable = "cohort_cov",
+    covariateCohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
+    covariateCohortTable = "cohort_cov"
+  )
+  testthat::expect_error(
+    runCohortBasedBinaryNonAggTest(
+      connection = eunomiaConnection,
+      cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
+      ohdsiDatabaseSchema = eunomiaOhdsiDatabaseSchema,
+      cohortTable = "cohort_cov",
+      covariateCohortDatabaseSchema = "unknown",
+      covariateCohortTable = "unknown"
+    ),
+    "no such table: unknown.unknown"
   )
 })
 

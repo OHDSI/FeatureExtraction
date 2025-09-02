@@ -19,7 +19,9 @@ getDbCovariateData(
   covariateSettings,
   aggregated = FALSE,
   minCharacterizationMean = 0,
-  tempEmulationSchema = getOption("sqlRenderTempEmulationSchema")
+  tempEmulationSchema = getOption("sqlRenderTempEmulationSchema"),
+  covariateCohortDatabaseSchema = NULL,
+  covariateCohortTable = NULL
 )
 }
 \arguments{
@@ -81,6 +83,10 @@ on covariates that have very low values. The default is 0.}
 \item{tempEmulationSchema}{Some database platforms like Oracle and Impala do not truly support
 temp tables. To emulate temp tables, provide a schema with write
 privileges where temp tables can be created.}
+
+\item{covariateCohortDatabaseSchema}{The database schema where the cohorts used to define the covariates can be found.}
+
+\item{covariateCohortTable}{The table where the cohorts used to define the covariates can be found.}
 }
 \value{
 Returns an object of type \code{covariateData}, containing information on the covariates.

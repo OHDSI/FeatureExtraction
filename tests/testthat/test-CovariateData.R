@@ -188,3 +188,26 @@ test_that("getDbCovariateData settings list - check metaData", {
   expect_equal(length(metaData$sql), 1)
   expect_equal(length(metaData$sql[[1]]), 2)
 })
+
+test_that("getDbCovariateData settings list - check covariatesContinuous", {
+  skip_on_cran()
+  skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
+  covariateSettingsList <- list(
+    FeatureExtraction::createCovariateSettings(
+      useDemographicsGender = T,
+      useDemographicsAgeGroup = T
+    ),
+    FeatureExtraction::createDefaultCovariateSettings()
+  )
+  covariateData <- getDbCovariateData(
+    connection = eunomiaConnection,
+    cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
+    cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
+    cohortTable = "cohort",
+    cohortIds = c(1),
+    covariateSettings = covariateSettingsList,
+    aggregated = TRUE,
+    minCharacterizationMean = 0
+  )
+  expect_false(is.null(covariateData$covariatesContinuous))
+})
