@@ -159,7 +159,7 @@ tidyCovariateData <- function(covariateData,
             inner_join(covariateData$valueCounts, by = "covariateId") %>%
             select(.data$analysisId, .data$covariateId, n) %>%
             collect()
-          valueCounts <- valueCounts[order(valueCounts$analysisId, -valueCounts$n), ]
+          valueCounts <- valueCounts[order(valueCounts$analysisId, -valueCounts$n, valueCounts$covariateId), ]
           deleteCovariateIds <- c(deleteCovariateIds, valueCounts$covariateId[!duplicated(valueCounts$analysisId)])
           ignoreCovariateIds <- valueCounts$covariateId
           ParallelLogger::logInfo("Removing ", length(deleteCovariateIds), " redundant covariates")
