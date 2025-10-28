@@ -1,3 +1,8 @@
+FeatureExtraction 3.12.0
+=======================
+
+- Fix non reproducible behavior in removing redundant covariates when they are equally prevalent (#315)
+
 FeatureExtraction 3.11.0
 =======================
 
