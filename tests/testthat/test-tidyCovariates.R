@@ -97,12 +97,12 @@ test_that("tidyCovariateData on Temporal Data", {
 test_that("Removal of redundant covariates is reproducible", {
   # Create data with two covariates from the same analysis, with equal prevalence:
   covariates <- tibble(
-    covariateId = rep(c(1,2), 5),
+    covariateId = rep(c(1, 2), 5),
     rowId = seq_len(10),
     covariateValue = 1
   )
   covariateRef <- tibble(
-    covariateId = c(1,2),
+    covariateId = c(1, 2),
     analysisId = c(1, 1)
   )
   metaData <- list(populationSize = 10)
@@ -112,7 +112,7 @@ test_that("Removal of redundant covariates is reproducible", {
   )
   attr(covariateData, "metaData") <- metaData
   class(covariateData) <- "CovariateData"
-  
+
   # Repeat removal of redundant covariates multiple times to evaluate consistency:
   covariateIds <- c()
   for (i in seq_len(10)) {
