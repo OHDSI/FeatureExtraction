@@ -34,6 +34,9 @@
 #' @param minCharacterizationMean The minimum mean value for binary characterization output. Values below this will be cut off from output. This
 #'                                will help reduce the file size of the characterization output, but will remove information
 #'                                on covariates that have very low values. The default is 0.
+#' @param minCharacterizationCount  The minimum count/sum value for characterization output. Values below this will be cut off from output. This
+#'                                will help reduce the file size of the characterization output, but will remove information
+#'                                on covariates that have very low values. The default is 0.                             
 #'
 #' @template GetCovarParams
 #'
@@ -73,6 +76,7 @@ getDbDefaultCovariateData <- function(connection,
                                       targetAnalysisRefTable,
                                       aggregated = FALSE,
                                       minCharacterizationMean = 0,
+                                      minCharacterizationCount = 0,
                                       tempEmulationSchema = getOption("sqlRenderTempEmulationSchema")) {
   if (!is(covariateSettings, "covariateSettings")) {
     stop("Covariate settings object not of type covariateSettings")
@@ -97,6 +101,9 @@ getDbDefaultCovariateData <- function(connection,
   errorMessages <- checkmate::makeAssertCollection()
   minCharacterizationMean <- utils::type.convert(minCharacterizationMean, as.is = TRUE)
   checkmate::assertNumeric(x = minCharacterizationMean, lower = 0, upper = 1, add = errorMessages)
+  # check minCharacterizationCount is a positive int or 0
+  checkmate::assertInt(x = minCharacterizationCount, lower = 0, add = errorMessages)
+
   checkmate::reportAssertions(collection = errorMessages)
 
   settings <- .toJson(covariateSettings)

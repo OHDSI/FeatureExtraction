@@ -19,6 +19,7 @@ getDbCovariateData(
   covariateSettings,
   aggregated = FALSE,
   minCharacterizationMean = 0,
+  minCharacterizationCount = 0,
   tempEmulationSchema = getOption("sqlRenderTempEmulationSchema"),
   covariateCohortDatabaseSchema = NULL,
   covariateCohortTable = NULL
@@ -77,6 +78,10 @@ you must carefully set the rowIdField so you can identify the patients properly.
 See issue #229 for more discussion on this parameter.}
 
 \item{minCharacterizationMean}{The minimum mean value for characterization output. Values below this will be cut off from output. This
+will help reduce the file size of the characterization output, but will remove information
+on covariates that have very low values. The default is 0.}
+
+\item{minCharacterizationCount}{The minimum count/sum value for characterization output. Values below this will be cut off from output. This
 will help reduce the file size of the characterization output, but will remove information
 on covariates that have very low values. The default is 0.}
 

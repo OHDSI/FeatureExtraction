@@ -66,6 +66,9 @@
 #' @param minCharacterizationMean The minimum mean value for characterization output. Values below this will be cut off from output. This
 #'                                will help reduce the file size of the characterization output, but will remove information
 #'                                on covariates that have very low values. The default is 0.
+#' @param minCharacterizationCount  The minimum count/sum value for characterization output. Values below this will be cut off from output. This
+#'                                will help reduce the file size of the characterization output, but will remove information
+#'                                on covariates that have very low values. The default is 0.                             
 #' @param tempEmulationSchema    Some database platforms like Oracle and Impala do not truly support
 #'                               temp tables. To emulate temp tables, provide a schema with write
 #'                               privileges where temp tables can be created.
@@ -115,6 +118,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
                                covariateSettings,
                                aggregated = FALSE,
                                minCharacterizationMean = 0,
+                               minCharacterizationCount = 0,
                                tempEmulationSchema = getOption("sqlRenderTempEmulationSchema"),
                                covariateCohortDatabaseSchema = NULL,
                                covariateCohortTable = NULL) {
@@ -141,6 +145,9 @@ getDbCovariateData <- function(connectionDetails = NULL,
   errorMessages <- checkmate::makeAssertCollection()
   minCharacterizationMean <- utils::type.convert(minCharacterizationMean, as.is = TRUE)
   checkmate::assertNumeric(x = minCharacterizationMean, lower = 0, upper = 1, add = errorMessages)
+  # check minCharacterizationCount is a positive int or 0
+  checkmate::assertInt(x = minCharacterizationCount, lower = 0, add = errorMessages)
+  
   checkmate::reportAssertions(collection = errorMessages)
   if (!is.null(connectionDetails)) {
     connection <- DatabaseConnector::connect(connectionDetails)
@@ -204,7 +211,8 @@ getDbCovariateData <- function(connectionDetails = NULL,
           rowIdField = rowIdField,
           covariateSettings = covariateSettings[[i]],
           aggregated = aggregated,
-          minCharacterizationMean = minCharacterizationMean
+          minCharacterizationMean = minCharacterizationMean,
+          minCharacterizationCount = minCharacterizationCount
         )
         tempCovariateData <- do.call(eval(parse(text = fun)), args)
         if (is.null(covariateData)) {

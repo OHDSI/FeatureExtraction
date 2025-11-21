@@ -511,15 +511,17 @@ public class FeatureExtraction {
 	 *            specify both the database and the schema, so for example 'cdm_instance.dbo'.
 	 * @param minCharacterizationMean The minimum mean value for characterization output. Values below this will be cut off from output. This will help reduce
 	 *            the file size of the characterization output, but will remove information on covariates that have very low values.
+	 * @param minCharacterizationCount The minimum count/sum value for characterization output. Values below this will be cut off from output. This will help reduce
+	 *            the file size of the characterization output, but will remove information on covariates that have very low values.
 	 * @return A JSON object.
 	 */
 	public static String createSql(String settings, boolean aggregated, String cohortTable, String rowIdField, String[] cohortDefinitionIds,
-			String cdmDatabaseSchema, String minCharacterizationMean) {
+			String cdmDatabaseSchema, String minCharacterizationMean, String minCharacterizationCount) {
 		
 		long[] idsAsLongs = new long[cohortDefinitionIds.length];
 		for (int i = 0; i < cohortDefinitionIds.length; i++)
 			idsAsLongs[i] = Long.valueOf(cohortDefinitionIds[i]);
-		return createSql(settings, aggregated, cohortTable, rowIdField, idsAsLongs, cdmDatabaseSchema, Double.valueOf(minCharacterizationMean));
+		return createSql(settings, aggregated, cohortTable, rowIdField, idsAsLongs, cdmDatabaseSchema, Double.valueOf(minCharacterizationMean), Double.valueOf(minCharacterizationCount));
 	}
 
 
@@ -592,10 +594,12 @@ public class FeatureExtraction {
 	 *            specify both the database and the schema, so for example 'cdm_instance.dbo'.
 	 * @param minCharacterizationMean The minimum mean value for characterization output. Values below this will be cut off from output. This will help reduce
 	 *            the file size of the characterization output, but will remove information on covariates that have very low values.
+	 * @param minCharacterizationCount The minimum count/sum value for characterization output. Values below this will be cut off from output. This will help reduce
+	 *            the file size of the characterization output, but will remove information on covariates that have very low values.
 	 * @return A JSON object.
 	 */
 	public static String createSql(String settings, boolean aggregated, String cohortTable, String rowIdField, long[] cohortDefinitionIds,
-			String cdmDatabaseSchema, double minCharacterizationMean) {
+			String cdmDatabaseSchema, double minCharacterizationMean, double minCharacterizationCount) {
 			  
 		JSONObject jsonObject = new JSONObject(settings);
 
@@ -666,7 +670,7 @@ public class FeatureExtraction {
 		jsonWriter.key("sqlConstruction");
 		jsonWriter.value(createConstructionSql(jsonObject, idSetToName, temporal, temporalSequence, aggregated, cohortTable, rowIdField, cohortDefinitionIds, cdmDatabaseSchema));
 
-		String sqlQueryFeatures = createQuerySql(jsonObject, cohortTable, cohortDefinitionIds, aggregated, temporal, temporalSequence, minCharacterizationMean);
+		String sqlQueryFeatures = createQuerySql(jsonObject, cohortTable, cohortDefinitionIds, aggregated, temporal, temporalSequence, minCharacterizationMean, minCharacterizationCount);
 		if (sqlQueryFeatures != null) {
 			jsonWriter.key("sqlQueryFeatures");
 			jsonWriter.value(sqlQueryFeatures);
@@ -743,7 +747,7 @@ public class FeatureExtraction {
 	}
 
 	private static String createQuerySql(JSONObject jsonObject, String cohortTable, long[] cohortDefinitionIds, boolean aggregated, boolean temporal, boolean temporalSequence,
-	                                     double minCharacterizationMean) {
+	                                     double minCharacterizationMean, double minCharacterizationCount) {
 		boolean temporalAnnual = isTemporalAnnual(jsonObject);
 		Stream<String> fields = Stream.<Stream<String>>of(
 				aggregated ? Stream.of("cohort_definition_id", "covariate_id", "sum_value") : Stream.of("row_id", "covariate_id", "covariate_value"),
@@ -780,8 +784,18 @@ public class FeatureExtraction {
 		if (aggregated) {
 			sql.append("\n) all_covariates\nINNER JOIN (\nSELECT cohort_definition_id, COUNT(*) AS total_count\nFROM @cohort_table {@cohort_definition_id != -1} ? {\nWHERE cohort_definition_id IN (@cohort_definition_id)}");
 			sql.append(" GROUP BY cohort_definition_id\n) total\n  ON all_covariates.cohort_definition_id = total.cohort_definition_id");
+			
+			if (minCharacterizationMean != 0 || minCharacterizationCount != 0) {
+			  sql.append(" WHERE ");
+			}
 			if (minCharacterizationMean != 0) {
-				sql.append(" WHERE all_covariates.sum_value / (1.0 * total.total_count) >= " + minCharacterizationMean);
+				sql.append(" all_covariates.sum_value / (1.0 * total.total_count) >= " + minCharacterizationMean);
+			}
+			if (minCharacterizationMean != 0 && minCharacterizationCount != 0) {
+			  sql.append(" AND ");
+			}
+			if (minCharacterizationCount != 0) {
+				sql.append(" all_covariates.sum_value  >= " + minCharacterizationCount);
 			}
 			sql.append(";");
 		} else {

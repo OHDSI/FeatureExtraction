@@ -130,6 +130,59 @@ test_that("test filtering of covariates based on minCharacterizationMean", {
   expect_true(covariateDataFiltered$covariates %>% pull(averageValue) %>% min() >= minCharMeanValue)
 })
 
+test_that("test filtering of covariates based on minCharacterizationCount", {
+  skip_on_cran()
+  skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
+  settings <- createDefaultCovariateSettings()
+  covariateData <- getDbCovariateData(
+    connectionDetails = eunomiaConnectionDetails,
+    cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
+    cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
+    cohortIds = c(1),
+    covariateSettings = settings,
+    aggregated = TRUE,
+    minCharacterizationCount = 0
+  )
+  nCovariates <- covariateData$covariates %>%
+    collect() %>%
+    nrow()
+  
+  minCharCountValue <- 3
+  covariateDataFiltered <- getDbCovariateData(
+    connectionDetails = eunomiaConnectionDetails,
+    cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
+    cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
+    cohortIds = c(1),
+    covariateSettings = settings,
+    aggregated = TRUE,
+    minCharacterizationCount = minCharCountValue
+  )
+  nCovariatesFiltered <- covariateDataFiltered$covariates %>%
+    collect() %>%
+    nrow()
+  
+  expect_true(nCovariatesFiltered < nCovariates)
+  expect_true(covariateDataFiltered$covariates %>% pull(sumValue) %>% min() >= minCharCountValue)
+  
+  # make sure code works when both filters are set
+  minCharCountValue <- 3
+  covariateDataFiltered <- getDbCovariateData(
+    connectionDetails = eunomiaConnectionDetails,
+    cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
+    cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
+    cohortIds = c(1),
+    covariateSettings = settings,
+    aggregated = TRUE,
+    minCharacterizationCount = minCharCountValue, 
+    minCharacterizationMean = 0.1
+  )
+  nCovariatesFiltered <- covariateDataFiltered$covariates %>%
+    collect() %>%
+    nrow()
+  expect_true(nCovariatesFiltered < nCovariates)
+  
+})
+
 test_that("test loadCovariateData", {
   expect_error(loadCovariateData("errorPath"))
 })
