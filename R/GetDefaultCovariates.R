@@ -152,13 +152,24 @@ getDbDefaultCovariateData <- function(connection,
     # Save to Andromeda
     covariateData <- Andromeda::andromeda()
 
-
     queryFunction <- function(sql, tableName) {
       DatabaseConnector::querySqlToAndromeda(connection = connection,
                                              sql = sql,
                                              andromeda = covariateData,
                                              andromedaTableName = tableName,
                                              snakeCaseToCamelCase = TRUE)
+      
+      if (tableName == "covariateRef") {
+        collisions <- covariateData$covariateRef %>%
+          dplyr::filter(collisions > 0) %>%
+          dplyr::collect()
+        if (nrow(collisions) > 0) {
+          warning(sprintf(
+            "Collisions in covariate IDs detected for post-coordinated concepts with covariate IDs %s",
+            paste(collisions$covariateId, paste = ", ")
+          ))
+        }      
+      }
     }
 
     ParallelLogger::logInfo("Fetching data from server")
@@ -167,6 +178,7 @@ getDbDefaultCovariateData <- function(connection,
     if (dropTableIfExists) {
       createTable <- TRUE
     }
+    
     # Save to DB
     ParallelLogger::logInfo("Creating tables on server")
     convertQuery <- function(sql, table) {
