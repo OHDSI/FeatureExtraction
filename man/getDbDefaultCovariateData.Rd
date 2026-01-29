@@ -10,6 +10,7 @@ getDbDefaultCovariateData(
   cdmDatabaseSchema,
   cohortTable = "#cohort_person",
   cohortId = -1,
+  cohortIds = c(-1),
   cdmVersion = "5",
   rowIdField = "subject_id",
   covariateSettings,
@@ -21,14 +22,16 @@ getDbDefaultCovariateData(
     targetCovariateRefTable, analysisRef = targetAnalysisRefTable),
   dropTableIfExists = FALSE,
   createTable = TRUE,
-  aggregated = FALSE
+  aggregated = FALSE,
+  minCharacterizationMean = 0,
+  tempEmulationSchema = getOption("sqlRenderTempEmulationSchema")
 )
 }
 \arguments{
 \item{connection}{A connection to the server containing the schema as created using the
 \code{connect} function in the \code{DatabaseConnector} package.}
 
-\item{oracleTempSchema}{A schema where temp tables can be created in Oracle.}
+\item{oracleTempSchema}{DEPRECATED: use \code{tempEmulationSchema} instead.}
 
 \item{cdmDatabaseSchema}{The name of the database schema that contains the OMOP CDM instance.
 Requires read permissions to this database. On SQL Server, this should
@@ -40,7 +43,11 @@ covariates. If it is a temp table, the name should have a hash prefix,
 e.g. '#temp_table'. If it is a non-temp table, it should include the
 database schema, e.g. 'cdm_database.cohort'.}
 
-\item{cohortId}{For which cohort ID should covariates be constructed? If set to -1,
+\item{cohortId}{DEPRECATED:For which cohort ID should covariates be constructed? If set to -1,
+covariates will be constructed for all cohorts in the specified cohort
+table.}
+
+\item{cohortIds}{For which cohort ID(s) should covariates be constructed? If set to c(-1),
 covariates will be constructed for all cohorts in the specified cohort
 table.}
 
@@ -83,6 +90,14 @@ into existing table data. Overides createTable.}
 
 \item{aggregated}{Should aggregate statistics be computed instead of covariates per
 cohort entry?}
+
+\item{minCharacterizationMean}{The minimum mean value for binary characterization output. Values below this will be cut off from output. This
+will help reduce the file size of the characterization output, but will remove information
+on covariates that have very low values. The default is 0.}
+
+\item{tempEmulationSchema}{Some database platforms like Oracle and Impala do not truly support
+temp tables. To emulate temp tables, provide a schema with write
+privileges where temp tables can be created.}
 }
 \value{
 Returns an object of type \code{CovariateData}, which is an Andromeda object containing information on the baseline covariates.
@@ -106,4 +121,25 @@ cohort. The cohort is assumed to be in an existing temp table with these fields:
 'cohort_definition_id', 'cohort_start_date'. Optionally, an extra field can be added containing the
 unique identifier that will be used as rowID in the output. Typically, users don't call this
 function directly but rather use the \code{\link{getDbCovariateData}} function instead.
+}
+\examples{
+\donttest{
+connectionDetails <- Eunomia::getEunomiaConnectionDetails()
+Eunomia::createCohorts(
+  connectionDetails = connectionDetails,
+  cdmDatabaseSchema = "main",
+  cohortDatabaseSchema = "main",
+  cohortTable = "cohort"
+)
+connection <- DatabaseConnector::connect(connectionDetails)
+
+results <- getDbDefaultCovariateData(
+  connection = connection,
+  cdmDatabaseSchema = "main",
+  cohortTable = "cohort",
+  covariateSettings = createDefaultCovariateSettings(),
+  targetDatabaseSchema = "main",
+  targetCovariateTable = "ut_cov"
+)
+}
 }

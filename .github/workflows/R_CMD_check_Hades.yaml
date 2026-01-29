@@ -23,39 +23,57 @@ jobs:
         config:
           - {os: windows-latest, r: 'release'}  # Does not appear to have Java 32-bit, hence the --no-multiarch
           - {os: macOS-latest, r: 'release'}
-          - {os: ubuntu-20.04, r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
-          #- {os: ubuntu-20.04, r: 'devel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+          - {os: ubuntu-latest, r: 'release'}
 
     env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       RSPM: ${{ matrix.config.rspm }}
-      CDM5_ORACLE_CDM_SCHEMA: ${{ secrets.CDM5_ORACLE_CDM_SCHEMA }}
+      CDM5_ORACLE_CDM_SCHEMA: ${{ secrets.CDM5_ORACLE_CDM54_SCHEMA }}
       CDM5_ORACLE_OHDSI_SCHEMA: ${{ secrets.CDM5_ORACLE_OHDSI_SCHEMA }}
       CDM5_ORACLE_PASSWORD: ${{ secrets.CDM5_ORACLE_PASSWORD }}
       CDM5_ORACLE_SERVER: ${{ secrets.CDM5_ORACLE_SERVER }}
       CDM5_ORACLE_USER: ${{ secrets.CDM5_ORACLE_USER }}
-      CDM5_POSTGRESQL_CDM_SCHEMA: ${{ secrets.CDM5_POSTGRESQL_CDM_SCHEMA }}
+      CDM5_POSTGRESQL_CDM_SCHEMA: ${{ secrets.CDM5_POSTGRESQL_CDM54_SCHEMA }}
       CDM5_POSTGRESQL_OHDSI_SCHEMA: ${{ secrets.CDM5_POSTGRESQL_OHDSI_SCHEMA }}
       CDM5_POSTGRESQL_PASSWORD: ${{ secrets.CDM5_POSTGRESQL_PASSWORD }}
       CDM5_POSTGRESQL_SERVER: ${{ secrets.CDM5_POSTGRESQL_SERVER }}
       CDM5_POSTGRESQL_USER: ${{ secrets.CDM5_POSTGRESQL_USER }}
-      CDM5_SQL_SERVER_CDM_SCHEMA: ${{ secrets.CDM5_SQL_SERVER_CDM_SCHEMA }}
+      CDM5_SQL_SERVER_CDM_SCHEMA: ${{ secrets.CDM5_SQL_SERVER_CDM54_SCHEMA }}
       CDM5_SQL_SERVER_OHDSI_SCHEMA: ${{ secrets.CDM5_SQL_SERVER_OHDSI_SCHEMA }}
       CDM5_SQL_SERVER_PASSWORD: ${{ secrets.CDM5_SQL_SERVER_PASSWORD }}
       CDM5_SQL_SERVER_SERVER: ${{ secrets.CDM5_SQL_SERVER_SERVER }}
       CDM5_SQL_SERVER_USER: ${{ secrets.CDM5_SQL_SERVER_USER }}
-      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      CDM5_REDSHIFT_CDM_SCHEMA: ${{ secrets.CDM5_REDSHIFT_CDM54_SCHEMA }}
+      CDM5_REDSHIFT_OHDSI_SCHEMA: ${{ secrets.CDM5_REDSHIFT_OHDSI_SCHEMA }}
+      CDM5_REDSHIFT_PASSWORD: ${{ secrets.CDM5_REDSHIFT_PASSWORD }}
+      CDM5_REDSHIFT_SERVER: ${{ secrets.CDM5_REDSHIFT_SERVER }}
+      CDM5_REDSHIFT_USER: ${{ secrets.CDM5_REDSHIFT_USER }}
+      CDM_SNOWFLAKE_CDM53_SCHEMA: ${{ secrets.CDM_SNOWFLAKE_CDM53_SCHEMA }}
+      CDM_SNOWFLAKE_OHDSI_SCHEMA: ${{ secrets.CDM_SNOWFLAKE_OHDSI_SCHEMA }}
+      CDM_SNOWFLAKE_PASSWORD: ${{ secrets.CDM_SNOWFLAKE_PASSWORD }}
+      CDM_SNOWFLAKE_CONNECTION_STRING: ${{ secrets.CDM_SNOWFLAKE_CONNECTION_STRING }}
+      CDM_SNOWFLAKE_USER: ${{ secrets.CDM_SNOWFLAKE_USER }}      
+      CDM5_SPARK_USER: ${{ secrets.CDM5_SPARK_USER }}
+      CDM5_SPARK_PASSWORD: ${{ secrets.CDM5_SPARK_PASSWORD }}
+      CDM5_SPARK_CONNECTION_STRING: ${{ secrets.CDM5_SPARK_CONNECTION_STRING }}
+      CDM5_SPARK_CDM_SCHEMA: ${{ secrets.CDM5_SPARK_CDM_SCHEMA }}
+      CDM5_SPARK_OHDSI_SCHEMA: ${{ secrets.CDM5_SPARK_OHDSI_SCHEMA }}
+      CDM_BIG_QUERY_CONNECTION_STRING: ${{ secrets.CDM_BIG_QUERY_CONNECTION_STRING }}
+      CDM_BIG_QUERY_KEY_FILE: ${{ secrets.CDM_BIG_QUERY_KEY_FILE }}
+      CDM_BIG_QUERY_CDM_SCHEMA: ${{ secrets.CDM_BIG_QUERY_CDM_SCHEMA }}
+      CDM_BIG_QUERY_OHDSI_SCHEMA: ${{ secrets.CDM_BIG_QUERY_OHDSI_SCHEMA }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - uses: r-lib/actions/setup-r@v1
+      - uses: r-lib/actions/setup-r@v2
         with:
           r-version: ${{ matrix.config.r }}
 
-      - uses: r-lib/actions/setup-tinytex@v1
+      - uses: r-lib/actions/setup-tinytex@v2
 
-      - uses: r-lib/actions/setup-pandoc@v1
+      - uses: r-lib/actions/setup-pandoc@v2
 
       - name: Query dependencies
         run: |
@@ -66,7 +84,7 @@ jobs:
 
       - name: Cache R packages
         if: runner.os != 'Windows'
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ${{ env.R_LIBS_USER }}
           key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
@@ -110,14 +128,14 @@ jobs:
 
       - name: Upload check results
         if: failure()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ runner.os }}-r${{ matrix.config.r }}-results
           path: check
           
       - name: Upload source package
         if: success() && runner.os == 'macOS' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: package_tarball
           path: check/*.tar.gz
@@ -139,7 +157,7 @@ jobs:
 
     steps:
       
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0    
 
@@ -165,7 +183,7 @@ jobs:
           draft: false
           prerelease: false
           
-      - uses: r-lib/actions/setup-r@v1
+      - uses: r-lib/actions/setup-r@v2
         if: ${{ env.new_version != '' }}
         
       - name: Install drat
@@ -181,7 +199,7 @@ jobs:
           
       - name: Download package tarball
         if: ${{ env.new_version != '' }}
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4.1.7
         with:
           name: package_tarball    
           

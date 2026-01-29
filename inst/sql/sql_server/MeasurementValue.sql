@@ -51,7 +51,7 @@ FROM (
 
 {@temporal_sequence} ? {
 
-FLOOR(DATEDIFF(@time_part, measurement_date, cohort.cohort_start_date)*1.0/@time_interval ) as time_id
+FLOOR(DATEDIFF(@time_part, measurement_date, cohort.cohort_start_date)*1.0/@time_interval ) as time_id,
 ROW_NUMBER() OVER (PARTITION BY cohort.@row_id_field, measurement.measurement_concept_id, FLOOR(DATEDIFF(@time_part, measurement_date, cohort.cohort_start_date)*1.0/@time_interval ) ORDER BY measurement_date DESC, measurement.unit_concept_id, value_as_number) AS rn,
 
 } : {

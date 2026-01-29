@@ -14,9 +14,14 @@ getDbCovariateData(
   cohortDatabaseSchema = cdmDatabaseSchema,
   cohortTableIsTemp = FALSE,
   cohortId = -1,
+  cohortIds = c(-1),
   rowIdField = "subject_id",
   covariateSettings,
-  aggregated = FALSE
+  aggregated = FALSE,
+  minCharacterizationMean = 0,
+  tempEmulationSchema = getOption("sqlRenderTempEmulationSchema"),
+  covariateCohortDatabaseSchema = NULL,
+  covariateCohortTable = NULL
 )
 }
 \arguments{
@@ -30,11 +35,11 @@ function \code{createConnectionDetails} in the
 Either the \code{connection} or \code{connectionDetails} argument
 should be specified.}
 
-\item{oracleTempSchema}{A schema where temp tables can be created in Oracle.}
+\item{oracleTempSchema}{DEPRECATED: use \code{tempEmulationSchema} instead.}
 
 \item{cdmDatabaseSchema}{The name of the database schema that contains the OMOP CDM instance.
 Requires read permissions to this database. On SQL Server, this should
-specifiy both the database and the schema, so for example
+specify both the database and the schema, so for example
 'cdm_instance.dbo'.}
 
 \item{cdmVersion}{Define the OMOP CDM version used: currently supported is "5".}
@@ -44,12 +49,16 @@ construct covariates}
 
 \item{cohortDatabaseSchema}{If the cohort table is not a temp table, specify the database schema
 where the cohort table can be found. On SQL Server, this should
-specifiy both the database and the schema, so for example
+specify both the database and the schema, so for example
 'cdm_instance.dbo'.}
 
 \item{cohortTableIsTemp}{Is the cohort table a temp table?}
 
-\item{cohortId}{For which cohort ID(s) should covariates be constructed? If set to -1,
+\item{cohortId}{DEPRECATED:For which cohort ID(s) should covariates be constructed? If set to -1,
+covariates will be constructed for all cohorts in the specified cohort
+table.}
+
+\item{cohortIds}{For which cohort ID(s) should covariates be constructed? If set to c(-1),
 covariates will be constructed for all cohorts in the specified cohort
 table.}
 
@@ -61,7 +70,23 @@ there is more than one period per person.}
 of the createCovariate functions, or a list of such objects.}
 
 \item{aggregated}{Should aggregate statistics be computed instead of covariates per
-cohort entry?}
+cohort entry? If aggregated is set to FALSE, the results returned will be based
+on each subject_id and cohort_start_date in your cohort table. If your cohort
+contains multiple entries for the same subject_id (due to different cohort_start_date values),
+you must carefully set the rowIdField so you can identify the patients properly.
+See issue #229 for more discussion on this parameter.}
+
+\item{minCharacterizationMean}{The minimum mean value for characterization output. Values below this will be cut off from output. This
+will help reduce the file size of the characterization output, but will remove information
+on covariates that have very low values. The default is 0.}
+
+\item{tempEmulationSchema}{Some database platforms like Oracle and Impala do not truly support
+temp tables. To emulate temp tables, provide a schema with write
+privileges where temp tables can be created.}
+
+\item{covariateCohortDatabaseSchema}{The database schema where the cohorts used to define the covariates can be found.}
+
+\item{covariateCohortTable}{The table where the cohorts used to define the covariates can be found.}
 }
 \value{
 Returns an object of type \code{covariateData}, containing information on the covariates.
@@ -74,4 +99,30 @@ This function uses the data in the CDM to construct a large set of covariates fo
 cohort. The cohort is assumed to be in an existing table with these fields: 'subject_id',
 'cohort_definition_id', 'cohort_start_date'. Optionally, an extra field can be added containing the
 unique identifier that will be used as rowID in the output.
+}
+\examples{
+\donttest{
+eunomiaConnectionDetails <- Eunomia::getEunomiaConnectionDetails()
+covSettings <- createDefaultCovariateSettings()
+Eunomia::createCohorts(
+  connectionDetails = eunomiaConnectionDetails,
+  cdmDatabaseSchema = "main",
+  cohortDatabaseSchema = "main",
+  cohortTable = "cohort"
+)
+covData <- getDbCovariateData(
+  connectionDetails = eunomiaConnectionDetails,
+  tempEmulationSchema = NULL,
+  cdmDatabaseSchema = "main",
+  cdmVersion = "5",
+  cohortTable = "cohort",
+  cohortDatabaseSchema = "main",
+  cohortTableIsTemp = FALSE,
+  cohortIds = -1,
+  rowIdField = "subject_id",
+  covariateSettings = covSettings,
+  aggregated = FALSE
+)
+}
+
 }

@@ -16,6 +16,7 @@ createCovariateSettings(
   useDemographicsPostObservationTime = FALSE,
   useDemographicsTimeInCohort = FALSE,
   useDemographicsIndexYearMonth = FALSE,
+  useCareSiteId = FALSE,
   useConditionOccurrenceAnyTimePrior = FALSE,
   useConditionOccurrenceLongTerm = FALSE,
   useConditionOccurrenceMediumTerm = FALSE,
@@ -80,10 +81,18 @@ createCovariateSettings(
   useMeasurementRangeGroupLongTerm = FALSE,
   useMeasurementRangeGroupMediumTerm = FALSE,
   useMeasurementRangeGroupShortTerm = FALSE,
+  useMeasurementValueAsConceptAnyTimePrior = FALSE,
+  useMeasurementValueAsConceptLongTerm = FALSE,
+  useMeasurementValueAsConceptMediumTerm = FALSE,
+  useMeasurementValueAsConceptShortTerm = FALSE,
   useObservationAnyTimePrior = FALSE,
   useObservationLongTerm = FALSE,
   useObservationMediumTerm = FALSE,
   useObservationShortTerm = FALSE,
+  useObservationValueAsConceptAnyTimePrior = FALSE,
+  useObservationValueAsConceptLongTerm = FALSE,
+  useObservationValueAsConceptMediumTerm = FALSE,
+  useObservationValueAsConceptShortTerm = FALSE,
   useCharlsonIndex = FALSE,
   useDcsi = FALSE,
   useChads2 = FALSE,
@@ -153,6 +162,11 @@ during cohort period. (analysis ID 10)}
 \item{useDemographicsIndexYearMonth}{Both calendar year and month of the
 index date in a single variable.
 (analysis ID 11)}
+
+\item{useCareSiteId}{Care site associated with the cohort
+start, pulled from the visit_detail,
+visit_occurrence, or person table, in
+that order. (analysis ID 12)}
 
 \item{useConditionOccurrenceAnyTimePrior}{One covariate per condition in the
 condition_occurrence table starting any
@@ -301,7 +315,7 @@ medium term window. (analysis ID 403)}
 
 \item{useDrugEraShortTerm}{One covariate per drug in the drug_era
 table overlapping with any part of the
-short window. (analysis ID 404)}
+short term window. (analysis ID 404)}
 
 \item{useDrugEraOverlapping}{One covariate per drug in the drug_era
 table overlapping with the end of the
@@ -316,7 +330,7 @@ table starting in the medium term
 window. (analysis ID 407)}
 
 \item{useDrugEraStartShortTerm}{One covariate per drug in the drug_era
-table starting in the long short window.
+table starting in the short term window.
 (analysis ID 408)}
 
 \item{useDrugGroupEraAnyTimePrior}{One covariate per drug rolled up to ATC
@@ -441,6 +455,22 @@ measurements are below, within, or above
 normal range in the short term window.
 (analysis ID 712)}
 
+\item{useMeasurementValueAsConceptAnyTimePrior}{One covariate per measurement-value
+concept combination any time prior to
+index. (analysis ID 713)}
+
+\item{useMeasurementValueAsConceptLongTerm}{One covariate per measurement-value
+concept combination in the long term
+window. (analysis ID 714)}
+
+\item{useMeasurementValueAsConceptMediumTerm}{One covariate per measurement-value
+concept combination in the medium term
+window. (analysis ID 715)}
+
+\item{useMeasurementValueAsConceptShortTerm}{One covariate per measurement-value
+concept combination in the short term
+window. (analysis ID 716)}
+
 \item{useObservationAnyTimePrior}{One covariate per observation in the
 observation table any time prior to
 index. (analysis ID 801)}
@@ -456,6 +486,22 @@ window. (analysis ID 803)}
 \item{useObservationShortTerm}{One covariate per observation in the
 observation table in the short term
 window. (analysis ID 804)}
+
+\item{useObservationValueAsConceptAnyTimePrior}{One covariate per observation-value
+concept combination any time prior to
+index. (analysis ID 805)}
+
+\item{useObservationValueAsConceptLongTerm}{One covariate per observation-value
+concept combination in the long term
+window. (analysis ID 806)}
+
+\item{useObservationValueAsConceptMediumTerm}{One covariate per observation-value
+concept combination in the medium term
+window. (analysis ID 807)}
+
+\item{useObservationValueAsConceptShortTerm}{One covariate per observation-value
+concept combination in the short term
+window. (analysis ID 808)}
 
 \item{useCharlsonIndex}{The Charlson comorbidity index (Romano
 adaptation) using all conditions prior
@@ -592,122 +638,133 @@ An object of type \code{covariateSettings}, to be used in other functions.
 Create covariate settings
 }
 \details{
-creates an object specifying how covariates should be contructed from data in the CDM model.
+creates an object specifying how covariates should be constructed from data in the CDM model.
 }
 \examples{
-settings <- createCovariateSettings(useDemographicsGender = TRUE,
-                                    useDemographicsAge = FALSE,
-                                    useDemographicsAgeGroup = TRUE,
-                                    useDemographicsRace = TRUE,
-                                    useDemographicsEthnicity = TRUE,
-                                    useDemographicsIndexYear = TRUE,
-                                    useDemographicsIndexMonth = TRUE,
-                                    useDemographicsPriorObservationTime = FALSE,
-                                    useDemographicsPostObservationTime = FALSE,
-                                    useDemographicsTimeInCohort = FALSE,
-                                    useDemographicsIndexYearMonth = FALSE,
-                                    useConditionOccurrenceAnyTimePrior = FALSE,
-                                    useConditionOccurrenceLongTerm = FALSE,
-                                    useConditionOccurrenceMediumTerm = FALSE,
-                                    useConditionOccurrenceShortTerm = FALSE,
-                                    useConditionOccurrencePrimaryInpatientAnyTimePrior = FALSE,
-                                    useConditionOccurrencePrimaryInpatientLongTerm = FALSE,
-                                    useConditionOccurrencePrimaryInpatientMediumTerm = FALSE,
-                                    useConditionOccurrencePrimaryInpatientShortTerm = FALSE,
-                                    useConditionEraAnyTimePrior = FALSE,
-                                    useConditionEraLongTerm = FALSE,
-                                    useConditionEraMediumTerm = FALSE,
-                                    useConditionEraShortTerm = FALSE,
-                                    useConditionEraOverlapping = FALSE,
-                                    useConditionEraStartLongTerm = FALSE,
-                                    useConditionEraStartMediumTerm = FALSE,
-                                    useConditionEraStartShortTerm = FALSE,
-                                    useConditionGroupEraAnyTimePrior = FALSE,
-                                    useConditionGroupEraLongTerm = TRUE,
-                                    useConditionGroupEraMediumTerm = FALSE,
-                                    useConditionGroupEraShortTerm = TRUE,
-                                    useConditionGroupEraOverlapping = FALSE,
-                                    useConditionGroupEraStartLongTerm = FALSE,
-                                    useConditionGroupEraStartMediumTerm = FALSE,
-                                    useConditionGroupEraStartShortTerm = FALSE,
-                                    useDrugExposureAnyTimePrior = FALSE,
-                                    useDrugExposureLongTerm = FALSE,
-                                    useDrugExposureMediumTerm = FALSE,
-                                    useDrugExposureShortTerm = FALSE,
-                                    useDrugEraAnyTimePrior = FALSE,
-                                    useDrugEraLongTerm = FALSE,
-                                    useDrugEraMediumTerm = FALSE,
-                                    useDrugEraShortTerm = FALSE,
-                                    useDrugEraOverlapping = FALSE,
-                                    useDrugEraStartLongTerm = FALSE,
-                                    useDrugEraStartMediumTerm = FALSE,
-                                    useDrugEraStartShortTerm = FALSE,
-                                    useDrugGroupEraAnyTimePrior = FALSE,
-                                    useDrugGroupEraLongTerm = TRUE,
-                                    useDrugGroupEraMediumTerm = FALSE,
-                                    useDrugGroupEraShortTerm = TRUE,
-                                    useDrugGroupEraOverlapping = TRUE,
-                                    useDrugGroupEraStartLongTerm = FALSE,
-                                    useDrugGroupEraStartMediumTerm = FALSE,
-                                    useDrugGroupEraStartShortTerm = FALSE,
-                                    useProcedureOccurrenceAnyTimePrior = FALSE,
-                                    useProcedureOccurrenceLongTerm = TRUE,
-                                    useProcedureOccurrenceMediumTerm = FALSE,
-                                    useProcedureOccurrenceShortTerm = TRUE,
-                                    useDeviceExposureAnyTimePrior = FALSE,
-                                    useDeviceExposureLongTerm = TRUE,
-                                    useDeviceExposureMediumTerm = FALSE,
-                                    useDeviceExposureShortTerm = TRUE,
-                                    useMeasurementAnyTimePrior = FALSE,
-                                    useMeasurementLongTerm = TRUE,
-                                    useMeasurementMediumTerm = FALSE,
-                                    useMeasurementShortTerm = TRUE,
-                                    useMeasurementValueAnyTimePrior = FALSE,
-                                    useMeasurementValueLongTerm = FALSE,
-                                    useMeasurementValueMediumTerm = FALSE,
-                                    useMeasurementValueShortTerm = FALSE,
-                                    useMeasurementRangeGroupAnyTimePrior = FALSE,
-                                    useMeasurementRangeGroupLongTerm = TRUE,
-                                    useMeasurementRangeGroupMediumTerm = FALSE,
-                                    useMeasurementRangeGroupShortTerm = FALSE,
-                                    useObservationAnyTimePrior = FALSE,
-                                    useObservationLongTerm = TRUE,
-                                    useObservationMediumTerm = FALSE,
-                                    useObservationShortTerm = TRUE,
-                                    useCharlsonIndex = TRUE,
-                                    useDcsi = TRUE,
-                                    useChads2 = TRUE,
-                                    useChads2Vasc = TRUE,
-                                    useHfrs = FALSE,
-                                    useDistinctConditionCountLongTerm = FALSE,
-                                    useDistinctConditionCountMediumTerm = FALSE,
-                                    useDistinctConditionCountShortTerm = FALSE,
-                                    useDistinctIngredientCountLongTerm = FALSE,
-                                    useDistinctIngredientCountMediumTerm = FALSE,
-                                    useDistinctIngredientCountShortTerm = FALSE,
-                                    useDistinctProcedureCountLongTerm = FALSE,
-                                    useDistinctProcedureCountMediumTerm = FALSE,
-                                    useDistinctProcedureCountShortTerm = FALSE,
-                                    useDistinctMeasurementCountLongTerm = FALSE,
-                                    useDistinctMeasurementCountMediumTerm = FALSE,
-                                    useDistinctMeasurementCountShortTerm = FALSE,
-                                    useDistinctObservationCountLongTerm = FALSE,
-                                    useDistinctObservationCountMediumTerm = FALSE,
-                                    useDistinctObservationCountShortTerm = FALSE,
-                                    useVisitCountLongTerm = FALSE,
-                                    useVisitCountMediumTerm = FALSE,
-                                    useVisitCountShortTerm = FALSE,
-                                    useVisitConceptCountLongTerm = FALSE,
-                                    useVisitConceptCountMediumTerm = FALSE,
-                                    useVisitConceptCountShortTerm = FALSE,
-                                    longTermStartDays = -365,
-                                    mediumTermStartDays = -180,
-                                    shortTermStartDays = -30,
-                                    endDays = 0,
-                                    includedCovariateConceptIds = c(),
-                                    addDescendantsToInclude = FALSE,
-                                    excludedCovariateConceptIds = c(),
-                                    addDescendantsToExclude = FALSE,
-                                    includedCovariateIds = c())
+settings <- createCovariateSettings(
+  useDemographicsGender = TRUE,
+  useDemographicsAge = FALSE,
+  useDemographicsAgeGroup = TRUE,
+  useDemographicsRace = TRUE,
+  useDemographicsEthnicity = TRUE,
+  useDemographicsIndexYear = TRUE,
+  useDemographicsIndexMonth = TRUE,
+  useDemographicsPriorObservationTime = FALSE,
+  useDemographicsPostObservationTime = FALSE,
+  useDemographicsTimeInCohort = FALSE,
+  useDemographicsIndexYearMonth = FALSE,
+  useCareSiteId = FALSE,
+  useConditionOccurrenceAnyTimePrior = FALSE,
+  useConditionOccurrenceLongTerm = FALSE,
+  useConditionOccurrenceMediumTerm = FALSE,
+  useConditionOccurrenceShortTerm = FALSE,
+  useConditionOccurrencePrimaryInpatientAnyTimePrior = FALSE,
+  useConditionOccurrencePrimaryInpatientLongTerm = FALSE,
+  useConditionOccurrencePrimaryInpatientMediumTerm = FALSE,
+  useConditionOccurrencePrimaryInpatientShortTerm = FALSE,
+  useConditionEraAnyTimePrior = FALSE,
+  useConditionEraLongTerm = FALSE,
+  useConditionEraMediumTerm = FALSE,
+  useConditionEraShortTerm = FALSE,
+  useConditionEraOverlapping = FALSE,
+  useConditionEraStartLongTerm = FALSE,
+  useConditionEraStartMediumTerm = FALSE,
+  useConditionEraStartShortTerm = FALSE,
+  useConditionGroupEraAnyTimePrior = FALSE,
+  useConditionGroupEraLongTerm = TRUE,
+  useConditionGroupEraMediumTerm = FALSE,
+  useConditionGroupEraShortTerm = TRUE,
+  useConditionGroupEraOverlapping = FALSE,
+  useConditionGroupEraStartLongTerm = FALSE,
+  useConditionGroupEraStartMediumTerm = FALSE,
+  useConditionGroupEraStartShortTerm = FALSE,
+  useDrugExposureAnyTimePrior = FALSE,
+  useDrugExposureLongTerm = FALSE,
+  useDrugExposureMediumTerm = FALSE,
+  useDrugExposureShortTerm = FALSE,
+  useDrugEraAnyTimePrior = FALSE,
+  useDrugEraLongTerm = FALSE,
+  useDrugEraMediumTerm = FALSE,
+  useDrugEraShortTerm = FALSE,
+  useDrugEraOverlapping = FALSE,
+  useDrugEraStartLongTerm = FALSE,
+  useDrugEraStartMediumTerm = FALSE,
+  useDrugEraStartShortTerm = FALSE,
+  useDrugGroupEraAnyTimePrior = FALSE,
+  useDrugGroupEraLongTerm = TRUE,
+  useDrugGroupEraMediumTerm = FALSE,
+  useDrugGroupEraShortTerm = TRUE,
+  useDrugGroupEraOverlapping = TRUE,
+  useDrugGroupEraStartLongTerm = FALSE,
+  useDrugGroupEraStartMediumTerm = FALSE,
+  useDrugGroupEraStartShortTerm = FALSE,
+  useProcedureOccurrenceAnyTimePrior = FALSE,
+  useProcedureOccurrenceLongTerm = TRUE,
+  useProcedureOccurrenceMediumTerm = FALSE,
+  useProcedureOccurrenceShortTerm = TRUE,
+  useDeviceExposureAnyTimePrior = FALSE,
+  useDeviceExposureLongTerm = TRUE,
+  useDeviceExposureMediumTerm = FALSE,
+  useDeviceExposureShortTerm = TRUE,
+  useMeasurementAnyTimePrior = FALSE,
+  useMeasurementLongTerm = TRUE,
+  useMeasurementMediumTerm = FALSE,
+  useMeasurementShortTerm = TRUE,
+  useMeasurementValueAnyTimePrior = FALSE,
+  useMeasurementValueLongTerm = FALSE,
+  useMeasurementValueMediumTerm = FALSE,
+  useMeasurementValueShortTerm = FALSE,
+  useMeasurementRangeGroupAnyTimePrior = FALSE,
+  useMeasurementRangeGroupLongTerm = TRUE,
+  useMeasurementRangeGroupMediumTerm = FALSE,
+  useMeasurementRangeGroupShortTerm = TRUE,
+  useMeasurementValueAsConceptAnyTimePrior = FALSE,
+  useMeasurementValueAsConceptLongTerm = TRUE,
+  useMeasurementValueAsConceptMediumTerm = FALSE,
+  useMeasurementValueAsConceptShortTerm = TRUE,
+  useObservationAnyTimePrior = FALSE,
+  useObservationLongTerm = TRUE,
+  useObservationMediumTerm = FALSE,
+  useObservationShortTerm = TRUE,
+  useObservationValueAsConceptAnyTimePrior = FALSE,
+  useObservationValueAsConceptLongTerm = TRUE,
+  useObservationValueAsConceptMediumTerm = FALSE,
+  useObservationValueAsConceptShortTerm = TRUE,
+  useCharlsonIndex = TRUE,
+  useDcsi = TRUE,
+  useChads2 = TRUE,
+  useChads2Vasc = TRUE,
+  useHfrs = FALSE,
+  useDistinctConditionCountLongTerm = FALSE,
+  useDistinctConditionCountMediumTerm = FALSE,
+  useDistinctConditionCountShortTerm = FALSE,
+  useDistinctIngredientCountLongTerm = FALSE,
+  useDistinctIngredientCountMediumTerm = FALSE,
+  useDistinctIngredientCountShortTerm = FALSE,
+  useDistinctProcedureCountLongTerm = FALSE,
+  useDistinctProcedureCountMediumTerm = FALSE,
+  useDistinctProcedureCountShortTerm = FALSE,
+  useDistinctMeasurementCountLongTerm = FALSE,
+  useDistinctMeasurementCountMediumTerm = FALSE,
+  useDistinctMeasurementCountShortTerm = FALSE,
+  useDistinctObservationCountLongTerm = FALSE,
+  useDistinctObservationCountMediumTerm = FALSE,
+  useDistinctObservationCountShortTerm = FALSE,
+  useVisitCountLongTerm = FALSE,
+  useVisitCountMediumTerm = FALSE,
+  useVisitCountShortTerm = FALSE,
+  useVisitConceptCountLongTerm = FALSE,
+  useVisitConceptCountMediumTerm = FALSE,
+  useVisitConceptCountShortTerm = FALSE,
+  longTermStartDays = -365,
+  mediumTermStartDays = -180,
+  shortTermStartDays = -30,
+  endDays = 0,
+  includedCovariateConceptIds = c(),
+  addDescendantsToInclude = FALSE,
+  excludedCovariateConceptIds = c(),
+  addDescendantsToExclude = FALSE,
+  includedCovariateIds = c()
+)
 
 }

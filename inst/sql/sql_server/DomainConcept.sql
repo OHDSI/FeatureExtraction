@@ -11,14 +11,26 @@ SELECT
 	row_id,
 	1 AS covariate_value 
 }
+{@temporal_annual} ? {, event_year}
 INTO @covariate_table
 FROM (
+{@temporal_annual} ? {
+SELECT @domain_concept_id,
+cohort_definition_id,
+subject_id,
+cohort_start_date,
+{@temporal} ? {time_id,}
+event_year FROM (
+}
 	SELECT DISTINCT @domain_concept_id,
 {@temporal} ? {
 		time_id,
 }
 {@temporal_sequence} ? {
 FLOOR(DATEDIFF(@time_part, @cdm_database_schema.@domain_table.@domain_start_date, cohort.cohort_start_date)*1.0/@time_interval ) as time_id,
+}
+{@temporal_annual} ? {
+DATEPART(year, @domain_table.@domain_start_date) event_year,
 }
 {@aggregated} ? {
 		cohort_definition_id,
@@ -60,12 +72,18 @@ FLOOR(DATEDIFF(@time_part, @cdm_database_schema.@domain_table.@domain_start_date
 {@included_cov_table != ''} ? {		AND CAST(@domain_concept_id AS BIGINT) * 1000 + @analysis_id IN (SELECT id FROM @included_cov_table)}
 {@cohort_definition_id != -1} ? {		AND cohort.cohort_definition_id IN (@cohort_definition_id)}
 ) by_row_id
+{@temporal_annual} ? {
+) by_year
+}
 {@aggregated} ? {		
 GROUP BY cohort_definition_id,
 	@domain_concept_id
 {@temporal | @temporal_sequence} ? {
     ,time_id
-} 
+}
+{@temporal_annual} ? {
+	,event_year
+}
 } 
 ;
 

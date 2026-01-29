@@ -8,7 +8,9 @@ CREATE TABLE #cov_ref (
 	covariate_id BIGINT,
 	covariate_name VARCHAR(512),
 	analysis_id INT,
-	concept_id INT
+	concept_id INT,
+	value_as_concept_id INT,
+	collisions INT
 	);
 	
 CREATE TABLE #analysis_ref (

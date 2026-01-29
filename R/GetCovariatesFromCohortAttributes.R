@@ -1,4 +1,4 @@
-# Copyright 2021 Observational Health Data Sciences and Informatics
+# Copyright 2025 Observational Health Data Sciences and Informatics
 #
 # This file is part of FeatureExtraction
 #
@@ -24,86 +24,142 @@
 #'
 #' @template GetCovarParams
 #'
+#' @examples
+#' \donttest{
+#' connectionDetails <- Eunomia::getEunomiaConnectionDetails()
+#' Eunomia::createCohorts(
+#'   connectionDetails = connectionDetails,
+#'   cdmDatabaseSchema = "main",
+#'   cohortDatabaseSchema = "main",
+#'   cohortTable = "cohort"
+#' )
+#' connection <- DatabaseConnector::connect(connectionDetails)
+#' covariateSettings <- createCohortAttrCovariateSettings(
+#'   attrDatabaseSchema = "main",
+#'   cohortAttrTable = "cohort_attribute",
+#'   attrDefinitionTable = "attribute_definition",
+#'   includeAttrIds = c(1),
+#'   isBinary = FALSE,
+#'   missingMeansZero = FALSE
+#' )
+#'
+#' covData <- getDbCohortAttrCovariatesData(
+#'   connection = connection,
+#'   tempEmulationSchema = NULL,
+#'   cdmDatabaseSchema = "main",
+#'   cdmVersion = "5",
+#'   cohortTable = "cohort",
+#'   cohortIds = 1,
+#'   rowIdField = "subject_id",
+#'   covariateSettings = covariateSettings,
+#'   aggregated = FALSE
+#' )
+#' }
+#'
 #' @export
 getDbCohortAttrCovariatesData <- function(connection,
                                           oracleTempSchema = NULL,
                                           cdmDatabaseSchema,
                                           cohortTable = "#cohort_person",
                                           cohortId = -1,
+                                          cohortIds = c(-1),
                                           cdmVersion = "5",
                                           rowIdField = "subject_id",
                                           covariateSettings,
-                                          aggregated = FALSE) {
+                                          aggregated = FALSE,
+                                          tempEmulationSchema = getOption("sqlRenderTempEmulationSchema")) {
   if (aggregated) {
     stop("Aggregation not implemented for covariates from cohort attributes.")
   }
   if (cdmVersion == "4") {
     stop("Common Data Model version 4 is not supported")
   }
+  if (!missing(cohortId)) {
+    warning("cohortId argument has been deprecated, please use cohortIds")
+    cohortIds <- cohortId
+  }
+  if (!is.null(oracleTempSchema) && oracleTempSchema != "") {
+    rlang::warn("The 'oracleTempSchema' argument is deprecated. Use 'tempEmulationSchema' instead.",
+      .frequency = "regularly",
+      .frequency_id = "oracleTempSchema"
+    )
+    tempEmulationSchema <- oracleTempSchema
+  }
   start <- Sys.time()
   writeLines("Constructing covariates from cohort attributes table")
-  
+
   if (is.null(covariateSettings$includeAttrIds) || length(covariateSettings$includeAttrIds) == 0) {
     hasIncludeAttrIds <- FALSE
   } else {
-    if (!is.numeric(covariateSettings$includeAttrIds))
+    if (!is.numeric(covariateSettings$includeAttrIds)) {
       stop("includeAttrIds must be a (vector of) numeric")
+    }
     hasIncludeAttrIds <- TRUE
     DatabaseConnector::insertTable(connection,
-                                   tableName = "#included_attr",
-                                   data = data.frame(attribute_definition_id = as.integer(covariateSettings$includeAttrIds)),
-                                   dropTableIfExists = TRUE,
-                                   createTable = TRUE,
-                                   tempTable = TRUE,
-                                   oracleTempSchema = oracleTempSchema)
+      tableName = "#included_attr",
+      data = data.frame(attribute_definition_id = as.integer(covariateSettings$includeAttrIds)),
+      dropTableIfExists = TRUE,
+      createTable = TRUE,
+      tempTable = TRUE,
+      tempEmulationSchema = tempEmulationSchema
+    )
   }
   sql <- SqlRender::readSql(system.file("sql/sql_server/GetAttrCovariates.sql", package = "FeatureExtraction"))
-  renderedSql <- SqlRender::render(sql = sql,
-                                   attr_database_schema = covariateSettings$attrDatabaseSchema,
-                                   cohort_table = cohortTable,
-                                   row_id_field = rowIdField,
-                                   cohort_attribute_table = covariateSettings$cohortAttrTable,
-                                   has_include_attr_ids = hasIncludeAttrIds)
-  renderedSql <- SqlRender::translate(sql = renderedSql,
-                                      targetDialect = attr(connection, "dbms"),
-                                      oracleTempSchema = oracleTempSchema)
+  renderedSql <- SqlRender::render(
+    sql = sql,
+    attr_database_schema = covariateSettings$attrDatabaseSchema,
+    cohort_table = cohortTable,
+    row_id_field = rowIdField,
+    cohort_attribute_table = covariateSettings$cohortAttrTable,
+    has_include_attr_ids = hasIncludeAttrIds
+  )
+  renderedSql <- SqlRender::translate(
+    sql = renderedSql,
+    targetDialect = attr(connection, "dbms"),
+    tempEmulationSchema = tempEmulationSchema
+  )
   # renderedSql <- SqlRender::loadRenderTranslateSql("GetAttrCovariates.sql",
   #                                                  packageName = "FeatureExtraction",
   #                                                  dbms = attr(connection, "dbms"),
-  #                                                  oracleTempSchema = oracleTempSchema,
+  #                                                  tempEmulationSchema = tempEmulationSchema,
   #                                                  attr_database_schema = covariateSettings$attrDatabaseSchema,
   #                                                  cohort_table = cohortTable,
   #                                                  row_id_field = rowIdField,
   #                                                  cohort_attribute_table = covariateSettings$cohortAttrTable,
   #                                                  has_include_attr_ids = hasIncludeAttrIds)
-  
-  covariates <- DatabaseConnector::querySql(connection, renderedSql, snakeCaseToCamelCase = TRUE)  
+
+  covariates <- DatabaseConnector::querySql(connection, renderedSql, snakeCaseToCamelCase = TRUE)
   covariateRefSql <- "SELECT attribute_definition_id AS covariate_id, attribute_name AS covariate_name FROM @attr_database_schema.@attr_definition_table ORDER BY attribute_definition_id"
   covariateRefSql <- SqlRender::render(covariateRefSql,
-                                       attr_database_schema = covariateSettings$attrDatabaseSchema,
-                                       attr_definition_table = covariateSettings$attrDefinitionTable)
-  covariateRefSql <- SqlRender::translate(sql = covariateRefSql,
-                                          targetDialect = attr(connection, "dbms"),
-                                          oracleTempSchema = oracleTempSchema)
+    attr_database_schema = covariateSettings$attrDatabaseSchema,
+    attr_definition_table = covariateSettings$attrDefinitionTable
+  )
+  covariateRefSql <- SqlRender::translate(
+    sql = covariateRefSql,
+    targetDialect = attr(connection, "dbms"),
+    tempEmulationSchema = tempEmulationSchema
+  )
   covariateRef <- DatabaseConnector::querySql(connection, covariateRefSql, snakeCaseToCamelCase = TRUE)
   covariateRef$analysisId <- rep(as.numeric(covariateSettings$analysisId), length = nrow(covariateRef))
   covariateRef$conceptId <- rep(0, length = nrow(covariateRef))
-  
-  analysisRef <- data.frame(analysisId = as.numeric(covariateSettings$analysisId),
-                            analysisName = "Covariates from cohort attributes",
-                            domainId = "Cohort",
-                            startDay = as.numeric(NA),
-                            endDay = as.numeric(NA),
-                            isBinary = ifelse(covariateSettings$isBinary, "Y", "N"),
-                            missingMeansZero = ifelse(covariateSettings$missingMeansZero, "Y", "N"))
+
+  analysisRef <- data.frame(
+    analysisId = as.numeric(covariateSettings$analysisId),
+    analysisName = "Covariates from cohort attributes",
+    domainId = "Cohort",
+    startDay = as.numeric(NA),
+    endDay = as.numeric(NA),
+    isBinary = ifelse(covariateSettings$isBinary, "Y", "N"),
+    missingMeansZero = ifelse(covariateSettings$missingMeansZero, "Y", "N")
+  )
   delta <- Sys.time() - start
   writeLines(paste("Loading took", signif(delta, 3), attr(delta, "units")))
-  
-  result <- createEmptyCovariateData(cohortId, aggregated, covariateSettings$temporal)
-  result$covariates = covariates
-  result$covariateRef = covariateRef
-  result$analysisRef = analysisRef
-  
+
+  result <- createEmptyCovariateData(cohortIds, aggregated, covariateSettings$temporal)
+  result$covariates <- covariates
+  result$covariateRef <- covariateRef
+  result$analysisRef <- analysisRef
+
   return(result)
 }
 
@@ -127,13 +183,26 @@ getDbCohortAttrCovariatesData <- function(connection,
 #' @param attrDefinitionTable   The name of the attribute definition table.
 #' @param cohortAttrTable       The name of the cohort attribute table.
 #' @param includeAttrIds        (optional) A list of attribute definition IDs to restrict to.
-#' @param isBinary              Needed for aggregation: Are these binary variables? Binary 
+#' @param isBinary              Needed for aggregation: Are these binary variables? Binary
 #'                              variables should only have the values 0 or 1.
 #' @param missingMeansZero      Needed for aggregation: For continuous values, should missing
 #'                              values be interpreted as 0?
 #'
 #' @return
 #' An object of type \code{covariateSettings}, to be used in other functions.
+#'
+#' @examples
+#' \donttest{
+#' covariateSettings <- createCohortAttrCovariateSettings(
+#'   analysisId = 1,
+#'   attrDatabaseSchema = "main",
+#'   attrDefinitionTable = "attribute_definition",
+#'   cohortAttrTable = "cohort_attribute",
+#'   includeAttrIds = c(1),
+#'   isBinary = FALSE,
+#'   missingMeansZero = FALSE
+#' )
+#' }
 #'
 #' @export
 createCohortAttrCovariateSettings <- function(analysisId = -1,
@@ -151,10 +220,11 @@ createCohortAttrCovariateSettings <- function(analysisId = -1,
   # Next: overwrite defaults with actual values if specified:
   values <- lapply(as.list(match.call())[-1], function(x) eval(x, envir = sys.frame(-3)))
   for (name in names(values)) {
-    if (name %in% names(covariateSettings))
+    if (name %in% names(covariateSettings)) {
       covariateSettings[[name]] <- values[[name]]
+    }
   }
-  
+
   attr(covariateSettings, "fun") <- "getDbCohortAttrCovariatesData"
   class(covariateSettings) <- "covariateSettings"
   return(covariateSettings)

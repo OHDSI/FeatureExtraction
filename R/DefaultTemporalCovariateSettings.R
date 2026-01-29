@@ -1,4 +1,4 @@
-# Copyright 2021 Observational Health Data Sciences and Informatics
+# Copyright 2025 Observational Health Data Sciences and Informatics
 #
 # This file is part of FeatureExtraction
 #
@@ -19,7 +19,7 @@
 #' Create covariate settings
 #'
 #' @details
-#' creates an object specifying how covariates should be contructed from data in the CDM model.
+#' creates an object specifying how covariates should be constructed from data in the CDM model.
 #'
 #' @param useDemographicsGender                    Gender of the subject. (analysis ID 1)
 #' @param useDemographicsAge                       Age of the subject on the index date (in years).
@@ -37,6 +37,9 @@
 #' @param useDemographicsTimeInCohort              Number of days of observation time preceding the
 #'                                                 index date. (analysis ID 10)
 #' @param useDemographicsIndexYearMonth            Calendar month of the index date. (analysis ID 11)
+#' @param useCareSiteId                            Care site associated with the cohort start, pulled
+#'                                                 from the visit_detail, visit_occurrence, or person
+#'                                                 table, in that order. (analysis ID 12)
 #' @param useConditionOccurrence                   One covariate per condition in the
 #'                                                 condition_occurrence table starting in the time
 #'                                                 window. (analysis ID 101)
@@ -54,7 +57,7 @@
 #'                                                 time window. (analysis ID 203)
 #' @param useConditionEraGroupOverlap              One covariate per condition era rolled up to SNOMED
 #'                                                 groups in the condition_era table overlapping with
-#'                                                 any part of the time window. (analysis ID 203)
+#'                                                 any part of the time window. (analysis ID 204)
 #' @param useDrugExposure                          One covariate per drug in the drug_exposure table
 #'                                                 starting in the time window. (analysis ID 301)
 #' @param useDrugEraStart                          One covariate per drug in the drug_era table
@@ -63,11 +66,11 @@
 #'                                                 overlapping with any part of the time window.
 #'                                                 (analysis ID 402)
 #' @param useDrugEraGroupStart                     One covariate per drug rolled up to ATC groups in
-#'                                                 the drug_era table starting in thetime window.
+#'                                                 the drug_era table starting in the time window.
 #'                                                 (analysis ID 403)
 #' @param useDrugEraGroupOverlap                   One covariate per drug rolled up to ATC groups in
-#'                                                 the drug_era table overlapping with any part of
-#'                                                 thetime window. (analysis ID 403)
+#'                                                 the drug_era table overlapping with any part of the
+#'                                                 time window. (analysis ID 404)
 #' @param useProcedureOccurrence                   One covariate per procedure in the
 #'                                                 procedure_occurrence table in the time window.
 #'                                                 (analysis ID 501)
@@ -82,8 +85,14 @@
 #' @param useMeasurementRangeGroup                 Covariates indicating whether measurements are
 #'                                                 below, within, or above normal range within the time
 #'                                                 period. (analysis ID 703)
+#' @param useMeasurementValueAsConcept             One covariate per measurement-value concept
+#'                                                 combination within the time period. (analysis ID
+#'                                                 704)
 #' @param useObservation                           One covariate per observation in the observation
 #'                                                 table in the time window. (analysis ID 801)
+#' @param useObservationValueAsConcept             One covariate per observation-value concept
+#'                                                 combination within the time period. (analysis ID
+#'                                                 802)
 #' @param useCharlsonIndex                         The Charlson comorbidity index (Romano adaptation)
 #'                                                 using all conditions prior to the window end.
 #'                                                 (analysis ID 901)
@@ -136,53 +145,58 @@
 #' An object of type \code{covariateSettings}, to be used in other functions.
 #'
 #' @examples
-#' settings <- createTemporalCovariateSettings(useDemographicsGender = TRUE,
-#'                                             useDemographicsAge = FALSE,
-#'                                             useDemographicsAgeGroup = TRUE,
-#'                                             useDemographicsRace = TRUE,
-#'                                             useDemographicsEthnicity = TRUE,
-#'                                             useDemographicsIndexYear = TRUE,
-#'                                             useDemographicsIndexMonth = TRUE,
-#'                                             useDemographicsPriorObservationTime = FALSE,
-#'                                             useDemographicsPostObservationTime = FALSE,
-#'                                             useDemographicsTimeInCohort = FALSE,
-#'                                             useDemographicsIndexYearMonth = FALSE,
-#'                                             useConditionOccurrence = FALSE,
-#'                                             useConditionOccurrencePrimaryInpatient = FALSE,
-#'                                             useConditionEraStart = FALSE,
-#'                                             useConditionEraOverlap = FALSE,
-#'                                             useConditionEraGroupStart = FALSE,
-#'                                             useConditionEraGroupOverlap = TRUE,
-#'                                             useDrugExposure = FALSE,
-#'                                             useDrugEraStart = FALSE,
-#'                                             useDrugEraOverlap = FALSE,
-#'                                             useDrugEraGroupStart = FALSE,
-#'                                             useDrugEraGroupOverlap = TRUE,
-#'                                             useProcedureOccurrence = TRUE,
-#'                                             useDeviceExposure = TRUE,
-#'                                             useMeasurement = TRUE,
-#'                                             useMeasurementValue = FALSE,
-#'                                             useMeasurementRangeGroup = TRUE,
-#'                                             useObservation = TRUE,
-#'                                             useCharlsonIndex = TRUE,
-#'                                             useDcsi = TRUE,
-#'                                             useChads2 = TRUE,
-#'                                             useChads2Vasc = TRUE,
-#'                                             useHfrs = FALSE,
-#'                                             useDistinctConditionCount = FALSE,
-#'                                             useDistinctIngredientCount = FALSE,
-#'                                             useDistinctProcedureCount = FALSE,
-#'                                             useDistinctMeasurementCount = FALSE,
-#'                                             useDistinctObservationCount = FALSE,
-#'                                             useVisitCount = FALSE,
-#'                                             useVisitConceptCount = FALSE,
-#'                                             temporalStartDays = -365:-1,
-#'                                             temporalEndDays = -365:-1,
-#'                                             includedCovariateConceptIds = c(),
-#'                                             addDescendantsToInclude = FALSE,
-#'                                             excludedCovariateConceptIds = c(),
-#'                                             addDescendantsToExclude = FALSE,
-#'                                             includedCovariateIds = c())
+#' settings <- createTemporalCovariateSettings(
+#'   useDemographicsGender = TRUE,
+#'   useDemographicsAge = FALSE,
+#'   useDemographicsAgeGroup = TRUE,
+#'   useDemographicsRace = TRUE,
+#'   useDemographicsEthnicity = TRUE,
+#'   useDemographicsIndexYear = TRUE,
+#'   useDemographicsIndexMonth = TRUE,
+#'   useDemographicsPriorObservationTime = FALSE,
+#'   useDemographicsPostObservationTime = FALSE,
+#'   useDemographicsTimeInCohort = FALSE,
+#'   useDemographicsIndexYearMonth = FALSE,
+#'   useCareSiteId = FALSE,
+#'   useConditionOccurrence = FALSE,
+#'   useConditionOccurrencePrimaryInpatient = FALSE,
+#'   useConditionEraStart = FALSE,
+#'   useConditionEraOverlap = FALSE,
+#'   useConditionEraGroupStart = FALSE,
+#'   useConditionEraGroupOverlap = TRUE,
+#'   useDrugExposure = FALSE,
+#'   useDrugEraStart = FALSE,
+#'   useDrugEraOverlap = FALSE,
+#'   useDrugEraGroupStart = FALSE,
+#'   useDrugEraGroupOverlap = TRUE,
+#'   useProcedureOccurrence = TRUE,
+#'   useDeviceExposure = TRUE,
+#'   useMeasurement = TRUE,
+#'   useMeasurementValue = FALSE,
+#'   useMeasurementRangeGroup = TRUE,
+#'   useMeasurementValueAsConcept = TRUE,
+#'   useObservation = TRUE,
+#'   useObservationValueAsConcept = TRUE,
+#'   useCharlsonIndex = TRUE,
+#'   useDcsi = TRUE,
+#'   useChads2 = TRUE,
+#'   useChads2Vasc = TRUE,
+#'   useHfrs = FALSE,
+#'   useDistinctConditionCount = FALSE,
+#'   useDistinctIngredientCount = FALSE,
+#'   useDistinctProcedureCount = FALSE,
+#'   useDistinctMeasurementCount = FALSE,
+#'   useDistinctObservationCount = FALSE,
+#'   useVisitCount = FALSE,
+#'   useVisitConceptCount = FALSE,
+#'   temporalStartDays = -365:-1,
+#'   temporalEndDays = -365:-1,
+#'   includedCovariateConceptIds = c(),
+#'   addDescendantsToInclude = FALSE,
+#'   excludedCovariateConceptIds = c(),
+#'   addDescendantsToExclude = FALSE,
+#'   includedCovariateIds = c()
+#' )
 #'
 #' @export
 createTemporalCovariateSettings <- function(useDemographicsGender = FALSE,
@@ -196,6 +210,7 @@ createTemporalCovariateSettings <- function(useDemographicsGender = FALSE,
                                             useDemographicsPostObservationTime = FALSE,
                                             useDemographicsTimeInCohort = FALSE,
                                             useDemographicsIndexYearMonth = FALSE,
+                                            useCareSiteId = FALSE,
                                             useConditionOccurrence = FALSE,
                                             useConditionOccurrencePrimaryInpatient = FALSE,
                                             useConditionEraStart = FALSE,
@@ -212,7 +227,9 @@ createTemporalCovariateSettings <- function(useDemographicsGender = FALSE,
                                             useMeasurement = FALSE,
                                             useMeasurementValue = FALSE,
                                             useMeasurementRangeGroup = FALSE,
+                                            useMeasurementValueAsConcept = FALSE,
                                             useObservation = FALSE,
+                                            useObservationValueAsConcept = FALSE,
                                             useCharlsonIndex = FALSE,
                                             useDcsi = FALSE,
                                             useChads2 = FALSE,
@@ -232,8 +249,10 @@ createTemporalCovariateSettings <- function(useDemographicsGender = FALSE,
                                             excludedCovariateConceptIds = c(),
                                             addDescendantsToExclude = FALSE,
                                             includedCovariateIds = c()) {
-  covariateSettings <- list(temporal = TRUE,
-                            temporalSequence = FALSE)
+  covariateSettings <- list(
+    temporal = TRUE,
+    temporalSequence = FALSE
+  )
   formalNames <- names(formals(createTemporalCovariateSettings))
   anyUseTrue <- FALSE
   for (name in formalNames) {

@@ -1,4 +1,4 @@
-# Copyright 2021 Observational Health Data Sciences and Informatics
+# Copyright 2025 Observational Health Data Sciences and Informatics
 #
 # This file is part of FeatureExtraction
 #
@@ -39,18 +39,43 @@
 #' @param targetCovariateRefTable (Optional) The name of the table where the covariate reference will be stored.
 #'                               Superseded by \code{targetTables}
 #' @param targetAnalysisRefTable (Optional) The name of the table where the analysis reference will be stored.
+#' @param minCharacterizationMean The minimum mean value for binary characterization output. Values below this will be cut off from output. This
+#'                                will help reduce the file size of the characterization output, but will remove information
+#'                                on covariates that have very low values. The default is 0.
+#'
 #'                               Superseded by \code{targetTables}
 #' @param dropTableIfExists      If targetDatabaseSchema, drop any existing tables. Otherwise, results are merged
 #'                               into existing table data. Overides createTable.
 #' @param createTable            Run sql to create table? Code does not check if table exists.
 #' @template GetCovarParams
 #'
+#' @examples
+#' \donttest{
+#' connectionDetails <- Eunomia::getEunomiaConnectionDetails()
+#' Eunomia::createCohorts(
+#'   connectionDetails = connectionDetails,
+#'   cdmDatabaseSchema = "main",
+#'   cohortDatabaseSchema = "main",
+#'   cohortTable = "cohort"
+#' )
+#' connection <- DatabaseConnector::connect(connectionDetails)
+#'
+#' results <- getDbDefaultCovariateData(
+#'   connection = connection,
+#'   cdmDatabaseSchema = "main",
+#'   cohortTable = "cohort",
+#'   covariateSettings = createDefaultCovariateSettings(),
+#'   targetDatabaseSchema = "main",
+#'   targetCovariateTable = "ut_cov"
+#' )
+#' }
 #' @export
 getDbDefaultCovariateData <- function(connection,
                                       oracleTempSchema = NULL,
                                       cdmDatabaseSchema,
                                       cohortTable = "#cohort_person",
                                       cohortId = -1,
+                                      cohortIds = c(-1),
                                       cdmVersion = "5",
                                       rowIdField = "subject_id",
                                       covariateSettings,
@@ -65,7 +90,9 @@ getDbDefaultCovariateData <- function(connection,
                                       ),
                                       dropTableIfExists = FALSE,
                                       createTable = TRUE,
-                                      aggregated = FALSE) {
+                                      aggregated = FALSE,
+                                      minCharacterizationMean = 0,
+                                      tempEmulationSchema = getOption("sqlRenderTempEmulationSchema")) {
   if (!is(covariateSettings, "covariateSettings")) {
     stop("Covariate settings object not of type covariateSettings")
   }
@@ -73,35 +100,58 @@ getDbDefaultCovariateData <- function(connection,
     stop("Common Data Model version 4 is not supported")
   }
 
+  if (!missing(cohortId)) {
+    warning("cohortId argument has been deprecated, please use cohortIds")
+    cohortIds <- cohortId
+  }
+  if (!is.null(oracleTempSchema) && oracleTempSchema != "") {
+    rlang::warn("The 'oracleTempSchema' argument is deprecated. Use 'tempEmulationSchema' instead.",
+      .frequency = "regularly",
+      .frequency_id = "oracleTempSchema"
+    )
+    tempEmulationSchema <- oracleTempSchema
+  }
+  errorMessages <- checkmate::makeAssertCollection()
+  minCharacterizationMean <- utils::type.convert(minCharacterizationMean, as.is = TRUE)
+  checkmate::assertNumeric(x = minCharacterizationMean, lower = 0, upper = 1, add = errorMessages)
+  checkmate::reportAssertions(collection = errorMessages)
+
   settings <- .toJson(covariateSettings)
   rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$init(system.file("", package = "FeatureExtraction"))
-  json <- rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$createSql(settings, aggregated, cohortTable, rowIdField, rJava::.jarray(as.character(cohortId)), cdmDatabaseSchema)
+  json <- rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$createSql(
+    settings, aggregated, cohortTable, rowIdField, rJava::.jarray(as.character(cohortIds)), cdmDatabaseSchema, as.character(minCharacterizationMean)
+  )
   todo <- .fromJson(json)
   if (length(todo$tempTables) != 0) {
     ParallelLogger::logInfo("Sending temp tables to server")
     for (i in 1:length(todo$tempTables)) {
       DatabaseConnector::insertTable(connection,
-                                     tableName = names(todo$tempTables)[i],
-                                     data = as.data.frame(todo$tempTables[[i]]),
-                                     dropTableIfExists = TRUE,
-                                     createTable = TRUE,
-                                     tempTable = TRUE,
-                                     oracleTempSchema = oracleTempSchema)
+        tableName = names(todo$tempTables)[i],
+        data = as.data.frame(todo$tempTables[[i]]),
+        dropTableIfExists = TRUE,
+        createTable = TRUE,
+        tempTable = TRUE,
+        tempEmulationSchema = tempEmulationSchema
+      )
     }
   }
 
   ParallelLogger::logInfo("Constructing features on server")
 
-  sql <- SqlRender::translate(sql = todo$sqlConstruction,
-                              targetDialect = attr(connection, "dbms"),
-                              oracleTempSchema = oracleTempSchema)
+  sql <- SqlRender::translate(
+    sql = todo$sqlConstruction,
+    targetDialect = attr(connection, "dbms"),
+    tempEmulationSchema = tempEmulationSchema
+  )
   profile <- (!is.null(getOption("dbProfile")) && getOption("dbProfile") == TRUE)
   DatabaseConnector::executeSql(connection, sql, profile = profile)
+
   # Is the target schema missing or are all the specified tables temp
   allTempTables <- all(substr(targetTables,1,1) == "#")
   if ((missing(targetDatabaseSchema) | is.null(targetDatabaseSchema)) & !allTempTables) {
     # Save to Andromeda
     covariateData <- Andromeda::andromeda()
+
 
     queryFunction <- function(sql, tableName) {
       DatabaseConnector::querySqlToAndromeda(connection = connection,
@@ -110,6 +160,7 @@ getDbDefaultCovariateData <- function(connection,
                                              andromedaTableName = tableName,
                                              snakeCaseToCamelCase = TRUE)
     }
+
     ParallelLogger::logInfo("Fetching data from server")
   } else {
 
@@ -210,28 +261,35 @@ getDbDefaultCovariateData <- function(connection,
   ParallelLogger::logInfo("Fetching data took ", signif(delta, 3), " ", attr(delta, "units"))
 
   # Drop temp tables
-  sql <- SqlRender::translate(sql = todo$sqlCleanup,
-                              targetDialect = attr(connection, "dbms"),
-                              oracleTempSchema = oracleTempSchema)
+  sql <- SqlRender::translate(
+    sql = todo$sqlCleanup,
+    targetDialect = attr(connection, "dbms"),
+    tempEmulationSchema = tempEmulationSchema
+  )
   DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
   if (length(todo$tempTables) != 0) {
     for (i in 1:length(todo$tempTables)) {
       sql <- "TRUNCATE TABLE @table;\nDROP TABLE @table;\n"
       sql <- SqlRender::render(sql, table = names(todo$tempTables)[i])
-      sql <- SqlRender::translate(sql = sql,
-                                  targetDialect = attr(connection, "dbms"),
-                                  oracleTempSchema = oracleTempSchema)
+      sql <- SqlRender::translate(
+        sql = sql,
+        targetDialect = attr(connection, "dbms"),
+        tempEmulationSchema = tempEmulationSchema
+      )
       DatabaseConnector::executeSql(connection, sql, progressBar = FALSE, reportOverallTime = FALSE)
     }
   }
 
+  if (missing(targetCovariateTable) || is.null(targetCovariateTable)) {
   if ((missing(targetDatabaseSchema) | is.null(targetDatabaseSchema)) & !allTempTables) {
     attr(covariateData, "metaData") <- list()
     if (is.null(covariateData$covariates) && is.null(covariateData$covariatesContinuous)) {
       warning("No data found, probably because no covariates were specified.")
-      covariateData <- createEmptyCovariateData(cohortId = cohortId,
-                                                aggregated = aggregated,
-                                                temporal = covariateSettings$temporal)
+      covariateData <- createEmptyCovariateData(
+        cohortIds = cohortIds,
+        aggregated = aggregated,
+        temporal = covariateSettings$temporal
+      )
     }
     class(covariateData) <- "CovariateData"
     attr(class(covariateData), "package") <- "FeatureExtraction"

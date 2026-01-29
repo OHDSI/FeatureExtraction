@@ -32,7 +32,7 @@ INSERT INTO #cov_ref (
 	concept_id
 	)
 SELECT covariate_id,
-	CAST(CONCAT('index year and month: ', CAST((covariate_id - @analysis_id) / 1000 AS VARCHAR)) AS VARCHAR(512)) AS covariate_name,
+	CAST(CONCAT('index year and month: ', CAST((covariate_id - @analysis_id) / 1000 AS INTEGER)) AS VARCHAR(512)) AS covariate_name,
 	@analysis_id AS analysis_id,
 	0 AS concept_id
 FROM (

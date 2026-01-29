@@ -75,7 +75,7 @@ starting in the time window. (analysis ID 301)}
 starting in the time window. (analysis ID 401)}
 
 \item{useDrugEraGroupStart}{One covariate per drug rolled up to ATC groups in
-the drug_era table starting in thetime window.
+the drug_era table starting in the time window.
 (analysis ID 403)}
 
 \item{useProcedureOccurrence}{One covariate per procedure in the
@@ -98,7 +98,7 @@ table in the time window. (analysis ID 801)}
 
 \item{timePart}{The interval scale ('DAY', 'MONTH', 'YEAR')}
 
-\item{timeInterval}{Fixed interval length for timeId using the 'timePart' scale.  For example, a 'timePart' of DAY with 
+\item{timeInterval}{Fixed interval length for timeId using the 'timePart' scale.  For example, a 'timePart' of DAY with
 'timeInterval' 30 has timeIds where timeId 1 is day 0 to day 29, timeId 2 is day 30 to day 59, etc.}
 
 \item{sequenceEndDay}{What is the end day (relative to the
@@ -129,36 +129,38 @@ An object of type \code{covariateSettings}, to be used in other functions.
 Create covariate settings
 }
 \details{
-creates an object specifying how covariates should be contructed from data in the CDM model.
+creates an object specifying how covariates should be constructed from data in the CDM model.
 }
 \examples{
-settings <- createTemporalSequenceCovariateSettings(useDemographicsGender = TRUE,
-                                            useDemographicsAge = FALSE,
-                                            useDemographicsAgeGroup = TRUE,
-                                            useDemographicsRace = TRUE,
-                                            useDemographicsEthnicity = TRUE,
-                                            useDemographicsIndexYear = TRUE,
-                                            useDemographicsIndexMonth = TRUE,
-                                            useConditionOccurrence = FALSE,
-                                            useConditionOccurrencePrimaryInpatient = FALSE,
-                                            useConditionEraStart = FALSE,
-                                            useConditionEraGroupStart = FALSE,
-                                            useDrugExposure = FALSE,
-                                            useDrugEraStart = FALSE,
-                                            useDrugEraGroupStart = FALSE,
-                                            useProcedureOccurrence = TRUE,
-                                            useDeviceExposure = TRUE,
-                                            useMeasurement = TRUE,
-                                            useMeasurementValue = FALSE,
-                                            useObservation = TRUE,
-                                            timePart = 'DAY',
-                                            timeInterval = 1,
-                                            sequenceEndDay = -1,
-                                            sequenceStartDay = -730,
-                                            includedCovariateConceptIds = c(),
-                                            addDescendantsToInclude = FALSE,
-                                            excludedCovariateConceptIds = c(),
-                                            addDescendantsToExclude = FALSE,
-                                            includedCovariateIds = c())
+settings <- createTemporalSequenceCovariateSettings(
+  useDemographicsGender = TRUE,
+  useDemographicsAge = FALSE,
+  useDemographicsAgeGroup = TRUE,
+  useDemographicsRace = TRUE,
+  useDemographicsEthnicity = TRUE,
+  useDemographicsIndexYear = TRUE,
+  useDemographicsIndexMonth = TRUE,
+  useConditionOccurrence = FALSE,
+  useConditionOccurrencePrimaryInpatient = FALSE,
+  useConditionEraStart = FALSE,
+  useConditionEraGroupStart = FALSE,
+  useDrugExposure = FALSE,
+  useDrugEraStart = FALSE,
+  useDrugEraGroupStart = FALSE,
+  useProcedureOccurrence = TRUE,
+  useDeviceExposure = TRUE,
+  useMeasurement = TRUE,
+  useMeasurementValue = FALSE,
+  useObservation = TRUE,
+  timePart = "DAY",
+  timeInterval = 1,
+  sequenceEndDay = -1,
+  sequenceStartDay = -730,
+  includedCovariateConceptIds = c(),
+  addDescendantsToInclude = FALSE,
+  excludedCovariateConceptIds = c(),
+  addDescendantsToExclude = FALSE,
+  includedCovariateIds = c()
+)
 
 }

@@ -2,9 +2,10 @@ FeatureExtraction
 =================
 
 [![Build Status](https://github.com/OHDSI/FeatureExtraction/workflows/R-CMD-check/badge.svg)](https://github.com/OHDSI/FeatureExtraction/actions?query=workflow%3AR-CMD-check)
-[![codecov.io](https://codecov.io/github/OHDSI/FeatureExtraction/coverage.svg?branch=main)](https://codecov.io/github/OHDSI/FeatureExtraction?branch=main)
+[![codecov.io](https://codecov.io/github/OHDSI/FeatureExtraction/coverage.svg?branch=main)](https://app.codecov.io/github/OHDSI/FeatureExtraction?branch=main)
+[![CRAN status](https://www.r-pkg.org/badges/version/FeatureExtraction)](https://CRAN.R-project.org/package=FeatureExtraction)
 
-FeatureExtraction is part of [HADES](https://ohdsi.github.io/Hades).
+FeatureExtraction is part of [HADES](https://ohdsi.github.io/Hades/).
 
 Introduction
 ============
@@ -45,6 +46,7 @@ The documentation website can be found at [https://ohdsi.github.io/FeatureExtrac
 * Vignette: [Using FeatureExtraction](https://raw.githubusercontent.com/OHDSI/FeatureExtraction/main/inst/doc/UsingFeatureExtraction.pdf)
 * Vignette: [Creating covariates using cohort attributes](https://raw.githubusercontent.com/OHDSI/FeatureExtraction/main/inst/doc/CreatingCovariatesUsingCohortAttributes.pdf)
 * Vignette: [Creating custom covariate builders](https://raw.githubusercontent.com/OHDSI/FeatureExtraction/main/inst/doc/CreatingCustomCovariateBuilders.pdf)
+* Vignette: [Creating covariates based on other cohorts](https://raw.githubusercontent.com/OHDSI/FeatureExtraction/main/inst/doc/CreatingCovariatesBasedOnOtherCohorts.pdf)
 * Package manual: [FeatureExtraction manual](https://raw.githubusercontent.com/OHDSI/FeatureExtraction/main/extras/FeatureExtraction.pdf) 
 
 These vignettes are also available in Korean:
@@ -56,7 +58,7 @@ These vignettes are also available in Korean:
 Support
 =======
 * Developer questions/comments/feedback: <a href="http://forums.ohdsi.org/c/developers">OHDSI Forum</a>
-* We use the <a href="../../issues">GitHub issue tracker</a> for all bugs/issues/enhancements
+* We use the <a href="https://github.com/OHDSI/FeatureExtraction/issues">GitHub issue tracker</a> for all bugs/issues/enhancements
 
 Contributing
 ============

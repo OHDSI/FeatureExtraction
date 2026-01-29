@@ -16,11 +16,11 @@
 \item{object}{An object of class `CovariateData`.}
 }
 \description{
-\code{CovariateData} is an S4 class that inherits from \code{\link[Andromeda]{Andromeda}}. It contains 
+\code{CovariateData} is an S4 class that inherits from \code{\link[Andromeda]{Andromeda}}. It contains
 information on covariates, which can be either captured on a per-person basis, or aggregated across
 the cohort(s).
 
-By default covariates refer to a specific time period, with for example different covariate IDs for 
+By default covariates refer to a specific time period, with for example different covariate IDs for
 whether a diagnosis code was observed in the year before and month before index date. However, a
 \code{CovariateData} can also be temporal, meaning that next to a covariate ID there is also a time ID,
 which identifies the (user specified) time window the covariate was captured.
