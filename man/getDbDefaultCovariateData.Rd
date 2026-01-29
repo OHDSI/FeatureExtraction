@@ -73,8 +73,7 @@ Superseded by \code{targetTables}}
 \item{targetCovariateRefTable}{(Optional) The name of the table where the covariate reference will be stored.
 Superseded by \code{targetTables}}
 
-\item{targetAnalysisRefTable}{(Optional) The name of the table where the analysis reference will be stored.
-Superseded by \code{targetTables}}
+\item{targetAnalysisRefTable}{(Optional) The name of the table where the analysis reference will be stored.}
 
 \item{targetTables}{(Optional) list of mappings for table names.
 The names of the table where the resulting covariates will be if
@@ -92,8 +91,10 @@ into existing table data. Overides createTable.}
 cohort entry?}
 
 \item{minCharacterizationMean}{The minimum mean value for binary characterization output. Values below this will be cut off from output. This
-will help reduce the file size of the characterization output, but will remove information
-on covariates that have very low values. The default is 0.}
+                               will help reduce the file size of the characterization output, but will remove information
+                               on covariates that have very low values. The default is 0.
+
+                              Superseded by \code{targetTables}}
 
 \item{tempEmulationSchema}{Some database platforms like Oracle and Impala do not truly support
 temp tables. To emulate temp tables, provide a schema with write

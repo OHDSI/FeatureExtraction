@@ -46,6 +46,6 @@ VignetteBuilder: knitr
 URL: https://github.com/OHDSI/FeatureExtraction
 BugReports: https://github.com/OHDSI/FeatureExtraction/issues
 NeedsCompilation: no
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Encoding: UTF-8
 Language: en-US

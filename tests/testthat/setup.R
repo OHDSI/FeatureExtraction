@@ -217,6 +217,7 @@ if (dbms == "sql server") {
 # eunomia
 if (dbms == "sqlite") {
   if (!is.null(checkRemoteFileAvailable("https://raw.githubusercontent.com/OHDSI/EunomiaDatasets/main/datasets/GiBleed/GiBleed_5.3.zip"))) {
+    print('got here')
     eunomiaConnectionDetails <- Eunomia::getEunomiaConnectionDetails(databaseFile = "testEunomia.sqlite")
     eunomiaCdmDatabaseSchema <- "main"
     eunomiaOhdsiDatabaseSchema <- "main"

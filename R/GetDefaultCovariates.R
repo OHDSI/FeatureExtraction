@@ -280,8 +280,7 @@ getDbDefaultCovariateData <- function(connection,
     }
   }
 
-  if (missing(targetCovariateTable) || is.null(targetCovariateTable)) {
-  if ((missing(targetDatabaseSchema) | is.null(targetDatabaseSchema)) & !allTempTables) {
+  if ((missing(targetDatabaseSchema) || is.null(targetDatabaseSchema)) & !allTempTables) {
     attr(covariateData, "metaData") <- list()
     if (is.null(covariateData$covariates) && is.null(covariateData$covariatesContinuous)) {
       warning("No data found, probably because no covariates were specified.")
