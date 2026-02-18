@@ -55,5 +55,8 @@ CREATE TABLE @analysis_ref_table (
 	
 	
 CREATE TABLE @time_ref_table (
-	time_id BIGINT
+	time_part VARCHAR(20),
+	time_interval BIGINT,
+	sequence_start_day BIGINT,
+	sequence_end_day BIGINT
 	);
