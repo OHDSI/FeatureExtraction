@@ -201,6 +201,105 @@ getDbCovariateData <- function(connectionDetails = NULL,
       }))) > 0 
   }
   
+  # Create export tables
+  # figure out tables
+  if (exportToTable) {
+    if(is.null(targetDatabaseSchema)){
+      # turn off create table since the tables are temp
+      tempOutputTables <- TRUE
+      # covariate tables
+      if (substr(targetCovariateTable, 1, 1) == "#") {
+        targetCovariateTable <- targetCovariateTable
+      } else {
+        targetCovariateTable <- paste0("#", targetCovariateTable)
+      }
+      # cov cont table
+      if (substr(targetCovariateContinuousTable, 1, 1) == "#") {
+        targetCovariateContinuousTable <- targetCovariateContinuousTable
+      } else {
+        targetCovariateContinuousTable <- paste0("#", targetCovariateContinuousTable)
+      }
+      # cov ref table
+      if (substr(targetCovariateRefTable, 1, 1) == "#") {
+        targetCovariateRefTable <- targetCovariateRefTable
+      } else {
+        targetCovariateRefTable <- paste0("#", targetCovariateRefTable)
+      }
+      # analysis ref table
+      if (substr(targetAnalysisRefTable, 1, 1) == "#") {
+        targetAnalysisRefTable <- targetAnalysisRefTable
+      } else {
+        targetAnalysisRefTable <- paste0("#", targetAnalysisRefTable)
+      }
+      # time ref table
+      if (substr(targetTimeRefTable, 1, 1) == "#") {
+        targetTimeRefTable <- targetTimeRefTable
+      } else {
+        targetTimeRefTable <- paste0("#", targetTimeRefTable)
+      }
+      
+    } else {
+      tempOutputTables <- FALSE
+      targetCovariateTable <- paste(targetDatabaseSchema, targetCovariateTable, sep = ".")
+      targetCovariateContinuousTable <- paste(targetDatabaseSchema, targetCovariateContinuousTable, sep = ".")
+      targetCovariateRefTable <- paste(targetDatabaseSchema, targetCovariateRefTable, sep = ".")
+      targetAnalysisRefTable <- paste(targetDatabaseSchema, targetAnalysisRefTable, sep = ".")
+      targetTimeRefTable <- paste(targetDatabaseSchema, targetTimeRefTable, sep = ".")
+    }
+    
+    # drop table if required
+    if(dropTableIfExists){
+      message('Dropping export tables')
+      sql <- SqlRender::loadRenderTranslateSql(
+        sqlFilename = 'DropExportTables.sql',
+        packageName = 'FeatureExtraction',
+        dbms = attr(connection, "dbms"),
+        tempEmulationSchema = tempEmulationSchema,
+        temp_tables = tempOutputTables,
+        covariate_table = targetCovariateTable,
+        covariate_continuous_table = targetCovariateContinuousTable,
+        covariate_ref_table = targetCovariateRefTable,
+        analysis_ref_table = targetAnalysisRefTable,
+        time_ref_table = targetTimeRefTable
+      )
+      
+      DatabaseConnector::executeSql(
+        connection = connection, 
+        sql = sql
+      )
+    }
+    
+    if(dropTableIfExists & !createTable){
+      stop('Seem to be exporting to tables but create table is FALSE and dropTable is TRUE')
+    }
+    
+    # create the cohort tables if required
+    if(createTable){
+      message('Creating export tables')
+      sql <- SqlRender::loadRenderTranslateSql(
+        sqlFilename = 'CreateExportTables.sql',
+        packageName = 'FeatureExtraction',
+        dbms = attr(connection, "dbms"),
+        tempEmulationSchema = tempEmulationSchema,
+        
+        aggregated = aggregated,
+        temporal = anyTemporal,
+        row_id_field = 'row_id',
+        
+        covariate_table = targetCovariateTable,
+        covariate_continuous_table = targetCovariateContinuousTable,
+        covariate_ref_table = targetCovariateRefTable,
+        analysis_ref_table = targetAnalysisRefTable,
+        time_ref_table = targetTimeRefTable
+      )
+      
+      DatabaseConnector::executeSql(
+        connection = connection, 
+        sql = sql
+      )
+    }
+    
+  }
   
   sql <- "SELECT cohort_definition_id, COUNT_BIG(*) AS population_size FROM @cohort_database_schema_table {@cohort_ids != -1} ? {WHERE cohort_definition_id IN (@cohort_ids)} GROUP BY cohort_definition_id;"
   sql <- SqlRender::render(
@@ -239,114 +338,6 @@ getDbCovariateData <- function(connectionDetails = NULL,
           covariateCohortTable
         )
       }
-      
-      # figure out tables
-      if (exportToTable) {
-        if(is.null(targetDatabaseSchema)){
-          # turn off create table since the tables are temp
-          if(createTable){
-            warning('Turning off createTable since no targetDatabaseSchema so output tables are temp')
-          }
-          createTable <- FALSE
-          tempOutputTables <- TRUE
-          # covariate tables
-          if (substr(targetCovariateTable, 1, 1) == "#") {
-            targetCovariateTable <- targetCovariateTable
-          } else {
-            targetCovariateTable <- paste0("#", targetCovariateTable)
-          }
-          # cov cont table
-          if (substr(targetCovariateContinuousTable, 1, 1) == "#") {
-            targetCovariateContinuousTable <- targetCovariateContinuousTable
-          } else {
-            targetCovariateContinuousTable <- paste0("#", targetCovariateContinuousTable)
-          }
-          # cov ref table
-          if (substr(targetCovariateRefTable, 1, 1) == "#") {
-            targetCovariateRefTable <- targetCovariateRefTable
-          } else {
-            targetCovariateRefTable <- paste0("#", targetCovariateRefTable)
-          }
-          # analysis ref table
-          if (substr(targetAnalysisRefTable, 1, 1) == "#") {
-            targetAnalysisRefTable <- targetAnalysisRefTable
-          } else {
-            targetAnalysisRefTable <- paste0("#", targetAnalysisRefTable)
-          }
-          # time ref table
-          if (substr(targetTimeRefTable, 1, 1) == "#") {
-            targetTimeRefTable <- targetTimeRefTable
-          } else {
-            targetTimeRefTable <- paste0("#", targetTimeRefTable)
-          }
-          
-        } else {
-          tempOutputTables <- FALSE
-          targetCovariateTable <- paste(targetDatabaseSchema, targetCovariateTable, sep = ".")
-          targetCovariateContinuousTable <- paste(targetDatabaseSchema, targetCovariateContinuousTable, sep = ".")
-          targetCovariateRefTable <- paste(targetDatabaseSchema, targetCovariateRefTable, sep = ".")
-          targetAnalysisRefTable <- paste(targetDatabaseSchema, targetAnalysisRefTable, sep = ".")
-          targetTimeRefTable <- paste(targetDatabaseSchema, targetTimeRefTable, sep = ".")
-        }
-      }
-      
-      
-      # drop table if required
-      if(dropTableIfExists & exportToTable){
-        message('Dropping export tables')
-        sql <- SqlRender::loadRenderTranslateSql(
-          sqlFilename = 'DropExportTables.sql',
-          packageName = 'FeatureExtraction',
-          dbms = attr(connection, "dbms"),
-          tempEmulationSchema = tempEmulationSchema,
-          temp_table = tempOutputTables,
-          covariate_table = targetCovariateTable,
-          covariate_continuous_table = targetCovariateContinuousTable,
-          covariate_ref_table = targetCovariateRefTable,
-          analysis_ref_table = targetAnalysisRefTable,
-          time_ref_table = targetTimeRefTable
-        )
-        
-        DatabaseConnector::executeSql(
-          connection = connection, 
-          sql = sql
-        )
-      }
-      
-      if(dropTableIfExists & !createTable & exportToTable){
-        if(!tempOutputTables){
-          stop('Seem to be exporting to non-temp tables but create table is FALSE')
-        }
-      }
-      
-      # create the cohort tables if required
-      if(createTable & exportToTable ){
-        if(!tempOutputTables){
-          message('Creating export tables')
-          sql <- SqlRender::loadRenderTranslateSql(
-            sqlFilename = 'CreateExportTables.sql',
-            packageName = 'FeatureExtraction',
-            dbms = attr(connection, "dbms"),
-            tempEmulationSchema = tempEmulationSchema,
-            
-            aggregated = aggregated,
-            temporal = anyTemporal,
-            row_id_field = 'row_id',
-            
-            covariate_table = targetCovariateTable,
-            covariate_continuous_table = targetCovariateContinuousTable,
-            covariate_ref_table = targetCovariateRefTable,
-            analysis_ref_table = targetAnalysisRefTable,
-            time_ref_table = targetTimeRefTable
-          )
-          
-          DatabaseConnector::executeSql(
-            connection = connection, 
-            sql = sql
-          )
-        }
-      }
-      
       
       for (i in 1:length(covariateSettings)) {
         fun <- attr(covariateSettings[[i]], "fun")
@@ -397,7 +388,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
             Andromeda::appendToTable(covariateData$analysisRef, tempCovariateData$analysisRef)
           }
           
-          if(is.null(targetDatabaseSchema)){
+          if(!exportToTable){
           for (name in names(attr(tempCovariateData, "metaData"))) {
             if (is.null(attr(covariateData, "metaData")[[name]])) {
               attr(covariateData, "metaData")[[name]] <- attr(tempCovariateData, "metaData")[[name]]
@@ -410,7 +401,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
               )
             }
           }
-          } # if NULL target schema
+          } # if not exporting
         }
       }
     }

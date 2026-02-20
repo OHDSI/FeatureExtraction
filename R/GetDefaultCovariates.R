@@ -181,13 +181,6 @@ getDbDefaultCovariateData <- function(connection,
       #print(todo$sqlQueryFeatures)
       
       sql <- "
-      {@temp_tables}?{
-      
-      SELECT * INTO @target_covariate_table 
-      FROM (@sub_query) main_table;
-      
-      }:{
-      
       INSERT INTO @target_covariate_table(
       
       {@temporal | @temporal_sequence} ? {time_id,}
@@ -203,8 +196,7 @@ getDbDefaultCovariateData <- function(connection,
       covariate_value
       }
       
-      ) @sub_query; 
-      } "
+      ) @sub_query; "
       
       sql <- SqlRender::render(
         sql = sql,
@@ -246,14 +238,6 @@ getDbDefaultCovariateData <- function(connection,
       )
     } else{
       sql <- "
-      
-      {@temp_tables}?{
-      
-      SELECT * INTO @target_covariate_continuous_table 
-      FROM (@sub_query) main_table;
-      
-      }:{
-      
       INSERT INTO @target_covariate_continuous_table(
       {@aggregated}?{
       
@@ -280,8 +264,7 @@ getDbDefaultCovariateData <- function(connection,
       
       }
       
-      ) @sub_query;
-      }"
+      ) @sub_query;"
       
       sql <- SqlRender::render(
         sql = sql,
@@ -322,13 +305,6 @@ getDbDefaultCovariateData <- function(connection,
       )
     } else{
       sql <- "
-      {@temp_tables}?{
-      
-      SELECT * INTO @target_covariate_ref_table
-      FROM (@sub_query) main_table;
-      
-      }:{
-      
       INSERT INTO @target_covariate_ref_table(
       covariate_id,
 	    covariate_name,
@@ -336,8 +312,7 @@ getDbDefaultCovariateData <- function(connection,
 	    concept_id,
 	    value_as_concept_id, 
 	    collisions
-      ) @sub_query ;
-      }"
+      ) @sub_query ;"
       
       sql <- SqlRender::render(
         sql = sql,
@@ -378,13 +353,6 @@ getDbDefaultCovariateData <- function(connection,
       )
     } else{
       sql <- "
-      {@temp_tables}?{
-      
-      SELECT * INTO @target_analysis_ref_table
-      FROM (@sub_query) main_table;
-      
-      }:{
-      
       INSERT INTO @target_analysis_ref_table(
       	analysis_id,
 	      analysis_name,
@@ -395,8 +363,7 @@ getDbDefaultCovariateData <- function(connection,
         }
 	      is_binary,
 	      missing_means_zero
-      ) @sub_query ;
-      }"
+      ) @sub_query ;"
       
       sql <- SqlRender::render(
         sql = sql,
@@ -437,16 +404,12 @@ getDbDefaultCovariateData <- function(connection,
     } else{
       # TODO - what columns are in time ref table?!
       sql <- "
-      {@temp_tables}?{
-      
-      SELECT * INTO @target_time_ref_table
-      FROM (@sub_query) main_table;
-      
-      }:{
       INSERT INTO @target_time_ref_table(
-      	time_id
-      ) @sub_query;
-      } "
+      	time_part,
+      	time_interval,
+      	sequence_start_day,
+      	sequence_end_day
+      ) @sub_query;"
       
       sql <- SqlRender::render(
         sql = sql,
