@@ -200,7 +200,6 @@ getDbDefaultCovariateData <- function(connection,
       
       sql <- SqlRender::render(
         sql = sql,
-        temp_tables = allTempTables,
         target_covariate_table = targetTables$covariates,
         sub_query = gsub(";", "", todo$sqlQueryFeatures),
         temporal = covariateSettings$temporal,
@@ -268,7 +267,6 @@ getDbDefaultCovariateData <- function(connection,
       
       sql <- SqlRender::render(
         sql = sql,
-        temp_tables = allTempTables,
         target_covariate_continuous_table = targetTables$covariatesContinuous,
         sub_query = gsub(";", "", todo$sqlQueryContinuousFeatures),
         temporal = covariateSettings$temporal,
@@ -316,11 +314,8 @@ getDbDefaultCovariateData <- function(connection,
       
       sql <- SqlRender::render(
         sql = sql,
-        temp_tables = allTempTables,
         target_covariate_ref_table = targetTables$covariateRef,
-        sub_query = gsub(";", "", todo$sqlQueryFeatureRef),
-        temporal = covariateSettings$temporal,
-        temporal_sequence = covariateSettings$temporalSequence
+        sub_query = gsub(";", "", todo$sqlQueryFeatureRef)
       )
       
       sql <- SqlRender::translate(
@@ -367,7 +362,6 @@ getDbDefaultCovariateData <- function(connection,
       
       sql <- SqlRender::render(
         sql = sql,
-        temp_tables = allTempTables,
         target_analysis_ref_table = targetTables$analysisRef,
         sub_query = gsub(";", "", todo$sqlQueryAnalysisRef),
         temporal = covariateSettings$temporal | covariateSettings$temporalSequence
@@ -413,10 +407,8 @@ getDbDefaultCovariateData <- function(connection,
       
       sql <- SqlRender::render(
         sql = sql,
-        temp_tables = allTempTables,
         target_covariate_ref_table = targetTables$timeRef,
-        sub_query = gsub(";", "", todo$sqlQueryTimeRef),
-        temporal = covariateSettings$temporal | covariateSettings$temporalSequence
+        sub_query = gsub(";", "", todo$sqlQueryTimeRef)
       )
       
       sql <- SqlRender::translate(
