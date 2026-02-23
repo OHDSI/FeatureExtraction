@@ -164,7 +164,7 @@ getDbDefaultCovariateData <- function(connection,
     if(extractToAndromeda){
       sql <- SqlRender::translate(sql = todo$sqlQueryFeatures,
                                   targetDialect = attr(connection, "dbms"),
-                                  oracleTempSchema = oracleTempSchema)
+                                  tempEmulationSchema = tempEmulationSchema)
       DatabaseConnector::querySqlToAndromeda(
         connection = connection,
         sql = sql,
@@ -224,7 +224,7 @@ getDbDefaultCovariateData <- function(connection,
     if(extractToAndromeda){
       sql <- SqlRender::translate(sql = todo$sqlQueryContinuousFeatures,
                                   targetDialect = attr(connection, "dbms"),
-                                  oracleTempSchema = oracleTempSchema)
+                                  tempEmulationSchema = tempEmulationSchema)
       DatabaseConnector::querySqlToAndromeda(
         connection = connection,
         sql = sql,
@@ -290,7 +290,7 @@ getDbDefaultCovariateData <- function(connection,
     if(extractToAndromeda){
       sql <- SqlRender::translate(sql = todo$sqlQueryFeatureRef,
                                   targetDialect = attr(connection, "dbms"),
-                                  oracleTempSchema = oracleTempSchema)
+                                  tempEmulationSchema = tempEmulationSchema)
       DatabaseConnector::querySqlToAndromeda(
         connection = connection,
         sql = sql,
@@ -335,7 +335,7 @@ getDbDefaultCovariateData <- function(connection,
     if(extractToAndromeda){
       sql <- SqlRender::translate(sql = todo$sqlQueryAnalysisRef,
                                   targetDialect = attr(connection, "dbms"),
-                                  oracleTempSchema = oracleTempSchema)
+                                  tempEmulationSchema = tempEmulationSchema)
       DatabaseConnector::querySqlToAndromeda(
         connection = connection,
         sql = sql,
@@ -384,7 +384,7 @@ getDbDefaultCovariateData <- function(connection,
     if(extractToAndromeda){
       sql <- SqlRender::translate(sql = todo$sqlQueryTimeRef,
                                   targetDialect = attr(connection, "dbms"),
-                                  oracleTempSchema = oracleTempSchema)
+                                  tempEmulationSchema = tempEmulationSchema)
       DatabaseConnector::querySqlToAndromeda(
         connection = connection,
         sql = sql,
