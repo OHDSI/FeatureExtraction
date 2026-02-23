@@ -47,7 +47,7 @@ FROM (
 	FROM @cohort_table cohort
 {@sub_type != 'inCohort'} ? {
 	INNER JOIN @cdm_database_schema.observation_period op
-		ON cohort.subject_id = observation_period.person_id
+		ON op.person_id = cohort.subject_id 
 		AND op.observation_period_start_date <= cohort_start_date
 		AND op.observation_period_end_date >= cohort_start_date
 }
