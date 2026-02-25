@@ -67,6 +67,8 @@ be stored. If not provided, results will be fetched to R. The table can be
 a permanent table in the \code{targetDatabaseSchema} or a temp table. If
 it is a temp table, do not specify \code{targetDatabaseSchema}.}
 
+\item{targetCovariateContinuousTable}{(Optional) The name of the table where the resulting continuous covariates should be stored.}
+
 \item{targetCovariateRefTable}{(Optional) The name of the table where the covariate reference will be stored.}
 
 \item{targetAnalysisRefTable}{(Optional) The name of the table where the analysis reference will be stored.}
@@ -122,9 +124,7 @@ results <- getDbDefaultCovariateData(
   connection = connection,
   cdmDatabaseSchema = "main",
   cohortTable = "cohort",
-  covariateSettings = createDefaultCovariateSettings(),
-  targetDatabaseSchema = "main",
-  targetCovariateTable = "ut_cov"
+  covariateSettings = createDefaultCovariateSettings()
 )
 }
 }

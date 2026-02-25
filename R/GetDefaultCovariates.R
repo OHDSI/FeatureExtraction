@@ -29,7 +29,7 @@
 #'                               be stored. If not provided, results will be fetched to R. The table can be
 #'                               a permanent table in the \code{targetDatabaseSchema} or a temp table. If
 #'                               it is a temp table, do not specify \code{targetDatabaseSchema}.
-#'                               
+#' @param targetCovariateContinuousTable (Optional) The name of the table where the resulting continuous covariates should be stored.
 #' @param targetCovariateRefTable (Optional) The name of the table where the covariate reference will be stored.
 #'                               
 #' @param targetAnalysisRefTable (Optional) The name of the table where the analysis reference will be stored.
@@ -54,9 +54,7 @@
 #'   connection = connection,
 #'   cdmDatabaseSchema = "main",
 #'   cohortTable = "cohort",
-#'   covariateSettings = createDefaultCovariateSettings(),
-#'   targetDatabaseSchema = "main",
-#'   targetCovariateTable = "ut_cov"
+#'   covariateSettings = createDefaultCovariateSettings()
 #' )
 #' }
 #' @export
