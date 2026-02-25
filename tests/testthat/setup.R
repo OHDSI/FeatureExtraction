@@ -2,6 +2,19 @@ library(testthat)
 library(FeatureExtraction)
 library(dplyr)
 
+# AGS: This rJava code block was used to add the Java dependencies to the classpath for testing. It is needed to run the tests on all platforms, but it is not needed when running individual test files in RStudio, which is why it is not included in the helper functions file. If we want to run individual test files, we can use the loadRenderTranslateUnitTestSql function defined below, which also adds the Java dependencies to the classpath if they are not already there.
+# library(rJava)
+# .jinit()
+# jar_dirs <- c(
+#   system.file("java", package = "DatabaseConnector"),
+#   system.file("java", package = "SqlRender"),
+#   system.file("java", package = "FeatureExtraction")
+# )
+# jar_files <- unlist(
+#   lapply(jar_dirs, list.files, pattern = "\\.jar$", full.names = TRUE)
+# )
+# .jaddClassPath(jar_files)
+
 dbms <- getOption("dbms", default = "sqlite")
 message("************* Testing on ", dbms, " *************\n")
 
@@ -98,7 +111,7 @@ checkRemoteFileAvailable <- function(remoteFile) {
   }
   # Then stop if status > 400
   if (httr::http_error(resp)) {
-    message_for_status(resp)
+    httr::message_for_status(resp)
     return(NULL)
   }
   return("success")
