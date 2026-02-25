@@ -14,7 +14,8 @@
   rowIdField = "subject_id",
   covariateSettings,
   aggregated = FALSE,
-  minCharacterizationMean = 0
+  minCharacterizationMean = 0,
+  ...
 )
 }
 \arguments{

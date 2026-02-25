@@ -14,13 +14,12 @@ getDbDefaultCovariateData(
   cdmVersion = "5",
   rowIdField = "subject_id",
   covariateSettings,
+  targetDatabaseSchema = NULL,
   targetCovariateTable = NULL,
   targetCovariateContinuousTable = NULL,
   targetCovariateRefTable = NULL,
   targetAnalysisRefTable = NULL,
   targetTimeRefTable = NULL,
-  dropTableIfExists = FALSE,
-  createTable = TRUE,
   aggregated = FALSE,
   minCharacterizationMean = 0,
   tempEmulationSchema = getOption("sqlRenderTempEmulationSchema")
@@ -60,6 +59,9 @@ is more than one period per person.}
 \item{covariateSettings}{Either an object of type \code{covariateSettings} as created using one
 of the createCovariate functions, or a list of such objects.}
 
+\item{targetDatabaseSchema}{(Optional) The name of the database schema where the resulting covariates
+should be stored.  If not provided, results will be fetched to R.}
+
 \item{targetCovariateTable}{(Optional) The name of the table where the resulting covariates will
 be stored. If not provided, results will be fetched to R. The table can be
 a permanent table in the \code{targetDatabaseSchema} or a temp table. If
@@ -71,11 +73,6 @@ it is a temp table, do not specify \code{targetDatabaseSchema}.}
 
 \item{targetTimeRefTable}{(Optional) The name of the table for the time reference}
 
-\item{dropTableIfExists}{If targetDatabaseSchema, drop any existing tables. Otherwise, results are merged
-into existing table data. Overides createTable.}
-
-\item{createTable}{Run sql to create table? Code does not check if table exists.}
-
 \item{aggregated}{Should aggregate statistics be computed instead of covariates per
 cohort entry?}
 
@@ -86,9 +83,6 @@ on covariates that have very low values. The default is 0.}
 \item{tempEmulationSchema}{Some database platforms like Oracle and Impala do not truly support
 temp tables. To emulate temp tables, provide a schema with write
 privileges where temp tables can be created.}
-
-\item{targetDatabaseSchema}{(Optional) The name of the database schema where the resulting covariates
-should be stored.  If not provided, results will be fetched to R.}
 }
 \value{
 Returns an object of type \code{CovariateData}, which is an Andromeda object containing information on the baseline covariates.
