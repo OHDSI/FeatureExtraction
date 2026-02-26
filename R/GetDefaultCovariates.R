@@ -29,7 +29,7 @@
 #'                               be stored. If not provided, results will be fetched to R. The table can be
 #'                               a permanent table in the \code{targetDatabaseSchema} or a temp table. If
 #'                               it is a temp table, do not specify \code{targetDatabaseSchema}.
-#'                               
+#' @param targetCovariateContinuousTable (Optional) The name of the table where the resulting continuous covariates should be stored.
 #' @param targetCovariateRefTable (Optional) The name of the table where the covariate reference will be stored.
 #'                               
 #' @param targetAnalysisRefTable (Optional) The name of the table where the analysis reference will be stored.
@@ -37,11 +37,6 @@
 #' @param minCharacterizationMean The minimum mean value for binary characterization output. Values below this will be cut off from output. This
 #'                                will help reduce the file size of the characterization output, but will remove information
 #'                                on covariates that have very low values. The default is 0.
-#'
-#'                               
-#' @param dropTableIfExists      If targetDatabaseSchema, drop any existing tables. Otherwise, results are merged
-#'                               into existing table data. Overides createTable.
-#' @param createTable            Run sql to create table? Code does not check if table exists.
 #' @template GetCovarParams
 #'
 #' @examples
@@ -59,9 +54,7 @@
 #'   connection = connection,
 #'   cdmDatabaseSchema = "main",
 #'   cohortTable = "cohort",
-#'   covariateSettings = createDefaultCovariateSettings(),
-#'   targetDatabaseSchema = "main",
-#'   targetCovariateTable = "ut_cov"
+#'   covariateSettings = createDefaultCovariateSettings()
 #' )
 #' }
 #' @export
@@ -74,15 +67,12 @@ getDbDefaultCovariateData <- function(connection,
                                       cdmVersion = "5",
                                       rowIdField = "subject_id",
                                       covariateSettings,
-                                      
+                                      targetDatabaseSchema = NULL,
                                       targetCovariateTable = NULL,
                                       targetCovariateContinuousTable = NULL,
                                       targetCovariateRefTable = NULL,
                                       targetAnalysisRefTable = NULL,
                                       targetTimeRefTable = NULL,
-                                      
-                                      dropTableIfExists = FALSE,
-                                      createTable = TRUE,
                                       aggregated = FALSE,
                                       minCharacterizationMean = 0,
                                       tempEmulationSchema = getOption("sqlRenderTempEmulationSchema")) {
@@ -298,6 +288,17 @@ getDbDefaultCovariateData <- function(connection,
         andromedaTableName = "covariateRef",
         snakeCaseToCamelCase = TRUE
       )
+
+      collisions <- covariateData$covariateRef %>%
+          dplyr::filter(collisions > 0) %>%
+          dplyr::collect()
+      
+      if (nrow(collisions) > 0) {
+        warning(sprintf(
+          "Collisions in covariate IDs detected for post-coordinated concepts with covariate IDs %s",
+          paste(collisions$covariateId, paste = ", ")
+        ))
+      }      
     } else{
       sql <- "
       INSERT INTO @target_covariate_ref_table(

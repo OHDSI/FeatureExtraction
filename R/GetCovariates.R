@@ -136,7 +136,6 @@ getDbCovariateData <- function(connectionDetails = NULL,
                                cohortIds = c(-1),
                                rowIdField = "subject_id",
                                covariateSettings,
-                               
                                exportToTable = FALSE,
                                createTable = exportToTable,
                                dropTableIfExists = exportToTable,
@@ -146,7 +145,6 @@ getDbCovariateData <- function(connectionDetails = NULL,
                                targetCovariateRefTable = NULL,
                                targetAnalysisRefTable = NULL,
                                targetTimeRefTable = NULL,
-                               
                                aggregated = FALSE,
                                minCharacterizationMean = 0,
                                tempEmulationSchema = getOption("sqlRenderTempEmulationSchema"),
@@ -350,15 +348,11 @@ getDbCovariateData <- function(connectionDetails = NULL,
           cdmVersion = cdmVersion,
           rowIdField = rowIdField,
           covariateSettings = covariateSettings[[i]],
-          
           targetCovariateTable = targetCovariateTable,
           targetCovariateContinuousTable = targetCovariateContinuousTable,
           targetCovariateRefTable = targetCovariateRefTable,
           targetAnalysisRefTable = targetAnalysisRefTable,
           targetTimeRefTable = targetTimeRefTable,
-          dropTableIfExists = FALSE, # can remove this input
-          createTable = FALSE, # can remove this input
-          
           aggregated = aggregated,
           minCharacterizationMean = minCharacterizationMean
         )
