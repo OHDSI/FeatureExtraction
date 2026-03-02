@@ -14,10 +14,12 @@ getDbDefaultCovariateData(
   cdmVersion = "5",
   rowIdField = "subject_id",
   covariateSettings,
-  targetDatabaseSchema,
-  targetCovariateTable,
-  targetCovariateRefTable,
-  targetAnalysisRefTable,
+  targetDatabaseSchema = NULL,
+  targetCovariateTable = NULL,
+  targetCovariateContinuousTable = NULL,
+  targetCovariateRefTable = NULL,
+  targetAnalysisRefTable = NULL,
+  targetTimeRefTable = NULL,
   aggregated = FALSE,
   minCharacterizationMean = 0,
   tempEmulationSchema = getOption("sqlRenderTempEmulationSchema")
@@ -58,16 +60,20 @@ is more than one period per person.}
 of the createCovariate functions, or a list of such objects.}
 
 \item{targetDatabaseSchema}{(Optional) The name of the database schema where the resulting covariates
-should be stored.}
+should be stored.  If not provided, results will be fetched to R.}
 
 \item{targetCovariateTable}{(Optional) The name of the table where the resulting covariates will
 be stored. If not provided, results will be fetched to R. The table can be
 a permanent table in the \code{targetDatabaseSchema} or a temp table. If
 it is a temp table, do not specify \code{targetDatabaseSchema}.}
 
+\item{targetCovariateContinuousTable}{(Optional) The name of the table where the resulting continuous covariates should be stored.}
+
 \item{targetCovariateRefTable}{(Optional) The name of the table where the covariate reference will be stored.}
 
 \item{targetAnalysisRefTable}{(Optional) The name of the table where the analysis reference will be stored.}
+
+\item{targetTimeRefTable}{(Optional) The name of the table for the time reference}
 
 \item{aggregated}{Should aggregate statistics be computed instead of covariates per
 cohort entry?}
@@ -118,9 +124,7 @@ results <- getDbDefaultCovariateData(
   connection = connection,
   cdmDatabaseSchema = "main",
   cohortTable = "cohort",
-  covariateSettings = createDefaultCovariateSettings(),
-  targetDatabaseSchema = "main",
-  targetCovariateTable = "ut_cov"
+  covariateSettings = createDefaultCovariateSettings()
 )
 }
 }
