@@ -28,10 +28,10 @@
 #'                               be stored. If not provided, results will be fetched to R. The table can be
 #'                               a permanent table in the \code{targetDatabaseSchema} or a temp table. If
 #'                               it is a temp table, do not specify \code{targetDatabaseSchema}.
-#'                               
+#'
 #' @param targetCovariateContinuousTable (Optional) The name of the table where the resulting continuous covariates should be stored.
 #' @param targetCovariateRefTable (Optional) The name of the table where the covariate reference will be stored.
-#'                               
+#'
 #' @param targetAnalysisRefTable (Optional) The name of the table where the analysis reference will be stored.
 #' @param targetTimeRefTable     (Optional) The name of the table for the time reference
 #' @param minCharacterizationMean The minimum mean value for binary characterization output. Values below this will be cut off from output. This
@@ -171,13 +171,11 @@ getDbCohortBasedCovariatesData <- function(connection,
     cdmVersion = cdmVersion,
     rowIdField = rowIdField,
     covariateSettings = detailledSettings,
-    
     targetCovariateTable = targetCovariateTable,
     targetCovariateContinuousTable = targetCovariateContinuousTable,
     targetCovariateRefTable = targetCovariateRefTable,
     targetAnalysisRefTable = targetAnalysisRefTable,
     targetTimeRefTable = targetTimeRefTable,
-    
     aggregated = aggregated,
     minCharacterizationMean = minCharacterizationMean
   )
