@@ -41,4 +41,3 @@ test_that("Test exit conditions", {
     aggregated = TRUE
   ))
 })
-

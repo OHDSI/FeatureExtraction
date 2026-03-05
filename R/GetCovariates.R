@@ -1,4 +1,4 @@
-# Copyright 2025 Observational Health Data Sciences and Informatics
+# Copyright 2026 Observational Health Data Sciences and Informatics
 #
 # This file is part of FeatureExtraction
 #
@@ -71,7 +71,7 @@
 #'                               privileges where temp tables can be created.
 #' @param covariateCohortDatabaseSchema The database schema where the cohorts used to define the covariates can be found.
 #' @param covariateCohortTable          The table where the cohorts used to define the covariates can be found.
-#' 
+#'
 #' @param exportToTable          Whether to export to a table rather than Andromeda object
 #' @param dropTableIfExists      If targetDatabaseSchema, drop any existing tables. Otherwise, results are merged
 #'                               into existing table data. Overides createTable.
@@ -85,10 +85,10 @@
 #' @param targetCovariateContinuousTable   (Optional) The name of the table where the resulting continuous covariates will
 #'                               be stored. If not provided, results will be fetched to R. The table can be
 #'                               a permanent table in the \code{targetDatabaseSchema} or a temp table. If
-#'                               it is a temp table, do not specify \code{targetDatabaseSchema}.                            
+#'                               it is a temp table, do not specify \code{targetDatabaseSchema}.
 #' @param targetCovariateRefTable (Optional) The name of the table where the covariate reference will be stored. If
 #'                               it is a temp table, do not specify \code{targetDatabaseSchema}.
-#'                               
+#'
 #' @param targetAnalysisRefTable (Optional) The name of the table where the analysis reference will be stored. If
 #'                               it is a temp table, do not specify \code{targetDatabaseSchema}.
 #' @param targetTimeRefTable     (Optional) The name of the table for the time reference. If
@@ -187,22 +187,23 @@ getDbCovariateData <- function(connectionDetails = NULL,
   } else {
     cohortDatabaseSchemaTable <- paste(cohortDatabaseSchema, cohortTable, sep = ".")
   }
-  
+
   # check for temporal features in any of the settings
-  if(inherits(covariateSettings, 'covariateSettings')){
+  if (inherits(covariateSettings, "covariateSettings")) {
     anyTemporal <- covariateSettings$temporal | covariateSettings$temporalSequence
-  } else{
+  } else {
     anyTemporal <- sum(unlist(lapply(
-      X = covariateSettings, 
-      FUN = function(x){
-        sum(c(x$temporal,x$temporalSequence)) == 1
-      }))) > 0 
+      X = covariateSettings,
+      FUN = function(x) {
+        sum(c(x$temporal, x$temporalSequence)) == 1
+      }
+    ))) > 0
   }
-  
+
   # Create export tables
   # figure out tables
   if (exportToTable) {
-    if(is.null(targetDatabaseSchema)){
+    if (is.null(targetDatabaseSchema)) {
       # turn off create table since the tables are temp
       tempOutputTables <- TRUE
       # covariate tables
@@ -235,7 +236,6 @@ getDbCovariateData <- function(connectionDetails = NULL,
       } else {
         targetTimeRefTable <- paste0("#", targetTimeRefTable)
       }
-      
     } else {
       tempOutputTables <- FALSE
       targetCovariateTable <- paste(targetDatabaseSchema, targetCovariateTable, sep = ".")
@@ -244,13 +244,13 @@ getDbCovariateData <- function(connectionDetails = NULL,
       targetAnalysisRefTable <- paste(targetDatabaseSchema, targetAnalysisRefTable, sep = ".")
       targetTimeRefTable <- paste(targetDatabaseSchema, targetTimeRefTable, sep = ".")
     }
-    
+
     # drop table if required
-    if(dropTableIfExists){
-      message('Dropping export tables')
+    if (dropTableIfExists) {
+      message("Dropping export tables")
       sql <- SqlRender::loadRenderTranslateSql(
-        sqlFilename = 'DropExportTables.sql',
-        packageName = 'FeatureExtraction',
+        sqlFilename = "DropExportTables.sql",
+        packageName = "FeatureExtraction",
         dbms = attr(connection, "dbms"),
         tempEmulationSchema = tempEmulationSchema,
         temp_tables = tempOutputTables,
@@ -260,45 +260,42 @@ getDbCovariateData <- function(connectionDetails = NULL,
         analysis_ref_table = targetAnalysisRefTable,
         time_ref_table = targetTimeRefTable
       )
-      
+
       DatabaseConnector::executeSql(
-        connection = connection, 
+        connection = connection,
         sql = sql
       )
     }
-    
-    if(dropTableIfExists & !createTable){
-      stop('Seem to be exporting to tables but create table is FALSE and dropTable is TRUE')
+
+    if (dropTableIfExists & !createTable) {
+      stop("Seem to be exporting to tables but create table is FALSE and dropTable is TRUE")
     }
-    
+
     # create the cohort tables if required
-    if(createTable){
-      message('Creating export tables')
+    if (createTable) {
+      message("Creating export tables")
       sql <- SqlRender::loadRenderTranslateSql(
-        sqlFilename = 'CreateExportTables.sql',
-        packageName = 'FeatureExtraction',
+        sqlFilename = "CreateExportTables.sql",
+        packageName = "FeatureExtraction",
         dbms = attr(connection, "dbms"),
         tempEmulationSchema = tempEmulationSchema,
-        
         aggregated = aggregated,
         temporal = anyTemporal,
-        row_id_field = 'row_id',
-        
+        row_id_field = "row_id",
         covariate_table = targetCovariateTable,
         covariate_continuous_table = targetCovariateContinuousTable,
         covariate_ref_table = targetCovariateRefTable,
         analysis_ref_table = targetAnalysisRefTable,
         time_ref_table = targetTimeRefTable
       )
-      
+
       DatabaseConnector::executeSql(
-        connection = connection, 
+        connection = connection,
         sql = sql
       )
     }
-    
   }
-  
+
   sql <- "SELECT cohort_definition_id, COUNT_BIG(*) AS population_size FROM @cohort_database_schema_table {@cohort_ids != -1} ? {WHERE cohort_definition_id IN (@cohort_ids)} GROUP BY cohort_definition_id;"
   sql <- SqlRender::render(
     sql = sql,
@@ -336,7 +333,7 @@ getDbCovariateData <- function(connectionDetails = NULL,
           covariateCohortTable
         )
       }
-      
+
       for (i in 1:length(covariateSettings)) {
         fun <- attr(covariateSettings[[i]], "fun")
         args <- list(
@@ -374,33 +371,33 @@ getDbCovariateData <- function(connectionDetails = NULL,
           } else if (hasData(tempCovariateData$covariatesContinuous)) {
             covariateData$covariatesContinuous <- tempCovariateData$covariatesContinuous
           }
-           
-          if(hasData(tempCovariateData$covariateRef)){
+
+          if (hasData(tempCovariateData$covariateRef)) {
             Andromeda::appendToTable(covariateData$covariateRef, tempCovariateData$covariateRef)
           }
-          if(hasData(tempCovariateData$analysisRef)){
+          if (hasData(tempCovariateData$analysisRef)) {
             Andromeda::appendToTable(covariateData$analysisRef, tempCovariateData$analysisRef)
           }
-          
-          if(!exportToTable){
-          for (name in names(attr(tempCovariateData, "metaData"))) {
-            if (is.null(attr(covariateData, "metaData")[[name]])) {
-              attr(covariateData, "metaData")[[name]] <- attr(tempCovariateData, "metaData")[[name]]
-            } else {
-              attr(covariateData, "metaData")[[name]] <- list(
-                c(
-                  unlist(attr(covariateData, "metaData")[[name]]),
-                  attr(tempCovariateData, "metaData")[[name]]
+
+          if (!exportToTable) {
+            for (name in names(attr(tempCovariateData, "metaData"))) {
+              if (is.null(attr(covariateData, "metaData")[[name]])) {
+                attr(covariateData, "metaData")[[name]] <- attr(tempCovariateData, "metaData")[[name]]
+              } else {
+                attr(covariateData, "metaData")[[name]] <- list(
+                  c(
+                    unlist(attr(covariateData, "metaData")[[name]]),
+                    attr(tempCovariateData, "metaData")[[name]]
+                  )
                 )
-              )
+              }
             }
-          }
           } # if not exporting
         }
       }
     }
-    
-    if(!is.null(covariateData)){
+
+    if (!is.null(covariateData)) {
       attr(covariateData, "metaData")$populationSize <- populationSize
       attr(covariateData, "metaData")$cohortIds <- cohortIds
     }

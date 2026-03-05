@@ -1,4 +1,4 @@
-# Copyright 2025 Observational Health Data Sciences and Informatics
+# Copyright 2026 Observational Health Data Sciences and Informatics
 #
 # This file is part of FeatureExtraction
 #
@@ -31,7 +31,7 @@
 #'                               it is a temp table, do not specify \code{targetDatabaseSchema}.
 #' @param targetCovariateContinuousTable (Optional) The name of the table where the resulting continuous covariates should be stored.
 #' @param targetCovariateRefTable (Optional) The name of the table where the covariate reference will be stored.
-#'                               
+#'
 #' @param targetAnalysisRefTable (Optional) The name of the table where the analysis reference will be stored.
 #' @param targetTimeRefTable     (Optional) The name of the table for the time reference
 #' @param minCharacterizationMean The minimum mean value for binary characterization output. Values below this will be cut off from output. This
@@ -98,8 +98,8 @@ getDbDefaultCovariateData <- function(connection,
   minCharacterizationMean <- utils::type.convert(minCharacterizationMean, as.is = TRUE)
   checkmate::assertNumeric(x = minCharacterizationMean, lower = 0, upper = 1, add = errorMessages)
   checkmate::reportAssertions(collection = errorMessages)
-  
-  
+
+
   targetTables <- list(
     covariates = targetCovariateTable,
     covariatesContinuous = targetCovariateContinuousTable,
@@ -108,9 +108,9 @@ getDbDefaultCovariateData <- function(connection,
     timeRef = targetTimeRefTable
   )
   # Is the target schema missing or are all the specified tables temp
-  allTempTables <- all(substr(targetTables,1,1) == "#")
+  allTempTables <- all(substr(targetTables, 1, 1) == "#")
   extractToAndromeda <- is.null(targetCovariateTable)
-  
+
 
   settings <- .toJson(covariateSettings)
   rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$init(system.file("", package = "FeatureExtraction"))
@@ -146,32 +146,32 @@ getDbDefaultCovariateData <- function(connection,
   ParallelLogger::logInfo("Fetching data from server")
   start <- Sys.time()
   covariateData <- Andromeda::andromeda()
-  
+
   # Binary or non-aggregated features
   if (!is.null(todo$sqlQueryFeatures)) {
-    
     # etracting covariate table
-    if(extractToAndromeda){
-      sql <- SqlRender::translate(sql = todo$sqlQueryFeatures,
-                                  targetDialect = attr(connection, "dbms"),
-                                  tempEmulationSchema = tempEmulationSchema)
+    if (extractToAndromeda) {
+      sql <- SqlRender::translate(
+        sql = todo$sqlQueryFeatures,
+        targetDialect = attr(connection, "dbms"),
+        tempEmulationSchema = tempEmulationSchema
+      )
       DatabaseConnector::querySqlToAndromeda(
         connection = connection,
         sql = sql,
         andromeda = covariateData,
         andromedaTableName = "covariates",
         snakeCaseToCamelCase = TRUE
-        )
-    } else{
-      
+      )
+    } else {
       # for testing to see column order
-      #print(todo$sqlQueryFeatures)
-      
+      # print(todo$sqlQueryFeatures)
+
       sql <- "
       INSERT INTO @target_covariate_table(
-      
+
       {@temporal | @temporal_sequence} ? {time_id,}
-      
+
       {@aggregated}?{
       cohort_definition_id,
       covariate_id,
@@ -182,9 +182,9 @@ getDbDefaultCovariateData <- function(connection,
       row_id,
       covariate_value
       }
-      
+
       ) @sub_query; "
-      
+
       sql <- SqlRender::render(
         sql = sql,
         target_covariate_table = targetTables$covariates,
@@ -193,7 +193,7 @@ getDbDefaultCovariateData <- function(connection,
         temporal_sequence = covariateSettings$temporalSequence,
         aggregated = aggregated
       )
-      
+
       sql <- SqlRender::translate(
         sql = sql,
         targetDialect = DatabaseConnector::dbms(connection),
@@ -203,18 +203,17 @@ getDbDefaultCovariateData <- function(connection,
         connection = connection,
         sql = sql
       )
-      
     }
-
   }
 
   # Continuous aggregated features
   if (!is.null(todo$sqlQueryContinuousFeatures)) {
-
-    if(extractToAndromeda){
-      sql <- SqlRender::translate(sql = todo$sqlQueryContinuousFeatures,
-                                  targetDialect = attr(connection, "dbms"),
-                                  tempEmulationSchema = tempEmulationSchema)
+    if (extractToAndromeda) {
+      sql <- SqlRender::translate(
+        sql = todo$sqlQueryContinuousFeatures,
+        targetDialect = attr(connection, "dbms"),
+        tempEmulationSchema = tempEmulationSchema
+      )
       DatabaseConnector::querySqlToAndromeda(
         connection = connection,
         sql = sql,
@@ -222,11 +221,11 @@ getDbDefaultCovariateData <- function(connection,
         andromedaTableName = "covariatesContinuous",
         snakeCaseToCamelCase = TRUE
       )
-    } else{
+    } else {
       sql <- "
       INSERT INTO @target_covariate_continuous_table(
       {@aggregated}?{
-      
+
       cohort_definition_id,
       covariate_id,
       {@temporal | @temporal_sequence} ? {time_id,}
@@ -236,22 +235,22 @@ getDbDefaultCovariateData <- function(connection,
       average_value,
       standard_deviation,
       median_value,
-      p10_value,	
-      p25_value,	
-      p75_value,	
+      p10_value,
+      p25_value,
+      p75_value,
       p90_value
-      
+
       }:{
-      
+
       covariate_id,
       {@temporal | @temporal_sequence} ? {time_id,}
       row_id,
       covariate_value
-      
+
       }
-      
+
       ) @sub_query;"
-      
+
       sql <- SqlRender::render(
         sql = sql,
         target_covariate_continuous_table = targetTables$covariatesContinuous,
@@ -260,7 +259,7 @@ getDbDefaultCovariateData <- function(connection,
         temporal_sequence = covariateSettings$temporalSequence,
         aggregated = aggregated
       )
-      
+
       sql <- SqlRender::translate(
         sql = sql,
         targetDialect = DatabaseConnector::dbms(connection),
@@ -271,16 +270,16 @@ getDbDefaultCovariateData <- function(connection,
         sql = sql
       )
     }
-    
   }
 
   # Covariate reference
   if (!is.null(todo$sqlQueryFeatureRef)) {
-    
-    if(extractToAndromeda){
-      sql <- SqlRender::translate(sql = todo$sqlQueryFeatureRef,
-                                  targetDialect = attr(connection, "dbms"),
-                                  tempEmulationSchema = tempEmulationSchema)
+    if (extractToAndromeda) {
+      sql <- SqlRender::translate(
+        sql = todo$sqlQueryFeatureRef,
+        targetDialect = attr(connection, "dbms"),
+        tempEmulationSchema = tempEmulationSchema
+      )
       DatabaseConnector::querySqlToAndromeda(
         connection = connection,
         sql = sql,
@@ -290,32 +289,32 @@ getDbDefaultCovariateData <- function(connection,
       )
 
       collisions <- covariateData$covariateRef %>%
-          dplyr::filter(collisions > 0) %>%
-          dplyr::collect()
-      
+        dplyr::filter(collisions > 0) %>%
+        dplyr::collect()
+
       if (nrow(collisions) > 0) {
         warning(sprintf(
           "Collisions in covariate IDs detected for post-coordinated concepts with covariate IDs %s",
           paste(collisions$covariateId, paste = ", ")
         ))
-      }      
-    } else{
+      }
+    } else {
       sql <- "
       INSERT INTO @target_covariate_ref_table(
       covariate_id,
 	    covariate_name,
 	    analysis_id,
 	    concept_id,
-	    value_as_concept_id, 
+	    value_as_concept_id,
 	    collisions
       ) @sub_query ;"
-      
+
       sql <- SqlRender::render(
         sql = sql,
         target_covariate_ref_table = targetTables$covariateRef,
         sub_query = gsub(";", "", todo$sqlQueryFeatureRef)
       )
-      
+
       sql <- SqlRender::translate(
         sql = sql,
         targetDialect = DatabaseConnector::dbms(connection),
@@ -326,17 +325,17 @@ getDbDefaultCovariateData <- function(connection,
         sql = sql
       )
     }
-    
   }
-  
+
 
   # Analysis reference
   if (!is.null(todo$sqlQueryAnalysisRef)) {
-    
-    if(extractToAndromeda){
-      sql <- SqlRender::translate(sql = todo$sqlQueryAnalysisRef,
-                                  targetDialect = attr(connection, "dbms"),
-                                  tempEmulationSchema = tempEmulationSchema)
+    if (extractToAndromeda) {
+      sql <- SqlRender::translate(
+        sql = todo$sqlQueryAnalysisRef,
+        targetDialect = attr(connection, "dbms"),
+        tempEmulationSchema = tempEmulationSchema
+      )
       DatabaseConnector::querySqlToAndromeda(
         connection = connection,
         sql = sql,
@@ -344,7 +343,7 @@ getDbDefaultCovariateData <- function(connection,
         andromedaTableName = "analysisRef",
         snakeCaseToCamelCase = TRUE
       )
-    } else{
+    } else {
       sql <- "
       INSERT INTO @target_analysis_ref_table(
       	analysis_id,
@@ -357,14 +356,14 @@ getDbDefaultCovariateData <- function(connection,
 	      is_binary,
 	      missing_means_zero
       ) @sub_query ;"
-      
+
       sql <- SqlRender::render(
         sql = sql,
         target_analysis_ref_table = targetTables$analysisRef,
         sub_query = gsub(";", "", todo$sqlQueryAnalysisRef),
         temporal = covariateSettings$temporal | covariateSettings$temporalSequence
       )
-      
+
       sql <- SqlRender::translate(
         sql = sql,
         targetDialect = DatabaseConnector::dbms(connection),
@@ -375,17 +374,17 @@ getDbDefaultCovariateData <- function(connection,
         sql = sql
       )
     }
-    
   }
-  
+
 
   # Time reference
   if (!is.null(todo$sqlQueryTimeRef)) {
-    
-    if(extractToAndromeda){
-      sql <- SqlRender::translate(sql = todo$sqlQueryTimeRef,
-                                  targetDialect = attr(connection, "dbms"),
-                                  tempEmulationSchema = tempEmulationSchema)
+    if (extractToAndromeda) {
+      sql <- SqlRender::translate(
+        sql = todo$sqlQueryTimeRef,
+        targetDialect = attr(connection, "dbms"),
+        tempEmulationSchema = tempEmulationSchema
+      )
       DatabaseConnector::querySqlToAndromeda(
         connection = connection,
         sql = sql,
@@ -393,7 +392,7 @@ getDbDefaultCovariateData <- function(connection,
         andromedaTableName = "timeRef",
         snakeCaseToCamelCase = TRUE
       )
-    } else{
+    } else {
       # TODO - what columns are in time ref table?!
       sql <- "
       INSERT INTO @target_time_ref_table(
@@ -402,13 +401,13 @@ getDbDefaultCovariateData <- function(connection,
       	sequence_start_day,
       	sequence_end_day
       ) @sub_query;"
-      
+
       sql <- SqlRender::render(
         sql = sql,
         target_covariate_ref_table = targetTables$timeRef,
         sub_query = gsub(";", "", todo$sqlQueryTimeRef)
       )
-      
+
       sql <- SqlRender::translate(
         sql = sql,
         targetDialect = DatabaseConnector::dbms(connection),
@@ -419,7 +418,6 @@ getDbDefaultCovariateData <- function(connection,
         sql = sql
       )
     }
-    
   }
 
   delta <- Sys.time() - start
@@ -458,7 +456,7 @@ getDbDefaultCovariateData <- function(connection,
     class(covariateData) <- "CovariateData"
     attr(class(covariateData), "package") <- "FeatureExtraction"
     return(covariateData)
-  } else{
+  } else {
     return(invisible(NULL))
   }
 }
