@@ -17,6 +17,15 @@ getDbCovariateData(
   cohortIds = c(-1),
   rowIdField = "subject_id",
   covariateSettings,
+  exportToTable = FALSE,
+  createTable = exportToTable,
+  dropTableIfExists = exportToTable,
+  targetDatabaseSchema = NULL,
+  targetCovariateTable = NULL,
+  targetCovariateContinuousTable = NULL,
+  targetCovariateRefTable = NULL,
+  targetAnalysisRefTable = NULL,
+  targetTimeRefTable = NULL,
   aggregated = FALSE,
   minCharacterizationMean = 0,
   tempEmulationSchema = getOption("sqlRenderTempEmulationSchema"),
@@ -68,6 +77,35 @@ there is more than one period per person.}
 
 \item{covariateSettings}{Either an object of type \code{covariateSettings} as created using one
 of the createCovariate functions, or a list of such objects.}
+
+\item{exportToTable}{Whether to export to a table rather than Andromeda object}
+
+\item{createTable}{Run sql to create table? Code does not check if table exists.}
+
+\item{dropTableIfExists}{If targetDatabaseSchema, drop any existing tables. Otherwise, results are merged
+into existing table data. Overides createTable.}
+
+\item{targetDatabaseSchema}{(Optional) The name of the database schema where the resulting covariates
+should be stored as a table.  If not provided, results will be fetched to R.}
+
+\item{targetCovariateTable}{(Optional) The name of the table where the resulting covariates will
+be stored. If not provided, results will be fetched to R. The table can be
+a permanent table in the \code{targetDatabaseSchema} or a temp table. If
+it is a temp table, do not specify \code{targetDatabaseSchema}.}
+
+\item{targetCovariateContinuousTable}{(Optional) The name of the table where the resulting continuous covariates will
+be stored. If not provided, results will be fetched to R. The table can be
+a permanent table in the \code{targetDatabaseSchema} or a temp table. If
+it is a temp table, do not specify \code{targetDatabaseSchema}.}
+
+\item{targetCovariateRefTable}{(Optional) The name of the table where the covariate reference will be stored. If
+it is a temp table, do not specify \code{targetDatabaseSchema}.}
+
+\item{targetAnalysisRefTable}{(Optional) The name of the table where the analysis reference will be stored. If
+it is a temp table, do not specify \code{targetDatabaseSchema}.}
+
+\item{targetTimeRefTable}{(Optional) The name of the table for the time reference. If
+it is a temp table, do not specify \code{targetDatabaseSchema}.}
 
 \item{aggregated}{Should aggregate statistics be computed instead of covariates per
 cohort entry? If aggregated is set to FALSE, the results returned will be based

@@ -1,3 +1,15 @@
+FeatureExtraction 3.13.0
+=======================
+
+New Features:
+
+- Added ability to store aggregate results from `getDbCovariateData` in the database and added
+ability to control all target tables with new `target*Table` parameters (#152, #321)
+
+Bugfixes:
+
+- Fixed tests and made sure storage of covariates with `getDbDefaultCovariateData` works and is consistent
+
 FeatureExtraction 3.12.0
 =======================
 

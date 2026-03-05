@@ -41,22 +41,3 @@ test_that("Test exit conditions", {
     aggregated = TRUE
   ))
 })
-
-# AGS - This test fails and is likely due to a bug when using SqlLite
-# test_that("Test target table", {
-#   connection <- DatabaseConnector::connect(connectionDetails)
-#   Eunomia::createCohorts(connectionDetails)
-#
-#   results <- getDbDefaultCovariateData(connection = connection,
-#                                        cdmDatabaseSchema = "main",
-#                                        cohortTable = "cohort",
-#                                        covariateSettings = createDefaultCovariateSettings(),
-#                                        targetDatabaseSchema = "main",
-#                                        targetCovariateTable = "ut_cov",
-#                                        targetCovariateRefTable = "ut_cov_ref",
-#                                        targetAnalysisRefTable = "ut_cov_analysis_ref")
-#
-#   on.exit(DatabaseConnector::disconnect(connection))
-# })
-#
-# unlink(connectionDetails$server())

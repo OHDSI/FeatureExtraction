@@ -1,4 +1,4 @@
-# Copyright 2025 Observational Health Data Sciences and Informatics
+# Copyright 2026 Observational Health Data Sciences and Informatics
 #
 # This file is part of FeatureExtraction
 #
@@ -22,6 +22,18 @@
 #' @param covariateSettings   An object of type \code{covariateSettings} as created using the
 #'                            \code{\link{createCohortBasedCovariateSettings}} or
 #'                            \code{\link{createCohortBasedTemporalCovariateSettings}} functions.
+#' @param targetDatabaseSchema   (Optional) The name of the database schema where the resulting covariates
+#'                               should be stored.  If not provided, results will be fetched to R.
+#' @param targetCovariateTable  (Optional) The name of the table where the resulting covariates will
+#'                               be stored. If not provided, results will be fetched to R. The table can be
+#'                               a permanent table in the \code{targetDatabaseSchema} or a temp table. If
+#'                               it is a temp table, do not specify \code{targetDatabaseSchema}.
+#'
+#' @param targetCovariateContinuousTable (Optional) The name of the table where the resulting continuous covariates should be stored.
+#' @param targetCovariateRefTable (Optional) The name of the table where the covariate reference will be stored.
+#'
+#' @param targetAnalysisRefTable (Optional) The name of the table where the analysis reference will be stored.
+#' @param targetTimeRefTable     (Optional) The name of the table for the time reference
 #' @param minCharacterizationMean The minimum mean value for binary characterization output. Values below this will be cut off from output. This
 #'                                will help reduce the file size of the characterization output, but will remove information
 #'                                on covariates that have very low values. The default is 0.
@@ -37,6 +49,12 @@ getDbCohortBasedCovariatesData <- function(connection,
                                            cdmVersion = "5",
                                            rowIdField = "subject_id",
                                            covariateSettings,
+                                           targetDatabaseSchema = NULL,
+                                           targetCovariateTable = NULL,
+                                           targetCovariateContinuousTable = NULL,
+                                           targetCovariateRefTable = NULL,
+                                           targetAnalysisRefTable = NULL,
+                                           targetTimeRefTable = NULL,
                                            aggregated = FALSE,
                                            minCharacterizationMean = 0,
                                            tempEmulationSchema = getOption("sqlRenderTempEmulationSchema")) {
@@ -153,6 +171,11 @@ getDbCohortBasedCovariatesData <- function(connection,
     cdmVersion = cdmVersion,
     rowIdField = rowIdField,
     covariateSettings = detailledSettings,
+    targetCovariateTable = targetCovariateTable,
+    targetCovariateContinuousTable = targetCovariateContinuousTable,
+    targetCovariateRefTable = targetCovariateRefTable,
+    targetAnalysisRefTable = targetAnalysisRefTable,
+    targetTimeRefTable = targetTimeRefTable,
     aggregated = aggregated,
     minCharacterizationMean = minCharacterizationMean
   )

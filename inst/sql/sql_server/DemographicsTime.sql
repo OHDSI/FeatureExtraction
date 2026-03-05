@@ -36,20 +36,20 @@ FROM (
 		cohort.@row_id_field AS row_id,	
 }
 {@sub_type == 'priorObservation'} ? {
-		DATEDIFF(DAY, observation_period_start_date, cohort_start_date) AS days
+		DATEDIFF(DAY, op.observation_period_start_date, cohort_start_date) AS days
 } 
 {@sub_type == 'postObservation'} ? {
-		DATEDIFF(DAY, cohort_start_date, observation_period_end_date) AS days
+		DATEDIFF(DAY, cohort_start_date, op.observation_period_end_date) AS days
 } 
 {@sub_type == 'inCohort'} ? {
 		DATEDIFF(DAY, cohort_start_date, cohort_end_date) AS days
 } 
 	FROM @cohort_table cohort
 {@sub_type != 'inCohort'} ? {
-	INNER JOIN @cdm_database_schema.observation_period
-		ON cohort.subject_id = observation_period.person_id
-		AND observation_period_start_date <= cohort_start_date
-		AND observation_period_end_date >= cohort_start_date
+	INNER JOIN @cdm_database_schema.observation_period op
+		ON op.person_id = cohort.subject_id 
+		AND op.observation_period_start_date <= cohort_start_date
+		AND op.observation_period_end_date >= cohort_start_date
 }
 {@cohort_definition_id != -1} ? {	WHERE cohort.cohort_definition_id IN (@cohort_definition_id)}
 	) raw_data;
