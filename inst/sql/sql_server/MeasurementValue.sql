@@ -1,15 +1,15 @@
 IF OBJECT_ID('tempdb..#meas_cov', 'U') IS NOT NULL
 	DROP TABLE #meas_cov;
 
-SELECT DISTINCT measurement_concept_id,
+SELECT DISTINCT @domain_concept_id,
   unit_concept_id,
-  CAST((CAST(measurement_concept_id AS BIGINT) * 1000000) + ((unit_concept_id - (FLOOR(unit_concept_id / 1000) * 1000)) * 1000) + @analysis_id AS BIGINT) AS covariate_id
+  CAST((CAST(@domain_concept_id AS BIGINT) * 1000000) + ((unit_concept_id - (FLOOR(unit_concept_id / 1000) * 1000)) * 1000) + @analysis_id AS BIGINT) AS covariate_id
 INTO #meas_cov
-FROM @cdm_database_schema.measurement
+FROM @cdm_database_schema.@domain_table
 WHERE value_as_number IS NOT NULL
-{@excluded_concept_table != ''} ? {		AND measurement_concept_id NOT IN (SELECT id FROM @excluded_concept_table)}
-{@included_concept_table != ''} ? {		AND measurement_concept_id IN (SELECT id FROM @included_concept_table)}
-{@included_cov_table != ''} ? {		AND CAST((CAST(measurement_concept_id AS BIGINT) * 1000000) + ((unit_concept_id - (FLOOR(unit_concept_id / 1000) * 1000)) * 1000) + @analysis_id AS BIGINT) IN (SELECT id FROM @included_cov_table)}
+{@excluded_concept_table != ''} ? {		AND @domain_concept_id NOT IN (SELECT id FROM @excluded_concept_table)}
+{@included_concept_table != ''} ? {		AND @domain_concept_id IN (SELECT id FROM @included_concept_table)}
+{@included_cov_table != ''} ? {		AND CAST((CAST(@domain_concept_id AS BIGINT) * 1000000) + ((unit_concept_id - (FLOOR(unit_concept_id / 1000) * 1000)) * 1000) + @analysis_id AS BIGINT) IN (SELECT id FROM @included_cov_table)}
 ; 
 
 -- Feature construction
@@ -38,24 +38,24 @@ FROM (
 		cohort_start_date,
 {@temporal} ? {
 		time_id,
-		ROW_NUMBER() OVER (PARTITION BY cohort_definition_id, subject_id, cohort_start_date, measurement.measurement_concept_id, time_id ORDER BY measurement_date DESC, measurement.unit_concept_id, value_as_number) AS rn,
+		ROW_NUMBER() OVER (PARTITION BY cohort_definition_id, subject_id, cohort_start_date, @domain_table.@domain_concept_id, @domain_table.unit_concept_id, time_id ORDER BY @domain_start_date DESC, value_as_number) AS rn,
 } : {
-		ROW_NUMBER() OVER (PARTITION BY cohort_definition_id, subject_id, cohort_start_date, measurement.measurement_concept_id ORDER BY measurement_date DESC, measurement.unit_concept_id, value_as_number) AS rn,
+		ROW_NUMBER() OVER (PARTITION BY cohort_definition_id, subject_id, cohort_start_date, @domain_table.@domain_concept_id, @domain_table.unit_concept_id ORDER BY @domain_start_date DESC, value_as_number) AS rn,
 }
 } : {
 		cohort.@row_id_field AS row_id,
 {@temporal} ? {
 		time_id,
-		ROW_NUMBER() OVER (PARTITION BY cohort.@row_id_field, measurement.measurement_concept_id, time_id ORDER BY measurement_date DESC, measurement.unit_concept_id, value_as_number) AS rn,
+		ROW_NUMBER() OVER (PARTITION BY cohort.@row_id_field, @domain_table.@domain_concept_id, @domain_table.unit_concept_id, time_id ORDER BY @domain_start_date DESC, value_as_number) AS rn,
 } : {
 
 {@temporal_sequence} ? {
 
-FLOOR(DATEDIFF(@time_part, measurement_date, cohort.cohort_start_date)*1.0/@time_interval ) as time_id,
-ROW_NUMBER() OVER (PARTITION BY cohort.@row_id_field, measurement.measurement_concept_id, FLOOR(DATEDIFF(@time_part, measurement_date, cohort.cohort_start_date)*1.0/@time_interval ) ORDER BY measurement_date DESC, measurement.unit_concept_id, value_as_number) AS rn,
+FLOOR(DATEDIFF(@time_part, @domain_start_date, cohort.cohort_start_date)*1.0/@time_interval ) as time_id,
+ROW_NUMBER() OVER (PARTITION BY cohort.@row_id_field, @domain_table.@domain_concept_id, @domain_table.unit_concept_id, FLOOR(DATEDIFF(@time_part, @domain_start_date, cohort.cohort_start_date)*1.0/@time_interval ) ORDER BY @domain_start_date DESC, value_as_number) AS rn,
 
 } : {
-		ROW_NUMBER() OVER (PARTITION BY cohort.@row_id_field, measurement.measurement_concept_id ORDER BY measurement_date DESC, measurement.unit_concept_id, value_as_number) AS rn,
+		ROW_NUMBER() OVER (PARTITION BY cohort.@row_id_field, @domain_table.@domain_concept_id, @domain_table.unit_concept_id ORDER BY @domain_start_date DESC, value_as_number) AS rn,
 }
 
 }
@@ -63,20 +63,20 @@ ROW_NUMBER() OVER (PARTITION BY cohort.@row_id_field, measurement.measurement_co
 		covariate_id,
 		value_as_number
 	FROM @cohort_table cohort
-	INNER JOIN @cdm_database_schema.measurement
-		ON cohort.subject_id = measurement.person_id
+	INNER JOIN @cdm_database_schema.@domain_table
+		ON cohort.subject_id = @domain_table.person_id
 	INNER JOIN #meas_cov meas_cov
-		ON meas_cov.measurement_concept_id = measurement.measurement_concept_id 
-			AND meas_cov.unit_concept_id = measurement.unit_concept_id 
+		ON meas_cov.@domain_concept_id = @domain_table.@domain_concept_id 
+			AND meas_cov.unit_concept_id = @domain_table.unit_concept_id 
 {@temporal} ? {
 	INNER JOIN #time_period time_period
-		ON measurement_date <= DATEADD(DAY, time_period.end_day, cohort.cohort_start_date)
-		AND measurement_date >= DATEADD(DAY, time_period.start_day, cohort.cohort_start_date)
-	WHERE measurement.measurement_concept_id != 0 
+		ON @domain_start_date <= DATEADD(DAY, time_period.end_day, cohort.cohort_start_date)
+		AND @domain_start_date >= DATEADD(DAY, time_period.start_day, cohort.cohort_start_date)
+	WHERE @domain_table.@domain_concept_id != 0 
 } : {
-	WHERE measurement_date <= DATEADD(DAY, {@temporal_sequence} ? {@sequence_end_day} : {@end_day}, cohort.cohort_start_date)
-{@start_day != 'anyTimePrior'} ? {	AND measurement_date >= DATEADD(DAY, {@temporal_sequence} ? {@sequence_start_day} : {@start_day}, cohort.cohort_start_date)}
-		AND measurement.measurement_concept_id != 0
+	WHERE @domain_start_date <= DATEADD(DAY, {@temporal_sequence} ? {@sequence_end_day} : {@end_day}, cohort.cohort_start_date)
+{@start_day != 'anyTimePrior'} ? {	AND @domain_start_date >= DATEADD(DAY, {@temporal_sequence} ? {@sequence_start_day} : {@start_day}, cohort.cohort_start_date)}
+		AND @domain_table.@domain_concept_id != 0
 }	
 		AND value_as_number IS NOT NULL 			
 {@cohort_definition_id != -1} ? {		AND cohort.cohort_definition_id IN (@cohort_definition_id)}
@@ -202,36 +202,36 @@ INSERT INTO #cov_ref (
 SELECT temp.covariate_id,
 {@temporal | @temporal_sequence} ? {
 	CAST(CASE WHEN unit_concept.concept_id IS NULL OR unit_concept.concept_id = 0 THEN
-		CONCAT('measurement value: ', CASE WHEN measurement_concept.concept_name IS NULL THEN 'Unknown concept' ELSE measurement_concept.concept_name END, ' (Unknown unit)')
+		CONCAT('@domain_table value: ', CASE WHEN feature_concept.concept_name IS NULL THEN 'Unknown concept' ELSE feature_concept.concept_name END, ' (Unknown unit)')
 	ELSE 	
-		CONCAT('measurement value: ',  CASE WHEN measurement_concept.concept_name IS NULL THEN 'Unknown concept' ELSE measurement_concept.concept_name END, ' (', unit_concept.concept_name, ')')
+		CONCAT('@domain_table value: ',  CASE WHEN feature_concept.concept_name IS NULL THEN 'Unknown concept' ELSE feature_concept.concept_name END, ' (', unit_concept.concept_name, ')')
 	END AS VARCHAR(512)) AS covariate_name,
 } : {
 {@start_day == 'anyTimePrior'} ? {
 	CAST(CASE WHEN unit_concept.concept_id = 0 THEN
-		CONCAT('measurement value during any time prior through @end_day days relative to index: ', measurement_concept.concept_name, ' (Unknown unit)')
+		CONCAT('@domain_table value during any time prior through @end_day days relative to index: ', feature_concept.concept_name, ' (Unknown unit)')
 	ELSE 	
-		CONCAT('measurement value during any time prior through @end_day days relative to index: ', measurement_concept.concept_name, ' (', unit_concept.concept_name, ')')
+		CONCAT('@domain_table value during any time prior through @end_day days relative to index: ', feature_concept.concept_name, ' (', unit_concept.concept_name, ')')
 	END AS VARCHAR(512)) AS covariate_name,
 
 } : {
 	CAST(CASE WHEN unit_concept.concept_id = 0 THEN
-		CONCAT('measurement value during day @start_day through @end_day days relative to index: ', measurement_concept.concept_name, ' (Unknown unit)')
+		CONCAT('@domain_table value during day @start_day through @end_day days relative to index: ', feature_concept.concept_name, ' (Unknown unit)')
 	ELSE 	
-		CONCAT('measurement value during day @start_day through @end_day days relative to index: ', measurement_concept.concept_name, ' (', unit_concept.concept_name, ')')
+		CONCAT('@domain_table value during day @start_day through @end_day days relative to index: ', feature_concept.concept_name, ' (', unit_concept.concept_name, ')')
 	END AS VARCHAR(512)) AS covariate_name,
 }
 }
 	@analysis_id AS analysis_id,
-	covariate_ids.measurement_concept_id AS concept_id
+	covariate_ids.@domain_concept_id AS concept_id
 FROM (
 	SELECT DISTINCT covariate_id
 	FROM @covariate_table
 	) temp
 INNER JOIN #meas_cov covariate_ids
 	ON covariate_ids.covariate_id = temp.covariate_id
-LEFT JOIN @cdm_database_schema.concept measurement_concept
-	ON covariate_ids.measurement_concept_id = measurement_concept.concept_id
+LEFT JOIN @cdm_database_schema.concept feature_concept
+	ON covariate_ids.@domain_concept_id = feature_concept.concept_id
 LEFT JOIN @cdm_database_schema.concept unit_concept
 	ON covariate_ids.unit_concept_id = unit_concept.concept_id;
 	

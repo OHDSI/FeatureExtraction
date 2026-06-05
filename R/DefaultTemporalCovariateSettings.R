@@ -93,6 +93,10 @@
 #' @param useObservationValueAsConcept             One covariate per observation-value concept
 #'                                                 combination within the time period. (analysis ID
 #'                                                 802)
+#' @param useObservationValue                      One covariate containing the value per
+#'                                                 observation-unit combination in the time window. If
+#'                                                 multiple values are found, the last is taken.
+#'                                                 (analysis ID 803)
 #' @param useCharlsonIndex                         The Charlson comorbidity index (Romano adaptation)
 #'                                                 using all conditions prior to the window end.
 #'                                                 (analysis ID 901)
@@ -177,6 +181,7 @@
 #'   useMeasurementValueAsConcept = TRUE,
 #'   useObservation = TRUE,
 #'   useObservationValueAsConcept = TRUE,
+#'   useObservationValue = FALSE,
 #'   useCharlsonIndex = TRUE,
 #'   useDcsi = TRUE,
 #'   useChads2 = TRUE,
@@ -230,6 +235,7 @@ createTemporalCovariateSettings <- function(useDemographicsGender = FALSE,
                                             useMeasurementValueAsConcept = FALSE,
                                             useObservation = FALSE,
                                             useObservationValueAsConcept = FALSE,
+                                            useObservationValue = FALSE,
                                             useCharlsonIndex = FALSE,
                                             useDcsi = FALSE,
                                             useChads2 = FALSE,

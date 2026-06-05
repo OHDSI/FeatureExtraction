@@ -36,6 +36,7 @@ createTemporalCovariateSettings(
   useMeasurementValueAsConcept = FALSE,
   useObservation = FALSE,
   useObservationValueAsConcept = FALSE,
+  useObservationValue = FALSE,
   useCharlsonIndex = FALSE,
   useDcsi = FALSE,
   useChads2 = FALSE,
@@ -161,6 +162,11 @@ table in the time window. (analysis ID 801)}
 combination within the time period. (analysis ID
 802)}
 
+\item{useObservationValue}{One covariate containing the value per
+observation-unit combination in the time window. If
+multiple values are found, the last is taken.
+(analysis ID 803)}
+
 \item{useCharlsonIndex}{The Charlson comorbidity index (Romano adaptation)
 using all conditions prior to the window end.
 (analysis ID 901)}
@@ -269,6 +275,7 @@ settings <- createTemporalCovariateSettings(
   useMeasurementValueAsConcept = TRUE,
   useObservation = TRUE,
   useObservationValueAsConcept = TRUE,
+  useObservationValue = FALSE,
   useCharlsonIndex = TRUE,
   useDcsi = TRUE,
   useChads2 = TRUE,

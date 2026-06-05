@@ -305,6 +305,18 @@
 #' @param useObservationValueAsConceptShortTerm                One covariate per observation-value
 #'                                                             concept combination in the short term
 #'                                                             window. (analysis ID 808)
+#' @param useObservationValueAnyTimePrior                      One covariate containing the value per
+#'                                                             observation-unit combination any time
+#'                                                             prior to index. (analysis ID 809)
+#' @param useObservationValueLongTerm                          One covariate containing the value per
+#'                                                             observation-unit combination in the long
+#'                                                             term window. (analysis ID 810)
+#' @param useObservationValueMediumTerm                        One covariate containing the value per
+#'                                                             observation-unit combination in the
+#'                                                             medium term window. (analysis ID 811)
+#' @param useObservationValueShortTerm                         One covariate containing the value per
+#'                                                             observation-unit combination in the
+#'                                                             short term window. (analysis ID 812)
 #' @param useCharlsonIndex                                     The Charlson comorbidity index (Romano
 #'                                                             adaptation) using all conditions prior
 #'                                                             to the window end. (analysis ID 901)
@@ -492,6 +504,10 @@
 #'   useObservationValueAsConceptLongTerm = TRUE,
 #'   useObservationValueAsConceptMediumTerm = FALSE,
 #'   useObservationValueAsConceptShortTerm = TRUE,
+#'   useObservationValueAnyTimePrior = FALSE,
+#'   useObservationValueLongTerm = FALSE,
+#'   useObservationValueMediumTerm = FALSE,
+#'   useObservationValueShortTerm = FALSE,
 #'   useCharlsonIndex = TRUE,
 #'   useDcsi = TRUE,
 #'   useChads2 = TRUE,
@@ -618,6 +634,10 @@ createCovariateSettings <- function(useDemographicsGender = FALSE,
                                     useObservationValueAsConceptLongTerm = FALSE,
                                     useObservationValueAsConceptMediumTerm = FALSE,
                                     useObservationValueAsConceptShortTerm = FALSE,
+                                    useObservationValueAnyTimePrior = FALSE,
+                                    useObservationValueLongTerm = FALSE,
+                                    useObservationValueMediumTerm = FALSE,
+                                    useObservationValueShortTerm = FALSE,
                                     useCharlsonIndex = FALSE,
                                     useDcsi = FALSE,
                                     useChads2 = FALSE,
