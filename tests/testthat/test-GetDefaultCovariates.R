@@ -2,7 +2,7 @@
 # library(testthat); library(FeatureExtraction)
 # covr::file_report(covr::file_coverage("R/GetDefaultCovariates.R", "tests/testthat/test-GetDefaultCovariates.R"))
 
-createDefaultCovariateSqlTodo <- function(covariateSettings, aggregated = FALSE) {
+createDefaultCovariateSqlJson <- function(covariateSettings, aggregated = FALSE) {
   packageFolders <- c(
     file.path(getwd(), "inst"),
     file.path(getwd(), "..", "..", "inst"),
@@ -66,14 +66,14 @@ test_that("Test exit conditions", {
 
 test_that("Non-aggregated feature SQL uses documented covariate data column order", {
   covariateSettings <- createCovariateSettings(useDemographicsGender = TRUE)
-  todo <- createDefaultCovariateSqlTodo(covariateSettings = covariateSettings)
+  json <- createDefaultCovariateSqlJson(covariateSettings = covariateSettings)
 
   expect_match(
-    todo$sqlQueryFeatures,
+    json$sqlQueryFeatures,
     "^SELECT row_id,\n  covariate_id,\n  covariate_value\nFROM \\(",
     perl = TRUE
   )
-  expect_false(grepl("^SELECT \\*\nFROM", todo$sqlQueryFeatures))
+  expect_false(grepl("^SELECT \\*\nFROM", json$sqlQueryFeatures))
 })
 
 test_that("Aggregated feature SQL uses documented covariate data column order", {
@@ -137,14 +137,14 @@ test_that("Aggregated feature SQL uses documented covariate data column order", 
   )
 
   for (testCase in testCases) {
-    todo <- createDefaultCovariateSqlTodo(
+    json <- createDefaultCovariateSqlJson(
       covariateSettings = testCase$settings,
       aggregated = TRUE
     )
 
-    expect_match(todo$sqlQueryFeatures, testCase$binaryColumns, perl = TRUE)
-    expect_match(todo$sqlQueryContinuousFeatures, testCase$continuousColumns, perl = TRUE)
-    expect_false(grepl("^SELECT \\*\nFROM", todo$sqlQueryFeatures))
-    expect_false(grepl("^SELECT \\*\nFROM", todo$sqlQueryContinuousFeatures))
+    expect_match(json$sqlQueryFeatures, testCase$binaryColumns, perl = TRUE)
+    expect_match(json$sqlQueryContinuousFeatures, testCase$continuousColumns, perl = TRUE)
+    expect_false(grepl("^SELECT \\*\nFROM", json$sqlQueryFeatures))
+    expect_false(grepl("^SELECT \\*\nFROM", json$sqlQueryContinuousFeatures))
   }
 })
