@@ -765,7 +765,12 @@ public class FeatureExtraction {
 			}
 
 		} else {
-			sql.append("SELECT *\nFROM (\n");
+			if (temporal || temporalSequence)
+				sql.append("SELECT row_id,\n  covariate_id,\n  covariate_value,\n  time_id\nFROM (\n");
+			else if (temporalAnnual)
+				sql.append("SELECT row_id,\n  covariate_id,\n  covariate_value,\n  event_year\nFROM (\n");
+			else
+				sql.append("SELECT row_id,\n  covariate_id,\n  covariate_value\nFROM (\n");
 		}
 		Iterator<Object> analysesIterator = jsonObject.getJSONArray(ANALYSES).iterator();
 		String joinedFields = fields.collect(Collectors.joining(", "));
