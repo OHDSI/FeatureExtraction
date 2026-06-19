@@ -75,7 +75,14 @@ createLooCovariateSettings <- function(useLengthOfObs = TRUE) {
 - cdmVersion : 공통 데이터 모델 버전
 - rowIdField :  결과 테이블에서 row_id 필드로 사용될 코호트 임시 테이블의 필드 이름이다. 1인당 1개이상의 기간이 있는 경우 특히 유용하다.
 - covariateSettings : 공변량 설정 함수에서 생성된 객체
+- targetCovariateTable : 결과 공변량을 저장할 선택적 테이블 이름
+- targetCovariateContinuousTable : 결과 연속형 공변량을 저장할 선택적 테이블 이름
+- targetCovariateRefTable : 공변량 참조를 저장할 선택적 테이블 이름
+- targetAnalysisRefTable : 분석 참조를 저장할 선택적 테이블 이름
+- targetTimeRefTable : 시간 참조를 저장할 선택적 테이블 이름
 - aggregated :  공변량을 1인당 생성해야 하는가, 아니면 집계해야하는가?
+- minCharacterizationMean : characterization 출력에 포함할 최소 평균값
+- minCharacterizationCount : characterization 출력에 포함할 최소 카운트값
 
 이 함수는 cohort 테이블 인자에 지정된 이름을 가진 테이블이 존재할 것으로 기대할 수 있다.  이 테이블은공변량을 생성하려는 사람과 인덱스날짜를 식별하며 다음 필드를 갖는다(subject_id,cohort_start_date, and cohort_definition_id). 1인당 인덱스 날짜(즉, cohort_start_date)가 두 개 이상일 수 있기 때문에 각 subject_id-cohort_start_date 조합에 대한 고유 식별자가 있는 추가 필드가 포함 될 수 있다. 이 필드의 이름은 rowIdField 인자에 저장된다.
 
@@ -99,7 +106,14 @@ getDbLooCovariateData <- function(connection,
                                   cdmVersion = "5",
                                   rowIdField = "subject_id",
                                   covariateSettings,
-                                  aggregated = FALSE) {
+                                  targetCovariateTable = NULL,
+                                  targetCovariateContinuousTable = NULL,
+                                  targetCovariateRefTable = NULL,
+                                  targetAnalysisRefTable = NULL,
+                                  targetTimeRefTable = NULL,
+                                  aggregated = FALSE,
+                                  minCharacterizationMean = 0,
+                                  minCharacterizationCount = 0) {
   writeLines("Constructing length of observation covariates")
   if (covariateSettings$useLengthOfObs == FALSE) {
     return(NULL)

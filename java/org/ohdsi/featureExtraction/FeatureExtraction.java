@@ -515,11 +515,23 @@ public class FeatureExtraction {
 	 */
 	public static String createSql(String settings, boolean aggregated, String cohortTable, String rowIdField, String[] cohortDefinitionIds,
 			String cdmDatabaseSchema, String minCharacterizationMean) {
+		return createSql(settings, aggregated, cohortTable, rowIdField, cohortDefinitionIds, cdmDatabaseSchema, minCharacterizationMean, "0");
+	}
+
+	/**
+	 * Construct the SQL for creating and retrieving the features.
+	 *
+	 * @param minCharacterizationCount The minimum count value for characterization output. Values below this will be cut off from output.
+	 * @return A JSON object.
+	 */
+	public static String createSql(String settings, boolean aggregated, String cohortTable, String rowIdField, String[] cohortDefinitionIds,
+			String cdmDatabaseSchema, String minCharacterizationMean, String minCharacterizationCount) {
 		
 		long[] idsAsLongs = new long[cohortDefinitionIds.length];
 		for (int i = 0; i < cohortDefinitionIds.length; i++)
 			idsAsLongs[i] = Long.valueOf(cohortDefinitionIds[i]);
-		return createSql(settings, aggregated, cohortTable, rowIdField, idsAsLongs, cdmDatabaseSchema, Double.valueOf(minCharacterizationMean));
+		return createSql(settings, aggregated, cohortTable, rowIdField, idsAsLongs, cdmDatabaseSchema, Double.valueOf(minCharacterizationMean),
+				Integer.valueOf(minCharacterizationCount));
 	}
 
 
@@ -558,7 +570,7 @@ public class FeatureExtraction {
 	 */
 	public static String createSql(String settings, boolean aggregated, String cohortTable, String rowIdField, int cohortDefinitionId,
 								   String cdmDatabaseSchema) {
-		return createSql(settings, aggregated, cohortTable, rowIdField, new long[]{cohortDefinitionId}, cdmDatabaseSchema, 0.0d);
+		return createSql(settings, aggregated, cohortTable, rowIdField, new long[]{cohortDefinitionId}, cdmDatabaseSchema, 0.0d, 0);
 	}
 
 	/**
@@ -596,6 +608,17 @@ public class FeatureExtraction {
 	 */
 	public static String createSql(String settings, boolean aggregated, String cohortTable, String rowIdField, long[] cohortDefinitionIds,
 			String cdmDatabaseSchema, double minCharacterizationMean) {
+		return createSql(settings, aggregated, cohortTable, rowIdField, cohortDefinitionIds, cdmDatabaseSchema, minCharacterizationMean, 0);
+	}
+
+	/**
+	 * Construct the SQL for creating and retrieving the features.
+	 *
+	 * @param minCharacterizationCount The minimum count value for characterization output. Values below this will be cut off from output.
+	 * @return A JSON object.
+	 */
+	public static String createSql(String settings, boolean aggregated, String cohortTable, String rowIdField, long[] cohortDefinitionIds,
+			String cdmDatabaseSchema, double minCharacterizationMean, int minCharacterizationCount) {
 			  
 		JSONObject jsonObject = new JSONObject(settings);
 
@@ -666,7 +689,8 @@ public class FeatureExtraction {
 		jsonWriter.key("sqlConstruction");
 		jsonWriter.value(createConstructionSql(jsonObject, idSetToName, temporal, temporalSequence, aggregated, cohortTable, rowIdField, cohortDefinitionIds, cdmDatabaseSchema));
 
-		String sqlQueryFeatures = createQuerySql(jsonObject, cohortTable, cohortDefinitionIds, aggregated, temporal, temporalSequence, minCharacterizationMean);
+		String sqlQueryFeatures = createQuerySql(jsonObject, cohortTable, cohortDefinitionIds, aggregated, temporal, temporalSequence, minCharacterizationMean,
+				minCharacterizationCount);
 		if (sqlQueryFeatures != null) {
 			jsonWriter.key("sqlQueryFeatures");
 			jsonWriter.value(sqlQueryFeatures);
@@ -743,7 +767,7 @@ public class FeatureExtraction {
 	}
 
 	private static String createQuerySql(JSONObject jsonObject, String cohortTable, long[] cohortDefinitionIds, boolean aggregated, boolean temporal, boolean temporalSequence,
-	                                     double minCharacterizationMean) {
+	                                     double minCharacterizationMean, int minCharacterizationCount) {
 		boolean temporalAnnual = isTemporalAnnual(jsonObject);
 		Stream<String> fields = Stream.<Stream<String>>of(
 				aggregated ? Stream.of("cohort_definition_id", "covariate_id", "sum_value") : Stream.of("row_id", "covariate_id", "covariate_value"),
@@ -780,8 +804,15 @@ public class FeatureExtraction {
 		if (aggregated) {
 			sql.append("\n) all_covariates\nINNER JOIN (\nSELECT cohort_definition_id, COUNT(*) AS total_count\nFROM @cohort_table {@cohort_definition_id != -1} ? {\nWHERE cohort_definition_id IN (@cohort_definition_id)}");
 			sql.append(" GROUP BY cohort_definition_id\n) total\n  ON all_covariates.cohort_definition_id = total.cohort_definition_id");
+			List<String> filterConditions = new ArrayList<String>();
 			if (minCharacterizationMean != 0) {
-				sql.append(" WHERE all_covariates.sum_value / (1.0 * total.total_count) >= " + minCharacterizationMean);
+				filterConditions.add("all_covariates.sum_value / (1.0 * total.total_count) >= " + minCharacterizationMean);
+			}
+			if (minCharacterizationCount != 0) {
+				filterConditions.add("all_covariates.sum_value >= " + minCharacterizationCount);
+			}
+			if (!filterConditions.isEmpty()) {
+				sql.append(" WHERE " + filterConditions.stream().collect(Collectors.joining(" AND ")));
 			}
 			sql.append(";");
 		} else {

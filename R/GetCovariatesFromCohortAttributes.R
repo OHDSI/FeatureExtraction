@@ -21,6 +21,14 @@
 #'
 #' @param covariateSettings   An object of type \code{covariateSettings} as created using the
 #'                            \code{\link{createCohortAttrCovariateSettings}} function.
+#' @param targetDatabaseSchema Optional target database schema. Ignored because cohort attribute covariates do not support exporting directly to target tables.
+#' @param targetCovariateTable Optional target covariate table. Ignored because cohort attribute covariates do not support exporting directly to target tables.
+#' @param targetCovariateContinuousTable Optional target continuous covariate table. Ignored because cohort attribute covariates do not support exporting directly to target tables.
+#' @param targetCovariateRefTable Optional target covariate reference table. Ignored because cohort attribute covariates do not support exporting directly to target tables.
+#' @param targetAnalysisRefTable Optional target analysis reference table. Ignored because cohort attribute covariates do not support exporting directly to target tables.
+#' @param targetTimeRefTable Optional target time reference table. Ignored because cohort attribute covariates do not support exporting directly to target tables.
+#' @param minCharacterizationMean The minimum mean value for characterization output. Ignored because aggregation is not supported for cohort attribute covariates.
+#' @param minCharacterizationCount The minimum count value for characterization output. Ignored because aggregation is not supported for cohort attribute covariates.
 #'
 #' @template GetCovarParams
 #'
@@ -66,7 +74,15 @@ getDbCohortAttrCovariatesData <- function(connection,
                                           cdmVersion = "5",
                                           rowIdField = "subject_id",
                                           covariateSettings,
+                                          targetDatabaseSchema = NULL,
+                                          targetCovariateTable = NULL,
+                                          targetCovariateContinuousTable = NULL,
+                                          targetCovariateRefTable = NULL,
+                                          targetAnalysisRefTable = NULL,
+                                          targetTimeRefTable = NULL,
                                           aggregated = FALSE,
+                                          minCharacterizationMean = 0,
+                                          minCharacterizationCount = 0,
                                           tempEmulationSchema = getOption("sqlRenderTempEmulationSchema")) {
   if (aggregated) {
     stop("Aggregation not implemented for covariates from cohort attributes.")
