@@ -195,7 +195,7 @@ settings <- createTemporalCovariateSettings(
 ```{r}
 analysisDetails <- createAnalysisDetails(
   analysisId = 1,
-  sqlFileName = "MeasurementValue.sql",
+  sqlFileName = "DomainValueAsNumber.sql",
   parameters = list(
     analysisId = 1,
     analysisName = "MeasurementValue",
