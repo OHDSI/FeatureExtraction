@@ -93,6 +93,10 @@ createCovariateSettings(
   useObservationValueAsConceptLongTerm = FALSE,
   useObservationValueAsConceptMediumTerm = FALSE,
   useObservationValueAsConceptShortTerm = FALSE,
+  useObservationValueAnyTimePrior = FALSE,
+  useObservationValueLongTerm = FALSE,
+  useObservationValueMediumTerm = FALSE,
+  useObservationValueShortTerm = FALSE,
   useCharlsonIndex = FALSE,
   useDcsi = FALSE,
   useChads2 = FALSE,
@@ -503,6 +507,22 @@ window. (analysis ID 807)}
 concept combination in the short term
 window. (analysis ID 808)}
 
+\item{useObservationValueAnyTimePrior}{One covariate containing the value per
+observation-unit combination any time
+prior to index. (analysis ID 809)}
+
+\item{useObservationValueLongTerm}{One covariate containing the value per
+observation-unit combination in the long
+term window. (analysis ID 810)}
+
+\item{useObservationValueMediumTerm}{One covariate containing the value per
+observation-unit combination in the
+medium term window. (analysis ID 811)}
+
+\item{useObservationValueShortTerm}{One covariate containing the value per
+observation-unit combination in the
+short term window. (analysis ID 812)}
+
 \item{useCharlsonIndex}{The Charlson comorbidity index (Romano
 adaptation) using all conditions prior
 to the window end. (analysis ID 901)}
@@ -730,6 +750,10 @@ settings <- createCovariateSettings(
   useObservationValueAsConceptLongTerm = TRUE,
   useObservationValueAsConceptMediumTerm = FALSE,
   useObservationValueAsConceptShortTerm = TRUE,
+  useObservationValueAnyTimePrior = FALSE,
+  useObservationValueLongTerm = FALSE,
+  useObservationValueMediumTerm = FALSE,
+  useObservationValueShortTerm = FALSE,
   useCharlsonIndex = TRUE,
   useDcsi = TRUE,
   useChads2 = TRUE,

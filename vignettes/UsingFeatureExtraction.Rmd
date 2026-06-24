@@ -186,7 +186,7 @@ Similar to ordinary covariates, **advanced users** can also define custom analys
 ```{r}
 analysisDetails <- createAnalysisDetails(
   analysisId = 1,
-  sqlFileName = "MeasurementValue.sql",
+  sqlFileName = "DomainValueAsNumber.sql",
   parameters = list(
     analysisId = 1,
     analysisName = "MeasurementValue",
