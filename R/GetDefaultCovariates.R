@@ -176,17 +176,17 @@ getDbDefaultCovariateData <- function(connection,
       sql <- "
       INSERT INTO @target_covariate_table(
 
-      {@temporal | @temporal_sequence} ? {time_id,}
-
       {@aggregated}?{
       cohort_definition_id,
       covariate_id,
+      {@temporal | @temporal_sequence} ? {time_id,}
       sum_value,
       average_value
       }:{
-      covariate_id,
       row_id,
+      covariate_id,
       covariate_value
+      {@temporal | @temporal_sequence} ? {, time_id}
       }
 
       ) @sub_query; "
@@ -234,7 +234,6 @@ getDbDefaultCovariateData <- function(connection,
 
       cohort_definition_id,
       covariate_id,
-      {@temporal | @temporal_sequence} ? {time_id,}
       count_value,
       min_value,
       max_value,
@@ -245,13 +244,14 @@ getDbDefaultCovariateData <- function(connection,
       p25_value,
       p75_value,
       p90_value
+      {@temporal | @temporal_sequence} ? {, time_id}
 
       }:{
 
-      covariate_id,
-      {@temporal | @temporal_sequence} ? {time_id,}
       row_id,
+      covariate_id,
       covariate_value
+      {@temporal | @temporal_sequence} ? {, time_id}
 
       }
 

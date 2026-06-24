@@ -94,3 +94,88 @@ test_that("Aggregated feature SQL supports minCharacterizationCount", {
     perl = TRUE
   )
 })
+
+test_that("Non-aggregated feature SQL uses documented covariate data column order", {
+  covariateSettings <- createCovariateSettings(useDemographicsGender = TRUE)
+  json <- createDefaultCovariateSqlJson(covariateSettings = covariateSettings)
+
+  expect_match(
+    json$sqlQueryFeatures,
+    "^SELECT row_id,\n  covariate_id,\n  covariate_value\nFROM \\(",
+    perl = TRUE
+  )
+  expect_false(grepl("^SELECT \\*\nFROM", json$sqlQueryFeatures))
+})
+
+test_that("Aggregated feature SQL uses documented covariate data column order", {
+  testCases <- list(
+    nonTemporal = list(
+      settings = createCovariateSettings(
+        useDemographicsGender = TRUE,
+        useDemographicsAge = TRUE
+      ),
+      binaryColumns = paste0(
+        "^SELECT all_covariates\\.cohort_definition_id,\n",
+        "  all_covariates\\.covariate_id,\n",
+        "  all_covariates\\.sum_value,\n",
+        "  CAST\\(all_covariates\\.sum_value / \\(1\\.0 \\* total\\.total_count\\) AS FLOAT\\) AS average_value\n",
+        "FROM \\("
+      ),
+      continuousColumns = paste0(
+        "^SELECT cohort_definition_id, covariate_id, count_value, min_value, max_value, ",
+        "average_value, standard_deviation, median_value, p10_value, p25_value, p75_value, p90_value\n",
+        "FROM \\("
+      )
+    ),
+    temporal = list(
+      settings = createTemporalCovariateSettings(
+        useDemographicsGender = TRUE,
+        useDemographicsAge = TRUE
+      ),
+      binaryColumns = paste0(
+        "^SELECT all_covariates\\.cohort_definition_id,\n",
+        "  all_covariates\\.covariate_id,\n",
+        "  all_covariates\\.time_id,\n",
+        "  all_covariates\\.sum_value,\n",
+        "  CAST\\(all_covariates\\.sum_value / \\(1\\.0 \\* total\\.total_count\\) AS FLOAT\\) AS average_value\n",
+        "FROM \\("
+      ),
+      continuousColumns = paste0(
+        "^SELECT cohort_definition_id, covariate_id, count_value, min_value, max_value, ",
+        "average_value, standard_deviation, median_value, p10_value, p25_value, p75_value, p90_value, time_id\n",
+        "FROM \\("
+      )
+    ),
+    temporalSequence = list(
+      settings = createTemporalSequenceCovariateSettings(
+        useDemographicsGender = TRUE,
+        useDemographicsAge = TRUE
+      ),
+      binaryColumns = paste0(
+        "^SELECT all_covariates\\.cohort_definition_id,\n",
+        "  all_covariates\\.covariate_id,\n",
+        "  all_covariates\\.time_id,\n",
+        "  all_covariates\\.sum_value,\n",
+        "  CAST\\(all_covariates\\.sum_value / \\(1\\.0 \\* total\\.total_count\\) AS FLOAT\\) AS average_value\n",
+        "FROM \\("
+      ),
+      continuousColumns = paste0(
+        "^SELECT cohort_definition_id, covariate_id, count_value, min_value, max_value, ",
+        "average_value, standard_deviation, median_value, p10_value, p25_value, p75_value, p90_value, time_id\n",
+        "FROM \\("
+      )
+    )
+  )
+
+  for (testCase in testCases) {
+    json <- createDefaultCovariateSqlJson(
+      covariateSettings = testCase$settings,
+      aggregated = TRUE
+    )
+
+    expect_match(json$sqlQueryFeatures, testCase$binaryColumns, perl = TRUE)
+    expect_match(json$sqlQueryContinuousFeatures, testCase$continuousColumns, perl = TRUE)
+    expect_false(grepl("^SELECT \\*\nFROM", json$sqlQueryFeatures))
+    expect_false(grepl("^SELECT \\*\nFROM", json$sqlQueryContinuousFeatures))
+  }
+})
