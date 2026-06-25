@@ -37,6 +37,9 @@
 #' @param minCharacterizationMean The minimum mean value for binary characterization output. Values below this will be cut off from output. This
 #'                                will help reduce the file size of the characterization output, but will remove information
 #'                                on covariates that have very low values. The default is 0.
+#' @param minCharacterizationCount The minimum count value for binary characterization output. Values below this will be cut off from output. This
+#'                                 will help reduce the file size of the characterization output, but will remove information
+#'                                 on covariates that occur in very few cohort entries. The default is 0.
 #' @template GetCovarParams
 #'
 #' @examples
@@ -75,6 +78,7 @@ getDbDefaultCovariateData <- function(connection,
                                       targetTimeRefTable = NULL,
                                       aggregated = FALSE,
                                       minCharacterizationMean = 0,
+                                      minCharacterizationCount = 0,
                                       tempEmulationSchema = getOption("sqlRenderTempEmulationSchema")) {
   if (!is(covariateSettings, "covariateSettings")) {
     stop("Covariate settings object not of type covariateSettings")
@@ -96,7 +100,9 @@ getDbDefaultCovariateData <- function(connection,
   }
   errorMessages <- checkmate::makeAssertCollection()
   minCharacterizationMean <- utils::type.convert(minCharacterizationMean, as.is = TRUE)
+  minCharacterizationCount <- utils::type.convert(minCharacterizationCount, as.is = TRUE)
   checkmate::assertNumeric(x = minCharacterizationMean, lower = 0, upper = 1, add = errorMessages)
+  checkmate::assertIntegerish(x = minCharacterizationCount, lower = 0, len = 1, add = errorMessages)
   checkmate::reportAssertions(collection = errorMessages)
 
 
@@ -115,7 +121,7 @@ getDbDefaultCovariateData <- function(connection,
   settings <- .toJson(covariateSettings)
   rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$init(system.file("", package = "FeatureExtraction"))
   json <- rJava::J("org.ohdsi.featureExtraction.FeatureExtraction")$createSql(
-    settings, aggregated, cohortTable, rowIdField, rJava::.jarray(as.character(cohortIds)), cdmDatabaseSchema, as.character(minCharacterizationMean)
+    settings, aggregated, cohortTable, rowIdField, rJava::.jarray(as.character(cohortIds)), cdmDatabaseSchema, as.character(minCharacterizationMean), as.character(minCharacterizationCount)
   )
   todo <- .fromJson(json)
   if (length(todo$tempTables) != 0) {
