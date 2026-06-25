@@ -1,3 +1,18 @@
+FeatureExtraction 3.14.0
+=======================
+
+New Features:
+
+- Added minCharacterizationCount (#318)
+- Add pre-specified features for observation.value_as_number (#325)
+
+Bugfixes:
+
+- Colums can switch when directly inserting covariates into a table (#326)
+
+Other:
+- Updated custom covariate builder vignette with regard to target variables (#327)
+
 FeatureExtraction 3.13.0
 =======================
 
