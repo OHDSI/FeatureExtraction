@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">FeatureExtraction</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.13.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.14.0</span>
       </span>
     </div>
 
@@ -54,7 +54,7 @@
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://ohdsi.github.io/Hades" class="external-link"><img src='https://ohdsi.github.io/Hades/images/hadesMini.png' width=80 height=17 style='vertical-align: top;'></a>
+  <a href="https://ohdsi.github.io/Hades" class="external-link">hadesLogo</a>
 </li>
 <li>
   <a href="https://github.com/OHDSI/FeatureExtraction/" class="external-link">
@@ -170,6 +170,10 @@
 <span>  useObservationValueAsConceptLongTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useObservationValueAsConceptMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useObservationValueAsConceptShortTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  useObservationValueAnyTimePrior <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  useObservationValueLongTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  useObservationValueMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  useObservationValueShortTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useCharlsonIndex <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useDcsi <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useChads2 <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -760,6 +764,30 @@ concept combination in the short term
 window. (analysis ID 808)</p></dd>
 
 
+<dt id="arg-useobservationvalueanytimeprior">useObservationValueAnyTimePrior<a class="anchor" aria-label="anchor" href="#arg-useobservationvalueanytimeprior"></a></dt>
+<dd><p>One covariate containing the value per
+observation-unit combination any time
+prior to index. (analysis ID 809)</p></dd>
+
+
+<dt id="arg-useobservationvaluelongterm">useObservationValueLongTerm<a class="anchor" aria-label="anchor" href="#arg-useobservationvaluelongterm"></a></dt>
+<dd><p>One covariate containing the value per
+observation-unit combination in the long
+term window. (analysis ID 810)</p></dd>
+
+
+<dt id="arg-useobservationvaluemediumterm">useObservationValueMediumTerm<a class="anchor" aria-label="anchor" href="#arg-useobservationvaluemediumterm"></a></dt>
+<dd><p>One covariate containing the value per
+observation-unit combination in the
+medium term window. (analysis ID 811)</p></dd>
+
+
+<dt id="arg-useobservationvalueshortterm">useObservationValueShortTerm<a class="anchor" aria-label="anchor" href="#arg-useobservationvalueshortterm"></a></dt>
+<dd><p>One covariate containing the value per
+observation-unit combination in the
+short term window. (analysis ID 812)</p></dd>
+
+
 <dt id="arg-usecharlsonindex">useCharlsonIndex<a class="anchor" aria-label="anchor" href="#arg-usecharlsonindex"></a></dt>
 <dd><p>The Charlson comorbidity index (Romano
 adaptation) using all conditions prior
@@ -1058,6 +1086,10 @@ restricted to.</p></dd>
 <span class="r-in"><span>  useObservationValueAsConceptLongTerm <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  useObservationValueAsConceptMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useObservationValueAsConceptShortTerm <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>  useObservationValueAnyTimePrior <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>  useObservationValueLongTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>  useObservationValueMediumTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>  useObservationValueShortTerm <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useCharlsonIndex <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  useDcsi <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  useChads2 <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>

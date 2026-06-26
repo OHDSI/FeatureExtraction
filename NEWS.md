@@ -11,6 +11,7 @@ Bugfixes:
 - Colums can switch when directly inserting covariates into a table (#326)
 
 Other:
+
 - Updated custom covariate builder vignette with regard to target variables (#327)
 
 FeatureExtraction 3.13.0

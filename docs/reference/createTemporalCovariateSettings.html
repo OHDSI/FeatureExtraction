@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">FeatureExtraction</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.13.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.14.0</span>
       </span>
     </div>
 
@@ -54,7 +54,7 @@
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://ohdsi.github.io/Hades" class="external-link"><img src='https://ohdsi.github.io/Hades/images/hadesMini.png' width=80 height=17 style='vertical-align: top;'></a>
+  <a href="https://ohdsi.github.io/Hades" class="external-link">hadesLogo</a>
 </li>
 <li>
   <a href="https://github.com/OHDSI/FeatureExtraction/" class="external-link">
@@ -113,6 +113,7 @@
 <span>  useMeasurementValueAsConcept <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useObservation <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useObservationValueAsConcept <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  useObservationValue <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useCharlsonIndex <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useDcsi <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useChads2 <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -304,6 +305,13 @@ combination within the time period. (analysis ID
 802)</p></dd>
 
 
+<dt id="arg-useobservationvalue">useObservationValue<a class="anchor" aria-label="anchor" href="#arg-useobservationvalue"></a></dt>
+<dd><p>One covariate containing the value per
+observation-unit combination in the time window. If
+multiple values are found, the last is taken.
+(analysis ID 803)</p></dd>
+
+
 <dt id="arg-usecharlsonindex">useCharlsonIndex<a class="anchor" aria-label="anchor" href="#arg-usecharlsonindex"></a></dt>
 <dd><p>The Charlson comorbidity index (Romano adaptation)
 using all conditions prior to the window end.
@@ -451,6 +459,7 @@ to.</p></dd>
 <span class="r-in"><span>  useMeasurementValueAsConcept <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  useObservation <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  useObservationValueAsConcept <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>  useObservationValue <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  useCharlsonIndex <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  useDcsi <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  useChads2 <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>

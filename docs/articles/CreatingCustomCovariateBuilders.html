@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">FeatureExtraction</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.13.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.14.0</span>
       </span>
     </div>
 
@@ -74,7 +74,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://ohdsi.github.io/Hades" class="external-link"><img src='https://ohdsi.github.io/Hades/images/hadesMini.png' width=80 height=17 style='vertical-align: top;'></a>
+  <a href="https://ohdsi.github.io/Hades" class="external-link">hadesLogo</a>
 </li>
 <li>
   <a href="https://github.com/OHDSI/FeatureExtraction/" class="external-link">
@@ -99,7 +99,7 @@
                         <h4 data-toc-skip class="author">Martijn J.
 Schuemie</h4>
             
-            <h4 data-toc-skip class="date">2026-03-05</h4>
+            <h4 data-toc-skip class="date">2026-06-26</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/FeatureExtraction/blob/HEAD/vignettes/CreatingCustomCovariateBuilders.Rmd" class="external-link"><code>vignettes/CreatingCustomCovariateBuilders.Rmd</code></a></small>
       <div class="hidden name"><code>CreatingCustomCovariateBuilders.Rmd</code></div>
@@ -215,6 +215,21 @@ person.</li>
 <code>covariateSettings</code>: The object created in your covariate
 settings function.</li>
 <li>
+<code>targetCovariateTable</code>: Optional name of the table where
+the resulting covariates should be stored.</li>
+<li>
+<code>targetCovariateContinuousTable</code>: Optional name of the
+table where the resulting continuous covariates should be stored.</li>
+<li>
+<code>targetCovariateRefTable</code>: Optional name of the table
+where the covariate reference should be stored.</li>
+<li>
+<code>targetAnalysisRefTable</code>: Optional name of the table
+where the analysis reference should be stored.</li>
+<li>
+<code>targetTimeRefTable</code>: Optional name of the table where
+the time reference should be stored.</li>
+<li>
 <code>aggregated</code>: Should covariates be constructed
 per-person, or aggregated across the cohort?</li>
 <li>
@@ -227,7 +242,21 @@ default is 0. Note: this parameter only works when
 supported in this function, it doesn’t actually filter the output.
 However, the <code>getDbCovariateData</code> function requires this
 parameter to be present.</li>
+<li>
+<code>minCharacterizationCount</code>: The minimum count value for
+characterization output. Values below this will be cut off from output.
+The default is 0. Note: this parameter only works when
+<code>aggregated</code> is set to TRUE. Since aggregation is not
+supported in this function, it doesn’t actually filter the output.
+However, the <code>getDbCovariateData</code> function requires this
+parameter to be present.</li>
 </ul>
+<p>The target table and characterization filter arguments are passed to
+all covariate construction functions by <code>getDbCovariateData</code>.
+If your custom builder only returns a <code>CovariateData</code> object
+and does not support writing directly to target tables or aggregated
+filtering, it should still include these arguments in the function
+signature to avoid unused argument errors.</p>
 <p>The function can expect that a table exists with the name specified
 in the <code>cohortTable</code> argument. This table will identify the
 persons and the index dates for which we want to construct the
@@ -282,8 +311,14 @@ constructed.</p>
 <span>                                  <span class="va">cohortIds</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span>,</span>
 <span>                                  <span class="va">rowIdField</span> <span class="op">=</span> <span class="st">"subject_id"</span>,</span>
 <span>                                  <span class="va">covariateSettings</span>,</span>
+<span>                                  <span class="va">targetCovariateTable</span> <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>                                  <span class="va">targetCovariateContinuousTable</span> <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>                                  <span class="va">targetCovariateRefTable</span> <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>                                  <span class="va">targetAnalysisRefTable</span> <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>                                  <span class="va">targetTimeRefTable</span> <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>                                  <span class="va">aggregated</span> <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>                                  <span class="va">minCharacterizationMean</span> <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span>                                  <span class="va">minCharacterizationMean</span> <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>                                  <span class="va">minCharacterizationCount</span> <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines</a></span><span class="op">(</span><span class="st">"Constructing length of observation covariates"</span><span class="op">)</span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="va">covariateSettings</span><span class="op">$</span><span class="va">useLengthOfObs</span> <span class="op">==</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span></span>
