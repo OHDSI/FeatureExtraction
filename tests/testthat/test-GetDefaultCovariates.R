@@ -69,6 +69,8 @@ test_that("Test exit conditions", {
 })
 
 test_that("Aggregated feature SQL supports minCharacterizationCount", {
+  skip_on_cran()
+  
   covariateSettings <- createCovariateSettings(useDemographicsGender = TRUE)
 
   json <- createDefaultCovariateSqlJson(
@@ -96,6 +98,8 @@ test_that("Aggregated feature SQL supports minCharacterizationCount", {
 })
 
 test_that("Non-aggregated feature SQL uses documented covariate data column order", {
+  skip_on_cran()
+  
   covariateSettings <- createCovariateSettings(useDemographicsGender = TRUE)
   json <- createDefaultCovariateSqlJson(covariateSettings = covariateSettings)
 
@@ -108,6 +112,8 @@ test_that("Non-aggregated feature SQL uses documented covariate data column orde
 })
 
 test_that("Aggregated feature SQL uses documented covariate data column order", {
+  skip_on_cran()
+  
   testCases <- list(
     nonTemporal = list(
       settings = createCovariateSettings(
