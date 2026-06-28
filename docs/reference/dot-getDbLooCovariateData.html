@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">FeatureExtraction</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.13.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.14.0</span>
       </span>
     </div>
 
@@ -92,6 +92,7 @@
 <span>  <span class="va">covariateSettings</span>,</span>
 <span>  aggregated <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  minCharacterizationMean <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  minCharacterizationCount <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -155,6 +156,12 @@ cohort entry?</p></dd>
 <dd><p>The minimum mean value for binary characterization output. Values below this will be cut off from output. This
 will help reduce the file size of the characterization output, but will remove information
 on covariates that have very low values. The default is 0.</p></dd>
+
+
+<dt id="arg-mincharacterizationcount">minCharacterizationCount<a class="anchor" aria-label="anchor" href="#arg-mincharacterizationcount"></a></dt>
+<dd><p>The minimum count value for binary characterization output. Values below this will be cut off from output. This
+will help reduce the file size of the characterization output, but will remove information
+on covariates that occur in very few cohort entries. The default is 0.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

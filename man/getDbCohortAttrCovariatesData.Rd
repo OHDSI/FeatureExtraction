@@ -14,7 +14,15 @@ getDbCohortAttrCovariatesData(
   cdmVersion = "5",
   rowIdField = "subject_id",
   covariateSettings,
+  targetDatabaseSchema = NULL,
+  targetCovariateTable = NULL,
+  targetCovariateContinuousTable = NULL,
+  targetCovariateRefTable = NULL,
+  targetAnalysisRefTable = NULL,
+  targetTimeRefTable = NULL,
   aggregated = FALSE,
+  minCharacterizationMean = 0,
+  minCharacterizationCount = 0,
   tempEmulationSchema = getOption("sqlRenderTempEmulationSchema")
 )
 }
@@ -52,8 +60,24 @@ is more than one period per person.}
 \item{covariateSettings}{An object of type \code{covariateSettings} as created using the
 \code{\link{createCohortAttrCovariateSettings}} function.}
 
+\item{targetDatabaseSchema}{Optional target database schema. Ignored because cohort attribute covariates do not support exporting directly to target tables.}
+
+\item{targetCovariateTable}{Optional target covariate table. Ignored because cohort attribute covariates do not support exporting directly to target tables.}
+
+\item{targetCovariateContinuousTable}{Optional target continuous covariate table. Ignored because cohort attribute covariates do not support exporting directly to target tables.}
+
+\item{targetCovariateRefTable}{Optional target covariate reference table. Ignored because cohort attribute covariates do not support exporting directly to target tables.}
+
+\item{targetAnalysisRefTable}{Optional target analysis reference table. Ignored because cohort attribute covariates do not support exporting directly to target tables.}
+
+\item{targetTimeRefTable}{Optional target time reference table. Ignored because cohort attribute covariates do not support exporting directly to target tables.}
+
 \item{aggregated}{Should aggregate statistics be computed instead of covariates per
 cohort entry?}
+
+\item{minCharacterizationMean}{The minimum mean value for characterization output. Ignored because aggregation is not supported for cohort attribute covariates.}
+
+\item{minCharacterizationCount}{The minimum count value for characterization output. Ignored because aggregation is not supported for cohort attribute covariates.}
 
 \item{tempEmulationSchema}{Some database platforms like Oracle and Impala do not truly support
 temp tables. To emulate temp tables, provide a schema with write

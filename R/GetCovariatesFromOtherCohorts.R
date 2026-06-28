@@ -37,6 +37,9 @@
 #' @param minCharacterizationMean The minimum mean value for binary characterization output. Values below this will be cut off from output. This
 #'                                will help reduce the file size of the characterization output, but will remove information
 #'                                on covariates that have very low values. The default is 0.
+#' @param minCharacterizationCount The minimum count value for binary characterization output. Values below this will be cut off from output. This
+#'                                 will help reduce the file size of the characterization output, but will remove information
+#'                                 on covariates that occur in very few cohort entries. The default is 0.
 #' @template GetCovarParams
 #'
 #' @export
@@ -57,6 +60,7 @@ getDbCohortBasedCovariatesData <- function(connection,
                                            targetTimeRefTable = NULL,
                                            aggregated = FALSE,
                                            minCharacterizationMean = 0,
+                                           minCharacterizationCount = 0,
                                            tempEmulationSchema = getOption("sqlRenderTempEmulationSchema")) {
   errorMessages <- checkmate::makeAssertCollection()
   checkmate::assertClass(connection, "DatabaseConnectorConnection", add = errorMessages)
@@ -70,7 +74,9 @@ getDbCohortBasedCovariatesData <- function(connection,
   checkmate::assertClass(covariateSettings, "covariateSettings", add = errorMessages)
   checkmate::assertLogical(aggregated, len = 1, add = errorMessages)
   minCharacterizationMean <- utils::type.convert(minCharacterizationMean, as.is = TRUE)
+  minCharacterizationCount <- utils::type.convert(minCharacterizationCount, as.is = TRUE)
   checkmate::assertNumeric(x = minCharacterizationMean, lower = 0, upper = 1, add = errorMessages)
+  checkmate::assertIntegerish(x = minCharacterizationCount, lower = 0, len = 1, add = errorMessages)
   checkmate::reportAssertions(collection = errorMessages)
   if (!missing(cohortId)) {
     warning("cohortId argument has been deprecated, please use cohortIds")
@@ -177,7 +183,8 @@ getDbCohortBasedCovariatesData <- function(connection,
     targetAnalysisRefTable = targetAnalysisRefTable,
     targetTimeRefTable = targetTimeRefTable,
     aggregated = aggregated,
-    minCharacterizationMean = minCharacterizationMean
+    minCharacterizationMean = minCharacterizationMean,
+    minCharacterizationCount = minCharacterizationCount
   )
 
   sql <- "TRUNCATE TABLE #covariate_cohort_ref; DROP TABLE #covariate_cohort_ref;"

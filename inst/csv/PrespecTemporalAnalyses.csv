@@ -25,11 +25,12 @@ analysisId,analysisName,sqlFileName,subType,domainId,domainTable,domainConceptId
 501,ProcedureOccurrence,DomainConcept.sql,all,Procedure,procedure_occurrence,procedure_concept_id,procedure_date,procedure_date,TRUE,One covariate per procedure in the procedure_occurrence table in the time window.
 601,DeviceExposure,DomainConcept.sql,all,Device,device_exposure,device_concept_id,device_exposure_start_date,device_exposure_start_date,TRUE,One covariate per device in the device exposure table starting in the timewindow.
 701,Measurement,DomainConcept.sql,all,Measurement,measurement,measurement_concept_id,measurement_date,measurement_date,TRUE,One covariate per measurement in the measurement table in the time window.
-702,MeasurementValue,MeasurementValue.sql,,Measurement,,,,,FALSE,"One covariate containing the value per measurement-unit combination in the time window. If multiple values are found, the last is taken."
+702,MeasurementValue,DomainValueAsNumber.sql,,Measurement,measurement,measurement_concept_id,measurement_date,measurement_date,FALSE,"One covariate containing the value per measurement-unit combination in the time window. If multiple values are found, the last is taken."
 703,MeasurementRangeGroup,MeasurementRangeGroup.sql,,Measurement,,,,,TRUE,"Covariates indicating whether measurements are below, within, or above normal range  within the time period."
 704,MeasurementValueAsConcept,MeasObsValueAsConcept.sql,,Measurement,measurement,measurement_concept_id,measurement_date,measurement_date,TRUE,One covariate per measurement-value concept combination within the time period.
 801,Observation,DomainConcept.sql,all,Observation,observation,observation_concept_id,observation_date,observation_date,TRUE,One covariate per observation in the observation table in the time window.
 802,ObservationValueAsConcept,MeasObsValueAsConcept.sql,all,Observation,observation,observation_concept_id,observation_date,observation_date,TRUE,One covariate per observation-value concept combination within the time period.
+803,ObservationValue,DomainValueAsNumber.sql,,Observation,observation,observation_concept_id,observation_date,observation_date,FALSE,"One covariate containing the value per observation-unit combination in the time window. If multiple values are found, the last is taken."
 901,CharlsonIndex,CharlsonIndex.sql,,Condition,,,,,TRUE,The Charlson comorbidity index (Romano adaptation) using all conditions prior to the window end.
 902,Dcsi,Dcsi.sql,,Condition,,,,,TRUE,The Diabetes Comorbidity Severity Index (DCSI) using all conditions prior to the window end.
 903,Chads2,Chads2.sql,,Condition,,,,,TRUE,The CHADS2 score using all conditions prior to the window end.
