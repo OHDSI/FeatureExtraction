@@ -40,10 +40,19 @@ NULL
     }
   )
   if (computedChecksum != "" && (storedChecksum != computedChecksum)) {
-    warning("Java library version does not match R package version! Please try reinstalling the FeatureExtraction package.
-            Make sure to close all instances of R, and open only one instance before reinstalling. Also make sure your
-            R workspace is not reloaded on startup. Delete your .Rdata file if necessary")
+    .warnJarChecksumMismatch()
   }
+}
+
+.warnJarChecksumMismatch <- function() {
+  warning(paste(
+    "Java library version does not match R package version.",
+    "If you are using an installed FeatureExtraction package, please try reinstalling FeatureExtraction",
+    "after closing all R sessions. Also make sure your R workspace is not reloaded on startup.",
+    "Delete your .Rdata file if necessary.",
+    "If you are developing FeatureExtraction Java code, update inst/csv/jarChecksum.txt",
+    "after rebuilding the Java library; see extras/PackageMaintenance.R."
+  ))
 }
 
 .toJson <- function(object) {
