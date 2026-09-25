@@ -50,7 +50,7 @@ computeStandardizedDifference <- function(covariateData1, covariateData2, cohort
   if (!isCovariateData(covariateData1)) {
     stop("covariateData1 is not of type 'covariateData'")
   }
-  if (!isCovariateData(covariateData1)) {
+  if (!isCovariateData(covariateData2)) {
     stop("covariateData2 is not of type 'covariateData'")
   }
   if (!isAggregatedCovariateData(covariateData1)) {
@@ -61,16 +61,35 @@ computeStandardizedDifference <- function(covariateData1, covariateData2, cohort
   }
   result <- tibble()
   if (!is.null(covariateData1$covariates) && !is.null(covariateData2$covariates)) {
+    # Temporal covariate data carry a timeId column: the standardized difference must be
+    # computed per (covariateId, timeId). Merging on covariateId alone produces a cartesian
+    # product across time windows, silently yielding wrong standardized differences (#225).
+    temporal <- "timeId" %in% colnames(covariateData1$covariates) &&
+      "timeId" %in% colnames(covariateData2$covariates)
+    mergeColumns <- c("covariateId", if (temporal) "timeId")
+    outputColumns <- c(
+      "covariateId",
+      if (temporal) "timeId",
+      "mean1",
+      "sd1",
+      "mean2",
+      "sd2",
+      "sd",
+      "stdDiff"
+    )
+    selectColumns1 <- c(covariateId = "covariateId", count1 = "sumValue")
+    selectColumns2 <- c(covariateId = "covariateId", count2 = "sumValue")
+    if (temporal) {
+      selectColumns1 <- c(covariateId = "covariateId", timeId = "timeId", count1 = "sumValue")
+      selectColumns2 <- c(covariateId = "covariateId", timeId = "timeId", count2 = "sumValue")
+    }
     covariates1 <- covariateData1$covariates
     if (!is.null(cohortId1)) {
       covariates1 <- covariates1 %>%
         filter(.data$cohortDefinitionId == cohortId1)
     }
     covariates1 <- covariates1 %>%
-      select(
-        covariateId = "covariateId",
-        count1 = "sumValue"
-      ) %>%
+      select(all_of(selectColumns1)) %>%
       collect()
 
     covariates2 <- covariateData2$covariates
@@ -79,10 +98,7 @@ computeStandardizedDifference <- function(covariateData1, covariateData2, cohort
         filter(.data$cohortDefinitionId == cohortId2)
     }
     covariates2 <- covariates2 %>%
-      select(
-        covariateId = "covariateId",
-        count2 = "sumValue"
-      ) %>%
+      select(all_of(selectColumns2)) %>%
       collect()
 
     n1 <- attr(covariateData1, "metaData")$populationSize
@@ -93,7 +109,7 @@ computeStandardizedDifference <- function(covariateData1, covariateData2, cohort
     if (!is.null(cohortId2)) {
       n2 <- n2[as.character(cohortId2)]
     }
-    m <- merge(covariates1, covariates2, all = T)
+    m <- merge(covariates1, covariates2, by = mergeColumns, all = TRUE)
     m$count1[is.na(m$count1)] <- 0
     m$count2[is.na(m$count2)] <- 0
     m$mean1 <- m$count1 / n1
@@ -102,20 +118,47 @@ computeStandardizedDifference <- function(covariateData1, covariateData2, cohort
     m$sd2 <- sqrt(m$mean2 * (1 - m$mean2))
     m$sd <- sqrt((m$sd1^2 + m$sd2^2) / 2)
     m$stdDiff <- (m$mean2 - m$mean1) / m$sd
-    result <- bind_rows(result, m[, c("covariateId", "mean1", "sd1", "mean2", "sd2", "sd", "stdDiff")])
+    result <- bind_rows(result, m[, outputColumns])
   }
   if (!is.null(covariateData1$covariatesContinuous) && !is.null(covariateData2$covariatesContinuous)) {
+    # Same temporal handling as for binary covariates above: merge on (covariateId, timeId)
+    # when the continuous covariate tables carry a timeId column (#225).
+    temporal <- "timeId" %in% colnames(covariateData1$covariatesContinuous) &&
+      "timeId" %in% colnames(covariateData2$covariatesContinuous)
+    mergeColumns <- c("covariateId", if (temporal) "timeId")
+    outputColumns <- c(
+      "covariateId",
+      if (temporal) "timeId",
+      "mean1",
+      "sd1",
+      "mean2",
+      "sd2",
+      "sd",
+      "stdDiff"
+    )
+    selectColumns1 <- c(covariateId = "covariateId", mean1 = "averageValue", sd1 = "standardDeviation")
+    selectColumns2 <- c(covariateId = "covariateId", mean2 = "averageValue", sd2 = "standardDeviation")
+    if (temporal) {
+      selectColumns1 <- c(
+        covariateId = "covariateId",
+        timeId = "timeId",
+        mean1 = "averageValue",
+        sd1 = "standardDeviation"
+      )
+      selectColumns2 <- c(
+        covariateId = "covariateId",
+        timeId = "timeId",
+        mean2 = "averageValue",
+        sd2 = "standardDeviation"
+      )
+    }
     covariates1 <- covariateData1$covariatesContinuous
     if (!is.null(cohortId1)) {
       covariates1 <- covariates1 %>%
         filter(.data$cohortDefinitionId == cohortId1)
     }
     covariates1 <- covariates1 %>%
-      select(
-        covariateId = "covariateId",
-        mean1 = "averageValue",
-        sd1 = "standardDeviation"
-      ) %>%
+      select(all_of(selectColumns1)) %>%
       collect()
 
     covariates2 <- covariateData2$covariatesContinuous
@@ -124,21 +167,17 @@ computeStandardizedDifference <- function(covariateData1, covariateData2, cohort
         filter(.data$cohortDefinitionId == cohortId2)
     }
     covariates2 <- covariates2 %>%
-      select(
-        covariateId = "covariateId",
-        mean2 = "averageValue",
-        sd2 = "standardDeviation"
-      ) %>%
+      select(all_of(selectColumns2)) %>%
       collect()
 
-    m <- merge(covariates1, covariates2, all = T)
+    m <- merge(covariates1, covariates2, by = mergeColumns, all = TRUE)
     m$mean1[is.na(m$mean1)] <- 0
     m$sd1[is.na(m$sd1)] <- 0
     m$mean2[is.na(m$mean2)] <- 0
     m$sd2[is.na(m$sd2)] <- 0
     m$sd <- sqrt((m$sd1^2 + m$sd2^2) / 2)
     m$stdDiff <- (m$mean2 - m$mean1) / m$sd
-    result <- bind_rows(result, m[, c("covariateId", "mean1", "sd1", "mean2", "sd2", "sd", "stdDiff")])
+    result <- bind_rows(result, m[, outputColumns])
   }
   covariateRef1 <- covariateData1$covariateRef %>%
     collect()
