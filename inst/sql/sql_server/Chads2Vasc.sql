@@ -280,7 +280,8 @@ SELECT o.cohort_definition_id,
 		END AS p90_value		
 INTO @covariate_table
 FROM #chads2Vasc_prep2 p
-CROSS JOIN #chads2Vasc_stats o
+INNER JOIN #chads2Vasc_stats o
+	ON p.cohort_definition_id = o.cohort_definition_id
 {@included_cov_table != ''} ? {WHERE 1000 + @analysis_id IN (SELECT id FROM @included_cov_table)}
 GROUP BY o.count_value,
 	o.count_no_value,
