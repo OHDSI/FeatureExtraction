@@ -92,35 +92,18 @@ test_that("CHADS2-VASc quartiles are calculated within each cohort", {
 test_that("Charlson applies hierarchy and includes zero-score people in standard deviation", {
   skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
 
-  anyMalignancyConcept <- DatabaseConnector::querySql(
-    connection = eunomiaConnection,
-    sql = "
-      SELECT descendant_concept_id
-      FROM main.concept_ancestor
-      WHERE ancestor_concept_id = 443392
-      LIMIT 1",
-    snakeCaseToCamelCase = TRUE
-  )
-  metastaticTumorConcept <- DatabaseConnector::querySql(
-    connection = eunomiaConnection,
-    sql = "
-      SELECT descendant_concept_id
-      FROM main.concept_ancestor
-      WHERE ancestor_concept_id = 432851
-      LIMIT 1",
-    snakeCaseToCamelCase = TRUE
-  )
-  skip_if(nrow(anyMalignancyConcept) == 0 || nrow(metastaticTumorConcept) == 0,
-    "Eunomia does not contain the required Charlson concepts"
-  )
-
   syntheticPersonIds <- c(-334003L, -334004L)
   syntheticConditionEraIds <- c(-334003L, -334004L)
+  syntheticConditionConceptIds <- c(-334003L, -334004L)
   DatabaseConnector::executeSql(
     connection = eunomiaConnection,
     sql = paste0(
       "DELETE FROM ", eunomiaCdmDatabaseSchema,
       ".condition_era WHERE person_id IN (", paste(syntheticPersonIds, collapse = ", "), "); ",
+      "DELETE FROM ", eunomiaCdmDatabaseSchema,
+      ".concept_ancestor WHERE descendant_concept_id IN (", paste(syntheticConditionConceptIds, collapse = ", "), "); ",
+      "DELETE FROM ", eunomiaCdmDatabaseSchema,
+      ".concept WHERE concept_id IN (", paste(syntheticConditionConceptIds, collapse = ", "), "); ",
       "DELETE FROM ", eunomiaCdmDatabaseSchema,
       ".person WHERE person_id IN (", paste(syntheticPersonIds, collapse = ", "), ")"
     )
@@ -131,6 +114,10 @@ test_that("Charlson applies hierarchy and includes zero-score people in standard
       sql = paste0(
         "DELETE FROM ", eunomiaCdmDatabaseSchema,
         ".condition_era WHERE person_id IN (", paste(syntheticPersonIds, collapse = ", "), "); ",
+        "DELETE FROM ", eunomiaCdmDatabaseSchema,
+        ".concept_ancestor WHERE descendant_concept_id IN (", paste(syntheticConditionConceptIds, collapse = ", "), "); ",
+        "DELETE FROM ", eunomiaCdmDatabaseSchema,
+        ".concept WHERE concept_id IN (", paste(syntheticConditionConceptIds, collapse = ", "), "); ",
         "DELETE FROM ", eunomiaCdmDatabaseSchema,
         ".person WHERE person_id IN (", paste(syntheticPersonIds, collapse = ", "), ")"
       )
@@ -155,15 +142,50 @@ test_that("Charlson applies hierarchy and includes zero-score people in standard
   )
   DatabaseConnector::insertTable(
     connection = eunomiaConnection,
+    tableName = "concept",
+    databaseSchema = eunomiaCdmDatabaseSchema,
+    data = data.frame(
+      conceptId = syntheticConditionConceptIds,
+      conceptName = c("Test any malignancy", "Test metastatic solid tumor"),
+      domainId = c("Condition", "Condition"),
+      vocabularyId = c("SNOMED", "SNOMED"),
+      conceptClassId = c("Clinical Finding", "Clinical Finding"),
+      standardConcept = c("S", "S"),
+      conceptCode = c("TEST_ANY_MALIGNANCY", "TEST_METASTATIC_TUMOR"),
+      validStartDate = as.Date(c("1970-01-01", "1970-01-01")),
+      validEndDate = as.Date(c("2099-12-31", "2099-12-31")),
+      invalidReason = c(NA_character_, NA_character_)
+    ),
+    dropTableIfExists = FALSE,
+    tempTable = FALSE,
+    createTable = FALSE,
+    progressBar = FALSE,
+    camelCaseToSnakeCase = TRUE
+  )
+  DatabaseConnector::insertTable(
+    connection = eunomiaConnection,
+    tableName = "concept_ancestor",
+    databaseSchema = eunomiaCdmDatabaseSchema,
+    data = data.frame(
+      ancestorConceptId = c(443392L, 432851L),
+      descendantConceptId = syntheticConditionConceptIds,
+      minLevelsOfSeparation = c(1L, 1L),
+      maxLevelsOfSeparation = c(1L, 1L)
+    ),
+    dropTableIfExists = FALSE,
+    tempTable = FALSE,
+    createTable = FALSE,
+    progressBar = FALSE,
+    camelCaseToSnakeCase = TRUE
+  )
+  DatabaseConnector::insertTable(
+    connection = eunomiaConnection,
     tableName = "condition_era",
     databaseSchema = eunomiaCdmDatabaseSchema,
     data = data.frame(
       conditionEraId = syntheticConditionEraIds,
       personId = rep(syntheticPersonIds[1], 2),
-      conditionConceptId = c(
-        anyMalignancyConcept$descendantConceptId[1],
-        metastaticTumorConcept$descendantConceptId[1]
-      ),
+      conditionConceptId = syntheticConditionConceptIds,
       conditionEraStartDate = as.Date(c("2019-01-01", "2019-01-01")),
       conditionEraEndDate = as.Date(c("2019-01-01", "2019-01-01")),
       conditionOccurrenceCount = c(1L, 1L)
