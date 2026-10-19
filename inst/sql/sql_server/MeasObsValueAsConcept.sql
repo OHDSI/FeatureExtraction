@@ -53,7 +53,8 @@ FROM (
 {@aggregated} ? {
 	) grouped_1
 }
-{@included_cov_table != ''} ? {		AND (CAST(@domain_concept_id * 2654435769 / 4096 AS BIGINT) & 1048575)*4194304000 +
+{@included_cov_table != ''} ? {		
+{@aggregated} ? {  WHERE} : {  AND} (CAST(@domain_concept_id * 2654435769 / 4096 AS BIGINT) & 1048575)*4194304000 +
     (CAST(value_as_concept_id * 2654435769 / 1024 AS BIGINT) & 4194303)*1000 + 
 	@analysis_id IN (SELECT id FROM @included_cov_table)}
 GROUP BY @domain_concept_id,
