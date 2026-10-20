@@ -389,7 +389,12 @@ IF OBJECT_ID('tempdb..#charlson_prep2', 'U') IS NOT NULL
 SELECT cohort_definition_id,
 	subject_id,
 	cohort_start_date,
-	SUM(weight) AS score
+	SUM(CASE
+		WHEN diag_category_id = 9 AND has_severe_liver_disease = 1 THEN 0
+		WHEN diag_category_id = 10 AND has_complicated_diabetes = 1 THEN 0
+		WHEN diag_category_id = 14 AND has_metastatic_tumor = 1 THEN 0
+		ELSE weight
+		END) AS score
 INTO #charlson_data
 } : {
 SELECT CAST(1000 + @analysis_id AS BIGINT) AS covariate_id,
@@ -397,10 +402,41 @@ SELECT CAST(1000 + @analysis_id AS BIGINT) AS covariate_id,
     CAST(NULL AS INT) AS time_id,
 }	
 	row_id,
-	SUM(weight) AS covariate_value
+	SUM(CASE
+		WHEN diag_category_id = 9 AND has_severe_liver_disease = 1 THEN 0
+		WHEN diag_category_id = 10 AND has_complicated_diabetes = 1 THEN 0
+		WHEN diag_category_id = 14 AND has_metastatic_tumor = 1 THEN 0
+		ELSE weight
+		END) AS covariate_value
 INTO @covariate_table
 }
 FROM (
+	SELECT temp.*,
+		MAX(CASE WHEN diag_category_id = 11 THEN 1 ELSE 0 END) OVER (PARTITION BY
+{@aggregated} ? {
+			cohort_definition_id,
+			subject_id,
+			cohort_start_date
+} : {
+			row_id
+}) AS has_complicated_diabetes,
+		MAX(CASE WHEN diag_category_id = 15 THEN 1 ELSE 0 END) OVER (PARTITION BY
+{@aggregated} ? {
+			cohort_definition_id,
+			subject_id,
+			cohort_start_date
+} : {
+			row_id
+}) AS has_severe_liver_disease,
+		MAX(CASE WHEN diag_category_id = 16 THEN 1 ELSE 0 END) OVER (PARTITION BY
+{@aggregated} ? {
+			cohort_definition_id,
+			subject_id,
+			cohort_start_date
+} : {
+			row_id
+}) AS has_metastatic_tumor
+	FROM (
 	SELECT DISTINCT charlson_scoring.diag_category_id,
 		charlson_scoring.weight,
 {@aggregated} ? {
@@ -423,6 +459,7 @@ FROM (
 	WHERE condition_era_start_date <= DATEADD(DAY, @end_day, cohort.cohort_start_date)
 }
 {@cohort_definition_id != -1} ? {		AND cohort.cohort_definition_id IN (@cohort_definition_id)}
+	) temp
 	) temp
 {@aggregated} ? {
 GROUP BY cohort_definition_id,
@@ -455,7 +492,7 @@ SELECT t1.cohort_definition_id,
 	CASE WHEN t2.cnt = t1.cnt THEN t2.min_score ELSE 0 END AS min_value,
 	t2.max_score AS max_value,
 	CAST(t2.sum_score / (1.0 * t1.cnt) AS FLOAT) AS average_value,
-	CAST(CASE WHEN t2.cnt = 1 THEN 0 ELSE SQRT((1.0 * t2.cnt*t2.squared_score - 1.0 * t2.sum_score*t2.sum_score) / (1.0 * t2.cnt*(1.0 * t2.cnt - 1))) END AS FLOAT) AS standard_deviation,
+	CAST(CASE WHEN t1.cnt = 1 THEN 0 ELSE SQRT((1.0 * t1.cnt*t2.squared_score - 1.0 * t2.sum_score*t2.sum_score) / (1.0 * t1.cnt*(1.0 * t1.cnt - 1))) END AS FLOAT) AS standard_deviation,
 	t2.cnt AS count_value,
 	t1.cnt - t2.cnt AS count_no_value,
 	t1.cnt AS population_size

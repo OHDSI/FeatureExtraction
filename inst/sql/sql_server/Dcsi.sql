@@ -393,7 +393,7 @@ SELECT t1.cohort_definition_id,
 	CASE WHEN t2.cnt = t1.cnt THEN t2.min_score ELSE 0 END AS min_value,
 	t2.max_score AS max_value,
 	CAST(t2.sum_score / (1.0 * t1.cnt) AS FLOAT) AS average_value,
-	CAST(CASE WHEN t2.cnt = 1 THEN 0 ELSE SQRT((1.0 * t2.cnt*t2.squared_score - 1.0 * t2.sum_score*t2.sum_score) / (1.0 * t2.cnt*(1.0 * t2.cnt - 1))) END AS FLOAT) AS standard_deviation,
+	CAST(CASE WHEN t1.cnt = 1 THEN 0 ELSE SQRT((1.0 * t1.cnt*t2.squared_score - 1.0 * t2.sum_score*t2.sum_score) / (1.0 * t1.cnt*(1.0 * t1.cnt - 1))) END AS FLOAT) AS standard_deviation,
 	t2.cnt AS count_value,
 	t1.cnt - t2.cnt AS count_no_value,
 	t1.cnt AS population_size
