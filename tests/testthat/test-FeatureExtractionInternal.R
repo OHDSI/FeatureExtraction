@@ -8,6 +8,13 @@ test_that("Test .onLoad()", {
   )
 })
 
+test_that("JAR checksum mismatch warning points developers to checksum update", {
+  expect_warning(
+    FeatureExtraction:::.warnJarChecksumMismatch(),
+    "inst/csv/jarChecksum.txt.*extras/PackageMaintenance.R"
+  )
+})
+
 test_that("Test JSON functions", {
   expectedToJsonResult <- "{\"id\":\"1\"}"
   expectedFromJsonResult <- list("id" = "1")
