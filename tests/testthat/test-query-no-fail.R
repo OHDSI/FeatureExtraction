@@ -370,6 +370,28 @@ test_that("Run all analysis at aggregated level on Eunomia", {
   expect_true(is(covariateData, "CovariateData"))
 })
 
+test_that("Run included measurement-value-as-concept covariate on Eunomia", {
+  skip_if_not(dbms == "sqlite" && exists("eunomiaConnection"))
+  settings <- createCovariateSettings(
+    useMeasurementValueAsConceptShortTerm = TRUE,
+    includedCovariateIds = c(583329563103716)
+  )
+  covariateData <- suppressWarnings(getDbCovariateData(
+    connection = eunomiaConnection,
+    cdmDatabaseSchema = eunomiaCdmDatabaseSchema,
+    tempEmulationSchema = eunomiaOhdsiDatabaseSchema,
+    cohortDatabaseSchema = eunomiaOhdsiDatabaseSchema,
+    cohortTable = cohortTable,
+    cohortTableIsTemp = TRUE,
+    cohortIds = c(1124300),
+    rowIdField = "subject_id",
+    covariateSettings = settings,
+    aggregated = TRUE,
+    minCharacterizationMean = 0.001
+  ))
+  expect_true(is(covariateData, "CovariateData"))
+})
+
 # runExtractionTemporalPerPerson -----------
 runExtractionTemporalPerPerson <- function(connection, cdmDatabaseSchema, ohdsiDatabaseSchema, cohortTable) {
   settings <- createTemporalCovariateSettings(

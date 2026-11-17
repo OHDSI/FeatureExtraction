@@ -42,10 +42,32 @@
 #'   cohortTable = "cohort"
 #' )
 #' connection <- DatabaseConnector::connect(connectionDetails)
+#' sql <- "
+#' SELECT cohort_definition_id,
+#'   subject_id,
+#'   cohort_start_date,
+#'   1 AS attribute_definition_id,
+#'   1.0 AS value_as_number
+#' INTO @schema.@cohort_attribute_table
+#' FROM @schema.cohort
+#' WHERE cohort_definition_id = 1;
+#'
+#' SELECT 1 AS attribute_definition_id,
+#'   'Example cohort attribute' AS attribute_name
+#' INTO @schema.@attribute_definition_table;
+#' "
+#' sql <- SqlRender::render(
+#'   sql,
+#'   schema = "main",
+#'   cohort_attribute_table = "example_cohort_attribute",
+#'   attribute_definition_table = "example_attribute_definition"
+#' )
+#' sql <- SqlRender::translate(sql, targetDialect = attr(connection, "dbms"))
+#' DatabaseConnector::executeSql(connection, sql)
 #' covariateSettings <- createCohortAttrCovariateSettings(
 #'   attrDatabaseSchema = "main",
-#'   cohortAttrTable = "cohort_attribute",
-#'   attrDefinitionTable = "attribute_definition",
+#'   cohortAttrTable = "example_cohort_attribute",
+#'   attrDefinitionTable = "example_attribute_definition",
 #'   includeAttrIds = c(1),
 #'   isBinary = FALSE,
 #'   missingMeansZero = FALSE
