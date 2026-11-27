@@ -110,7 +110,7 @@ tidyCovariateData <- function(covariateData,
 
           # Next, find groups of covariates (analyses) that together cover everyone:
           analysisIds <- covariateData$temporalValueCounts %>%
-            anti_join(covariateData$deleteCovariateTimeIds, by = c("covariateId", "timeId")) %>%
+            anti_join(covariateData$deleteCovariateTimeIds, by = c("covariateId", "timeId"), na_matches = "na") %>%
             inner_join(covariateData$covariateRef, by = "covariateId") %>%
             group_by(.data$analysisId) %>%
             summarise(n = sum(n, na.rm = TRUE)) %>%
@@ -130,7 +130,7 @@ tidyCovariateData <- function(covariateData,
           )
 
           newCovariates <- newCovariates %>%
-            anti_join(covariateData$deleteCovariateTimeIds, by = c("covariateId", "timeId"))
+            anti_join(covariateData$deleteCovariateTimeIds, by = c("covariateId", "timeId"), na_matches = "na")
 
           ParallelLogger::logInfo("Removing ", covariateData$deleteCovariateTimeIds %>% count() %>% pull(), " redundant covariate ID - time ID combinations")
         } else {

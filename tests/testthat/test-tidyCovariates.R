@@ -123,3 +123,53 @@ test_that("Removal of redundant covariates is reproducible", {
   }
   expect_equal(length(unique(covariateIds)), 1)
 })
+
+test_that("tidyCovariateData removes redundant temporal covariates with NA timeId", {
+  covariates <- tibble(
+    rowId = c(1, 2, 3, 1, 2, 3, 1, 2, 3, 1),
+    covariateId = c(
+      8507001, 8507001, 8507001,
+      1002, 1002, 2002,
+      1003, 1003, 1003, 1003
+    ),
+    timeId = c(
+      NA_real_, NA_real_, NA_real_,
+      NA_real_, NA_real_, NA_real_,
+      1, 1, 1, 2
+    ),
+    covariateValue = rep(1, 10)
+  )
+  covariateRef <- tibble(
+    covariateId = c(8507001, 1002, 2002, 1003),
+    analysisId = c(1, 2, 2, 3)
+  )
+  timeRef <- tibble(
+    timeId = c(1, 2),
+    startDay = c(-30, -60),
+    endDay = c(0, -31)
+  )
+  covariateData <- Andromeda::andromeda(
+    covariates = covariates,
+    covariateRef = covariateRef,
+    timeRef = timeRef
+  )
+  attr(covariateData, "metaData") <- list(populationSize = 3)
+  class(covariateData) <- "CovariateData"
+
+  tidy <- tidyCovariateData(
+    covariateData,
+    minFraction = 0,
+    normalize = FALSE,
+    removeRedundancy = TRUE
+  )
+  result <- collect(tidy$covariates)
+
+  # Single non-temporal covariate covering everyone (timeId = NA) is removed
+  expect_equal(sum(result$covariateId == 8507001), 0)
+  # Most prevalent covariate in exhaustive non-temporal analysis (timeId = NA) is removed
+  expect_equal(sum(result$covariateId == 1002), 0)
+  expect_equal(sum(result$covariateId == 2002), 1)
+  # Temporal covariate covering everyone in timeId = 1 is removed only for timeId = 1
+  expect_equal(sum(result$covariateId == 1003 & result$timeId == 1), 0)
+  expect_equal(sum(result$covariateId == 1003 & result$timeId == 2), 1)
+})
